@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{A777BC3D-2635-401D-96D7-162178D8DFC4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RogueElements</RootNamespace>
+    <AssemblyName>RogueElements</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DirExt.cs" />
+    <Compile Include="Graph.cs" />
+    <Compile Include="LocRay.cs" />
+    <Compile Include="BlobMap.cs" />
+    <Compile Include="Detection.cs" />
+    <Compile Include="MapGen\GenContextDebug.cs" />
+    <Compile Include="MapGen\Grid\IRoomGridGenContext.cs" />
+    <Compile Include="MapGen\Grid\GridPlanStep.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathStartStepGeneric.cs" />
+    <Compile Include="MapGen\Grid\DrawGridToFloorStep.cs" />
+    <Compile Include="MapGen\FloorPlan\AddSpecialRoomStep.cs" />
+    <Compile Include="MapGen\Grid\ConnectGridTerminalStep.cs" />
+    <Compile Include="MapGen\Grid\AddGridSpecialRoomStep.cs" />
+    <Compile Include="MapGen\FloorPlan\DrawFloorToTileStep.cs" />
+    <Compile Include="MapGen\FloorPlan\FloorPlanStep.cs" />
+    <Compile Include="MapGen\FloorPlan\RoomHallIndex.cs" />
+    <Compile Include="MapGen\FloorPlan\Paths\FloorPathStartStepGeneric.cs" />
+    <Compile Include="MapGen\FloorPlan\Paths\FloorPathStartStep.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectTerminalStep.cs" />
+    <Compile Include="MapGen\FloorPlan\InitFloorPlanStep.cs" />
+    <Compile Include="MapGen\FloorPlan\FloorRoomPlan.cs" />
+    <Compile Include="MapGen\FloorPlan\FloorPlan.cs" />
+    <Compile Include="MapGen\Grid\AddGridDefaultsStep.cs" />
+    <Compile Include="MapGen\FloorPlan\Paths\FloorPathBranch.cs" />
+    <Compile Include="MapGen\Tiles\InitTilesStep.cs" />
+    <Compile Include="MapGen\Rooms\PermissiveRoomGen.cs" />
+    <Compile Include="MapGen\Spawning\BaseSpawnStep.cs" />
+    <Compile Include="MapGen\Spawning\TerminalSpawnStep.cs" />
+    <Compile Include="MapGen\Spawning\RandomRoomSpawnStep.cs" />
+    <Compile Include="MapGen\Spawning\RoomSpawnStep.cs" />
+    <Compile Include="MapGen\MapGen.cs" />
+    <Compile Include="MapGen\Spawning\IPlaceableGenContext.cs" />
+    <Compile Include="MapGen\Spawning\IReplaceableGenContext.cs" />
+    <Compile Include="MapGen\FloorPlan\IFloorPlanGenContext.cs" />
+    <Compile Include="MapGen\Spawning\ISpawningGenContext.cs" />
+    <Compile Include="MapGen\Tiles\ITiledGenContext.cs" />
+    <Compile Include="MapGen\Spawning\IViewPlaceableGenContext.cs" />
+    <Compile Include="MapGen\Spawning\PickerSpawner.cs" />
+    <Compile Include="MapGen\Spawning\ContextSpawner.cs" />
+    <Compile Include="MapGen\Spawning\IStepSpawner.cs" />
+    <Compile Include="MapGen\Grid\GridRoomPlan.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenAngledHall.cs" />
+    <Compile Include="MapGen\IGenContext.cs" />
+    <Compile Include="MapGen\Tiles\ITile.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathStartStep.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathCircle.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathBranch.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathGrid.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathSpecific.cs" />
+    <Compile Include="MapGen\Grid\Paths\GridPathTwoSides.cs" />
+    <Compile Include="MapGen\Tiles\BlobWaterStep.cs" />
+    <Compile Include="MapGen\Tiles\DetectIsolatedStep.cs" />
+    <Compile Include="MapGen\Tiles\DropDiagonalBlockStep.cs" />
+    <Compile Include="MapGen\Spawning\DueSpawnStep.cs" />
+    <Compile Include="MapGen\Tiles\EraseIsolatedStep.cs" />
+    <Compile Include="MapGen\Tiles\PerlinWaterStep.cs" />
+    <Compile Include="MapGen\GenStep.cs" />
+    <Compile Include="MapGen\Spawning\RandomSpawnStep.cs" />
+    <Compile Include="MapGen\FloorPlan\FloorStairsStep.cs" />
+    <Compile Include="Rand\IRandom.cs" />
+    <Compile Include="Rand\RandBinomial.cs" />
+    <Compile Include="RangeList.cs" />
+    <Compile Include="MapGen\Rooms\RoomGen.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenBlocked.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenBump.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenCross.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenDefault.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenRound.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenSquare.cs" />
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="Rand\IMultiRandPicker.cs" />
+    <Compile Include="Rand\IRandPicker.cs" />
+    <Compile Include="Rand\LoopedRand.cs" />
+    <Compile Include="Rand\PresetMultiRand.cs" />
+    <Compile Include="Rand\PresetPicker.cs" />
+    <Compile Include="Rand\RandBag.cs" />
+    <Compile Include="Rand\RandRange.cs" />
+    <Compile Include="Rand\SpawnList.cs" />
+    <Compile Include="Rand\SpawnRangeList.cs" />
+    <Compile Include="MapGen\Grid\GridPlan.cs" />
+    <Compile Include="MapGen\Grid\InitGridPlanStep.cs" />
+    <Compile Include="Rect.cs" />
+    <Compile Include="Collision.cs" />
+    <Compile Include="Fov.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Loc.cs" />
+    <Compile Include="Dirs.cs" />
+    <Compile Include="MathUtils.cs" />
+    <Compile Include="NoiseGen.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="PathTile.cs" />
+    <Compile Include="Rand\ReRandom.cs" />
+    <Compile Include="ScanLineTile.cs" />
+    <Compile Include="StablePriorityQueue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

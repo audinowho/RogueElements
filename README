@@ -1,0 +1,19 @@
+Before writing generation code:
+-Create a new class GenContext that implements from IGenContext
+
+Code to generate a map:
+-Instantiate a MapGen<GenContext>.
+-Add a few GenPriority<GenStep<MapGenContext>> to its GenStep list.
+
+-A common order of GenSteps would be:
+1. InitGridPlanStep: Initializes a grid of rooms (A GridPlan).
+2. A child of GridPathStartStep: Creates the shape of the path of rooms in the grid.
+3. DrawGridToFloorStep: Turns the grid into a list of freehand rooms on a plane (A FloorPlan).
+4. DrawFloorToTileStep: Draws the list of freehand rooms onto the actual map tiles.
+5. StairsStep: For adding an up and down stairs to your map.
+--This is considered the bare minimum needed for a map.--
+6. PerlinWaterStep: For generating water patterns on your map using Perlin Noise.
+7. A child of BaseSpawnStep: For distributing items, enemies, traps, etc. across the floor in specified patterns.
+
+-After all this is done, call MapGen.GenMap(ulong seed) with the seed of your choice.
+-Your map is now complete.
