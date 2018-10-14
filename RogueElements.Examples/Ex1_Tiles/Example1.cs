@@ -9,16 +9,19 @@ namespace RogueElements.Examples.Ex1_Tiles
         public static void Run()
         {
             string title = "1: A Static Map Example";
-
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
 
+
+
+            //Initialize a 30x25 blank map full of Wall tiles
             InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>();
             startStep.Width = 30;
             startStep.Height = 25;
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(startStep));
 
-
+            //Draw a specific array of tiles onto the map at offset X2,Y3
+            SpecificTilesStep<MapGenContext> drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
             string[] level = {
                             ".........................",
                             ".........................",
@@ -42,7 +45,6 @@ namespace RogueElements.Examples.Ex1_Tiles
                             "....###...###...###......",
                             "...........#............."
                         };
-            SpecificTilesStep<MapGenContext> drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
             drawStep.Tiles = new ITile[level[0].Length][];
             for (int xx = 0; xx < level[0].Length; xx++)
             {
@@ -55,11 +57,13 @@ namespace RogueElements.Examples.Ex1_Tiles
                     drawStep.Tiles[xx][yy] = new Tile(id);
                 }
             }
-
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(drawStep));
 
-            MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());
 
+
+
+            //Run the generator and print
+            MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());
             Print(context.Map, title);
         }
 
