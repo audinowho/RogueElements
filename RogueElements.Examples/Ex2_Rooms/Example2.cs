@@ -21,7 +21,7 @@ namespace RogueElements.Examples.Ex2_Rooms
 
             //Create a path that is composed of a branching tree
             FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>();
-            path.HallPercent = 70;
+            path.HallPercent = 50;
             path.FillPercent = new RandRange(45);
             path.BranchRatio = new RandRange(0, 25);
 
@@ -35,7 +35,8 @@ namespace RogueElements.Examples.Ex2_Rooms
 
             //Give it some hall types to place
             SpawnList<PermissiveRoomGen<MapGenContext>> genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>();
-            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)));
+            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)), 10);
+            genericHalls.Add(new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20);
             path.GenericHalls = genericHalls;
 
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, path));

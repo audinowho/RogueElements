@@ -55,6 +55,23 @@
     <Compile Include="Ex1_Tiles\Tile.cs" />
     <Compile Include="Ex1_Tiles\Example1.cs" />
     <Compile Include="Ex2_Rooms\Example2.cs" />
+    <Compile Include="Ex2_Rooms\Map.cs" />
+    <Compile Include="Ex2_Rooms\MapGenContext.cs" />
+    <Compile Include="Ex2_Rooms\Tile.cs" />
+    <Compile Include="Ex3_Grid\Example3.cs" />
+    <Compile Include="Ex3_Grid\Map.cs" />
+    <Compile Include="Ex3_Grid\MapGenContext.cs" />
+    <Compile Include="Ex3_Grid\Tile.cs" />
+    <Compile Include="Ex4_Stairs\Example4.cs" />
+    <Compile Include="Ex4_Stairs\Map.cs" />
+    <Compile Include="Ex4_Stairs\MapGenContext.cs" />
+    <Compile Include="Ex4_Stairs\Stairs.cs" />
+    <Compile Include="Ex4_Stairs\Tile.cs" />
+    <Compile Include="Ex5_Terrain\Example5.cs" />
+    <Compile Include="Ex6_Items\Example6.cs" />
+    <Compile Include="Ex7_Integration\Example7.cs" />
+    <Compile Include="Ex8_CustomSteps\Example8.cs" />
+    <Compile Include="Ex9_CustomRooms\Example9.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
