@@ -7,9 +7,9 @@ namespace RogueElements
         where T : class, IRoomGridGenContext
     {
 
-        public int CircleRoomRatio;
+        public RandRange CircleRoomRatio;
 
-        public int Paths;
+        public RandRange Paths;
         
         public GridPathCircle()
             : base()
@@ -23,8 +23,9 @@ namespace RogueElements
                 throw new InvalidOperationException("Not enough room to create path.");
 
             int maxRooms = 2 * floorPlan.GridWidth + 2 * floorPlan.GridHeight - 4;
-            int roomOpen = maxRooms * CircleRoomRatio / 100;
-            if (roomOpen < 1 && Paths < 1)
+            int roomOpen = maxRooms * CircleRoomRatio.Pick(rand) / 100;
+            int paths = Paths.Pick(rand);
+            if (roomOpen < 1 && paths < 1)
                 roomOpen = 1;
 
             for (int x = 1; x < floorPlan.GridWidth; x++)
@@ -53,7 +54,7 @@ namespace RogueElements
             }
 
             //create inner paths
-            for (int pathsMade = 0; pathsMade < Paths; pathsMade++)
+            for (int pathsMade = 0; pathsMade < paths; pathsMade++)
             {
                 Dir4 startDir = (Dir4)(rand.Next() % 4);
                 int x = rand.Next() % (floorPlan.GridWidth - 2) + 1;

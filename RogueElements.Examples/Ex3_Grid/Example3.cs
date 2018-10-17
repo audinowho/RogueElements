@@ -25,8 +25,8 @@ namespace RogueElements.Examples.Ex3_Grid
 
             //Create a path that is composed of a ring around the edge
             GridPathCircle<MapGenContext> path = new GridPathCircle<MapGenContext>();
-            path.CircleRoomRatio = 80;
-            path.Paths = 3;
+            path.CircleRoomRatio = new RandRange(80);
+            path.Paths = new RandRange(3);
 
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>();
             //cross
