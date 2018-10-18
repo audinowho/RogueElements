@@ -28,10 +28,13 @@ namespace RogueElements
 
             if (WaterFrequency == 100)
             {
-                for (int x = 1; x < map.Width - 1; x++)
+                for (int xx = 0; xx < map.Width; xx++)
                 {
-                    for (int y = 1; y < map.Height - 1; y++)
-                        map.Tiles[x][y].ID = Terrain;
+                    for (int yy = 0; yy < map.Height; yy++)
+                    {
+                        if (map.Tiles[xx][yy].ID == map.WallTerrain)
+                            map.Tiles[xx][yy].ID = Terrain;
+                    }
                 }
                 return;
             }
@@ -40,19 +43,19 @@ namespace RogueElements
             int degree = Order;
             int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, degree);
 
-            for (int x = 1; x < map.Width - 1; x++)
+            for (int xx = 0; xx < map.Width; xx++)
             {
-                for (int y = 1; y < map.Height - 1; y++)
+                for (int yy = 0; yy < map.Height; yy++)
                 {
-                    int heightPercent = Math.Min(100, Math.Min(Math.Min(x * 100 / BUFFER_SIZE, y * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - x) * 100 / BUFFER_SIZE, (map.Height - 1 - y) * 100 / BUFFER_SIZE)));
+                    int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
                     heightPercent = heightPercent * WaterFrequency / 100;
 
-                    if (map.Tiles[x][y].ID != map.WallTerrain)
+                    if (map.Tiles[xx][yy].ID != map.WallTerrain)
                     {
 
                     }
-                    else if (noise[x][y] * 50 < (heightPercent - 50) * (int)Math.Pow(2, degree + 1))
-                        map.Tiles[x][y].ID = Terrain;
+                    else if (noise[xx][yy] * 50 < (heightPercent - 50) * (int)Math.Pow(2, degree + 1))
+                        map.Tiles[xx][yy].ID = Terrain;
 
                 }
             }

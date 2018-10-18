@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class EraseIsolatedStep<T, E> : GenStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>
+    public class EraseIsolatedStep<T> : GenStep<T> where T : class, ITiledGenContext
     {
         public int Terrain;
 
@@ -26,29 +26,39 @@ namespace RogueElements
             }
 
 
-            Grid.FloodFill(new Rect(0, 0, map.Width, map.Height),
-            (Loc testLoc) =>
+            for (int xx = 0; xx < map.Width; xx++)
             {
-                bool blocked = map.TileBlocked(testLoc);
-                blocked &= (map.Tiles[testLoc.X][testLoc.Y].ID != Terrain);
-                return (connectionGrid[testLoc.X][testLoc.Y] || blocked);
-            },
-            (Loc testLoc) =>
-            {
-                return true;
-            },
-            (Loc fillLoc) =>
-            {
-                connectionGrid[fillLoc.X][fillLoc.Y] = true;
-            },
-            map.GetLoc(0));
-
-            for (int x = 1; x < map.Width - 1; x++)
-            {
-                for (int y = 1; y < map.Height - 1; y++)
+                for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (map.Tiles[x][y].ID == Terrain && !connectionGrid[x][y])
-                        map.Tiles[x][y].ID = map.WallTerrain;
+                    //upon detecting an unmarked room area, fill with connected marks
+                    if (map.Tiles[xx][yy].ID == map.RoomTerrain && !connectionGrid[xx][yy])
+                    {
+                        Grid.FloodFill(new Rect(0, 0, map.Width, map.Height),
+                        (Loc testLoc) =>
+                        {
+                            bool blocked = map.TileBlocked(testLoc);
+                            blocked &= (map.Tiles[testLoc.X][testLoc.Y].ID != Terrain);
+                            return (connectionGrid[testLoc.X][testLoc.Y] || blocked);
+                        },
+                        (Loc testLoc) =>
+                        {
+                            return true;
+                        },
+                        (Loc fillLoc) =>
+                        {
+                            connectionGrid[fillLoc.X][fillLoc.Y] = true;
+                        },
+                        new Loc(xx,yy));
+                    }
+                }
+            }
+
+            for (int xx = 0; xx < map.Width; xx++)
+            {
+                for (int yy = 0; yy < map.Height; yy++)
+                {
+                    if (map.Tiles[xx][yy].ID == Terrain && !connectionGrid[xx][yy])
+                        map.Tiles[xx][yy].ID = map.WallTerrain;
                 }
             }
         }

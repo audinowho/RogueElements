@@ -65,7 +65,7 @@ namespace RogueElements.Examples.Ex5_Terrain
             //Remove walls where diagonals of water exist and replace with water
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new DropDiagonalBlockStep<MapGenContext>(terrain)));
             //Remove water stuck in the walls
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new EraseIsolatedStep<MapGenContext, StairsUp>(terrain)));
+            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new EraseIsolatedStep<MapGenContext>(terrain)));
 
 
             //Run the generator and print

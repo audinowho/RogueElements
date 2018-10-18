@@ -16,29 +16,29 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
-            for (int x = 1; x < map.Width - 1; x++)
+            for (int xx = 0; xx < map.Width - 1; xx++)
             {
-                for (int y = 1; y < map.Height - 1; y++)
+                for (int yy = 0; yy < map.Height - 1; yy++)
                 {
-                    int a1 = map.Tiles[x][y].ID;
-                    int b1 = map.Tiles[x + 1][y].ID;
-                    int a2 = map.Tiles[x][y + 1].ID;
-                    int b2 = map.Tiles[x + 1][y + 1].ID;
+                    int a1 = map.Tiles[xx][yy].ID;
+                    int b1 = map.Tiles[xx + 1][yy].ID;
+                    int a2 = map.Tiles[xx][yy + 1].ID;
+                    int b2 = map.Tiles[xx + 1][yy + 1].ID;
 
                     int dropType = map.Rand.Next(3);
                     if (a1 == Terrain && b1 == map.WallTerrain && a2 == map.WallTerrain && b2 == Terrain)
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[x + 1][y].ID = Terrain;
+                            map.Tiles[xx + 1][yy].ID = Terrain;
                         if (dropType < 2)
-                            map.Tiles[x][y + 1].ID = Terrain;
+                            map.Tiles[xx][yy + 1].ID = Terrain;
                     }
                     else if (a1 == map.WallTerrain && b1 == Terrain && a2 == Terrain && b2 == map.WallTerrain)
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[x][y].ID = Terrain;
+                            map.Tiles[xx][yy].ID = Terrain;
                         if (dropType < 2)
-                            map.Tiles[x + 1][y + 1].ID = Terrain;
+                            map.Tiles[xx + 1][yy + 1].ID = Terrain;
                     }
                 }
             }
