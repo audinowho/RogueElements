@@ -17,16 +17,16 @@ namespace RogueElements.Examples.Ex3_Grid
             startGen.CellX = 6;
             startGen.CellY = 4;
 
-            startGen.CellWidth = 10;
-            startGen.CellHeight = 10;
+            startGen.CellWidth = 9;
+            startGen.CellHeight = 9;
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
 
 
 
-            //Create a path that is composed of a ring around the edge
-            GridPathCircle<MapGenContext> path = new GridPathCircle<MapGenContext>();
-            path.CircleRoomRatio = new RandRange(80);
-            path.Paths = new RandRange(3);
+            //Create a path that is composed of branches in grid lock
+            GridPathBranch<MapGenContext> path = new GridPathBranch<MapGenContext>();
+            path.RoomRatio = new RandRange(70);
+            path.BranchRatio = new RandRange(0, 50);
 
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>();
             //cross

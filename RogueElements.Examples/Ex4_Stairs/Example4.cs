@@ -8,24 +8,24 @@ namespace RogueElements.Examples.Ex4_Stairs
     {
         public static void Run()
         {
-            string title = "4: Grid-based rooms and halls with Stairs Up and Down";
+            string title = "4: A Map with Stairs Up and Down";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
-            //Initialize a 6x4 grid of 10x10 cells.
+            //Initialize a 3x2 grid of 10x10 cells.
             InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>();
-            startGen.CellX = 6;
-            startGen.CellY = 4;
+            startGen.CellX = 3;
+            startGen.CellY = 2;
 
-            startGen.CellWidth = 10;
-            startGen.CellHeight = 10;
+            startGen.CellWidth = 9;
+            startGen.CellHeight = 9;
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
 
 
 
             //Create a path that is composed of a ring around the edge
-            GridPathCircle<MapGenContext> path = new GridPathCircle<MapGenContext>();
-            path.CircleRoomRatio = new RandRange(80);
-            path.Paths = new RandRange(3);
+            GridPathBranch<MapGenContext> path = new GridPathBranch<MapGenContext>();
+            path.RoomRatio = new RandRange(70);
+            path.BranchRatio = new RandRange(0, 50);
 
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>();
             //cross

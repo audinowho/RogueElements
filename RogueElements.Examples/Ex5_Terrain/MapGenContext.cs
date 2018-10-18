@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RogueElements;
 
-namespace RogueElements.Examples.Ex4_Stairs
+namespace RogueElements.Examples.Ex5_Terrain
 {
 
     public class MapGenContext : ITiledGenContext, IRoomGridGenContext, IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>
@@ -35,12 +35,12 @@ namespace RogueElements.Examples.Ex4_Stairs
 
         bool ITiledGenContext.TileBlocked(Loc loc)
         {
-            return Map.Tiles[loc.X][loc.Y].ID == 1;
+            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
         }
 
         bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
         {
-            return Map.Tiles[loc.X][loc.Y].ID == 1;
+            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
         }
 
 

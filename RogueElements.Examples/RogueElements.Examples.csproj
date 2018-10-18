@@ -68,6 +68,10 @@
     <Compile Include="Ex4_Stairs\Stairs.cs" />
     <Compile Include="Ex4_Stairs\Tile.cs" />
     <Compile Include="Ex5_Terrain\Example5.cs" />
+    <Compile Include="Ex5_Terrain\Map.cs" />
+    <Compile Include="Ex5_Terrain\MapGenContext.cs" />
+    <Compile Include="Ex5_Terrain\Stairs.cs" />
+    <Compile Include="Ex5_Terrain\Tile.cs" />
     <Compile Include="Ex6_Items\Example6.cs" />
     <Compile Include="Ex7_Integration\Example7.cs" />
     <Compile Include="Ex8_CustomSteps\Example8.cs" />

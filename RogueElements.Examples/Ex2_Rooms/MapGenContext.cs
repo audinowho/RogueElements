@@ -33,12 +33,12 @@ namespace RogueElements.Examples.Ex2_Rooms
 
         bool ITiledGenContext.TileBlocked(Loc loc)
         {
-            return false;
+            return Map.Tiles[loc.X][loc.Y].ID == 1;
         }
 
         bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
         {
-            return false;
+            return Map.Tiles[loc.X][loc.Y].ID == 1;
         }
 
 
