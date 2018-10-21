@@ -26,7 +26,7 @@ namespace RogueElements
             Grid.FloodFill(new Rect(offX, offY, lX, lY),
             (Loc testLoc) =>
             {
-                return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || map.Tiles[testLoc.X][testLoc.Y].ID != map.RoomTerrain);
+                return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.Tiles[testLoc.X][testLoc.Y].TileEquivalent(map.RoomTerrain));
             },
             (Loc testLoc) =>
             {
@@ -42,7 +42,7 @@ namespace RogueElements
             {
                 for (int y = offY; y < offY+lY; y++)
                 {
-                    if (map.Tiles[x][y].ID == map.RoomTerrain && !connectionGrid[x-offX][y-offY])
+                    if (map.Tiles[x][y].TileEquivalent(map.RoomTerrain) && !connectionGrid[x-offX][y-offY])
                     {
                         //throw new Exception("Detected orphaned tile at X" + x + " Y" + y + "!  Seed: " + map.Rand.FirstSeed);
                         Console.WriteLine("Detected orphaned tile at X"+x+" Y"+y+"!  Seed: " + map.Rand.FirstSeed);

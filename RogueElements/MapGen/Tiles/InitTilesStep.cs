@@ -19,7 +19,7 @@ namespace RogueElements
             for (int ii = 0; ii < Width; ii++)
             {
                 for (int jj = 0; jj < Height; jj++)
-                    map.Tiles[ii][jj].ID = map.WallTerrain;
+                    map.Tiles[ii][jj] = map.WallTerrain.Copy();
             }
         }
 

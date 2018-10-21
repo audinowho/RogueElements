@@ -6,11 +6,11 @@ namespace RogueElements
     [Serializable]
     public class RoomGenSpecific<T> : RoomGen<T> where T : ITiledGenContext
     {
-        public int RoomTerrain;
+        public ITile RoomTerrain;
         public ITile[][] Tiles;
 
         public RoomGenSpecific() { }
-        public RoomGenSpecific(int roomTerrain) { RoomTerrain = roomTerrain; }
+        public RoomGenSpecific(ITile roomTerrain) { RoomTerrain = roomTerrain; }
 
         public override Loc ProposeSize(IRandom rand)
         {
@@ -33,14 +33,14 @@ namespace RogueElements
             {
                 for (int ii = 0; ii < draw.Width; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Up][ii] = (Tiles[ii][0].ID == RoomTerrain);
-                    fulfillableBorder[(int)Dir4.Down][ii] = (Tiles[ii][draw.Height - 1].ID == RoomTerrain);
+                    fulfillableBorder[(int)Dir4.Up][ii] = Tiles[ii][0].TileEquivalent(RoomTerrain);
+                    fulfillableBorder[(int)Dir4.Down][ii] = Tiles[ii][draw.Height - 1].TileEquivalent(RoomTerrain);
                 }
 
                 for (int ii = 0; ii < draw.Height; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Left][ii] = (Tiles[0][ii].ID == RoomTerrain);
-                    fulfillableBorder[(int)Dir4.Right][ii] = (Tiles[Draw.Width - 1][ii].ID == RoomTerrain);
+                    fulfillableBorder[(int)Dir4.Left][ii] = Tiles[0][ii].TileEquivalent(RoomTerrain);
+                    fulfillableBorder[(int)Dir4.Right][ii] = Tiles[Draw.Width - 1][ii].TileEquivalent(RoomTerrain);
                 }
             }
         }

@@ -10,8 +10,8 @@ namespace RogueElements.Examples.Ex4_Stairs
     {
         public Map Map { get; set; }
 
-        public int RoomTerrain { get { return Map.ROOM_TERRAIN_ID; } }
-        public int WallTerrain { get { return Map.WALL_TERRAIN_ID; } }
+        public ITile RoomTerrain { get { return new Tile(Map.ROOM_TERRAIN_ID); } }
+        public ITile WallTerrain { get { return new Tile(Map.WALL_TERRAIN_ID); } }
 
         ITile[][] ITiledGenContext.Tiles { get { return Map.Tiles; } }
 
@@ -35,12 +35,12 @@ namespace RogueElements.Examples.Ex4_Stairs
 
         bool ITiledGenContext.TileBlocked(Loc loc)
         {
-            return Map.Tiles[loc.X][loc.Y].ID == 1;
+            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
         }
 
         bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
         {
-            return Map.Tiles[loc.X][loc.Y].ID == 1;
+            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
         }
 
 
@@ -98,7 +98,7 @@ namespace RogueElements.Examples.Ex4_Stairs
 
         private bool isTileOccupied(Loc loc)
         {
-            if (Map.Tiles[loc.X][loc.Y].ID != RoomTerrain)
+            if (Map.Tiles[loc.X][loc.Y].ID != Map.ROOM_TERRAIN_ID)
                 return true;
 
 

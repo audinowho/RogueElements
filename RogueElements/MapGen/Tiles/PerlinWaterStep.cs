@@ -10,11 +10,11 @@ namespace RogueElements
 
         public int WaterFrequency;
         public int Order;
-        public int Terrain;
+        public ITile Terrain;
 
         public PerlinWaterStep() { }
 
-        public PerlinWaterStep(int waterFrequency, int order, int terrain)
+        public PerlinWaterStep(int waterFrequency, int order, ITile terrain)
         {
             WaterFrequency = waterFrequency;
             Order = order;
@@ -32,8 +32,8 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < map.Height; yy++)
                     {
-                        if (map.Tiles[xx][yy].ID == map.WallTerrain)
-                            map.Tiles[xx][yy].ID = Terrain;
+                        if (map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
+                            map.Tiles[xx][yy] = Terrain.Copy();
                     }
                 }
                 return;
@@ -50,12 +50,12 @@ namespace RogueElements
                     int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
                     heightPercent = heightPercent * WaterFrequency / 100;
 
-                    if (map.Tiles[xx][yy].ID != map.WallTerrain)
+                    if (!map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
                     {
 
                     }
                     else if (noise[xx][yy] * 50 < (heightPercent - 50) * (int)Math.Pow(2, degree + 1))
-                        map.Tiles[xx][yy].ID = Terrain;
+                        map.Tiles[xx][yy] = Terrain.Copy();
 
                 }
             }

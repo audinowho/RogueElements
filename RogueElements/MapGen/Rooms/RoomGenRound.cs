@@ -52,7 +52,7 @@ namespace RogueElements
                 {
 
                     if (isTileWithinRoom(ii, jj, diameter, Draw.Size))
-                        map.Tiles[Draw.X + ii][Draw.Y + jj].ID = map.RoomTerrain;
+                        map.Tiles[Draw.X + ii][Draw.Y + jj] = map.RoomTerrain.Copy();
                 }
             }
             

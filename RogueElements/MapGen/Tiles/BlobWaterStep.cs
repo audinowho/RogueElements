@@ -10,11 +10,11 @@ namespace RogueElements
 
         public int WaterFrequency;
         //public int Blobs;
-        public int Terrain;
+        public ITile Terrain;
 
         public BlobWaterStep() { }
 
-        public BlobWaterStep(int waterFrequency, int terrain) : this()
+        public BlobWaterStep(int waterFrequency, ITile terrain) : this()
         {
             WaterFrequency = waterFrequency;
             //Blobs = blobs;
@@ -32,8 +32,8 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < map.Height; yy++)
                     {
-                        if (map.Tiles[xx][yy].ID == map.WallTerrain)
-                            map.Tiles[xx][yy].ID = Terrain;
+                        if (map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
+                            map.Tiles[xx][yy] = Terrain.Copy();
                     }
                 }
                 return;
@@ -59,12 +59,12 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (map.Tiles[xx][yy].ID != map.WallTerrain)
+                    if (!map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
                     {
 
                     }
                     else if (noise[xx][yy])
-                        map.Tiles[xx][yy].ID = Terrain;
+                        map.Tiles[xx][yy] = Terrain.Copy();
                 }
             }
         }

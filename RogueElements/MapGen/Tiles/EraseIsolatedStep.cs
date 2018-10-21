@@ -6,11 +6,11 @@ namespace RogueElements
     [Serializable]
     public class EraseIsolatedStep<T> : GenStep<T> where T : class, ITiledGenContext
     {
-        public int Terrain;
+        public ITile Terrain;
 
         public EraseIsolatedStep() { }
 
-        public EraseIsolatedStep(int terrain)
+        public EraseIsolatedStep(ITile terrain)
         {
             Terrain = terrain;
         }
@@ -31,13 +31,13 @@ namespace RogueElements
                 for (int yy = 0; yy < map.Height; yy++)
                 {
                     //upon detecting an unmarked room area, fill with connected marks
-                    if (map.Tiles[xx][yy].ID == map.RoomTerrain && !connectionGrid[xx][yy])
+                    if (map.Tiles[xx][yy].TileEquivalent(map.RoomTerrain) && !connectionGrid[xx][yy])
                     {
                         Grid.FloodFill(new Rect(0, 0, map.Width, map.Height),
                         (Loc testLoc) =>
                         {
                             bool blocked = map.TileBlocked(testLoc);
-                            blocked &= (map.Tiles[testLoc.X][testLoc.Y].ID != Terrain);
+                            blocked &= !map.Tiles[testLoc.X][testLoc.Y].TileEquivalent(Terrain);
                             return (connectionGrid[testLoc.X][testLoc.Y] || blocked);
                         },
                         (Loc testLoc) =>
@@ -57,8 +57,8 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (map.Tiles[xx][yy].ID == Terrain && !connectionGrid[xx][yy])
-                        map.Tiles[xx][yy].ID = map.WallTerrain;
+                    if (map.Tiles[xx][yy].TileEquivalent(Terrain) && !connectionGrid[xx][yy])
+                        map.Tiles[xx][yy] = map.WallTerrain.Copy();
                 }
             }
         }

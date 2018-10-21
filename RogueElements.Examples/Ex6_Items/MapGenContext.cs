@@ -10,8 +10,8 @@ namespace RogueElements.Examples.Ex6_Items
     {
         public Map Map { get; set; }
 
-        public int RoomTerrain { get { return Map.ROOM_TERRAIN_ID; } }
-        public int WallTerrain { get { return Map.WALL_TERRAIN_ID; } }
+        public ITile RoomTerrain { get { return new Tile(Map.ROOM_TERRAIN_ID); } }
+        public ITile WallTerrain { get { return new Tile(Map.WALL_TERRAIN_ID); } }
 
         ITile[][] ITiledGenContext.Tiles { get { return Map.Tiles; } }
 
@@ -101,7 +101,7 @@ namespace RogueElements.Examples.Ex6_Items
 
         private bool isTileOccupied(Loc loc)
         {
-            if (Map.Tiles[loc.X][loc.Y].ID != RoomTerrain)
+            if (Map.Tiles[loc.X][loc.Y].ID != Map.ROOM_TERRAIN_ID)
                 return true;
 
             foreach (Item item in Map.Items)

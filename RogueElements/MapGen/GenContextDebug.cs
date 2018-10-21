@@ -20,19 +20,10 @@ namespace RogueElements
             {
                 for (int xx = 0; xx < context.Width; xx++)
                 {
-                    if (context.Tiles[xx][yy].ID == context.RoomTerrain)
+                    if (context.Tiles[xx][yy].TileEquivalent(context.RoomTerrain))
                         str.Append('.');
-                    else if (context.Tiles[xx][yy].ID == context.WallTerrain)
+                    else if (context.Tiles[xx][yy].TileEquivalent(context.WallTerrain))
                         str.Append('#');
-                    else if (context.Tiles[xx][yy].ID < 26)
-                    {
-                        char extra = (char)context.Tiles[xx][yy].ID;
-                        if (context.TileBlocked(new Loc(xx,yy)))
-                            extra = (char)('A' + extra);
-                        else
-                            extra = (char)('a' + extra);
-                        str.Append(extra);
-                    }
                     else
                     {
                         if (context.TileBlocked(new Loc(xx, yy)))

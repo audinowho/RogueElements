@@ -11,11 +11,11 @@ namespace RogueElements
         public RandRange BlockWidth;
         public RandRange BlockHeight;
 
-        public int BlockTerrain;
+        public ITile BlockTerrain;
 
         public RoomGenBlocked() { }
 
-        public RoomGenBlocked(int blockTerrain, RandRange width, RandRange height, RandRange blockWidth, RandRange blockHeight)
+        public RoomGenBlocked(ITile blockTerrain, RandRange width, RandRange height, RandRange blockWidth, RandRange blockHeight)
         {
             BlockTerrain = blockTerrain;
             Width = width;
@@ -34,7 +34,7 @@ namespace RogueElements
             for (int x = 0; x < Draw.Size.X; x++)
             {
                 for (int y = 0; y < Draw.Size.Y; y++)
-                    map.Tiles[Draw.X + x][Draw.Y + y].ID = map.RoomTerrain;
+                    map.Tiles[Draw.X + x][Draw.Y + y] = map.RoomTerrain.Copy();
             }
 
             Loc blockSize = new Loc(Math.Min(BlockWidth.Pick(map.Rand), Draw.Size.X - 2), Math.Min(BlockHeight.Pick(map.Rand), Draw.Size.Y - 2));
@@ -42,7 +42,7 @@ namespace RogueElements
             for (int x = 0; x < blockSize.X; x++)
             {
                 for (int y = 0; y < blockSize.Y; y++)
-                    map.Tiles[blockStart.X + x][blockStart.Y + y].ID = BlockTerrain;
+                    map.Tiles[blockStart.X + x][blockStart.Y + y] = BlockTerrain.Copy();
             }
 
             //hall restrictions

@@ -4,6 +4,6 @@ namespace RogueElements
 {
     public interface ITile
     {
-        int ID { get; set; }
+        bool TileEquivalent(ITile other);
     }
 }

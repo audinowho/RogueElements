@@ -95,6 +95,7 @@
     <Compile Include="MapGen\Grid\AddGridDefaultsStep.cs" />
     <Compile Include="MapGen\FloorPlan\Paths\FloorPathBranch.cs" />
     <Compile Include="MapGen\Rooms\RoomGenSpecific.cs" />
+    <Compile Include="MapGen\Tiles\ITile.cs" />
     <Compile Include="MapGen\Tiles\StairsStep.cs" />
     <Compile Include="MapGen\Tiles\SpecificTilesStep.cs" />
     <Compile Include="MapGen\Tiles\InitTilesStep.cs" />
@@ -116,7 +117,6 @@
     <Compile Include="MapGen\Grid\GridRoomPlan.cs" />
     <Compile Include="MapGen\Rooms\RoomGenAngledHall.cs" />
     <Compile Include="MapGen\IGenContext.cs" />
-    <Compile Include="MapGen\Tiles\ITile.cs" />
     <Compile Include="MapGen\Grid\Paths\GridPathStartStep.cs" />
     <Compile Include="MapGen\Grid\Paths\GridPathCircle.cs" />
     <Compile Include="MapGen\Grid\Paths\GridPathBranch.cs" />

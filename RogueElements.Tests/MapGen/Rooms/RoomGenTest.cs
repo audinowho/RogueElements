@@ -901,6 +901,11 @@ namespace RogueElements.Tests
             return other.ID == ID;
         }
 
+        public bool TileEquivalent(ITile other)
+        {
+            return Equals(other);
+        }
+
         public override int GetHashCode() { return ID; }
     }
 
@@ -916,7 +921,7 @@ namespace RogueElements.Tests
             {
                 for (int yy = 0; yy < testContext.Height; yy++)
                 {
-                    testContext.Tiles[xx][yy].ID = (inGrid[yy][xx] == 'X') ? 1 : 0;
+                    ((TestTile)testContext.Tiles[xx][yy]).ID = (inGrid[yy][xx] == 'X') ? 1 : 0;
                 }
             }
             return testContext;
@@ -928,11 +933,11 @@ namespace RogueElements.Tests
         public void FinishGen() { }
 
         public bool TileBlocked(Loc loc) { return TileBlocked(loc, false); }
-        public bool TileBlocked(Loc loc, bool diagonal) { return Tiles[loc.X][loc.Y].ID != RoomTerrain; }
+        public bool TileBlocked(Loc loc, bool diagonal) { return ((TestTile)Tiles[loc.X][loc.Y]).ID != 0; }
 
-        public int RoomTerrain { get { return 0; } }
-        public int WallTerrain { get { return 1; } }
-        public int UnbreakableTerrain { get { return -1; } }
+        public ITile RoomTerrain { get { return new TestTile(0); } }
+        public ITile WallTerrain { get { return new TestTile(1); } }
+        public ITile UnbreakableTerrain { get { return new TestTile(-1); } }
 
         public ITile[][] Tiles { get { return tiles; } }
         private ITile[][] tiles;

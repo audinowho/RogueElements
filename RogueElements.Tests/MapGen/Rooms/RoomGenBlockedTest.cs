@@ -16,7 +16,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3, 5)).Returns(3);
             testRand.Setup(p => p.Next(4, 7)).Returns(4);
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>(1, new RandRange(3, 5), new RandRange(4, 7), new RandRange(), new RandRange());
+            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>(new TestTile(1), new RandRange(3, 5), new RandRange(4, 7), new RandRange(), new RandRange());
 
             Loc compare = roomGen.ProposeSize(testRand.Object);
 
@@ -32,7 +32,7 @@ namespace RogueElements.Tests
             RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
             roomGen.BlockWidth = new RandRange(0);
             roomGen.BlockHeight = new RandRange(0);
-            roomGen.BlockTerrain = 1;
+            roomGen.BlockTerrain = new TestTile(1);
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -74,7 +74,7 @@ namespace RogueElements.Tests
             RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
             roomGen.BlockWidth = new RandRange(2);
             roomGen.BlockHeight = new RandRange(1);
-            roomGen.BlockTerrain = 1;
+            roomGen.BlockTerrain = new TestTile(1);
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -118,7 +118,7 @@ namespace RogueElements.Tests
             RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
             roomGen.BlockWidth = new RandRange(2);
             roomGen.BlockHeight = new RandRange(1);
-            roomGen.BlockTerrain = 1;
+            roomGen.BlockTerrain = new TestTile(1);
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -162,7 +162,7 @@ namespace RogueElements.Tests
             RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
             roomGen.BlockWidth = new RandRange(200);
             roomGen.BlockHeight = new RandRange(100);
-            roomGen.BlockTerrain = 1;
+            roomGen.BlockTerrain = new TestTile(1);
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",

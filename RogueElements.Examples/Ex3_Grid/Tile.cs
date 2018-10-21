@@ -16,5 +16,13 @@ namespace RogueElements.Examples.Ex3_Grid
         {
             ID = id;
         }
+
+        public bool TileEquivalent(ITile other)
+        {
+            Tile tile = other as Tile;
+            if (tile == null)
+                return false;
+            return tile.ID == ID;
+        }
     }
 }

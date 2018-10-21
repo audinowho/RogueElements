@@ -5,11 +5,11 @@ namespace RogueElements
     [Serializable]
     public class DropDiagonalBlockStep<T> : GenStep<T> where T : class, ITiledGenContext
     {
-        public int Terrain;
+        public ITile Terrain;
 
         public DropDiagonalBlockStep() { }
 
-        public DropDiagonalBlockStep(int terrain)
+        public DropDiagonalBlockStep(ITile terrain)
         {
             Terrain = terrain;
         }
@@ -20,25 +20,25 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height - 1; yy++)
                 {
-                    int a1 = map.Tiles[xx][yy].ID;
-                    int b1 = map.Tiles[xx + 1][yy].ID;
-                    int a2 = map.Tiles[xx][yy + 1].ID;
-                    int b2 = map.Tiles[xx + 1][yy + 1].ID;
+                    ITile a1 = map.Tiles[xx][yy];
+                    ITile b1 = map.Tiles[xx + 1][yy];
+                    ITile a2 = map.Tiles[xx][yy + 1];
+                    ITile b2 = map.Tiles[xx + 1][yy + 1];
 
                     int dropType = map.Rand.Next(3);
-                    if (a1 == Terrain && b1 == map.WallTerrain && a2 == map.WallTerrain && b2 == Terrain)
+                    if (a1.TileEquivalent(Terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(Terrain))
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[xx + 1][yy].ID = Terrain;
+                            map.Tiles[xx + 1][yy] = Terrain;
                         if (dropType < 2)
-                            map.Tiles[xx][yy + 1].ID = Terrain;
+                            map.Tiles[xx][yy + 1] = Terrain;
                     }
-                    else if (a1 == map.WallTerrain && b1 == Terrain && a2 == Terrain && b2 == map.WallTerrain)
+                    else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(Terrain) && a2.TileEquivalent(Terrain) && b2.TileEquivalent(map.WallTerrain))
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[xx][yy].ID = Terrain;
+                            map.Tiles[xx][yy] = Terrain;
                         if (dropType < 2)
-                            map.Tiles[xx + 1][yy + 1].ID = Terrain;
+                            map.Tiles[xx + 1][yy + 1] = Terrain;
                     }
                 }
             }

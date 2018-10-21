@@ -6,12 +6,11 @@ namespace RogueElements
 
     public interface ITiledGenContext : IGenContext
     {
-
         bool TileBlocked(Loc loc);
         bool TileBlocked(Loc loc, bool diagonal);
 
-        int RoomTerrain { get; }
-        int WallTerrain { get; }
+        ITile RoomTerrain { get; }
+        ITile WallTerrain { get; }
 
         ITile[][] Tiles { get; }
         int Width { get; }
