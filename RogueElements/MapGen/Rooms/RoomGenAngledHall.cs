@@ -212,9 +212,9 @@ namespace RogueElements
                         Loc startLoc = new Loc(vertical ? startTiles[0] : forwardStart.X, vertical ? forwardStart.Y : startTiles[0]);
                         Loc endLoc = startLoc;
                         //the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.Tiles[endLoc.X][endLoc.Y].TileEquivalent(map.RoomTerrain))
+                        while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
                             endLoc = endLoc + forwardDir.Reverse().GetLoc();
-                        drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                        drawHall(map, startLoc, endLoc, map.RoomTerrain);
                     }
 
                     //backward until hit
@@ -223,9 +223,9 @@ namespace RogueElements
                         Loc startLoc = new Loc(vertical ? endTiles[0] : backwardStart.X, vertical ? backwardStart.Y : endTiles[0]);
                         Loc endLoc = startLoc;
                         //the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.Tiles[endLoc.X][endLoc.Y].TileEquivalent(map.RoomTerrain))
+                        while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
                             endLoc = endLoc + forwardDir.GetLoc();
-                        drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                        drawHall(map, startLoc, endLoc, map.RoomTerrain);
                     }
                 }
                 else
@@ -245,9 +245,9 @@ namespace RogueElements
                                 Loc startLoc = new Loc(vertical ? startSideDist : forwardStart.X, vertical ? forwardStart.Y : startSideDist);
                                 Loc endLoc = startLoc;
                                 //the assumption is that there is already roomterrain to cross over at another point in this room
-                                while (!map.Tiles[endLoc.X][endLoc.Y].TileEquivalent(map.RoomTerrain))
+                                while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
                                     endLoc = endLoc + ((Dir4)ii).Reverse().GetLoc();
-                                drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                                drawHall(map, startLoc, endLoc, map.RoomTerrain);
                             }
                         }
                     }
@@ -323,7 +323,7 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, startTiles[ii]);
                     Loc startLoc = new Loc(vertical ? startTiles[ii] : Draw.X, vertical ? Draw.Y : startTiles[ii]);
                     Loc endLoc = new Loc(vertical ? startTiles[ii] : forwardTurn, vertical ? forwardTurn : startTiles[ii]);
-                    drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                    drawHall(map, startLoc, endLoc, map.RoomTerrain);
                 }
 
                 for (int ii = 0; ii < endTiles.Length; ii++)
@@ -332,12 +332,12 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, endTiles[ii]);
                     Loc startLoc = new Loc(vertical ? endTiles[ii] : Draw.End.X - 1, vertical ? Draw.End.Y - 1 : endTiles[ii]);
                     Loc endLoc = new Loc(vertical ? endTiles[ii] : forwardTurn, vertical ? forwardTurn : endTiles[ii]);
-                    drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                    drawHall(map, startLoc, endLoc, map.RoomTerrain);
                 }
 
                 Loc startMid = new Loc(vertical ? globalMin : forwardTurn, vertical ? forwardTurn : globalMin);
                 Loc endMid = new Loc(vertical ? globalMax : forwardTurn, vertical ? forwardTurn : globalMax);
-                drawHall(map.Tiles, startMid, endMid, map.RoomTerrain);
+                drawHall(map, startMid, endMid, map.RoomTerrain);
             }
         }
 
@@ -420,13 +420,13 @@ namespace RogueElements
 
                 Loc startLoc = new Loc(vertical ? starts[jj] : forwardStartLoc.X, vertical ? forwardStartLoc.Y : starts[jj]);
                 Loc endLoc = new Loc(vertical ? starts[jj] : forwardEnd, vertical ? forwardEnd : starts[jj]);
-                drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+                drawHall(map, startLoc, endLoc, map.RoomTerrain);
             }
 
             //combine the halls
             Loc combineStart = new Loc(vertical ? start.Min : forwardEnd, vertical ? forwardEnd : start.Min);
             Loc combineEnd = new Loc(vertical ? start.Max : forwardEnd, vertical ? forwardEnd : start.Max);
-            drawHall(map.Tiles, combineStart, combineEnd, map.RoomTerrain);
+            drawHall(map, combineStart, combineEnd, map.RoomTerrain);
         }
 
         /// <summary>
@@ -441,7 +441,7 @@ namespace RogueElements
             int startSideDist = MathUtils.ChooseFromHash(cross, map.Rand);
             Loc startLoc = new Loc(vertical ? startSideDist : Draw.X, vertical ? Draw.Y : startSideDist);
             Loc endLoc = new Loc(vertical ? startSideDist : Draw.End.X - 1, vertical ? Draw.End.Y - 1 : startSideDist);
-            drawHall(map.Tiles, startLoc, endLoc, map.RoomTerrain);
+            drawHall(map, startLoc, endLoc, map.RoomTerrain);
         }
         
 
@@ -466,25 +466,25 @@ namespace RogueElements
         /// <summary>
         /// Draws a hall in a straight cardinal direction, starting with one point and ending with another (inclusive).
         /// </summary>
-        /// <param name="gridArray"></param>
+        /// <param name="map"></param>
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="terrain"></param>
-        private void drawHall(ITile[][] gridArray, Loc point1, Loc point2, ITile terrain)
+        private void drawHall(ITiledGenContext map, Loc point1, Loc point2, ITile terrain)
         {
             if (point1 == point2)
-                gridArray[point1.X][point1.Y] = terrain.Copy();
+                map.SetTile(point1, terrain.Copy());
             else if (point1.X == point2.X)
             {
                 if (point2.Y > point1.Y)
                 {
                     for (int ii = point1.Y; ii <= point2.Y; ii++)
-                        gridArray[point1.X][ii] = terrain.Copy();
+                        map.SetTile(new Loc(point1.X, ii), terrain.Copy());
                 }
                 else if (point2.Y < point1.Y)
                 {
                     for (int ii = point1.Y; ii >= point2.Y; ii--)
-                        gridArray[point1.X][ii] = terrain.Copy();
+                        map.SetTile(new Loc(point1.X, ii), terrain.Copy());
                 }
             }
             else if (point1.Y == point2.Y)
@@ -492,12 +492,12 @@ namespace RogueElements
                 if (point2.X > point1.X)
                 {
                     for (int ii = point1.X; ii <= point2.X; ii++)
-                        gridArray[ii][point1.Y] = terrain.Copy();
+                        map.SetTile(new Loc(ii, point1.Y), terrain.Copy());
                 }
                 else if (point2.X < point1.X)
                 {
                     for (int ii = point1.X; ii >= point2.X; ii--)
-                        gridArray[ii][point1.Y] = terrain.Copy();
+                        map.SetTile(new Loc(ii, point1.Y), terrain.Copy());
                 }
             }
         }

@@ -55,7 +55,7 @@ namespace RogueElements
             for (int xx = 0; xx < Draw.Width; xx++)
             {
                 for (int yy = 0; yy < Draw.Height; yy++)
-                    map.Tiles[Draw.X + xx][Draw.Y + yy] = Tiles[xx][yy].Copy();
+                    map.SetTile(new Loc(Draw.X + xx, Draw.Y + yy), Tiles[xx][yy].Copy());
             }
             SetRoomBorders(map);
         }

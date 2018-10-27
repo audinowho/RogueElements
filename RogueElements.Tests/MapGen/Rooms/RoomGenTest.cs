@@ -939,6 +939,11 @@ namespace RogueElements.Tests
         public ITile WallTerrain { get { return new TestTile(1); } }
         public ITile UnbreakableTerrain { get { return new TestTile(-1); } }
 
+        public ITile GetTile(Loc loc) { return Tiles[loc.X][loc.Y]; }
+        public void SetTile(Loc loc, ITile tile) { Tiles[loc.X][loc.Y] = tile; }
+
+        public bool TilesInitialized { get { return Tiles != null; } }
+
         public ITile[][] Tiles { get { return tiles; } }
         private ITile[][] tiles;
         public int Width { get { return Tiles.Length; } }

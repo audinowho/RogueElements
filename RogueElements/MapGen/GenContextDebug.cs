@@ -11,7 +11,7 @@ namespace RogueElements
     {
         public static string PrintTiles(this ITiledGenContext context)
         {
-            if (context.Tiles == null)
+            if (!context.TilesInitialized)
                 return "";
 
             StringBuilder str = new StringBuilder();
@@ -20,9 +20,9 @@ namespace RogueElements
             {
                 for (int xx = 0; xx < context.Width; xx++)
                 {
-                    if (context.Tiles[xx][yy].TileEquivalent(context.RoomTerrain))
+                    if (context.GetTile(new Loc(xx,yy)).TileEquivalent(context.RoomTerrain))
                         str.Append('.');
-                    else if (context.Tiles[xx][yy].TileEquivalent(context.WallTerrain))
+                    else if (context.GetTile(new Loc(xx, yy)).TileEquivalent(context.WallTerrain))
                         str.Append('#');
                     else
                     {

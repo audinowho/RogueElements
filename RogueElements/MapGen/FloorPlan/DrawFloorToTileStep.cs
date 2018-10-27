@@ -20,7 +20,7 @@ namespace RogueElements
             for (int ii = 0; ii < map.Width; ii++)
             {
                 for (int jj = 0; jj < map.Height; jj++)
-                    map.Tiles[ii][jj] = map.WallTerrain.Copy();
+                    map.SetTile(new Loc(ii,jj), map.WallTerrain.Copy());
             }
             map.RoomPlan.MoveStart(new Loc(Padding));
             map.RoomPlan.DrawOnMap(map);

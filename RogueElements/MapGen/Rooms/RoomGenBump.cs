@@ -54,7 +54,7 @@ namespace RogueElements
 
                         }
                         else
-                            map.Tiles[Draw.X + x][Draw.Y + y] = map.RoomTerrain.Copy();
+                            map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
                     }
                 }
                 
@@ -64,7 +64,7 @@ namespace RogueElements
                 for (int x = 0; x < Draw.Size.X; x++)
                 {
                     for (int y = 0; y < Draw.Size.Y; y++)
-                        map.Tiles[Draw.X + x][Draw.Y + y] = map.RoomTerrain.Copy();
+                        map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
                 }
             }
 

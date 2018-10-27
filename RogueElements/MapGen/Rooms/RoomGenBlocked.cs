@@ -34,7 +34,7 @@ namespace RogueElements
             for (int x = 0; x < Draw.Size.X; x++)
             {
                 for (int y = 0; y < Draw.Size.Y; y++)
-                    map.Tiles[Draw.X + x][Draw.Y + y] = map.RoomTerrain.Copy();
+                    map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
             }
 
             Loc blockSize = new Loc(Math.Min(BlockWidth.Pick(map.Rand), Draw.Size.X - 2), Math.Min(BlockHeight.Pick(map.Rand), Draw.Size.Y - 2));
@@ -42,7 +42,7 @@ namespace RogueElements
             for (int x = 0; x < blockSize.X; x++)
             {
                 for (int y = 0; y < blockSize.Y; y++)
-                    map.Tiles[blockStart.X + x][blockStart.Y + y] = BlockTerrain.Copy();
+                    map.SetTile(new Loc(blockStart.X + x, blockStart.Y + y), BlockTerrain.Copy());
             }
 
             //hall restrictions

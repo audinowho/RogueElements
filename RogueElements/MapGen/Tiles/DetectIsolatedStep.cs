@@ -26,7 +26,7 @@ namespace RogueElements
             Grid.FloodFill(new Rect(offX, offY, lX, lY),
             (Loc testLoc) =>
             {
-                return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.Tiles[testLoc.X][testLoc.Y].TileEquivalent(map.RoomTerrain));
+                return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain));
             },
             (Loc testLoc) =>
             {
@@ -38,14 +38,14 @@ namespace RogueElements
             },
             map.GetLoc(0));
 
-            for (int x = offX; x < offX + lX; x++)
+            for (int xx = offX; xx < offX + lX; xx++)
             {
-                for (int y = offY; y < offY+lY; y++)
+                for (int yy = offY; yy < offY+lY; yy++)
                 {
-                    if (map.Tiles[x][y].TileEquivalent(map.RoomTerrain) && !connectionGrid[x-offX][y-offY])
+                    if (map.GetTile(new Loc(xx,yy)).TileEquivalent(map.RoomTerrain) && !connectionGrid[xx-offX][yy-offY])
                     {
                         //throw new Exception("Detected orphaned tile at X" + x + " Y" + y + "!  Seed: " + map.Rand.FirstSeed);
-                        Console.WriteLine("Detected orphaned tile at X"+x+" Y"+y+"!  Seed: " + map.Rand.FirstSeed);
+                        Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
                         return;
                     }
                 }

@@ -69,12 +69,12 @@ namespace RogueElements
             for (int x = 0; x < size1.X; x++)
             {
                 for (int y = 0; y < size1.Y; y++)
-                    map.Tiles[start1.X + x][start1.Y + y] = map.RoomTerrain.Copy();
+                    map.SetTile(new Loc(start1.X + x, start1.Y + y), map.RoomTerrain.Copy());
             }
             for (int x = 0; x < size2.X; x++)
             {
                 for (int y = 0; y < size2.Y; y++)
-                    map.Tiles[start2.X + x][start2.Y + y] = map.RoomTerrain.Copy();
+                    map.SetTile(new Loc(start2.X + x, start2.Y + y), map.RoomTerrain.Copy());
             }
             
             //hall restrictions

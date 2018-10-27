@@ -32,8 +32,8 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < map.Height; yy++)
                     {
-                        if (map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
-                            map.Tiles[xx][yy] = Terrain.Copy();
+                        if (map.GetTile(new Loc(xx, yy)).TileEquivalent(map.WallTerrain))
+                            map.SetTile(new Loc(xx,yy), Terrain.Copy());
                     }
                 }
                 return;
@@ -59,12 +59,12 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (!map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
+                    if (!map.GetTile(new Loc(xx,yy)).TileEquivalent(map.WallTerrain))
                     {
 
                     }
                     else if (noise[xx][yy])
-                        map.Tiles[xx][yy] = Terrain.Copy();
+                        map.SetTile(new Loc(xx,yy), Terrain.Copy());
                 }
             }
         }

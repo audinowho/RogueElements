@@ -16,10 +16,10 @@ namespace RogueElements
             //initialize map array to empty
             //set default map values
             map.CreateNew(Width, Height);
-            for (int ii = 0; ii < Width; ii++)
+            for (int xx = 0; xx < Width; xx++)
             {
-                for (int jj = 0; jj < Height; jj++)
-                    map.Tiles[ii][jj] = map.WallTerrain.Copy();
+                for (int yy = 0; yy < Height; yy++)
+                    map.SetTile(new Loc(xx, yy), map.WallTerrain.Copy());
             }
         }
 

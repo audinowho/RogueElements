@@ -12,9 +12,11 @@ namespace RogueElements
         ITile RoomTerrain { get; }
         ITile WallTerrain { get; }
 
-        ITile[][] Tiles { get; }
+        ITile GetTile(Loc loc);
+        void SetTile(Loc loc, ITile tile);
         int Width { get; }
         int Height { get; }
         void CreateNew(int tileWidth, int tileHeight);
+        bool TilesInitialized { get; }
     }
 }

@@ -13,7 +13,9 @@ namespace RogueElements.Examples.Ex6_Items
         public ITile RoomTerrain { get { return new Tile(Map.ROOM_TERRAIN_ID); } }
         public ITile WallTerrain { get { return new Tile(Map.WALL_TERRAIN_ID); } }
 
-        ITile[][] ITiledGenContext.Tiles { get { return Map.Tiles; } }
+        public ITile GetTile(Loc loc) { return Map.Tiles[loc.X][loc.Y]; }
+        public void SetTile(Loc loc, ITile tile) { Map.Tiles[loc.X][loc.Y] = (Tile)tile; }
+        public bool TilesInitialized { get { return Map.Tiles != null; } }
 
         public int Width { get { return Map.Width; } }
         public int Height { get { return Map.Height; } }

@@ -32,8 +32,8 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < map.Height; yy++)
                     {
-                        if (map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
-                            map.Tiles[xx][yy] = Terrain.Copy();
+                        if (map.GetTile(new Loc(xx,yy)).TileEquivalent(map.WallTerrain))
+                            map.SetTile(new Loc(xx,yy), Terrain.Copy());
                     }
                 }
                 return;
@@ -50,12 +50,12 @@ namespace RogueElements
                     int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
                     heightPercent = heightPercent * WaterFrequency / 100;
 
-                    if (!map.Tiles[xx][yy].TileEquivalent(map.WallTerrain))
+                    if (!map.GetTile(new Loc(xx, yy)).TileEquivalent(map.WallTerrain))
                     {
 
                     }
                     else if (noise[xx][yy] * 50 < (heightPercent - 50) * (int)Math.Pow(2, degree + 1))
-                        map.Tiles[xx][yy] = Terrain.Copy();
+                        map.SetTile(new Loc(xx, yy), Terrain.Copy());
 
                 }
             }

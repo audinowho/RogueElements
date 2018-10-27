@@ -20,25 +20,25 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height - 1; yy++)
                 {
-                    ITile a1 = map.Tiles[xx][yy];
-                    ITile b1 = map.Tiles[xx + 1][yy];
-                    ITile a2 = map.Tiles[xx][yy + 1];
-                    ITile b2 = map.Tiles[xx + 1][yy + 1];
+                    ITile a1 = map.GetTile(new Loc(xx,yy));
+                    ITile b1 = map.GetTile(new Loc(xx+1, yy));
+                    ITile a2 = map.GetTile(new Loc(xx, yy+1));
+                    ITile b2 = map.GetTile(new Loc(xx+1, yy+1));
 
                     int dropType = map.Rand.Next(3);
                     if (a1.TileEquivalent(Terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(Terrain))
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[xx + 1][yy] = Terrain;
+                            map.SetTile(new Loc(xx + 1, yy), Terrain.Copy());
                         if (dropType < 2)
-                            map.Tiles[xx][yy + 1] = Terrain;
+                            map.SetTile(new Loc(xx, yy + 1), Terrain.Copy());
                     }
                     else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(Terrain) && a2.TileEquivalent(Terrain) && b2.TileEquivalent(map.WallTerrain))
                     {
                         if (dropType % 2 == 0)
-                            map.Tiles[xx][yy] = Terrain;
+                            map.SetTile(new Loc(xx, yy), Terrain.Copy());
                         if (dropType < 2)
-                            map.Tiles[xx + 1][yy + 1] = Terrain;
+                            map.SetTile(new Loc(xx + 1, yy + 1), Terrain.Copy());
                     }
                 }
             }
