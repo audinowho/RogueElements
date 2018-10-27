@@ -78,7 +78,15 @@
     <Compile Include="Ex6_Items\MapGenContext.cs" />
     <Compile Include="Ex6_Items\Stairs.cs" />
     <Compile Include="Ex6_Items\Tile.cs" />
+    <Compile Include="Ex7_Integration\Cell.cs" />
     <Compile Include="Ex7_Integration\Example7.cs" />
+    <Compile Include="Ex7_Integration\ExampleCreationStrategy.cs" />
+    <Compile Include="Ex7_Integration\FieldOfView.cs" />
+    <Compile Include="Ex7_Integration\ICell.cs" />
+    <Compile Include="Ex7_Integration\IMap.cs" />
+    <Compile Include="Ex7_Integration\IMapCreationStrategy.cs" />
+    <Compile Include="Ex7_Integration\Map.cs" />
+    <Compile Include="Ex7_Integration\MapGenContext.cs" />
     <Compile Include="Ex8_CustomSteps\Example8.cs" />
     <Compile Include="Ex9_CustomRooms\Example9.cs" />
     <Compile Include="Program.cs" />
