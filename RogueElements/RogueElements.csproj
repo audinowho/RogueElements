@@ -76,6 +76,7 @@
     <Compile Include="BlobMap.cs" />
     <Compile Include="Detection.cs" />
     <Compile Include="MapGen\GenContextDebug.cs" />
+    <Compile Include="MapGen\Grid\GridHallPlan.cs" />
     <Compile Include="MapGen\Grid\IRoomGridGenContext.cs" />
     <Compile Include="MapGen\Grid\GridPlanStep.cs" />
     <Compile Include="MapGen\Grid\Paths\GridPathStartStepGeneric.cs" />

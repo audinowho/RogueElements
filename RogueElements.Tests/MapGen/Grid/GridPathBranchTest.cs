@@ -304,20 +304,8 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
-            
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
 
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(4), Times.Exactly(2));
             //testRand.Verify(p => p.Next(1), Times.Exactly(2));
@@ -383,20 +371,8 @@ namespace RogueElements.Tests
             
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
-            
             testRand.Verify(p => p.Next(3), Times.Exactly(2));
             pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(8));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(8));
@@ -451,19 +427,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(2));
             pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(3));
@@ -525,20 +489,8 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
-            
             testRand.Verify(p => p.Next(2), Times.Exactly(1));
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(5));
@@ -599,20 +551,8 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
-            
             testRand.Verify(p => p.Next(2), Times.Exactly(10));
             testRand.Verify(p => p.Next(3), Times.Exactly(10));
             pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(40));
@@ -679,19 +619,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             testRand.Verify(p => p.Next(8), Times.Exactly(1));
@@ -764,19 +692,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             testRand.Verify(p => p.Next(8), Times.Exactly(1));
@@ -852,19 +768,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             testRand.Verify(p => p.Next(8), Times.Exactly(1));
@@ -944,19 +848,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             testRand.Verify(p => p.Next(8), Times.Exactly(1));
@@ -1049,19 +941,7 @@ namespace RogueElements.Tests
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-            }
-
-            Assert.That(floorPlan.PublicRooms, Is.EqualTo(compareFloorPlan.PublicRooms));
-            Assert.That(floorPlan.PublicVHalls, Is.EqualTo(compareFloorPlan.PublicVHalls));
-            Assert.That(floorPlan.PublicHHalls, Is.EqualTo(compareFloorPlan.PublicHHalls));
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
             testRand.Verify(p => p.Next(8), Times.Exactly(1));
