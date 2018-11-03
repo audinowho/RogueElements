@@ -30,7 +30,7 @@ namespace RogueElements
         [NonSerialized]
         protected bool[][] borderToFulfill;
 
-        public int GetBorderLength(Dir4 dir) { return Draw.GetSide(dir.ToAxis()).GetRange(); }
+        public int GetBorderLength(Dir4 dir) { return Draw.GetSide(dir.ToAxis()).Length; }
 
         [NonSerialized]
         protected Rect draw;
@@ -156,13 +156,13 @@ namespace RogueElements
             int offset = range.Min - Draw.Start.GetScalar(dir.ToAxis().Orth());
             //Traverse the region that both borders touch
             //make this room's opened borders into the other room's permitted borders
-            for (int ii = Math.Max(0, -offset); ii < range.GetRange() && ii + offset < destBorder.Length; ii++)
+            for (int ii = Math.Max(0, -offset); ii < range.Length && ii + offset < destBorder.Length; ii++)
                 destBorder[ii + offset] = true;
         }
 
         private void fillSideReq(Range range, Dir4 dir)
         {
-            if (range.GetRange() <= 0)
+            if (range.Length <= 0)
                 throw new ArgumentException("Range must have a positive length.");
             if (dir <= Dir4.None || (int)dir >= DirExt.DIR4_COUNT)
                 throw new ArgumentException("Invalid dir value.");
@@ -260,7 +260,7 @@ namespace RogueElements
                 Dir4 dir = (Dir4)ii;
                 //get the permitted tiles for each sidereq
                 Range side = Draw.GetSide(dir.ToAxis());
-                bool[] permittedRange = new bool[side.GetRange()];
+                bool[] permittedRange = new bool[side.Length];
                 for (int jj = 0; jj < permittedRange.Length; jj++)
                     permittedRange[jj] = true;
                 List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, permittedRange, unfulfilled[ii]);

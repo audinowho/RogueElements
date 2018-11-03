@@ -40,7 +40,7 @@ namespace RogueElements
         {
             if (rate < 0)
                 throw new ArgumentException("Spawn rate must be 0 or higher.");
-            if (range.GetRange() <= 0)
+            if (range.Length <= 0)
                 throw new ArgumentException("Spawn range must be 1 or higher.");
             spawns.Add(new SpawnRange(spawn, rate, range));
         }

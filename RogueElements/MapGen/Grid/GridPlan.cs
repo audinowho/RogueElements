@@ -377,8 +377,8 @@ namespace RogueElements
             GridRoomPlan startRoom = GetRoomPlan(x, y);
             GridRoomPlan endRoom = GetRoomPlan(x + (vertical ? 0 : 1), y + (vertical ? 1 : 0));
             
-            IPermissiveRoomGen hall = vertical ? vHalls[x][y].MainGen : hHalls[x][y].MainGen;
-            if (hall != null)//also sets the sidereqs
+            GridHallPlan hall = vertical ? vHalls[x][y] : hHalls[x][y];
+            if (hall.MainGen != null)//also sets the sidereqs
             {
                 int tier = vertical ? x : y;
                 Dir4 dir = vertical ? Dir4.Down : Dir4.Right;
@@ -388,11 +388,93 @@ namespace RogueElements
                 Loc start = startRoom.RoomGen.Draw.End;
                 Loc end = endRoom.RoomGen.Draw.Start;
 
-                Rect bounds = vertical ? new Rect(combinedRange.Min, start.Y, combinedRange.GetRange(), end.Y - start.Y)
-                    : new Rect(start.X, combinedRange.Min, end.X - start.X, combinedRange.GetRange());
+                Rect startCell = GetCellBounds(startRoom.Bounds);
+                Rect endCell = GetCellBounds(endRoom.Bounds);
 
-                hall.PrepareSize(rand, bounds.Size);
-                hall.SetLoc(bounds.Start);
+                Rect bounds = vertical ? new Rect(combinedRange.Min, start.Y, combinedRange.Length, end.Y - start.Y)
+                    : new Rect(start.X, combinedRange.Min, end.X - start.X, combinedRange.Length);
+
+                //a side constitutes intruding bound when the rectangle moves forward enough to go to the other side
+                //and the other side touched is outside of side B's bound (including borders)
+
+                //startRange intrudes if startRange goes outside end's tier (borders included)
+                bool startIntrude = !endCell.GetSide(dir.ToAxis()).Contains(startRange);
+                //and end is greater than the edge (borders excluded)
+                bool endTouch = bounds.GetScalar(dir) == endCell.GetScalar(dir.Reverse());
+
+                bool endIntrude = !startCell.GetSide(dir.ToAxis()).Contains(endRange);
+                //and end is greater than the edge (borders excluded)
+                bool startTouch = bounds.GetScalar(dir.Reverse()) == startCell.GetScalar(dir);
+
+                //neither side intrudes bound: use the computed rectangle
+                if (!startIntrude && !endIntrude || endTouch && startTouch ||
+                    !(startIntrude && endIntrude) && (startIntrude && endTouch || endIntrude && startTouch))
+                {
+                    hall.MainGen.PrepareSize(rand, bounds.Size);
+                    hall.MainGen.SetLoc(bounds.Start);
+                }
+                else
+                {
+                    int divPoint = startCell.GetScalar(dir) + 1;
+                    Range startDivRange = startRange;
+                    Range endDivRange = endRange;
+                    if (startIntrude && !endIntrude)
+                    {
+                        //side A intrudes bound, side B does not: divide A and B; doesn't matter who gets border
+                        //side A touches border, side B does not: divide A and B; A gets border
+
+                        //side A does not, side B touches border: A gets border; don't need B - this cannot happen
+                        //side A touches border, side B touches border: A gets border; don't need B - this cannot happen
+
+                        //in short, divide with start getting the border
+                        //startDivRange needs to contain endRange
+                        startDivRange = combinedRange;
+                    }
+                    else if (!startIntrude && endIntrude)
+                    {
+                        //side A does not, side B intrudes bound: divide A and B; doesn't matter who gets border
+                        //side A does not, side B touches border: divide A and B; B gets border
+
+                        //side A touches border, side B does not: B gets border; don't need A - this cannot happen
+                        //side A touches border, side B touches border: B gets border; don't need B - this cannot happen
+
+                        //in short, divide with end getting the border
+                        //endDivRange needs to contain startRange
+
+                        divPoint = startCell.GetScalar(dir);
+                        endDivRange = combinedRange;
+                    }
+                    else
+                    {
+                        //side A intrudes bound, side B intrudes bound: divide A and B; doesn't matter who gets border
+                        if (startTouch)
+                        {
+                            //side A touches border, side B does not: divide A and B; A gets border
+                        }
+                        if (endTouch)
+                        {
+                            //side A does not, side B touches border: divide A and B; B gets border
+                            divPoint = startCell.GetScalar(dir);
+                        }
+                        //side A touches border, side B touches border: A gets border; don't need B -  this cannot happen
+
+                        //both sides need to cover the intersection of their cells
+                        Range interCellSide = Range.Intersect(startCell.GetSide(dir.ToAxis()), endCell.GetSide(dir.ToAxis()));
+                        startDivRange = Range.IncludeRange(startDivRange, interCellSide);
+                        endDivRange = Range.IncludeRange(endDivRange, interCellSide);
+                    }
+
+                    Rect startBox = vertical ? new Rect(startDivRange.Min, start.Y, startDivRange.Length, divPoint-start.Y)
+                        : new Rect(start.X, startDivRange.Min, divPoint - start.X, startDivRange.Length);
+                    Rect endBox = vertical ? new Rect(endDivRange.Min, divPoint, endDivRange.Length, end.Y - divPoint)
+                        : new Rect(divPoint, endDivRange.Min, end.X - divPoint, endDivRange.Length);
+
+                    hall.Gens.Add(hall.MainGen.Copy());
+                    hall.Gens[0].PrepareSize(rand, startBox.Size);
+                    hall.Gens[0].SetLoc(startBox.Start);
+                    hall.Gens[1].PrepareSize(rand, endBox.Size);
+                    hall.Gens[1].SetLoc(endBox.Start);
+                }
             }
         }
 

@@ -472,23 +472,7 @@ namespace RogueElements.Tests
             gridPlan.PlaceRoomsOnFloor(mockMap.Object);
 
             
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                FloorRoomPlan plan = floorPlan.PublicRooms[ii];
-                FloorRoomPlan comparePlan = compareFloorPlan.PublicRooms[ii];
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
-            }
-            Assert.That(floorPlan.HallCount, Is.EqualTo(compareFloorPlan.HallCount));
-            for (int ii = 0; ii < floorPlan.HallCount; ii++)
-            {
-                FloorHallPlan plan = floorPlan.PublicHalls[ii];
-                FloorHallPlan comparePlan = compareFloorPlan.PublicHalls[ii];
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
-            }
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
 
         [Test]
@@ -583,7 +567,7 @@ namespace RogueElements.Tests
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(gridPlan.Size,
                 new Rect[] { new Rect(0, 0, 2, 2), new Rect(9, 15, 2, 2) },
-                new Rect[] { new Rect(2, 0, 4, 11), new Rect(6, 6, 3, 11) },
+                new Rect[] { new Rect(2, 1, 4, 10), new Rect(6, 6, 3, 10) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
             ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
 
@@ -604,24 +588,97 @@ namespace RogueElements.Tests
 
             gridPlan.PlaceRoomsOnFloor(mockMap.Object);
 
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
 
-            //check the rooms
-            Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
+
+        [Test]
+        public void PlaceRoomsOnFloorIntrusiveHallsAAonly()
+        {
+            //place a ring of rooms connected by halls
+            string[] inGrid = { "A.0",
+                                ". .",
+                                "A#B",
+                                ". .",
+                                "0.B"};
+            TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
+            for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                FloorRoomPlan plan = floorPlan.PublicRooms[ii];
-                FloorRoomPlan comparePlan = compareFloorPlan.PublicRooms[ii];
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
+                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
+                gen.PrepareProposeSize(new Loc(2, 2));
+                gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
-            Assert.That(floorPlan.HallCount, Is.EqualTo(compareFloorPlan.HallCount));
-            for (int ii = 0; ii < floorPlan.HallCount; ii++)
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
+
+            TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(gridPlan.Size,
+                new Rect[] { new Rect(0, 0, 2, 2), new Rect(9, 6, 2, 2) },
+                new Rect[] { new Rect(2, 1, 4, 7), new Rect(6, 6, 3, 2) },
+                new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
+            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));
+            seq = seq.Returns(0);
+            seq = seq.Returns(3);
+            seq = testRand.SetupSequence(p => p.Next(10));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+
+            TestFloorPlan floorPlan = new TestFloorPlan();
+            floorPlan.InitSize(gridPlan.Size);
+
+            Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
+            mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
+            mockMap.SetupGet(p => p.RoomPlan).Returns(floorPlan);
+
+            gridPlan.PlaceRoomsOnFloor(mockMap.Object);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+
+        [Test]
+        public void PlaceRoomsOnFloorIntrusiveHallsCloseB()
+        {
+            //place a ring of rooms connected by halls
+            string[] inGrid = { "A.0",
+                                ". .",
+                                "A#B",
+                                ". .",
+                                "0.B"};
+            TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
+            for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                FloorHallPlan plan = floorPlan.PublicHalls[ii];
-                FloorHallPlan comparePlan = compareFloorPlan.PublicHalls[ii];
-                Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
-                Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
+                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
+                gen.PrepareProposeSize(new Loc(2, 2));
+                gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
+
+            TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(gridPlan.Size,
+                new Rect[] { new Rect(0, 0, 2, 2), new Rect(6, 15, 2, 2) },
+                new Rect[] { new Rect(2, 1, 3, 10), new Rect(5, 6, 1, 10) },
+                new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
+            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = testRand.SetupSequence(p => p.Next(10));
+            seq = seq.Returns(0);
+            seq = seq.Returns(9);
+
+            TestFloorPlan floorPlan = new TestFloorPlan();
+            floorPlan.InitSize(gridPlan.Size);
+
+            Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
+            mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
+            mockMap.SetupGet(p => p.RoomPlan).Returns(floorPlan);
+
+            gridPlan.PlaceRoomsOnFloor(mockMap.Object);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
 
         [Test]

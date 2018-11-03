@@ -40,11 +40,27 @@ namespace RogueElements
             return (Min <= mid && mid < Max);
         }
 
-        public int GetRange()
+        public bool Contains(Range value)
         {
-            return Max - Min;
+            return (Min <= value.Min) && (value.Max <= Max);
         }
 
+        public int Length
+        {
+            get { return Max - Min; }
+        }
+
+        public static Range Intersect(Range range1, Range range2)
+        {
+            return new Range(Math.Max(range1.Min, range2.Min), Math.Min(range1.Max, range2.Max));
+        }
+
+        public static Range IncludeRange(Range range1, Range range2)
+        {
+            int min = Math.Min(range1.Min, range2.Min);
+            int max = Math.Max(range1.Max, range2.Max);
+            return new Range(min, max);
+        }
 
         public override string ToString()
         {
