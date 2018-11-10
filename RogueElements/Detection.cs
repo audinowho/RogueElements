@@ -17,16 +17,15 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < height; yy++)
                 {
-                    if (grid[xx][yy] && blobMap.Map[xx][yy] == 0)
+                    if (grid[xx][yy] && blobMap.Map[xx][yy] == -1)
                     {
-                        blobMap.Blobs.Add(new Rect(xx, yy, 1, 1));
-                        blobMap.Sizes.Add(0);
+                        MapBlob blob = new MapBlob(new Rect(xx, yy, 1, 1), 0);
 
                         //fill the area, keeping track of the total area and blob bounds
                         Grid.FloodFill(new Rect(0, 0, width, height),
                         (Loc testLoc) =>
                         {
-                            return (!grid[testLoc.X][testLoc.Y] || blobMap.Map[testLoc.X][testLoc.Y] != 0);
+                            return (!grid[testLoc.X][testLoc.Y] || blobMap.Map[testLoc.X][testLoc.Y] != -1);
                         },
                         (Loc testLoc) =>
                         {
@@ -35,16 +34,134 @@ namespace RogueElements
                         (Loc fillLoc) =>
                         {
                             blobMap.Map[fillLoc.X][fillLoc.Y] = blobMap.Blobs.Count;
-                            blobMap.Sizes[blobMap.Blobs.Count - 1]++;
-                            blobMap.Blobs[blobMap.Blobs.Count - 1] = Rect.IncludeLoc(blobMap.Blobs[blobMap.Blobs.Count - 1], fillLoc);
+                            blob.Bounds = Rect.IncludeLoc(blob.Bounds, fillLoc);
+                            blob.Area = blob.Area + 1;
                         },
                         new Loc(xx, yy));
+
+                        blobMap.Blobs.Add(blob);
                     }
                 }
             }
 
             return blobMap;
         }
+
+
+        /// <summary>
+        /// Detects if an added blob disconnects the map's existing connectivity.
+        /// </summary>
+        /// <param name="mapGrid">Original map to draw on.</param>
+        /// <param name="blob">Blob to draw.</param>
+        /// <param name="offset">Position to draw the blob at.</param>
+        /// <param name="countErasures">Whether a completely erased graph counts as disconnected or not.</param>
+        /// <returns></returns>
+        public static bool DetectDisconnect(bool[][] mapGrid, bool[][] blob, Loc offset, bool countErasures)
+        {
+            List<int> mapBlobCounts = new List<int>();
+            int[][] fullGrid = new int[mapGrid.Length][];
+            int[][] splitGrid = new int[mapGrid.Length][];
+            for (int xx = 0; xx < mapGrid.Length; xx++)
+            {
+                fullGrid[xx] = new int[mapGrid[0].Length];
+                splitGrid[xx] = new int[mapGrid[0].Length];
+                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                {
+                    fullGrid[xx][yy] = -1;
+                    splitGrid[xx][yy] = -1;
+                }
+            }
+
+            //iterate the map and flood fill when finding a walkable.
+            //Count the number of times a flood fill is required.  This is the blob count.
+            for (int xx = 0; xx < mapGrid.Length; xx++)
+            {
+                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                {
+                    if (mapGrid[xx][yy] && fullGrid[xx][yy] == -1)
+                    {
+                        int totalFill = 0;
+                        Grid.FloodFill(new Rect(0, 0, mapGrid.Length, mapGrid[0].Length),
+                        (Loc testLoc) =>
+                        {
+                            if (fullGrid[testLoc.X][testLoc.Y] == mapBlobCounts.Count)
+                                return true;
+                            return !mapGrid[testLoc.X][testLoc.Y];
+                        },
+                        (Loc testLoc) =>
+                        {
+                            return true;
+                        },
+                        (Loc fillLoc) =>
+                        {
+                            fullGrid[fillLoc.X][fillLoc.Y] = mapBlobCounts.Count;
+                            totalFill++;
+                        },
+                        new Loc(xx, yy));
+                        mapBlobCounts.Add(totalFill);
+                    }
+                }
+            }
+
+            //we've passed in a boolean grid containing a blob, with an offset of where to render it to
+            for (int xx = Math.Max(0, offset.X); xx < Math.Min(mapGrid.Length, offset.X + blob.Length); xx++)
+            {
+                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(mapGrid[0].Length, offset.Y + blob[0].Length); yy++)
+                {
+                    int blobIndex = fullGrid[xx][yy];
+                    if (blobIndex > -1 && blob[xx - offset.X][yy - offset.Y])
+                    {
+                        mapBlobCounts[blobIndex] = mapBlobCounts[blobIndex] - 1;
+                        fullGrid[xx][yy] = -1;
+                    }
+                }
+            }
+
+            //remove the blobs that have been entirely erased; return false if entirely erased.
+            for(int ii = mapBlobCounts.Count-1; ii >= 0; ii--)
+            {
+                if (mapBlobCounts[ii] == 0)
+                {
+                    if (countErasures)
+                        return true;
+                    mapBlobCounts.RemoveAt(ii);
+                }
+            }
+
+            int blobsFound = 0;
+            //iterate the map and flood fill when finding a walkable (needs a new bool grid), this time discounting tiles involved in the blob.  count times needed for this
+            for (int xx = 0; xx < mapGrid.Length; xx++)
+            {
+                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                {
+                    if (fullGrid[xx][yy] > -1 && splitGrid[xx][yy] == -1)
+                    {
+                        Grid.FloodFill(new Rect(0, 0, mapGrid.Length, mapGrid[0].Length),
+                        (Loc testLoc) =>
+                        {
+                            if (splitGrid[testLoc.X][testLoc.Y] == blobsFound)
+                                return true;
+                            return fullGrid[testLoc.X][testLoc.Y] == -1;
+                        },
+                        (Loc testLoc) =>
+                        {
+                            return true;
+                        },
+                        (Loc fillLoc) =>
+                        {
+                            splitGrid[fillLoc.X][fillLoc.Y] = blobsFound;
+                        },
+                        new Loc(xx, yy));
+
+                        blobsFound++;
+                    }
+                }
+            }
+
+            //more times = more blobs = failure
+            return blobsFound != mapBlobCounts.Count;
+        }
+
 
         /// <summary>
         /// Returns a list of wall edges with definite 4-directional normals, connected to a start position

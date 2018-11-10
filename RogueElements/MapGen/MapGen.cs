@@ -19,6 +19,9 @@ namespace RogueElements
         //an initial create-map method
         public T GenMap(ulong seed)
         {
+#if DEBUG
+            Debug.WriteLine("Seed: "+seed.ToString());
+#endif
             //may not need floor ID
             T map = (T)Activator.CreateInstance(typeof(T));
             map.InitSeed(seed);

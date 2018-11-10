@@ -30,6 +30,32 @@ namespace RogueElements.Tests
             return result_map;
         }
 
+        public static bool[][] InitBoolGrid(string[] inGrid)
+        {
+            //transposes
+            bool[][] result_map = new bool[inGrid[0].Length][];
+            for (int xx = 0; xx < result_map.Length; xx++)
+            {
+                result_map[xx] = new bool[inGrid.Length];
+                for (int yy = 0; yy < result_map[xx].Length; yy++)
+                    result_map[xx][yy] = inGrid[yy][xx] == '.';
+            }
+            return result_map;
+        }
+
+        public static int[][] InitIntGrid(string[] inGrid)
+        {
+            //transposes
+            int[][] result_map = new int[inGrid[0].Length][];
+            for (int xx = 0; xx < result_map.Length; xx++)
+            {
+                result_map[xx] = new int[inGrid.Length];
+                for (int yy = 0; yy < result_map[xx].Length; yy++)
+                    result_map[xx][yy] = inGrid[yy][xx] - 'A';
+            }
+            return result_map;
+        }
+
         [Test]
         public void FloodFillSubRect()
         {

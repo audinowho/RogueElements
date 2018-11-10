@@ -5,6 +5,41 @@ using System.Text;
 
 namespace RogueElements
 {
+
+    [Flags]
+    public enum CellRule
+    {
+        None = 0,
+        Eq0 = 1,
+        Eq1 = 2,
+        Eq2 = 4,
+        Eq3 = 8,
+        Eq4 = 16,
+        Eq5 = 32,
+        Eq6 = 64,
+        Eq7 = 128,
+        Eq8 = 256,
+        Gte0 = 511,
+        Gte1 = 510,
+        Gte2 = 508,
+        Gte3 = 504,
+        Gte4 = 496,
+        Gte5 = 480,
+        Gte6 = 448,
+        Gte7 = 384,
+        Gte8 = 256,
+        Lt0 = 0,
+        Lt1 = 1,
+        Lt2 = 3,
+        Lt3 = 7,
+        Lt4 = 15,
+        Lt5 = 31,
+        Lt6 = 63,
+        Lt7 = 127,
+        Lt8 = 255,
+        All = 511
+    }
+
     public static class NoiseGen
     {
 
@@ -26,7 +61,7 @@ namespace RogueElements
                     noise[x] = new int[gridHeight];
                     for (int y = 0; y < gridHeight; y++)
                     {
-                        noise[x][y] = (rand.Next(3) - 1) * (int)Math.Pow(2, ii);
+                        noise[x][y] = rand.Next(2) << ii;//aka, ^ ii
                         if (prev_noise != null)
                         {
                             int oldX = x / 2;
@@ -63,7 +98,7 @@ namespace RogueElements
             return (int)((a * (100 - degree) + b * degree) / 100);
         }
 
-        public static bool[][] IterateAutomata(bool[][] startGrid, int birth, int survive, int iterations)
+        public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations)
         {
             int width = startGrid.Length;
             int height = startGrid[0].Length;
@@ -102,13 +137,13 @@ namespace RogueElements
                         if (live)
                         {
                             //this is a live cell, use survival rules
-                            if ((rating & survive) > 0)
+                            if ((rating & (int)survive) > 0)
                                 endGrid[xx][yy] = true;
                         }
                         else
                         {
                             //this is a dead cell, use birth rules
-                            if ((rating & birth) > 0)
+                            if ((rating & (int)birth) > 0)
                                 endGrid[xx][yy] = true;
                         }
                     }

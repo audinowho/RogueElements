@@ -7,16 +7,191 @@ namespace RogueElements.Tests
     [TestFixture]
     public class DetectionTest
     {
-        //TODO: [Test]
-        public void DetectBlobs()
+        [Test]
+        public void DetectBlobsNone()
+        {
+            //no blob
+            string[] inGrid = { "XXXXXX",
+                                "XXXXXX",
+                                "XXXXXX",
+                                "XXXXXX" };
+
+            string[] outGrid = {"@@@@@@",
+                                "@@@@@@",
+                                "@@@@@@",
+                                "@@@@@@" };
+
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            int[][] blob = GridTest.InitIntGrid(outGrid);
+
+            List<MapBlob> compareBlobs = new List<MapBlob>();
+
+            BlobMap result = Detection.DetectBlobs(map);
+            Assert.That(result.Map, Is.EqualTo(blob));
+            Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
+        }
+        [Test]
+        public void DetectBlobsSingle()
         {
             //single blob
-            //blobs at corners
-            //diagonal attached blobs
-            //concave blobs (spiral, torus)
+            string[] inGrid = { "XXXXXX",
+                                "X..XXX",
+                                "X....X",
+                                "X.XXXX",
+                                "XXXXXX" };
 
-            //requires floodfill
-            throw new NotImplementedException();
+            string[] outGrid = {"@@@@@@",
+                                "@AA@@@",
+                                "@AAAA@",
+                                "@A@@@@",
+                                "@@@@@@" };
+
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            int[][] blob = GridTest.InitIntGrid(outGrid);
+
+            List<MapBlob> compareBlobs = new List<MapBlob>();
+            compareBlobs.Add(new MapBlob(new Rect(1,1,4,3), 7));
+
+            BlobMap result = Detection.DetectBlobs(map);
+            Assert.That(result.Map, Is.EqualTo(blob));
+            Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
+        }
+
+        [Test]
+        public void DetectBlobsDiagonal()
+        {
+            //blobs at corners
+            string[] inGrid = { "XXXXXX",
+                                "X..XXX",
+                                "X..XXX",
+                                "XXX..X",
+                                "XXX..X",
+                                "XXXXXX" };
+
+            string[] outGrid = {"@@@@@@",
+                                "@AA@@@",
+                                "@AA@@@",
+                                "@@@BB@",
+                                "@@@BB@",
+                                "@@@@@@" };
+
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            int[][] blob = GridTest.InitIntGrid(outGrid);
+
+            List<MapBlob> compareBlobs = new List<MapBlob>();
+            compareBlobs.Add(new MapBlob(new Rect(1, 1, 2, 2), 4));
+            compareBlobs.Add(new MapBlob(new Rect(3, 3, 2, 2), 4));
+
+            BlobMap result = Detection.DetectBlobs(map);
+            Assert.That(result.Map, Is.EqualTo(blob));
+            Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
+        }
+
+        [Test]
+        public void DetectBlobsCorners()
+        {
+            //diagonal attached blobs
+            string[] inGrid = { "..XX..",
+                                "..XX..",
+                                "XXXXXX",
+                                "XXXXXX" };
+
+            string[] outGrid = {"AA@@BB",
+                                "AA@@BB",
+                                "@@@@@@",
+                                "@@@@@@" };
+
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            int[][] blob = GridTest.InitIntGrid(outGrid);
+
+            List<MapBlob> compareBlobs = new List<MapBlob>();
+            compareBlobs.Add(new MapBlob(new Rect(0, 0, 2, 2), 4));
+            compareBlobs.Add(new MapBlob(new Rect(4, 0, 2, 2), 4));
+
+            BlobMap result = Detection.DetectBlobs(map);
+            Assert.That(result.Map, Is.EqualTo(blob));
+            Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
+        }
+
+        [Test]
+        public void DetectDisconnectNone()
+        {
+            //No disconnect
+            string[] inGrid = { "XXXXXX",
+                                "X....X",
+                                "X....X",
+                                "XXXXXX" };
+
+            string[] blobGrid =   { "..",
+                                    ".." };
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            bool[][] blob = GridTest.InitBoolGrid(blobGrid);
+
+            bool result = Detection.DetectDisconnect(map, blob, new Loc(), false);
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void DetectDisconnectSome()
+        {
+            //disconnect
+            string[] inGrid = { "XXXXXX",
+                                "X....X",
+                                "X....X",
+                                "XXXXXX" };
+
+            string[] blobGrid =   { "..",
+                                    ".." };
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            bool[][] blob = GridTest.InitBoolGrid(blobGrid);
+
+            bool result = Detection.DetectDisconnect(map, blob, new Loc(2, 1), false);
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void DetectDisconnectErasure()
+        {
+            //total erasure (without tolerance)
+            string[] inGrid = { "XXXXXX",
+                                "X....X",
+                                "X....X",
+                                "XXXXXX" };
+
+            string[] blobGrid =   { "....",
+                                    "...." };
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            bool[][] blob = GridTest.InitBoolGrid(blobGrid);
+
+            bool result = Detection.DetectDisconnect(map, blob, new Loc(1, 1), true);
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void DetectDisconnectErasureTolerant()
+        {
+            //total erasure (with tolerance)
+            string[] inGrid = { "XXXXXX",
+                                "X....X",
+                                "X....X",
+                                "XXXXXX" };
+
+            string[] blobGrid =   { "....",
+                                    "...." };
+
+
+            bool[][] map = GridTest.InitBoolGrid(inGrid);
+            bool[][] blob = GridTest.InitBoolGrid(blobGrid);
+
+            bool result = Detection.DetectDisconnect(map, blob, new Loc(1, 1), false);
+            Assert.That(result, Is.EqualTo(false));
         }
 
         //TODO: [Test]

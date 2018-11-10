@@ -44,8 +44,8 @@ namespace RogueElements
                 {
                     if (map.GetTile(new Loc(xx,yy)).TileEquivalent(map.RoomTerrain) && !connectionGrid[xx-offX][yy-offY])
                     {
-                        //throw new Exception("Detected orphaned tile at X" + x + " Y" + y + "!  Seed: " + map.Rand.FirstSeed);
-                        Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
+                        throw new Exception("Detected orphaned tile at X" + xx + " Y" + yy + "!  Seed: " + map.Rand.FirstSeed);
+                        //Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
                         return;
                     }
                 }
