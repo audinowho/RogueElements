@@ -27,7 +27,8 @@ namespace RogueElements.Tests
 
             List<MapBlob> compareBlobs = new List<MapBlob>();
 
-            BlobMap result = Detection.DetectBlobs(map);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            BlobMap result = Detection.DetectBlobs(new Rect(0,0, map.Length, map[0].Length),locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
         }
@@ -54,7 +55,8 @@ namespace RogueElements.Tests
             List<MapBlob> compareBlobs = new List<MapBlob>();
             compareBlobs.Add(new MapBlob(new Rect(1,1,4,3), 7));
 
-            BlobMap result = Detection.DetectBlobs(map);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
         }
@@ -85,7 +87,8 @@ namespace RogueElements.Tests
             compareBlobs.Add(new MapBlob(new Rect(1, 1, 2, 2), 4));
             compareBlobs.Add(new MapBlob(new Rect(3, 3, 2, 2), 4));
 
-            BlobMap result = Detection.DetectBlobs(map);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
         }
@@ -112,7 +115,8 @@ namespace RogueElements.Tests
             compareBlobs.Add(new MapBlob(new Rect(0, 0, 2, 2), 4));
             compareBlobs.Add(new MapBlob(new Rect(4, 0, 2, 2), 4));
 
-            BlobMap result = Detection.DetectBlobs(map);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
         }
@@ -132,7 +136,9 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            bool result = Detection.DetectDisconnect(map, blob, new Loc(), false);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(false));
         }
 
@@ -151,7 +157,9 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            bool result = Detection.DetectDisconnect(map, blob, new Loc(2, 1), false);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(2,1), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(true));
         }
 
@@ -170,7 +178,9 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            bool result = Detection.DetectDisconnect(map, blob, new Loc(1, 1), true);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(1,1), new Loc(blob.Length, blob[0].Length), blobTest, true);
             Assert.That(result, Is.EqualTo(true));
         }
 
@@ -190,7 +200,9 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            bool result = Detection.DetectDisconnect(map, blob, new Loc(1, 1), false);
+            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(1,1), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(false));
         }
 

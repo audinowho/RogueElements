@@ -7,25 +7,23 @@ namespace RogueElements
 {
     public static class Detection
     {
-        public static BlobMap DetectBlobs(bool[][] grid)
+        public static BlobMap DetectBlobs(Rect rect, Grid.LocTest isValid)
         {
-            int width = grid.Length;
-            int height = grid[0].Length;
-            BlobMap blobMap = new BlobMap(width, height);
+            BlobMap blobMap = new BlobMap(rect.Width, rect.Height);
 
-            for (int xx = 0; xx < width; xx++)
+            for (int xx = rect.X; xx < rect.End.X; xx++)
             {
-                for (int yy = 0; yy < height; yy++)
+                for (int yy = rect.Y; yy < rect.End.Y; yy++)
                 {
-                    if (grid[xx][yy] && blobMap.Map[xx][yy] == -1)
+                    if (isValid(new Loc(xx,yy)) && blobMap.Map[xx][yy] == -1)
                     {
                         MapBlob blob = new MapBlob(new Rect(xx, yy, 1, 1), 0);
 
                         //fill the area, keeping track of the total area and blob bounds
-                        Grid.FloodFill(new Rect(0, 0, width, height),
+                        Grid.FloodFill(rect,
                         (Loc testLoc) =>
                         {
-                            return (!grid[testLoc.X][testLoc.Y] || blobMap.Map[testLoc.X][testLoc.Y] != -1);
+                            return (!isValid(testLoc) || blobMap.Map[testLoc.X][testLoc.Y] != -1);
                         },
                         (Loc testLoc) =>
                         {
@@ -56,16 +54,16 @@ namespace RogueElements
         /// <param name="offset">Position to draw the blob at.</param>
         /// <param name="countErasures">Whether a completely erased graph counts as disconnected or not.</param>
         /// <returns></returns>
-        public static bool DetectDisconnect(bool[][] mapGrid, bool[][] blob, Loc offset, bool countErasures)
+        public static bool DetectDisconnect(Rect mapBounds, Grid.LocTest isMapValid, Loc blobDest, Loc blobSize, Grid.LocTest isBlobValid, bool countErasures)
         {
             List<int> mapBlobCounts = new List<int>();
-            int[][] fullGrid = new int[mapGrid.Length][];
-            int[][] splitGrid = new int[mapGrid.Length][];
-            for (int xx = 0; xx < mapGrid.Length; xx++)
+            int[][] fullGrid = new int[mapBounds.Width][];
+            int[][] splitGrid = new int[mapBounds.Width][];
+            for (int xx = 0; xx < mapBounds.Width; xx++)
             {
-                fullGrid[xx] = new int[mapGrid[0].Length];
-                splitGrid[xx] = new int[mapGrid[0].Length];
-                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                fullGrid[xx] = new int[mapBounds.Height];
+                splitGrid[xx] = new int[mapBounds.Height];
+                for (int yy = 0; yy < mapBounds.Height; yy++)
                 {
                     fullGrid[xx][yy] = -1;
                     splitGrid[xx][yy] = -1;
@@ -74,19 +72,19 @@ namespace RogueElements
 
             //iterate the map and flood fill when finding a walkable.
             //Count the number of times a flood fill is required.  This is the blob count.
-            for (int xx = 0; xx < mapGrid.Length; xx++)
+            for (int xx = 0; xx < mapBounds.Width; xx++)
             {
-                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                for (int yy = 0; yy < mapBounds.Height; yy++)
                 {
-                    if (mapGrid[xx][yy] && fullGrid[xx][yy] == -1)
+                    if (isMapValid(new Loc(xx,yy)) && fullGrid[xx][yy] == -1)
                     {
                         int totalFill = 0;
-                        Grid.FloodFill(new Rect(0, 0, mapGrid.Length, mapGrid[0].Length),
+                        Grid.FloodFill(new Rect(0, 0, mapBounds.Width, mapBounds.Height),
                         (Loc testLoc) =>
                         {
                             if (fullGrid[testLoc.X][testLoc.Y] == mapBlobCounts.Count)
                                 return true;
-                            return !mapGrid[testLoc.X][testLoc.Y];
+                            return !isMapValid(testLoc);
                         },
                         (Loc testLoc) =>
                         {
@@ -104,12 +102,12 @@ namespace RogueElements
             }
 
             //we've passed in a boolean grid containing a blob, with an offset of where to render it to
-            for (int xx = Math.Max(0, offset.X); xx < Math.Min(mapGrid.Length, offset.X + blob.Length); xx++)
+            for (int xx = Math.Max(0, blobDest.X); xx < Math.Min(mapBounds.Width, blobDest.X + blobSize.X); xx++)
             {
-                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(mapGrid[0].Length, offset.Y + blob[0].Length); yy++)
+                for (int yy = Math.Max(0, blobDest.Y); yy < Math.Min(mapBounds.Height, blobDest.Y + blobSize.Y); yy++)
                 {
                     int blobIndex = fullGrid[xx][yy];
-                    if (blobIndex > -1 && blob[xx - offset.X][yy - offset.Y])
+                    if (blobIndex > -1 && isBlobValid(new Loc(xx,yy) - blobDest))
                     {
                         mapBlobCounts[blobIndex] = mapBlobCounts[blobIndex] - 1;
                         fullGrid[xx][yy] = -1;
@@ -130,13 +128,13 @@ namespace RogueElements
 
             int blobsFound = 0;
             //iterate the map and flood fill when finding a walkable (needs a new bool grid), this time discounting tiles involved in the blob.  count times needed for this
-            for (int xx = 0; xx < mapGrid.Length; xx++)
+            for (int xx = 0; xx < mapBounds.Width; xx++)
             {
-                for (int yy = 0; yy < mapGrid[0].Length; yy++)
+                for (int yy = 0; yy < mapBounds.Height; yy++)
                 {
                     if (fullGrid[xx][yy] > -1 && splitGrid[xx][yy] == -1)
                     {
-                        Grid.FloodFill(new Rect(0, 0, mapGrid.Length, mapGrid[0].Length),
+                        Grid.FloodFill(new Rect(0, 0, mapBounds.Width, mapBounds.Height),
                         (Loc testLoc) =>
                         {
                             if (splitGrid[testLoc.X][testLoc.Y] == blobsFound)

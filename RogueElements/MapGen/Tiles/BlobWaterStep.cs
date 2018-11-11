@@ -62,15 +62,10 @@ namespace RogueElements
 
             noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
 
-            BlobMap blobMap = Detection.DetectBlobs(noise);
+            Grid.LocTest isWaterValid = (Loc loc) => { return noise[loc.X][loc.Y]; };
 
-            bool[][] mapGrid = new bool[map.Width][];
-            for (int xx = 0; xx < map.Width; xx++)
-            {
-                mapGrid[xx] = new bool[map.Height];
-                for (int yy = 0; yy < map.Height; yy++)
-                    mapGrid[xx][yy] = map.GetTile(new Loc(xx, yy)).TileEquivalent(map.RoomTerrain);
-            }
+            BlobMap blobMap = Detection.DetectBlobs(new Rect(0,0,map.Width, map.Height), isWaterValid);
+
 
             //alternative approach:
             //run automata with a CONSTANT water ratio
@@ -98,39 +93,44 @@ namespace RogueElements
             }
 
 
-            for (int ii = 0; ii < blobMap.Blobs.Count; ii++)
+            Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
+
+            int blobIdx = 0;
+            Loc blobStart = new Loc();
+            Grid.LocTest isBlobValid = (Loc loc) =>
+            {
+                Loc srcLoc = blobStart + loc;
+                return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
+            };
+
+            for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
             {
                 bool disconnects = false;
-                Rect blobRect = blobMap.Blobs[ii].Bounds;
+                Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
+                blobStart = blobRect.Start;
 
-                //produce a new array for the blob
-                bool[][] blobGrid = new bool[blobRect.Width][];
-                for(int xx = 0; xx < blobRect.Width; xx++)
-                    blobGrid[xx] = new bool[blobRect.Height];
-
-                for(int xx = 0; xx < blobRect.Width; xx++)
+                for (int xx = 0; xx < blobRect.Width; xx++)
                 {
                     for (int yy = 0; yy < blobRect.Height; yy++)
                     {
-                        if (blobMap.Map[xx + blobRect.X][yy + blobRect.Y] == ii)
+                        if (blobMap.Map[xx + blobRect.X][yy + blobRect.Y] == blobIdx)
                         {
-                            blobGrid[xx][yy] = true;
                             if (stairsGrid[xx][yy])
                                 disconnects = true;
                         }
                     }
                 }
                 //pass this into the walkable detection function
-                disconnects |= Detection.DetectDisconnect(mapGrid, blobGrid, blobRect.Start, true);
+                disconnects |= Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, blobRect.Start, blobRect.Size, isBlobValid, true);
 
                 //if it's a pass, draw on tile if it's a wall terrain or a room terrain
                 if (!disconnects)
-                    drawBlob(map, mapGrid, blobGrid, blobRect.Start, !RespectFloor);
+                    drawBlob(map, blobMap, blobIdx, blobRect.Start, !RespectFloor);
                 else
                 {
                     //if it's a fail, draw on the tile only if wall terrain (or not at all?)
                     if (KeepDisconnects)
-                        drawBlob(map, mapGrid, blobGrid, blobRect.Start, false);
+                        drawBlob(map, blobMap, blobIdx, blobRect.Start, false);
                 }
             }
 
@@ -138,20 +138,19 @@ namespace RogueElements
 
         }
 
-        private void drawBlob(T map, bool[][] mapGrid, bool[][] blobGrid, Loc offset, bool encroach)
+        private void drawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
         {
-            for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + blobGrid.Length); xx++)
+            MapBlob mapBlob = blobMap.Blobs[index];
+            for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
             {
-                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + blobGrid[0].Length); yy++)
+                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Width); yy++)
                 {
-                    Loc loc = new Loc(xx, yy);
-                    if (blobGrid[xx - offset.X][yy - offset.Y])
+                    Loc destLoc = new Loc(xx, yy);
+                    Loc srcLoc = destLoc - offset;
+                    if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
                     {
-                        if (map.GetTile(loc).TileEquivalent(map.WallTerrain) || !map.TileBlocked(loc) && encroach)
-                        {
+                        if (map.GetTile(destLoc).TileEquivalent(map.WallTerrain) || !map.TileBlocked(destLoc) && encroach)
                             map.SetTile(new Loc(xx, yy), Terrain.Copy());
-                            mapGrid[xx][yy] = false;
-                        }
                     }
                 }
             }

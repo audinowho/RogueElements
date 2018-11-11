@@ -46,7 +46,7 @@ namespace RogueElements
                     {
                         throw new Exception("Detected orphaned tile at X" + xx + " Y" + yy + "!  Seed: " + map.Rand.FirstSeed);
                         //Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
-                        return;
+                        //return;
                     }
                 }
             }
