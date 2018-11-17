@@ -4,157 +4,117 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class BlobWaterStep<T, E, F> : GenStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
+    public class BlobWaterStep<T, E, F> : WaterStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
     {
 
         const int AUTOMATA_ROUNDS = 5;
 
-        public int WaterFrequency;
-        public ITile Terrain;
-        //Decides if the water can paint over floor tiles if the blob itself does not break connectivity
-        public bool RespectFloor;
-        //Decides if the water can be painted on non-floor tiles if the blob itself DOES break connectivity
-        public bool KeepDisconnects;
+        public RandRange Blobs;
+        public int MinScale;
+        public RandRange StartScale;
 
         public BlobWaterStep() { }
-
-        public BlobWaterStep(int waterFrequency, ITile terrain) : this()
+        
+        public BlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale) : base(terrain)
         {
-            WaterFrequency = waterFrequency;
-            Terrain = terrain;
-        }
-
-        public BlobWaterStep(int waterFrequency, ITile terrain, bool respectFloor, bool keepDisconnects) : this(waterFrequency, terrain)
-        {
-            RespectFloor = respectFloor;
-            KeepDisconnects = keepDisconnects;
+            Blobs = blobs;
+            MinScale = minScale;
+            StartScale = startScale;
         }
 
         public override void Apply(T map)
         {
-            if (WaterFrequency == 0)
-                return;
-
-            if (WaterFrequency == 100)
-            {
-                for (int xx = 0; xx < map.Width; xx++)
+            int blobs = Blobs.Pick(map.Rand);
+            int startScale = Math.Max(MinScale, StartScale.Pick(map.Rand));
+            for (int ii = 0; ii < blobs; ii++)
+            {                
+                Loc size = new Loc(map.Width * startScale / 100, map.Height * startScale / 100);
+                int area = size.X * size.Y;
+                bool placed = false;
+                while (area > 0 && area >= MinScale * map.Width / 100 * MinScale * map.Height / 100)
                 {
-                    for (int yy = 0; yy < map.Height; yy++)
+                    bool[][] noise = new bool[size.X][];
+                    for (int xx = 0; xx < size.X; xx++)
                     {
-                        if (map.GetTile(new Loc(xx, yy)).TileEquivalent(map.WallTerrain))
-                            map.SetTile(new Loc(xx, yy), Terrain.Copy());
+                        noise[xx] = new bool[size.Y];
+                        for (int yy = 0; yy < size.Y; yy++)
+                            noise[xx][yy] = (map.Rand.Next(100) < 50);
                     }
-                }
-                return;
-            }
 
-            bool[][] noise = new bool[map.Width][];
-            for (int xx = 0; xx < map.Width; xx++)
-            {
-                noise[xx] = new bool[map.Height];
-                for (int yy = 0; yy < map.Height; yy++)
-                {
-                    //create a buffer equal to automata rounds to prevent terrain from smooshing up on the wall
-                    if (xx >= AUTOMATA_ROUNDS && xx < map.Width - AUTOMATA_ROUNDS && yy >= AUTOMATA_ROUNDS && yy < map.Height - AUTOMATA_ROUNDS)
-                        noise[xx][yy] = (map.Rand.Next(100) < WaterFrequency);
-                }
-            }
+                    noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
 
-            noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
+                    Grid.LocTest isWaterValid = (Loc loc) => { return noise[loc.X][loc.Y]; };
 
-            Grid.LocTest isWaterValid = (Loc loc) => { return noise[loc.X][loc.Y]; };
+                    BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, noise.Length, noise[0].Length), isWaterValid);
 
-            BlobMap blobMap = Detection.DetectBlobs(new Rect(0,0,map.Width, map.Height), isWaterValid);
-
-
-            //alternative approach:
-            //run automata with a CONSTANT water ratio
-            //iterate the blobs in the automata
-            //check to see if this blob tries to convert start or end
-            //attempt to place it in random locations
-            //then do the same for all the other blobs
-            //until we get a value over the WaterFrequency
-
-            bool[][] stairsGrid = new bool[map.Width][];
-            for (int xx = 0; xx < map.Width; xx++)
-                stairsGrid[xx] = new bool[map.Height];
-            //check against stairs
-            for (int jj = 0; jj < ((IViewPlaceableGenContext<E>)map).Count; jj++)
-            {
-                Loc stairs = ((IViewPlaceableGenContext<E>)map).GetLoc(jj);
-                if (blobMap.Map[stairs.X][stairs.Y] > -1)
-                    stairsGrid[stairs.X][stairs.Y] = true;
-            }
-            for (int jj = 0; jj < ((IViewPlaceableGenContext<F>)map).Count; jj++)
-            {
-                Loc stairs = ((IViewPlaceableGenContext<F>)map).GetLoc(jj);
-                if (blobMap.Map[stairs.X][stairs.Y] > -1)
-                    stairsGrid[stairs.X][stairs.Y] = true;
-            }
-
-
-            Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
-
-            int blobIdx = 0;
-            Loc blobStart = new Loc();
-            Grid.LocTest isBlobValid = (Loc loc) =>
-            {
-                Loc srcLoc = blobStart + loc;
-                return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
-            };
-
-            for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
-            {
-                bool disconnects = false;
-                Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
-                blobStart = blobRect.Start;
-
-                for (int xx = 0; xx < blobRect.Width; xx++)
-                {
-                    for (int yy = 0; yy < blobRect.Height; yy++)
+                    if (blobMap.Blobs.Count > 0)
                     {
-                        if (blobMap.Map[xx + blobRect.X][yy + blobRect.Y] == blobIdx)
+                        int blobIdx = 0;
+                        for (int bb = 1; bb < blobMap.Blobs.Count; bb++)
                         {
-                            if (stairsGrid[xx][yy])
-                                disconnects = true;
+                            if (blobMap.Blobs[bb].Area > blobMap.Blobs[blobIdx].Area)
+                                blobIdx = bb;
+                        }
+
+
+                        Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
+
+                        //the XY to add to translate from point on the map to point on the blob map
+                        Grid.LocTest isBlobValid = (Loc loc) =>
+                        {
+                            Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
+                            if (!Collision.InBounds(blobMap.Blobs[blobIdx].Bounds, srcLoc))
+                                return false;
+                            return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
+                        };
+
+                        //attempt to place in 20 locations
+                        for (int jj = 0; jj < 20; jj++)
+                        {
+                            Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
+                            Loc offset = new Loc(map.Rand.Next(0, map.Width - blobRect.Width), map.Rand.Next(0, map.Height - blobRect.Height));
+                            Loc blobMod = blobMap.Blobs[blobIdx].Bounds.Start - offset;
+
+                            bool disconnects = false;
+
+                            //check against stairs
+                            for (int ss = 0; ss < ((IViewPlaceableGenContext<E>)map).Count; ss++)
+                            {
+                                Loc stairs = ((IViewPlaceableGenContext<E>)map).GetLoc(ss) + blobMod;
+                                if (Collision.InBounds(noise.Length, noise[0].Length, stairs) && blobMap.Map[stairs.X][stairs.Y] > -1)
+                                    disconnects = true;
+                            }
+                            for (int ss = 0; ss < ((IViewPlaceableGenContext<F>)map).Count; ss++)
+                            {
+                                Loc stairs = ((IViewPlaceableGenContext<F>)map).GetLoc(ss) + blobMod;
+                                if (Collision.InBounds(noise.Length, noise[0].Length, stairs) && blobMap.Map[stairs.X][stairs.Y] > -1)
+                                    disconnects = true;
+                            }
+                            if (disconnects)
+                                continue;
+
+                            //pass this into the walkable detection function
+                            disconnects = Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, offset, blobRect.Size, isBlobValid, true);
+
+                            //if it's a pass, draw on tile if it's a wall terrain or a room terrain
+                            if (disconnects)
+                                continue;
+
+                            drawBlob(map, blobMap, blobIdx, offset, true);
+                            placed = true;
+                            break;
                         }
                     }
-                }
-                //pass this into the walkable detection function
-                disconnects |= Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, blobRect.Start, blobRect.Size, isBlobValid, true);
+                    if (placed)
+                        break;
 
-                //if it's a pass, draw on tile if it's a wall terrain or a room terrain
-                if (!disconnects)
-                    drawBlob(map, blobMap, blobIdx, blobRect.Start, !RespectFloor);
-                else
-                {
-                    //if it's a fail, draw on the tile only if wall terrain (or not at all?)
-                    if (KeepDisconnects)
-                        drawBlob(map, blobMap, blobIdx, blobRect.Start, false);
+                    size = size * 7 / 10;
+                    area = size.X * size.Y;
                 }
             }
 
-
-
         }
 
-        private void drawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
-        {
-            MapBlob mapBlob = blobMap.Blobs[index];
-            for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
-            {
-                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Width); yy++)
-                {
-                    Loc destLoc = new Loc(xx, yy);
-                    Loc srcLoc = destLoc - offset;
-                    if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
-                    {
-                        if (map.GetTile(destLoc).TileEquivalent(map.WallTerrain) || !map.TileBlocked(destLoc) && encroach)
-                            map.SetTile(new Loc(xx, yy), Terrain.Copy());
-                    }
-                }
-            }
-        }
 
     }
 }

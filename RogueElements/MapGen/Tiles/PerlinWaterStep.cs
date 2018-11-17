@@ -4,43 +4,139 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class PerlinWaterStep<T> : GenStep<T> where T : class, ITiledGenContext
+    public class PerlinWaterStep<T, E, F> : WaterStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
     {
         const int BUFFER_SIZE = 5;
 
-        public int WaterFrequency;
-        public int Order;
-        public ITile Terrain;
+        public RandRange WaterPercent;
+        public int OrderComplexity;
+        public int OrderSoftness;
         //Decides if the water can paint over floor tiles if the blob itself does not break connectivity
         public bool RespectFloor;
-        //Decides if the water can be painted on non-floor tiles if the blob itself DOES break connectivity
-        public bool KeepDisconnects;
 
         public PerlinWaterStep() { }
 
-        public PerlinWaterStep(int waterFrequency, int order, ITile terrain)
+        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain) : base(terrain)
         {
-            WaterFrequency = waterFrequency;
-            Order = order;
-            Terrain = terrain;
+            WaterPercent = waterPercent;
+            OrderComplexity = complexity;
         }
 
-        public PerlinWaterStep(int waterFrequency, int order, ITile terrain, bool respectFloor, bool keepDisconnects) : this(waterFrequency, order, terrain)
+        public PerlinWaterStep(RandRange waterPercent, int complexity, int softness, ITile terrain, bool respectFloor) : this(waterPercent, complexity, terrain)
         {
+            OrderSoftness = softness;
             RespectFloor = respectFloor;
-            KeepDisconnects = keepDisconnects;
         }
 
         public override void Apply(T map)
         {
-            if (WaterFrequency == 0)
+            int waterPercent = WaterPercent.Pick(map.Rand);
+            if (waterPercent == 0)
                 return;
 
-            int degree = Order;
-            int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, degree);
-            int depthRange = 0x1 << (degree + 1);//aka, 2 ^ degree
-            int waterMark = WaterFrequency * depthRange / 100;
+            int depthRange = 0x1 << (OrderComplexity + OrderSoftness);//aka, 2 ^ degree
+            int minWater = waterPercent * map.Width * map.Height / 100;
+            int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, OrderComplexity, OrderSoftness);
+            int[] depthCount = new int[depthRange];
+            for(int xx = 0; xx < map.Width; xx++)
+            {
+                for (int yy = 0; yy < map.Height; yy++)
+                    depthCount[noise[xx][yy]]++;
+            }
+            int waterMark = 0;
+            int totalDepths = 0;
+            for(int ii = 0; ii < depthCount.Length; ii++)
+            {
+                if (totalDepths + depthCount[ii] >= minWater)
+                {
+                    if (totalDepths + depthCount[ii] - minWater < minWater - totalDepths)
+                        waterMark++;
+                    break;
+                }
+                totalDepths += depthCount[ii];
+                waterMark++;
+            }
 
+            if (RespectFloor)
+            {
+                drawWhole(map, noise, depthRange, waterMark);
+                return;
+            }
+
+            while (waterMark > 0)
+            {
+
+                Grid.LocTest isWaterValid = (Loc loc) =>
+                {
+                    int heightPercent = Math.Min(100, Math.Min(Math.Min(loc.X * 100 / BUFFER_SIZE, loc.Y * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - loc.X) * 100 / BUFFER_SIZE, (map.Height - 1 - loc.Y) * 100 / BUFFER_SIZE)));
+                    int noiseVal = noise[loc.X][loc.Y] * heightPercent / 100 + depthRange * (100 - heightPercent) / 100;
+                    return noiseVal < waterMark;
+                };
+
+                BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, map.Width, map.Height), isWaterValid);
+
+                bool[][] stairsGrid = new bool[map.Width][];
+                for (int xx = 0; xx < map.Width; xx++)
+                    stairsGrid[xx] = new bool[map.Height];
+                //check against stairs
+                for (int jj = 0; jj < ((IViewPlaceableGenContext<E>)map).Count; jj++)
+                {
+                    Loc stairs = ((IViewPlaceableGenContext<E>)map).GetLoc(jj);
+                    if (blobMap.Map[stairs.X][stairs.Y] > -1)
+                        stairsGrid[stairs.X][stairs.Y] = true;
+                }
+                for (int jj = 0; jj < ((IViewPlaceableGenContext<F>)map).Count; jj++)
+                {
+                    Loc stairs = ((IViewPlaceableGenContext<F>)map).GetLoc(jj);
+                    if (blobMap.Map[stairs.X][stairs.Y] > -1)
+                        stairsGrid[stairs.X][stairs.Y] = true;
+                }
+
+
+                Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
+
+                int blobIdx = 0;
+                Grid.LocTest isBlobValid = (Loc loc) =>
+                {
+                    Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
+                    return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
+                };
+
+                for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
+                {
+                    bool disconnects = false;
+                    Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
+
+                    for (int xx = 0; xx < blobRect.Width; xx++)
+                    {
+                        for (int yy = 0; yy < blobRect.Height; yy++)
+                        {
+                            if (blobMap.Map[xx + blobRect.X][yy + blobRect.Y] == blobIdx)
+                            {
+                                if (stairsGrid[xx + blobRect.X][yy + blobRect.Y])
+                                    disconnects = true;
+                            }
+                        }
+                    }
+                    //pass this into the walkable detection function
+                    disconnects |= Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, blobRect.Start, blobRect.Size, isBlobValid, true);
+
+                    //if it's a pass, draw on tile if it's a wall terrain or a room terrain
+                    if (!disconnects)
+                        drawBlob(map, blobMap, blobIdx, blobRect.Start, true);
+                    else
+                    {
+                        //if it's a fail, draw on the tile only if wall terrain
+                        drawBlob(map, blobMap, blobIdx, blobRect.Start, false);
+                    }
+                }
+                waterMark -= Math.Max(1, depthRange / 8);
+
+            }
+        }
+
+        private void drawWhole(T map, int[][] noise, int depthRange, int waterMark)
+        {
             for (int xx = 0; xx < map.Width; xx++)
             {
                 for (int yy = 0; yy < map.Height; yy++)
@@ -55,10 +151,9 @@ namespace RogueElements
 
                     if (noiseVal < waterMark)
                         map.SetTile(new Loc(xx, yy), Terrain.Copy());
-
                 }
             }
         }
-
+        
     }
 }

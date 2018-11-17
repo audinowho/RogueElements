@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace RogueElements
 {
@@ -43,46 +44,66 @@ namespace RogueElements
     public static class NoiseGen
     {
 
-        public static int[][] PerlinNoise(IRandom rand, int width, int height, int degrees)
+        public static int[][] PerlinNoise(IRandom rand, int width, int height, int degrees, int expandDegrees = 0)
         {
             if (degrees > 10)
                 degrees = 10;
 
             int[][] prev_noise = null;
             int[][] noise = null;
-            for (int ii = degrees; ii >= 0; ii--)
+            for (int ii = degrees+expandDegrees-1; ii >= 0; ii--)
             {
                 int gridWidth = (width - 1) / (int)Math.Pow(2, ii) + 1;
                 int gridHeight = (height - 1) / (int)Math.Pow(2, ii) + 1;
 
                 noise = new int[gridWidth][];
-                for (int x = 0; x < gridWidth; x++)
+                for (int xx = 0; xx < gridWidth; xx++)
                 {
-                    noise[x] = new int[gridHeight];
-                    for (int y = 0; y < gridHeight; y++)
+                    noise[xx] = new int[gridHeight];
+                    for (int yy = 0; yy < gridHeight; yy++)
                     {
-                        noise[x][y] = rand.Next(2) << ii;//aka, ^ ii
+                        //Interpolate from the lower resolution iteration, if it exists
                         if (prev_noise != null)
                         {
-                            int oldX = x / 2;
-                            int oldY = y / 2;
+                            int oldX = xx / 2;
+                            int oldY = yy / 2;
 
-                            int newX = oldX;
-                            int newY = oldY;
-                            if (oldX < prev_noise.Length - 1)
-                                newX++;
-                            if (oldY < prev_noise[0].Length - 1)
-                                newY++;
+                            int newX = (oldX + 1) % prev_noise.Length;
+                            int newY = (oldY + 1) % prev_noise[0].Length;
 
                             int topleft = prev_noise[oldX][oldY];
                             int topright = prev_noise[newX][oldY];
                             int bottomleft = prev_noise[oldX][newY];
                             int bottomright = prev_noise[newX][newY];
-                            noise[x][y] += BiInterpolate(topleft, topright, bottomleft, bottomright, (x % 2) * 100 / 2, (y % 2) * 100 / 2);
+                            noise[xx][yy] = BiInterpolate(topleft, topright, bottomleft, bottomright, (xx % 2) * 100 / 2, (yy % 2) * 100 / 2);
                         }
+                        //add the new noise (if not merely expanding)
+                        if (ii >= expandDegrees)
+                            noise[xx][yy] += rand.Next(2) << ii;//aka, ^ ii
                     }
                 }
                 prev_noise = noise;
+
+                //Dictionary<int, int> dict = new Dictionary<int, int>();
+                //for (int nn = 0; nn < Math.Pow(2, degrees + expandDegrees); nn++)
+                //    dict.Add(nn, 0);
+                //for (int yy = 0; yy < gridHeight; yy++)
+                //{
+                //    for (int xx = 0; xx < gridWidth; xx++)
+                //    {
+                //        Debug.Write((char)(noise[xx][yy] > 9 ? noise[xx][yy] - 10 + 'A' : noise[xx][yy] + '0'));
+                //        dict[noise[xx][yy]] = dict[noise[xx][yy]] + 1;
+                //    }
+                //    Debug.Write('\n');
+                //}
+                //for (int nn = 0; nn < Math.Pow(2, degrees + expandDegrees); nn++)
+                //{
+                //    Debug.Write(nn.ToString() + ": ");
+                //    for (int mm = 0; mm < dict[nn]; mm++)
+                //        Debug.Write("|");
+                //    Debug.WriteLine(" " + dict[nn]);
+                //}
+                //Debug.Write('\n');
             }
 
             return noise;

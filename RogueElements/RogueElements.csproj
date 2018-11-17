@@ -97,6 +97,7 @@
     <Compile Include="MapGen\FloorPlan\Paths\FloorPathBranch.cs" />
     <Compile Include="MapGen\Rooms\RoomGenSpecific.cs" />
     <Compile Include="MapGen\Tiles\ITile.cs" />
+    <Compile Include="MapGen\Tiles\WaterStep.cs" />
     <Compile Include="MapGen\Tiles\StairsStep.cs" />
     <Compile Include="MapGen\Tiles\SpecificTilesStep.cs" />
     <Compile Include="MapGen\Tiles\InitTilesStep.cs" />
