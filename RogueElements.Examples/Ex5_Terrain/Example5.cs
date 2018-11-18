@@ -59,7 +59,7 @@ namespace RogueElements.Examples.Ex5_Terrain
 
             //Generate water (specified by user as Terrain 2) with a frequency of 30%, using Perlin Noise in an order of 3.
             int terrain = 2;
-            BlobWaterStep<MapGenContext, StairsUp, StairsDown> waterPostProc = new BlobWaterStep<MapGenContext, StairsUp, StairsDown>(new RandRange(5), new Tile(terrain), 0, new RandRange(40));
+            PerlinWaterStep<MapGenContext> waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(3, waterPostProc));
 
             //Remove walls where diagonals of water exist and replace with water

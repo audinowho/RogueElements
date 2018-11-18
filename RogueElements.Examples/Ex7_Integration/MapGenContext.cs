@@ -14,10 +14,21 @@ namespace RogueElements.Examples.Ex7_Integration
         public ITile WallTerrain { get { return new Cell(0, 0, false, false, false); } }
 
         public ITile GetTile(Loc loc) { return (Cell)Map.GetCell(loc.X, loc.Y); }
-        public void SetTile(Loc loc, ITile tile)
+        public bool CanSetTile(Loc loc, ITile tile)
         {
+            return true;
+        }
+        public bool TrySetTile(Loc loc, ITile tile)
+        {
+            if (!CanSetTile(loc, tile)) return false;
             Cell cell = (Cell)tile;
             Map.SetCellProperties(loc.X, loc.Y, cell.IsTransparent, cell.IsWalkable, cell.IsExplored);
+            return true;
+        }
+        public void SetTile(Loc loc, ITile tile)
+        {
+            if (!TrySetTile(loc, tile))
+                throw new InvalidOperationException("Can't place tile!");
         }
         public bool TilesInitialized { get { return Map.Width > 0 && Map.Height > 0; } }
 

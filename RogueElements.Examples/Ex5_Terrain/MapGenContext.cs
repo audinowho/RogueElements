@@ -14,7 +14,31 @@ namespace RogueElements.Examples.Ex5_Terrain
         public ITile WallTerrain { get { return new Tile(Map.WALL_TERRAIN_ID); } }
 
         public ITile GetTile(Loc loc) { return Map.Tiles[loc.X][loc.Y]; }
-        public void SetTile(Loc loc, ITile tile) { Map.Tiles[loc.X][loc.Y] = (Tile)tile; }
+        public bool CanSetTile(Loc loc, ITile tile)
+        {
+            for (int ii = 0; ii < GenEntrances.Count; ii++)
+            {
+                if (GenEntrances[ii].Loc == loc)
+                    return false;
+            }
+            for (int ii = 0; ii < GenExits.Count; ii++)
+            {
+                if (GenExits[ii].Loc == loc)
+                    return false;
+            }
+            return true;
+        }
+        public bool TrySetTile(Loc loc, ITile tile)
+        {
+            if (!CanSetTile(loc, tile)) return false;
+            Map.Tiles[loc.X][loc.Y] = (Tile)tile;
+            return true;
+        }
+        public void SetTile(Loc loc, ITile tile)
+        {
+            if (!TrySetTile(loc, tile))
+                throw new InvalidOperationException("Can't place tile!");
+        }
         public bool TilesInitialized { get { return Map.Tiles != null; } }
 
         public int Width { get { return Map.Width; } }

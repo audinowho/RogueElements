@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class PerlinWaterStep<T, E, F> : WaterStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
+    public class PerlinWaterStep<T> : WaterStep<T> where T : class, ITiledGenContext
     {
         const int BUFFER_SIZE = 5;
 
@@ -75,51 +75,23 @@ namespace RogueElements
 
                 BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, map.Width, map.Height), isWaterValid);
 
-                bool[][] stairsGrid = new bool[map.Width][];
-                for (int xx = 0; xx < map.Width; xx++)
-                    stairsGrid[xx] = new bool[map.Height];
-                //check against stairs
-                for (int jj = 0; jj < ((IViewPlaceableGenContext<E>)map).Count; jj++)
-                {
-                    Loc stairs = ((IViewPlaceableGenContext<E>)map).GetLoc(jj);
-                    if (blobMap.Map[stairs.X][stairs.Y] > -1)
-                        stairsGrid[stairs.X][stairs.Y] = true;
-                }
-                for (int jj = 0; jj < ((IViewPlaceableGenContext<F>)map).Count; jj++)
-                {
-                    Loc stairs = ((IViewPlaceableGenContext<F>)map).GetLoc(jj);
-                    if (blobMap.Map[stairs.X][stairs.Y] > -1)
-                        stairsGrid[stairs.X][stairs.Y] = true;
-                }
-
-
                 Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
 
                 int blobIdx = 0;
                 Grid.LocTest isBlobValid = (Loc loc) =>
                 {
                     Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
+                    if (!map.CanSetTile(srcLoc, Terrain))
+                        return false;
                     return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
                 };
 
                 for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
                 {
-                    bool disconnects = false;
                     Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
 
-                    for (int xx = 0; xx < blobRect.Width; xx++)
-                    {
-                        for (int yy = 0; yy < blobRect.Height; yy++)
-                        {
-                            if (blobMap.Map[xx + blobRect.X][yy + blobRect.Y] == blobIdx)
-                            {
-                                if (stairsGrid[xx + blobRect.X][yy + blobRect.Y])
-                                    disconnects = true;
-                            }
-                        }
-                    }
                     //pass this into the walkable detection function
-                    disconnects |= Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, blobRect.Start, blobRect.Size, isBlobValid, true);
+                    bool disconnects = Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, blobRect.Start, blobRect.Size, isBlobValid, true);
 
                     //if it's a pass, draw on tile if it's a wall terrain or a room terrain
                     if (!disconnects)

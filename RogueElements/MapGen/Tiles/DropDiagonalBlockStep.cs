@@ -29,16 +29,16 @@ namespace RogueElements
                     if (a1.TileEquivalent(Terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(Terrain))
                     {
                         if (dropType % 2 == 0)
-                            map.SetTile(new Loc(xx + 1, yy), Terrain.Copy());
+                            map.TrySetTile(new Loc(xx + 1, yy), Terrain.Copy());
                         if (dropType < 2)
-                            map.SetTile(new Loc(xx, yy + 1), Terrain.Copy());
+                            map.TrySetTile(new Loc(xx, yy + 1), Terrain.Copy());
                     }
                     else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(Terrain) && a2.TileEquivalent(Terrain) && b2.TileEquivalent(map.WallTerrain))
                     {
                         if (dropType % 2 == 0)
-                            map.SetTile(new Loc(xx, yy), Terrain.Copy());
+                            map.TrySetTile(new Loc(xx, yy), Terrain.Copy());
                         if (dropType < 2)
-                            map.SetTile(new Loc(xx + 1, yy + 1), Terrain.Copy());
+                            map.TrySetTile(new Loc(xx + 1, yy + 1), Terrain.Copy());
                     }
                 }
             }

@@ -87,8 +87,6 @@
     <Compile Include="Ex7_Integration\IMapCreationStrategy.cs" />
     <Compile Include="Ex7_Integration\Map.cs" />
     <Compile Include="Ex7_Integration\MapGenContext.cs" />
-    <Compile Include="Ex8_CustomSteps\Example8.cs" />
-    <Compile Include="Ex9_CustomRooms\Example9.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

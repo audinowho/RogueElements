@@ -75,6 +75,8 @@
     <Compile Include="LocRay.cs" />
     <Compile Include="BlobMap.cs" />
     <Compile Include="Detection.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectStep.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectRoomStep.cs" />
     <Compile Include="MapGen\GenContextDebug.cs" />
     <Compile Include="MapGen\Grid\GridHallPlan.cs" />
     <Compile Include="MapGen\Grid\IRoomGridGenContext.cs" />
@@ -89,7 +91,7 @@
     <Compile Include="MapGen\FloorPlan\RoomHallIndex.cs" />
     <Compile Include="MapGen\FloorPlan\Paths\FloorPathStartStepGeneric.cs" />
     <Compile Include="MapGen\FloorPlan\Paths\FloorPathStartStep.cs" />
-    <Compile Include="MapGen\FloorPlan\ConnectTerminalStep.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectBranchStep.cs" />
     <Compile Include="MapGen\FloorPlan\InitFloorPlanStep.cs" />
     <Compile Include="MapGen\FloorPlan\FloorRoomPlan.cs" />
     <Compile Include="MapGen\FloorPlan\FloorPlan.cs" />

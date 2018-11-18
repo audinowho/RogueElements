@@ -71,12 +71,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FovTest.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectTest.cs" />
     <Compile Include="MapGen\Grid\AddGridSpecialRoomTest.cs" />
     <Compile Include="MapGen\Grid\AddGridDefaultsTest.cs" />
     <Compile Include="MapGen\Grid\GridFloorPlanTest.cs" />
     <Compile Include="MapGen\Grid\ConnectGridTerminalTest.cs" />
     <Compile Include="MapGen\FloorPlan\AddSpecialRoomTest.cs" />
-    <Compile Include="MapGen\FloorPlan\ConnectTerminalTest.cs" />
+    <Compile Include="MapGen\FloorPlan\ConnectBranchTest.cs" />
     <Compile Include="MapGen\FloorPlan\FloorPlanTest.cs" />
     <Compile Include="MapGen\FloorPlan\FloorPathBranchTest.cs" />
     <Compile Include="MapGen\GenSteps\PathStepTest.cs" />

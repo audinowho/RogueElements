@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class BlobWaterStep<T, E, F> : WaterStep<T> where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
+    public class BlobWaterStep<T> : WaterStep<T> where T : class, ITiledGenContext
     {
 
         const int AUTOMATA_ROUNDS = 5;
@@ -60,10 +60,14 @@ namespace RogueElements
                         Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
 
                         //the XY to add to translate from point on the map to point on the blob map
+                        Loc offset = new Loc();
                         Grid.LocTest isBlobValid = (Loc loc) =>
                         {
                             Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
                             if (!Collision.InBounds(blobMap.Blobs[blobIdx].Bounds, srcLoc))
+                                return false;
+                            Loc destLoc = loc + offset;
+                            if (!map.CanSetTile(destLoc, Terrain))
                                 return false;
                             return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
                         };
@@ -72,29 +76,11 @@ namespace RogueElements
                         for (int jj = 0; jj < 20; jj++)
                         {
                             Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
-                            Loc offset = new Loc(map.Rand.Next(0, map.Width - blobRect.Width), map.Rand.Next(0, map.Height - blobRect.Height));
+                            offset = new Loc(map.Rand.Next(0, map.Width - blobRect.Width), map.Rand.Next(0, map.Height - blobRect.Height));
                             Loc blobMod = blobMap.Blobs[blobIdx].Bounds.Start - offset;
 
-                            bool disconnects = false;
-
-                            //check against stairs
-                            for (int ss = 0; ss < ((IViewPlaceableGenContext<E>)map).Count; ss++)
-                            {
-                                Loc stairs = ((IViewPlaceableGenContext<E>)map).GetLoc(ss) + blobMod;
-                                if (Collision.InBounds(noise.Length, noise[0].Length, stairs) && blobMap.Map[stairs.X][stairs.Y] > -1)
-                                    disconnects = true;
-                            }
-                            for (int ss = 0; ss < ((IViewPlaceableGenContext<F>)map).Count; ss++)
-                            {
-                                Loc stairs = ((IViewPlaceableGenContext<F>)map).GetLoc(ss) + blobMod;
-                                if (Collision.InBounds(noise.Length, noise[0].Length, stairs) && blobMap.Map[stairs.X][stairs.Y] > -1)
-                                    disconnects = true;
-                            }
-                            if (disconnects)
-                                continue;
-
                             //pass this into the walkable detection function
-                            disconnects = Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, offset, blobRect.Size, isBlobValid, true);
+                            bool disconnects = Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), isMapValid, offset, blobRect.Size, isBlobValid, true);
 
                             //if it's a pass, draw on tile if it's a wall terrain or a room terrain
                             if (disconnects)

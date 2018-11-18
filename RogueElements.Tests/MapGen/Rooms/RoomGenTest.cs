@@ -937,10 +937,11 @@ namespace RogueElements.Tests
 
         public ITile RoomTerrain { get { return new TestTile(0); } }
         public ITile WallTerrain { get { return new TestTile(1); } }
-        public ITile UnbreakableTerrain { get { return new TestTile(-1); } }
 
         public ITile GetTile(Loc loc) { return Tiles[loc.X][loc.Y]; }
         public void SetTile(Loc loc, ITile tile) { Tiles[loc.X][loc.Y] = tile; }
+        public bool TrySetTile(Loc loc, ITile tile) { SetTile(loc, tile); return true; }
+        public bool CanSetTile(Loc loc, ITile tile) { return true; }
 
         public bool TilesInitialized { get { return Tiles != null; } }
 

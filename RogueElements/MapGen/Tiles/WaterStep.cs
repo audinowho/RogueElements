@@ -28,7 +28,7 @@ namespace RogueElements
                     if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
                     {
                         if (map.GetTile(destLoc).TileEquivalent(map.WallTerrain) || !map.TileBlocked(destLoc) && encroach)
-                            map.SetTile(new Loc(xx, yy), Terrain.Copy());
+                            map.TrySetTile(new Loc(xx, yy), Terrain.Copy());
                     }
                 }
             }

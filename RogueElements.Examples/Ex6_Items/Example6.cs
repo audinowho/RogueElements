@@ -21,7 +21,7 @@ namespace RogueElements.Examples.Ex6_Items
             //Create a path that is composed of a branching tree
             FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>();
             path.HallPercent = 50;
-            path.FillPercent = new RandRange(45);
+            path.FillPercent = new RandRange(60);
             path.BranchRatio = new RandRange(0, 25);
 
             //Give it some room types to place
@@ -34,14 +34,21 @@ namespace RogueElements.Examples.Ex6_Items
 
             //Give it some hall types to place
             SpawnList<PermissiveRoomGen<MapGenContext>> genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>();
-            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)), 10);
+            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(0, new RandRange(3), new RandRange(3)), 10);
             genericHalls.Add(new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20);
             path.GenericHalls = genericHalls;
 
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, path));
 
             {
-                ConnectTerminalStep<MapGenContext> step = new ConnectTerminalStep<MapGenContext>(100);
+                ConnectBranchStep<MapGenContext> step = new ConnectBranchStep<MapGenContext>(100);
+                PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>();
+                picker.ToSpawn = new RoomGenAngledHall<MapGenContext>(0);
+                step.GenericHalls = picker;
+                layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, step));
+            }
+            {
+                ConnectRoomStep<MapGenContext> step = new ConnectRoomStep<MapGenContext>(new RandRange(30));
                 PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>();
                 picker.ToSpawn = new RoomGenAngledHall<MapGenContext>(0);
                 step.GenericHalls = picker;
@@ -60,7 +67,7 @@ namespace RogueElements.Examples.Ex6_Items
 
             //Generate water (specified by user as Terrain 2) with a frequency of 30%, using Perlin Noise in an order of 3.
             int terrain = 2;
-            PerlinWaterStep<MapGenContext, StairsUp, StairsDown> waterPostProc = new PerlinWaterStep<MapGenContext, StairsUp, StairsDown>(new RandRange(35), 3, 1, new Tile(terrain), false);
+            BlobWaterStep<MapGenContext> waterPostProc = new BlobWaterStep<MapGenContext>(new RandRange(5), new Tile(terrain), 0, new RandRange(40));
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(3, waterPostProc));
 
             //Remove walls where diagonals of water exist and replace with water
