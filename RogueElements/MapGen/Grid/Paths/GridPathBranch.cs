@@ -64,7 +64,7 @@ namespace RogueElements
         }
 
 
-        private bool expandPath(IRandom rand, GridPlan floorPlan, bool branch)
+        protected bool expandPath(IRandom rand, GridPlan floorPlan, bool branch)
         {
             LocRay4 chosenRay = ChooseRoomExpansion(rand, floorPlan, branch);
             if (chosenRay.Dir == Dir4.None)
