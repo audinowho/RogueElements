@@ -57,7 +57,7 @@ namespace RogueElements.Examples.Ex5_Terrain
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown())));
 
 
-            //Generate water (specified by user as Terrain 2) with a frequency of 30%, using Perlin Noise in an order of 3.
+            //Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
             int terrain = 2;
             PerlinWaterStep<MapGenContext> waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(3, waterPostProc));
@@ -66,25 +66,7 @@ namespace RogueElements.Examples.Ex5_Terrain
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new DropDiagonalBlockStep<MapGenContext>(new Tile(terrain))));
             //Remove water stuck in the walls
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain))));
-
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(7, new DetectIsolatedStep<MapGenContext, StairsUp>()));
-
-
-
-
-            //ulong seed = 0;
-            //try
-            //{
-            //    for (int ii = 0; ii < 100000; ii++)
-            //    {
-            //        seed = MathUtils.Rand.NextUInt64();
-            //        MapGenContext context = layout.GenMap(seed);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.Write("ERROR: " + seed);
-            //}
+            
 
             //Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());

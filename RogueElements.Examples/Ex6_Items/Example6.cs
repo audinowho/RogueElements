@@ -11,53 +11,45 @@ namespace RogueElements.Examples.Ex6_Items
             string title = "6: A Map with Randomly Placed Items";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
-            //Initialize a 54x40 floorplan with which to populate with rectangular floor and halls.
-            InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>();
-            startGen.Width = 54;
-            startGen.Height = 40;
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, startGen));
+            //Initialize a 6x4 grid of 10x10 cells.
+            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>();
+            startGen.CellX = 6;
+            startGen.CellY = 4;
+
+            startGen.CellWidth = 9;
+            startGen.CellHeight = 9;
+            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
 
 
-            //Create a path that is composed of a branching tree
-            FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>();
-            path.HallPercent = 50;
-            path.FillPercent = new RandRange(60);
-            path.BranchRatio = new RandRange(0, 25);
 
-            //Give it some room types to place
+            //Create a path that is composed of a ring around the edge
+            GridPathBranch<MapGenContext> path = new GridPathBranch<MapGenContext>();
+            path.RoomRatio = new RandRange(70);
+            path.BranchRatio = new RandRange(0, 50);
+
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>();
-            //square
+            //cross
             genericRooms.Add(new RoomGenSquare<MapGenContext>(new RandRange(4, 8), new RandRange(4, 8)));
             //round
             genericRooms.Add(new RoomGenRound<MapGenContext>(new RandRange(5, 9), new RandRange(5, 9)));
             path.GenericRooms = genericRooms;
 
-            //Give it some hall types to place
             SpawnList<PermissiveRoomGen<MapGenContext>> genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>();
-            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(0, new RandRange(3), new RandRange(3)), 10);
-            genericHalls.Add(new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20);
+            genericHalls.Add(new RoomGenAngledHall<MapGenContext>(50));
             path.GenericHalls = genericHalls;
 
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, path));
+            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, path));
 
-            {
-                ConnectBranchStep<MapGenContext> step = new ConnectBranchStep<MapGenContext>(100);
-                PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>();
-                picker.ToSpawn = new RoomGenAngledHall<MapGenContext>(0);
-                step.GenericHalls = picker;
-                layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, step));
-            }
-            {
-                ConnectRoomStep<MapGenContext> step = new ConnectRoomStep<MapGenContext>(new RandRange(30));
-                PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>();
-                picker.ToSpawn = new RoomGenAngledHall<MapGenContext>(0);
-                step.GenericHalls = picker;
-                layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, step));
-            }
 
-            //Draw the rooms onto the tiled map, with 1 TILE padded on each side
+
+            //Output the rooms into a FloorPlan
+            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, new DrawGridToFloorStep<MapGenContext>()));
+
+
+
+
+            //Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(0, new DrawFloorToTileStep<MapGenContext>(1)));
-
 
 
 
@@ -65,16 +57,15 @@ namespace RogueElements.Examples.Ex6_Items
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown())));
 
 
-            //Generate water (specified by user as Terrain 2) with a frequency of 30%, using Perlin Noise in an order of 3.
+            //Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
             int terrain = 2;
-            BlobWaterStep<MapGenContext> waterPostProc = new BlobWaterStep<MapGenContext>(new RandRange(5), new Tile(terrain), 0, new RandRange(40));
+            PerlinWaterStep<MapGenContext> waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(3, waterPostProc));
 
             //Remove walls where diagonals of water exist and replace with water
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new DropDiagonalBlockStep<MapGenContext>(new Tile(terrain))));
             //Remove water stuck in the walls
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain))));
-
 
 
 
@@ -90,24 +81,7 @@ namespace RogueElements.Examples.Ex6_Items
             RandomSpawnStep<MapGenContext, Item> itemPlacement = new RandomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(6, itemPlacement));
 
-
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(7, new DetectIsolatedStep<MapGenContext, StairsUp>()));
-
-
-            //ulong seed = 0;
-            //try
-            //{
-            //    for (int ii = 0; ii < 100000; ii++)
-            //    {
-            //        seed = MathUtils.Rand.NextUInt64();
-            //        MapGenContext context = layout.GenMap(seed);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.Write("ERROR: " + seed);
-            //}
-
+            
             //Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());
             Print(context.Map, title);

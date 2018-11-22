@@ -13,7 +13,7 @@ namespace RogueElements.Examples
             Console.WindowHeight = Console.LargestWindowHeight;
             while (true)
             {
-                Console.WriteLine("Press a key 1-9:");
+                Console.WriteLine("Press a key 1-7:");
                 ConsoleKeyInfo key = Console.ReadKey();
                 Console.Clear();
                 if (key.Key == ConsoleKey.D1)
@@ -31,9 +31,7 @@ namespace RogueElements.Examples
                 else if (key.Key == ConsoleKey.D7)
                     Ex7_Integration.Example7.Run();
                 else if (key.Key == ConsoleKey.D8)
-                    Ex8_CustomSteps.Example8.Run();
-                else if (key.Key == ConsoleKey.D9)
-                    Ex9_CustomRooms.Example9.Run();
+                    Ex8_Custom.Example8.Run();
                 else
                     break;
 

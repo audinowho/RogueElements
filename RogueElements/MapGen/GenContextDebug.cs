@@ -156,6 +156,23 @@ namespace RogueElements
 
             return str.ToString();
         }
-        
+
+        public static void StressTest<T>(MapGen<T> layout, int amount) where T : class, IGenContext
+        {
+            ulong seed = 0;
+            try
+            {
+                for (int ii = 0; ii < amount; ii++)
+                {
+                    seed = MathUtils.Rand.NextUInt64();
+                    layout.GenMap(seed);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write("ERROR: " + seed);
+            }
+        }
+
     }
 }
