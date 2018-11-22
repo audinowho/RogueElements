@@ -30,8 +30,6 @@ namespace RogueElements.Examples
                     Ex6_Items.Example6.Run();
                 else if (key.Key == ConsoleKey.D7)
                     Ex7_Integration.Example7.Run();
-                else if (key.Key == ConsoleKey.D8)
-                    Ex8_Custom.Example8.Run();
                 else
                     break;
 

@@ -72,12 +72,6 @@
     <Compile Include="Ex5_Terrain\MapGenContext.cs" />
     <Compile Include="Ex5_Terrain\Stairs.cs" />
     <Compile Include="Ex5_Terrain\Tile.cs" />
-    <Compile Include="Ex8_Custom\Example8.cs" />
-    <Compile Include="Ex8_Custom\Item.cs" />
-    <Compile Include="Ex8_Custom\Map.cs" />
-    <Compile Include="Ex8_Custom\MapGenContext.cs" />
-    <Compile Include="Ex8_Custom\Stairs.cs" />
-    <Compile Include="Ex8_Custom\Tile.cs" />
     <Compile Include="Ex6_Items\Example6.cs" />
     <Compile Include="Ex6_Items\Item.cs" />
     <Compile Include="Ex6_Items\Map.cs" />
