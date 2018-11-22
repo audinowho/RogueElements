@@ -91,6 +91,7 @@
     <Compile Include="MapGen\Grid\GridPathSpecificTest.cs" />
     <Compile Include="MapGen\Grid\GridPathCircleTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenAngledHallTest.cs" />
+    <Compile Include="MapGen\Rooms\RoomGenCaveTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenSpecificTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenRoundTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenCrossTest.cs" />

@@ -7,6 +7,7 @@ namespace RogueElements
     public class BlobWaterStep<T> : WaterStep<T> where T : class, ITiledGenContext
     {
 
+        const int AUTOMATA_CHANCE = 55;
         const int AUTOMATA_ROUNDS = 5;
 
         public RandRange Blobs;
@@ -38,7 +39,7 @@ namespace RogueElements
                     {
                         noise[xx] = new bool[size.Y];
                         for (int yy = 0; yy < size.Y; yy++)
-                            noise[xx][yy] = (map.Rand.Next(100) < 50);
+                            noise[xx][yy] = (map.Rand.Next(100) < AUTOMATA_CHANCE);
                     }
 
                     noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
