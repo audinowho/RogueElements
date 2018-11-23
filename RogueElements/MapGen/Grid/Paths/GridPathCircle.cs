@@ -98,14 +98,14 @@ namespace RogueElements
                     wanderer = sample;
 
 
-                    if (!floorPlan.IsRoomOpen(wanderer.X, wanderer.Y))
+                    if (!floorPlan.IsRoomOpen(wanderer))
                     {
                         if (currentLength == pathLength-1)//determine if the room should be default
                         {
-                            floorPlan.SetRoomGen(wanderer.X, wanderer.Y, GenericRooms.Pick(rand));
+                            floorPlan.SetRoomGen(wanderer, GenericRooms.Pick(rand));
                         }
                         else
-                            floorPlan.SetRoomGen(wanderer.X, wanderer.Y, GetDefaultGen());
+                            floorPlan.SetRoomGen(wanderer, GetDefaultGen());
                     }
                 }
             }
@@ -114,7 +114,7 @@ namespace RogueElements
         private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
         {
             if (RollRatio(rand, ref roomOpen, ref maxRooms))
-                floorPlan.SetRoomGen(loc.X, loc.Y, GenericRooms.Pick(rand));
+                floorPlan.SetRoomGen(loc, GenericRooms.Pick(rand));
         }
     }
 }

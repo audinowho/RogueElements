@@ -4,17 +4,17 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class ConnectGridTerminalStep<T> : GridPlanStep<T> where T : class, IRoomGridGenContext
+    public class ConnectGridBranchStep<T> : GridPlanStep<T> where T : class, IRoomGridGenContext
     {
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls;
         public int ConnectPercent;
 
-        public ConnectGridTerminalStep()
+        public ConnectGridBranchStep()
         {
             GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
         }
 
-        public ConnectGridTerminalStep(int connectPercent)
+        public ConnectGridBranchStep(int connectPercent)
             : this()
         {
             ConnectPercent = connectPercent;
@@ -47,13 +47,13 @@ namespace RogueElements
                     {
                         if ((Dir4)ii != chosenBranch.Dir)
                         {
-                            if (floorPlan.GetHall(chosenBranch.Loc, (Dir4)ii) != null)
+                            if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, (Dir4)ii)) != null)
                                 connectors.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
                             else
                             {
                                 Loc loc = chosenBranch.Loc + ((Dir4)ii).GetLoc();
                                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, loc)
-                                    && floorPlan.GetRoomIndex(loc.X, loc.Y) > -1)
+                                    && floorPlan.GetRoomIndex(loc) > -1)
                                     candBonds.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
                             }
                         }

@@ -29,9 +29,7 @@ namespace RogueElements
             {
                 SpecificGridRoomPlan<T> chosenRoom = SpecificRooms[ii];
                 
-                floorPlan.AddRoom(chosenRoom.Bounds.X, chosenRoom.Bounds.Y,
-                    chosenRoom.Bounds.Size.X, chosenRoom.Bounds.Size.Y,
-                    chosenRoom.RoomGen, chosenRoom.Immutable);
+                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable);
             }
 
             //place halls
@@ -56,8 +54,7 @@ namespace RogueElements
         public void UnsafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen)
         {
             floorPlan.SetConnectingHall(room1, room2, hallGen);
-            if (floorPlan.GetRoomPlan(room1.X, room1.Y) == null ||
-                floorPlan.GetRoomPlan(room2.X, room2.Y) == null)
+            if (floorPlan.GetRoomPlan(room1) == null || floorPlan.GetRoomPlan(room2) == null)
             {
                 floorPlan.Clear();
                 throw new InvalidOperationException("Can't create a hall without rooms to connect!");

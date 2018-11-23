@@ -59,9 +59,9 @@ namespace RogueElements
 
         private void printGrid(bool[][] connectionGrid)
         {
-            for (int yy = 0; yy < connectionGrid.Length; yy++)
+            for (int yy = 0; yy < connectionGrid[0].Length; yy++)
             {
-                for (int xx = 0; xx < connectionGrid[0].Length; xx++)
+                for (int xx = 0; xx < connectionGrid.Length; xx++)
                 {
                     System.Diagnostics.Debug.Write(connectionGrid[xx][yy] ? '.' : 'X');
                 }

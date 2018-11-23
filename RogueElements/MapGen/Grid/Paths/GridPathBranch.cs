@@ -29,7 +29,7 @@ namespace RogueElements
                 int roomsLeft = roomsToOpen;
 
                 Loc SourceRoom = new Loc(rand.Next(floorPlan.GridWidth), rand.Next(floorPlan.GridHeight)); // randomly determine start room
-                floorPlan.AddRoom(SourceRoom.X, SourceRoom.Y, GenericRooms.Pick(rand));
+                floorPlan.AddRoom(SourceRoom, GenericRooms.Pick(rand));
                 roomsLeft--;
                 int pendingBranch = 0;
                 while (roomsLeft > 0)
@@ -71,7 +71,7 @@ namespace RogueElements
                 return false;
             Loc endLoc = chosenRay.Traverse(1);
             floorPlan.SetConnectingHall(chosenRay.Loc, endLoc, GenericHalls.Pick(rand));
-            floorPlan.AddRoom(endLoc.X, endLoc.Y, GenericRooms.Pick(rand));
+            floorPlan.AddRoom(endLoc, GenericRooms.Pick(rand));
             return true;
         }
 
@@ -114,7 +114,7 @@ namespace RogueElements
             {
                 Loc endLoc = loc + ((Dir4)ii).GetLoc();
                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, endLoc)
-                    && floorPlan.GetRoomPlan(endLoc.X, endLoc.Y) == null)
+                    && floorPlan.GetRoomPlan(endLoc) == null)
                     yield return (Dir4)ii;
             }
         }

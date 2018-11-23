@@ -117,7 +117,7 @@ namespace RogueElements
             {
                 for (int xx = 0; xx < plan.GridWidth; xx++)
                 {
-                    int roomIndex = plan.GetRoomIndex(xx, yy);
+                    int roomIndex = plan.GetRoomIndex(new Loc(xx, yy));
                     if (roomIndex == -1)
                         str.Append('0');
                     else if (roomIndex < 26)
@@ -127,7 +127,7 @@ namespace RogueElements
 
                     if (xx < plan.GridWidth - 1)
                     {
-                        if (plan.GetHall(new Loc(xx,yy), Dir4.Right) != null)
+                        if (plan.GetHall(new LocRay4(xx,yy, Dir4.Right)) != null)
                             str.Append('#');
                         else
                             str.Append('.');
@@ -139,7 +139,7 @@ namespace RogueElements
                 {
                     for (int xx = 0; xx < plan.GridWidth; xx++)
                     {
-                        if (plan.GetHall(new Loc(xx, yy), Dir4.Down) != null)
+                        if (plan.GetHall(new LocRay4(xx, yy, Dir4.Down)) != null)
                             str.Append('#');
                         else
                             str.Append('.');
@@ -171,6 +171,8 @@ namespace RogueElements
             catch (Exception ex)
             {
                 Debug.Write("ERROR: " + seed);
+                Debug.Write(ex.ToString());
+                Debug.Write(ex.StackTrace);
             }
         }
 

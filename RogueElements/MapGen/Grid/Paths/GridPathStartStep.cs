@@ -12,7 +12,7 @@ namespace RogueElements
         public void CreateErrorPath(IRandom rand, GridPlan floorPlan)
         {
             floorPlan.Clear();
-            floorPlan.AddRoom(0, 0, GetDefaultGen());
+            floorPlan.AddRoom(new Loc(0, 0), GetDefaultGen());
         }
         
         public static bool RollRatio(IRandom rand, ref int ratio, ref int max)
@@ -30,10 +30,10 @@ namespace RogueElements
         public static void SafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen)
         {
             floorPlan.SetConnectingHall(room1, room2, hallGen);
-            if (floorPlan.GetRoomPlan(room1.X, room1.Y) == null)
-                floorPlan.AddRoom(room1.X, room1.Y, roomGen);
-            if (floorPlan.GetRoomPlan(room2.X, room2.Y) == null)
-                floorPlan.AddRoom(room2.X, room2.Y, roomGen);
+            if (floorPlan.GetRoomPlan(room1) == null)
+                floorPlan.AddRoom(room1, roomGen);
+            if (floorPlan.GetRoomPlan(room2) == null)
+                floorPlan.AddRoom(room2, roomGen);
         }
 
         public virtual RoomGen<T> GetDefaultGen()

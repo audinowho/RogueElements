@@ -10,6 +10,13 @@ namespace RogueElements
         public delegate List<int> GetAdjacents(int nodeIndex);
         public delegate void DistNodeAction(int nodeIndex, int distance);
 
+        /// <summary>
+        /// Traverses a list of nodes. Internally handles the state of traversed/untraversed nodes.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="start"></param>
+        /// <param name="nodeAct"></param>
+        /// <param name="getAdjacents"></param>
         public static void TraverseBreadthFirst(int count, int start, DistNodeAction nodeAct, GetAdjacents getAdjacents)
         {
             int[] found = new int[count];

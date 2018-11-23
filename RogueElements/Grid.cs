@@ -178,6 +178,14 @@ namespace RogueElements
 
         }
 
+        /// <summary>
+        /// Traverses a grid. Does not internally handle the state of traversed/untraversed nodes.
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <param name="fillOp"></param>
+        /// <param name="loc"></param>
         public static void FloodFill(Rect rect, LocTest checkBlock, LocTest checkDiagBlock, LocAction fillOp, Loc loc)
         {
             Stack<ScanLineTile> stack = new Stack<ScanLineTile>();

@@ -69,7 +69,7 @@ namespace RogueElements
             }
 
             //fulfill existing borders since this room doesn't cover the entire square
-            FulfillRoomBorders(map);
+            FulfillRoomBorders(map, false);
             //hall restrictions
             SetRoomBorders(map);
         }

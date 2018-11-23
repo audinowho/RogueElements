@@ -84,7 +84,7 @@
     <Compile Include="MapGen\Grid\Paths\GridPathStartStepGeneric.cs" />
     <Compile Include="MapGen\Grid\DrawGridToFloorStep.cs" />
     <Compile Include="MapGen\FloorPlan\AddSpecialRoomStep.cs" />
-    <Compile Include="MapGen\Grid\ConnectGridTerminalStep.cs" />
+    <Compile Include="MapGen\Grid\ConnectGridBranchStep.cs" />
     <Compile Include="MapGen\Grid\AddGridSpecialRoomStep.cs" />
     <Compile Include="MapGen\FloorPlan\DrawFloorToTileStep.cs" />
     <Compile Include="MapGen\FloorPlan\FloorPlanStep.cs" />

@@ -165,7 +165,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets whether or not the provided <see cref="Rect"/> lies within the bounds of this <see cref="Rect"/>.
+        /// Gets whether or not the provided <see cref="Rect"/> lies entirely within the bounds of this <see cref="Rect"/>.
         /// </summary>
         /// <param name="value">The <see cref="Rect"/> to check for inclusion in this <see cref="Rect"/>.</param>
         /// <returns><c>true</c> if the provided <see cref="Rect"/>'s bounds lie entirely inside this <see cref="Rect"/>; <c>false</c> otherwise.</returns>

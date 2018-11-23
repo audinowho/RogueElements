@@ -56,7 +56,7 @@ namespace RogueElements.Tests
                                 "0.0.0"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('A');
-            floorPlan.AddRoom(1, 0, 1, 1, gen);
+            floorPlan.AddRoom(new Rect(1, 0, 1, 1), gen);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -80,7 +80,7 @@ namespace RogueElements.Tests
                                 "0.A.A.A"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('A');
-            floorPlan.AddRoom(1, 1, 3, 2, gen);
+            floorPlan.AddRoom(new Rect(1, 1, 3, 2), gen);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -98,7 +98,7 @@ namespace RogueElements.Tests
                                 "0.A.A.A"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('B');
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(1, 0, 2, 2, gen); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 0, 2, 2), gen); });
 
         }
 
@@ -150,7 +150,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('A');
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(1, 1, 2, 2, gen); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen); });
             
         }
 
@@ -170,7 +170,7 @@ namespace RogueElements.Tests
                                 "G#I.I#H"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('I');
-            floorPlan.AddRoom(1, 1, 2, 2, gen);
+            floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen);
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
@@ -191,7 +191,7 @@ namespace RogueElements.Tests
                                 "0.0.0.0"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridRoomGen gen = new TestGridRoomGen('A');
-            Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(x, y, w, h, gen); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(new Rect(x, y, w, h), gen); });
 
         }
 
@@ -254,11 +254,11 @@ namespace RogueElements.Tests
             TestGridRoomGen gen = new TestGridRoomGen((char)0);
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new Loc(1, 1), dir, gen); });
+                Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
                 return;
             }
             else
-                floorPlan.SetHall(new Loc(1, 1), dir, gen);
+                floorPlan.SetHall(new LocRay4(1, 1, dir), gen);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -282,7 +282,7 @@ namespace RogueElements.Tests
                                 "0.0.0.0"};
             
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.SetHall(new Loc(1, 1), Dir4.Right, null);
+            floorPlan.SetHall(new LocRay4(1, 1, Dir4.Right), null);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);

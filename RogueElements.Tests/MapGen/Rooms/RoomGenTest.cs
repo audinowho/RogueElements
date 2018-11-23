@@ -446,7 +446,7 @@ namespace RogueElements.Tests
                 roomGen.Object.ReceiveBorderRange(new Range(1, 5), Dir4.Right);
             //find where the class chose to dig
 
-            roomGen.Object.FulfillRoomBorders(testContext);
+            roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
         }
@@ -474,7 +474,7 @@ namespace RogueElements.Tests
             roomGen.Object.ReceiveBorderRange(new Range(2, 5), Dir4.Down);
             //find where the class chose to dig
 
-            roomGen.Object.FulfillRoomBorders(testContext);
+            roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
         }
@@ -509,7 +509,7 @@ namespace RogueElements.Tests
             roomGen.Object.ReceiveBorderRange(new Range(3, 7), Dir4.Down);
             //find where the class chose to dig
 
-            roomGen.Object.FulfillRoomBorders(testContext);
+            roomGen.Object.FulfillRoomBorders(testContext, false);
             
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expectedX), Times.Once());
             testRand.Verify(p => p.Next(1), Times.Exactly(1));
@@ -543,11 +543,42 @@ namespace RogueElements.Tests
             roomGen.Object.ReceiveBorderRange(new Range(4, 7), Dir4.Down);
             //find where the class chose to dig
 
-            roomGen.Object.FulfillRoomBorders(testContext);
+            roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 4), Times.Once());
             testRand.Verify(p => p.Next(2), Times.Exactly(2));
             testRand.Verify(p => p.Next(1), Times.Exactly(1));
+        }
+
+        [Test]
+        public void FulfillRoomBordersNoneOneMissingFillAll()
+        {
+            //one sidereq not met, fulfilled completely, only fulfillable borders
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>>() { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            string[] inGrid =  { "XXXXXXXX",
+                                 "XX.....X",
+                                 "XX.....X",
+                                 "XX.....X",
+                                 "XXXXXXXX",
+                                 "XXXXXXXX",
+                                 "XXXXXXXX" };
+
+            TestGenContext testContext = TestGenContext.InitGridToContext(inGrid);
+            testContext.SetTestRand(testRand.Object);
+            roomGen.Object.PrepareSize(testRand.Object, new Loc(5, 4));
+            roomGen.Object.SetLoc(new Loc(2, 1));
+            roomGen.Object.PublicFulfillableBorder[(int)Dir4.Down][2] = false;
+            roomGen.Object.PublicFulfillableBorder[(int)Dir4.Down][3] = false;
+            roomGen.Object.ReceiveBorderRange(new Range(2, 7), Dir4.Down);
+            //find where the class chose to dig
+
+            roomGen.Object.FulfillRoomBorders(testContext, true);
+
+            roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 2), Times.Once());
+            roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 3), Times.Once());
+            roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 6), Times.Once());
         }
 
         [Test]
@@ -582,7 +613,7 @@ namespace RogueElements.Tests
             roomGen.Object.ReceiveBorderRange(new Range(2, 5), Dir4.Right);
             //find where the class chose to dig
 
-            roomGen.Object.FulfillRoomBorders(testContext);
+            roomGen.Object.FulfillRoomBorders(testContext, false);
 
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expected1), Times.Once());

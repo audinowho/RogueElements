@@ -222,9 +222,9 @@ namespace RogueElements
         /// <summary>
         /// Simple method to fulfill border requirements by digging until the room is reached.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="room"></param>
-        public virtual void FulfillRoomBorders(T map)
+        /// <param name="map">Map to draw on.</param>
+        /// <param name="openAll">Chooses all borders instead of just one.</param>
+        public virtual void FulfillRoomBorders(T map, bool openAll)
         {
             //NOTE: This assumes that reaching any open tile results in reaching the room as a whole.
             //It also assumes that an open tile would eventually be reached if dug far enough.
@@ -260,17 +260,35 @@ namespace RogueElements
                 Dir4 dir = (Dir4)ii;
                 //get the permitted tiles for each sidereq
                 Range side = Draw.GetSide(dir.ToAxis());
-                bool[] permittedRange = new bool[side.Length];
-                for (int jj = 0; jj < permittedRange.Length; jj++)
-                    permittedRange[jj] = true;
-                List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, permittedRange, unfulfilled[ii]);
-                //randomly roll them
-                List<int> resultEntrances = new List<int>();
-                foreach(HashSet<int> candidateSet in candidateEntrances)
-                    resultEntrances.Add(MathUtils.ChooseFromHash(candidateSet, map.Rand));
-                //fulfill them with a simple inwards digging until a walkable is reached
-                for (int jj = 0; jj < resultEntrances.Count; jj++)
-                    DigAtBorder(map, dir, resultEntrances[jj]);
+
+                if (!openAll)
+                {
+                    List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, borderToFulfill[ii], unfulfilled[ii]);
+                    //randomly roll them
+                    List<int> resultEntrances = new List<int>();
+                    foreach (HashSet<int> candidateSet in candidateEntrances)
+                        resultEntrances.Add(MathUtils.ChooseFromHash(candidateSet, map.Rand));
+                    //fulfill them with a simple inwards digging until a walkable is reached
+                    for (int jj = 0; jj < resultEntrances.Count; jj++)
+                        DigAtBorder(map, dir, resultEntrances[jj]);
+                }
+                else
+                {
+                    for (int jj = 0; jj < side.Length; jj++)
+                    {
+                        if (fulfillableBorder[ii][jj])
+                        {
+                            foreach (Range range in unfulfilled[ii])
+                            {
+                                if (range.Contains(side.Min + jj))
+                                {
+                                    DigAtBorder(map, dir, side.Min + jj);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

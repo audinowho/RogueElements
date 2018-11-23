@@ -24,6 +24,11 @@ namespace RogueElements
             Loc = loc;
             Dir = dir;
         }
+        public LocRay8(int x, int y, Dir8 dir)
+        {
+            Loc = new Loc(x, y);
+            Dir = dir;
+        }
 
         public Loc Traverse(int dist)
         {
@@ -50,6 +55,11 @@ namespace RogueElements
         public LocRay4(Loc loc, Dir4 dir)
         {
             Loc = loc;
+            Dir = dir;
+        }
+        public LocRay4(int x, int y, Dir4 dir)
+        {
+            Loc = new Loc(x, y);
             Dir = dir;
         }
 
