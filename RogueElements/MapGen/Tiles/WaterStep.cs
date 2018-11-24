@@ -27,7 +27,9 @@ namespace RogueElements
                     Loc srcLoc = destLoc + mapBlob.Bounds.Start - offset;
                     if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
                     {
-                        if (map.GetTile(destLoc).TileEquivalent(map.WallTerrain) || !map.TileBlocked(destLoc) && encroach)
+                        //can place anything if encroaching
+                        //otherwise, can place anything except roomterrain
+                        if (encroach || !map.GetTile(destLoc).TileEquivalent(map.RoomTerrain))
                             map.TrySetTile(new Loc(xx, yy), Terrain.Copy());
                     }
                 }
