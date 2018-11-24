@@ -27,13 +27,13 @@ namespace RogueElements
             return roll;
         }
 
-        public static void SafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen)
+        public static void SafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen, bool preferHall = false)
         {
             floorPlan.SetConnectingHall(room1, room2, hallGen);
             if (floorPlan.GetRoomPlan(room1) == null)
-                floorPlan.AddRoom(room1, roomGen);
+                floorPlan.AddRoom(room1, roomGen, false, preferHall);
             if (floorPlan.GetRoomPlan(room2) == null)
-                floorPlan.AddRoom(room2, roomGen);
+                floorPlan.AddRoom(room2, roomGen, false, preferHall);
         }
 
         public virtual RoomGen<T> GetDefaultGen()

@@ -27,8 +27,11 @@ namespace RogueElements.Tests
 
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.SetRoomImmutable(1, true);
-            floorPlan.SetRoomGen(3, new RoomGenDefault<IGridPathTestContext>());
+            GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+            roomPlan.Immutable = true;
+            roomPlan = floorPlan.GetRoomPlan(3);
+            roomPlan.RoomGen = new RoomGenDefault<IGridPathTestContext>();
+            roomPlan.PreferHall = true;
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3)).Returns(roll);
@@ -63,9 +66,12 @@ namespace RogueElements.Tests
 
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.SetRoomImmutable(0, true);
-            floorPlan.SetRoomImmutable(1, true);
-            floorPlan.SetRoomImmutable(2, true);
+            GridRoomPlan roomPlan = floorPlan.GetRoomPlan(0);
+            roomPlan.Immutable = true;
+            roomPlan = floorPlan.GetRoomPlan(1);
+            roomPlan.Immutable = true;
+            roomPlan = floorPlan.GetRoomPlan(2);
+            roomPlan.Immutable = true;
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 

@@ -491,6 +491,7 @@ namespace RogueElements.Tests
             }
             {
                 gridPlan.PublicArrayRooms[1].RoomGen = new RoomGenDefault<IFloorPlanTestContext>();
+                gridPlan.PublicArrayRooms[1].PreferHall = true;
             }
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen('B');

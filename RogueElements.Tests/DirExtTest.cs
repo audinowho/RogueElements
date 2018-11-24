@@ -521,9 +521,9 @@ namespace RogueElements.Tests
         public void FromAxisScalar(Axis4 axis, int scalar, int expectedX, int expectedY, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { DirExt.CreateLoc(axis, scalar); });
+                Assert.Throws<ArgumentException>(() => { DirExt.CreateLoc(axis, scalar, 0); });
             else
-                Assert.That(DirExt.CreateLoc(axis, scalar), Is.EqualTo(new Loc(expectedX, expectedY)));
+                Assert.That(DirExt.CreateLoc(axis, scalar, 0), Is.EqualTo(new Loc(expectedX, expectedY)));
         }
 
         [Test]

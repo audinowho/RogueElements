@@ -29,10 +29,10 @@ namespace RogueElements
                 //place the rooms at the edge
                 int x = Vertical ? ii : 0;
                 int y = Vertical ? 0 : ii;
-                floorPlan.SetRoomGen(new Loc(x, y), GenericRooms.Pick(rand));
+                floorPlan.AddRoom(new Loc(x, y), GenericRooms.Pick(rand));
                 x = Vertical ? ii : gapLength - 1;
                 y = Vertical ? gapLength - 1 : ii;
-                floorPlan.SetRoomGen(new Loc(x, y), GenericRooms.Pick(rand));
+                floorPlan.AddRoom(new Loc(x, y), GenericRooms.Pick(rand));
 
                 if (gapLength > 2)
                 {
@@ -41,7 +41,7 @@ namespace RogueElements
                     y = Vertical ? 1 : ii;
                     int w = Vertical ? 1 : gapLength - 2;
                     int h = Vertical ? gapLength - 2 : 1;
-                    floorPlan.AddRoom(new Rect(x, y, w, h), GetDefaultGen());
+                    floorPlan.AddRoom(new Rect(x, y, w, h), GetDefaultGen(), false, true);
                 }
             }
 

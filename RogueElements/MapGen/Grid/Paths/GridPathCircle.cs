@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -28,37 +29,41 @@ namespace RogueElements
             if (roomOpen < 1 && paths < 1)
                 roomOpen = 1;
 
-            for (int x = 1; x < floorPlan.GridWidth; x++)
+            //draw the top and bottom
+            for (int xx = 0; xx < floorPlan.GridWidth; xx++)
             {
-                SafeAddHall(new Loc(x - 1, 0), new Loc(x, 0), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
-                SafeAddHall(new Loc(x - 1, floorPlan.GridHeight - 1), new Loc(x, floorPlan.GridHeight - 1), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
-                if (x == 1)
+                RollOpenRoom(rand, floorPlan, new Loc(xx, 0), ref roomOpen, ref maxRooms);
+                RollOpenRoom(rand, floorPlan, new Loc(xx, floorPlan.GridHeight - 1), ref roomOpen, ref maxRooms);
+                if (xx > 0)
                 {
-                    RollOpenRoom(rand, floorPlan, new Loc(x - 1, 0), ref roomOpen, ref maxRooms);
-                    RollOpenRoom(rand, floorPlan, new Loc(x - 1, floorPlan.GridHeight - 1), ref roomOpen, ref maxRooms);
-                }
-                RollOpenRoom(rand, floorPlan, new Loc(x, 0), ref roomOpen, ref maxRooms);
-                RollOpenRoom(rand, floorPlan, new Loc(x, floorPlan.GridHeight - 1), ref roomOpen, ref maxRooms);
-            }
-
-            for (int y = 1; y < floorPlan.GridHeight; y++)
-            {
-                SafeAddHall(new Loc(0, y - 1), new Loc(0, y), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
-                SafeAddHall(new Loc(floorPlan.GridWidth - 1, y - 1), new Loc(floorPlan.GridWidth - 1, y), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
-
-                if (y < floorPlan.GridHeight - 1)
-                {
-                    RollOpenRoom(rand, floorPlan, new Loc(0, y), ref roomOpen, ref maxRooms);
-                    RollOpenRoom(rand, floorPlan, new Loc(floorPlan.GridWidth - 1, y), ref roomOpen, ref maxRooms);
+                    floorPlan.SetConnectingHall(new Loc(xx - 1, 0), new Loc(xx, 0), GenericHalls.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(xx - 1, floorPlan.GridHeight - 1), new Loc(xx, floorPlan.GridHeight - 1), GenericHalls.Pick(rand));
                 }
             }
 
+            //draw the left and right (excluding the top and bottom)
+            for (int yy = 0; yy < floorPlan.GridHeight; yy++)
+            {
+                //exclude the top and bottom
+                if (yy > 0 && yy < floorPlan.GridHeight - 1)
+                {
+                    RollOpenRoom(rand, floorPlan, new Loc(0, yy), ref roomOpen, ref maxRooms);
+                    RollOpenRoom(rand, floorPlan, new Loc(floorPlan.GridWidth - 1, yy), ref roomOpen, ref maxRooms);
+                }
+                if (yy > 0)
+                {
+                    floorPlan.SetConnectingHall(new Loc(0, yy - 1), new Loc(0, yy), GenericHalls.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, yy - 1), new Loc(floorPlan.GridWidth - 1, yy), GenericHalls.Pick(rand));
+                }
+            }
+
+            Rect innerRect = new Rect(1, 1, floorPlan.GridWidth - 2, floorPlan.GridHeight - 2);
             //create inner paths
             for (int pathsMade = 0; pathsMade < paths; pathsMade++)
             {
-                Dir4 startDir = (Dir4)(rand.Next() % 4);
-                int x = rand.Next() % (floorPlan.GridWidth - 2) + 1;
-                int y = rand.Next() % (floorPlan.GridHeight - 2) + 1;
+                Dir4 startDir = (Dir4)rand.Next(4);
+                int x = rand.Next(innerRect.Start.X, innerRect.End.X);
+                int y = rand.Next(innerRect.Start.Y, innerRect.End.Y);
                 switch (startDir)
                 {
                     case Dir4.Down:
@@ -74,39 +79,51 @@ namespace RogueElements
                         x = 0;
                         break;
                 }
-
                 Loc wanderer = new Loc(x, y);
                 Dir4 prevDir = Dir4.None; // direction of movement
-                int pathLength = (startDir.ToAxis() == Axis4.Vert) ? floorPlan.GridHeight - 2 : floorPlan.GridWidth - 2;
+                int pathLength = (startDir.ToAxis() == Axis4.Vert) ? innerRect.Height : innerRect.Width;
                 for (int currentLength = 0; currentLength < pathLength; currentLength++)
                 {
-                    Loc sample = new Loc();
-                    Dir4 nextDir = (Dir4)rand.Next(0, 4);
-                    bool canMoveHere = false;
-                    while (!canMoveHere)
+                    Dir4 chosenDir = startDir;
+                    //avoid this block the first time
+                    if (currentLength > 0)
                     {
-                        nextDir = (Dir4)(((int)nextDir + 1) % 4);
-                        if (nextDir == prevDir)
-                            continue;
-                        sample = wanderer + nextDir.GetLoc();
-                        if (sample.X > 0 && sample.X < floorPlan.GridWidth-1 && sample.Y > 0 && sample.Y < floorPlan.GridHeight-1)
-                            canMoveHere = true;
-                    }
-                    prevDir = nextDir.Reverse();
-
-                    floorPlan.SetConnectingHall(wanderer, sample, GenericHalls.Pick(rand));
-                    wanderer = sample;
-
-
-                    if (!floorPlan.IsRoomOpen(wanderer))
-                    {
-                        if (currentLength == pathLength-1)//determine if the room should be default
+                        List<Dir4> dirs = new List<Dir4>();
+                        for (int dd = 0; dd < DirExt.DIR4_COUNT; dd++)
                         {
-                            floorPlan.SetRoomGen(wanderer, GenericRooms.Pick(rand));
+                            Dir4 dir = (Dir4)dd;
+                            //do not backtrack
+                            if (dir == prevDir)
+                                continue;
+                            //do not hit edge
+                            if (!Collision.InBounds(innerRect, wanderer + dir.GetLoc()))
+                                continue;
+                            dirs.Add(dir);
                         }
-                        else
-                            floorPlan.SetRoomGen(wanderer, GetDefaultGen());
+                        chosenDir = dirs[rand.Next(dirs.Count)];
                     }
+                    Loc dest = wanderer + chosenDir.GetLoc();
+
+                    GridRoomPlan existingRoom = floorPlan.GetRoomPlan(dest);
+                    if (existingRoom == null)
+                    {
+                        if (currentLength == pathLength - 1)//only the end room can be a non-hall
+                            floorPlan.AddRoom(dest, GenericRooms.Pick(rand));
+                        else
+                            floorPlan.AddRoom(dest, GetDefaultGen(), false, true);
+                    }
+                    else if (existingRoom.CountsAsHall())
+                    {
+                        if (currentLength == pathLength - 1)//override the hall room
+                        {
+                            existingRoom.RoomGen = GenericRooms.Pick(rand).Copy();
+                            existingRoom.PreferHall = false;
+                        }
+                    }
+                    floorPlan.SetConnectingHall(wanderer, dest, GenericHalls.Pick(rand));
+
+                    wanderer = dest;
+                    prevDir = chosenDir.Reverse();
                 }
             }
         }
@@ -114,7 +131,9 @@ namespace RogueElements
         private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
         {
             if (RollRatio(rand, ref roomOpen, ref maxRooms))
-                floorPlan.SetRoomGen(loc, GenericRooms.Pick(rand));
+                floorPlan.AddRoom(loc, GenericRooms.Pick(rand));
+            else
+                floorPlan.AddRoom(loc, GetDefaultGen(), false, true);
         }
     }
 }

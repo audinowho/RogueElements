@@ -34,7 +34,9 @@ namespace RogueElements
             for (int ii = 0; ii < amountToDefault; ii++)
             {
                 int randIndex = rand.Next(candidates.Count);
-                floorPlan.SetRoomGen(candidates[randIndex], new RoomGenDefault<T>());
+                GridRoomPlan plan = floorPlan.GetRoomPlan(candidates[randIndex]);
+                plan.RoomGen = new RoomGenDefault<T>();
+                plan.PreferHall = true;
                 candidates.RemoveAt(randIndex);
             }
         }

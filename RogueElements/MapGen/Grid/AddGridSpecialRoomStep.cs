@@ -20,14 +20,15 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (!plan.Immutable && !(plan.RoomGen is RoomGenDefault<T>))
+                if (!plan.Immutable && !plan.CountsAsHall())
                     room_indices.Add(ii);
             }
             if (room_indices.Count > 0)
             {
                 int ind = rand.Next(room_indices.Count);
-                floorPlan.SetRoomGen(room_indices[ind], Rooms.Pick(rand));
-                floorPlan.SetRoomImmutable(room_indices[ind], true);
+                GridRoomPlan plan = floorPlan.GetRoomPlan(room_indices[ind]);
+                plan.RoomGen = Rooms.Pick(rand).Copy();
+                plan.Immutable = true;
                 room_indices.RemoveAt(ind);
             }
         }

@@ -20,7 +20,7 @@ namespace RogueElements
             //gather up all rooms and put in a spawn list
             //rooms that are farther from the start are more likely to have items
 
-            SpawnList<int> spawningRooms = new SpawnList<int>();
+            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
             int[] roomWeights = new int[map.RoomPlan.RoomCount];
 
             //get the start room
@@ -51,7 +51,7 @@ namespace RogueElements
             int multFactor = Int32.MaxValue / maxVal / roomWeights.Length;
             for (int ii = 0; ii < roomWeights.Length; ii++)
             {
-                spawningRooms.Add(ii, roomWeights[ii] * multFactor);
+                spawningRooms.Add(new RoomHallIndex(ii, false), roomWeights[ii] * multFactor);
             }
 
             SpawnRandInCandRooms(map, spawningRooms, spawns, SuccessPercent);

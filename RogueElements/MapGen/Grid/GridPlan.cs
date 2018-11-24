@@ -113,11 +113,10 @@ namespace RogueElements
             for (int ii = 0; ii < arrayRooms.Count; ii++)
             {
                 GridRoomPlan plan = arrayRooms[ii];
-                IDefaultRoomGen defaultGen = plan.RoomGen as IDefaultRoomGen;
-                if (defaultGen != null)
+                if (plan.CountsAsHall())
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
-                    map.RoomPlan.AddHall(defaultGen);
+                    map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen);
                 }
                 else
                 {
@@ -254,38 +253,23 @@ namespace RogueElements
             }
         }
 
-        public bool IsRoomOpen(Loc loc)
+        public void AddRoom(Loc loc, IRoomGen gen)
         {
-            return (GetRoomPlan(loc) != null && !(GetRoomPlan(loc).RoomGen is IDefaultRoomGen));
+            AddRoom(new Rect(loc, new Loc(1)), gen, false, false);
         }
 
-        public void SetRoomGen(int index, IRoomGen gen)
+        public void AddRoom(Loc loc, IRoomGen gen, bool immutable, bool preferHall)
         {
-            arrayRooms[index].RoomGen = gen.Copy();
+            AddRoom(new Rect(loc, new Loc(1)), gen, immutable, preferHall);
         }
 
-        public void SetRoomImmutable(int index, bool immutable)
+
+        public void AddRoom(Rect rect, IRoomGen gen)
         {
-            arrayRooms[index].Immutable = immutable;
+            AddRoom(rect, gen, false, false);
         }
 
-        public void SetRoomGen(Loc loc, IRoomGen gen, bool immutable = false)
-        {
-            if (rooms[loc.X][loc.Y] == -1)
-                AddRoom(loc, gen, immutable);
-            else
-            {
-                arrayRooms[rooms[loc.X][loc.Y]].RoomGen = gen.Copy();
-                arrayRooms[rooms[loc.X][loc.Y]].Immutable = immutable;
-            }
-        }
-
-        public void AddRoom(Loc loc, IRoomGen gen, bool immutable = false)
-        {
-            AddRoom(new Rect(loc, new Loc(1)), gen, immutable);
-        }
-
-        public void AddRoom(Rect rect, IRoomGen gen, bool immutable = false)
+        public void AddRoom(Rect rect, IRoomGen gen, bool immutable, bool preferHall)
         {
             Rect floorRect = new Rect(0, 0, GridWidth, GridHeight);
             if (!floorRect.Contains(rect))
@@ -305,6 +289,7 @@ namespace RogueElements
             }
             GridRoomPlan room = new GridRoomPlan(rect, gen.Copy());
             room.Immutable = immutable;
+            room.PreferHall = preferHall;
             arrayRooms.Add(room);
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {

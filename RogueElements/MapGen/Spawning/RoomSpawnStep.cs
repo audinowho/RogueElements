@@ -7,18 +7,16 @@ namespace RogueElements
     public abstract class RoomSpawnStep<T, E> : BaseSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
     {
+
         public RoomSpawnStep() { }
-        public RoomSpawnStep(IStepSpawner<T, E> spawn)
-        {
-            Spawn = spawn;
-        }
-        
-        public virtual void SpawnRandInCandRooms(T map, SpawnList<int> spawningRooms, List<E> spawns, int successPercent)
+        public RoomSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
+
+        public virtual void SpawnRandInCandRooms(T map, SpawnList<RoomHallIndex> spawningRooms, List<E> spawns, int successPercent)
         {
             while (spawningRooms.Count > 0 && spawns.Count > 0)
             {
                 int randIndex = spawningRooms.PickIndex(map.Rand);
-                int roomIndex = spawningRooms.GetSpawn(randIndex);
+                RoomHallIndex roomIndex = spawningRooms.GetSpawn(randIndex);
                 //try to spawn the item
                 if (SpawnInRoom(map, roomIndex, spawns[spawns.Count - 1]))
                 {
@@ -38,9 +36,9 @@ namespace RogueElements
             }
         }
 
-        public virtual bool SpawnInRoom(T map, int roomIndex, E spawn)
+        public virtual bool SpawnInRoom(T map, RoomHallIndex roomIndex, E spawn)
         {
-            IRoomGen room = map.RoomPlan.GetRoom(roomIndex);
+            IRoomGen room = map.RoomPlan.GetRoomHall(roomIndex).Gen;
             List<Loc> freeTiles = map.GetFreeTiles(room.Draw);
 
             if (freeTiles.Count > 0)

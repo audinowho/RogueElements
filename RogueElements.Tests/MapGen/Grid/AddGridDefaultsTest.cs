@@ -144,7 +144,8 @@ namespace RogueElements.Tests
 
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.SetRoomImmutable(2, true);
+            GridRoomPlan roomPlan = floorPlan.GetRoomPlan(2);
+            roomPlan.Immutable = true;
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);

@@ -52,7 +52,7 @@ namespace RogueElements
         }
 
 
-        public BaseFloorRoomPlan GetRoomHall(RoomHallIndex room)
+        public virtual BaseFloorRoomPlan GetRoomHall(RoomHallIndex room)
         {
             if (!room.IsHall)
                 return rooms[room.Index];

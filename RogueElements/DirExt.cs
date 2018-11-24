@@ -648,14 +648,14 @@ namespace RogueElements
             return (Dir8)(((int)dir1 + (int)dir2) % 8);
         }
         
-        public static Loc CreateLoc(this Axis4 axis, int scalar)
+        public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
             if (axis <= Axis4.None || (int)axis >= AXIS4_COUNT)
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.Horiz)
-                return new Loc(scalar, 0);
+                return new Loc(scalar, orth);
             else
-                return new Loc(0, scalar);
+                return new Loc(orth, scalar);
         }
 
         public static int GetScalar(this Loc loc, Axis4 axis)

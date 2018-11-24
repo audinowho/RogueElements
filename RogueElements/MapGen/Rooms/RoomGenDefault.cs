@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomGenDefault<T> : PermissiveRoomGen<T>, IDefaultRoomGen where T : ITiledGenContext
+    public class RoomGenDefault<T> : PermissiveRoomGen<T> where T : ITiledGenContext
     {
         public RoomGenDefault() { }
 
@@ -18,11 +18,6 @@ namespace RogueElements
         {
             DrawMapDefault(map);
         }
-    }
-
-
-    public interface IDefaultRoomGen : IPermissiveRoomGen
-    {
     }
 
 }

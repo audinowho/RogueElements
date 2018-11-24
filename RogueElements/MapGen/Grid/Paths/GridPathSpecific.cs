@@ -29,7 +29,7 @@ namespace RogueElements
             {
                 SpecificGridRoomPlan<T> chosenRoom = SpecificRooms[ii];
                 
-                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable);
+                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable, chosenRoom.PreferHall);
             }
 
             //place halls
@@ -40,18 +40,18 @@ namespace RogueElements
                     if (x > 0)
                     {
                         if (SpecificHHalls[x - 1][y] != null)
-                            UnsafeAddHall(new Loc(x - 1, y), new Loc(x, y), floorPlan, SpecificHHalls[x - 1][y], GetDefaultGen());
+                            UnsafeAddHall(new Loc(x - 1, y), new Loc(x, y), floorPlan, SpecificHHalls[x - 1][y]);
                     }
                     if (y > 0)
                     {
                         if (SpecificVHalls[x][y - 1] != null)
-                            UnsafeAddHall(new Loc(x, y - 1), new Loc(x, y), floorPlan, SpecificVHalls[x][y - 1], GetDefaultGen());
+                            UnsafeAddHall(new Loc(x, y - 1), new Loc(x, y), floorPlan, SpecificVHalls[x][y - 1]);
                     }
                 }
             }
         }
 
-        public void UnsafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen)
+        public void UnsafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen)
         {
             floorPlan.SetConnectingHall(room1, room2, hallGen);
             if (floorPlan.GetRoomPlan(room1) == null || floorPlan.GetRoomPlan(room2) == null)
@@ -67,6 +67,7 @@ namespace RogueElements
     {
         public Rect Bounds;
         public bool Immutable;
+        public bool PreferHall;
         public RoomGen<T> RoomGen;
 
         public SpecificGridRoomPlan(Rect bounds, RoomGen<T> roomGen)
@@ -75,5 +76,11 @@ namespace RogueElements
             RoomGen = roomGen;
         }
 
+        public bool CountsAsHall()
+        {
+            if (!PreferHall)
+                return false;
+            return RoomGen is IPermissiveRoomGen;
+        }
     }
 }

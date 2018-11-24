@@ -9,6 +9,12 @@ namespace RogueElements
     {
         public IStepSpawner<T, E> Spawn;
 
+        public BaseSpawnStep() { }
+        public BaseSpawnStep(IStepSpawner<T, E> spawn)
+        {
+            Spawn = spawn;
+        }
+
         public abstract void DistributeSpawns(T map, List<E> spawns);
 
         public override void Apply(T map)

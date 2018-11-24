@@ -10,12 +10,20 @@ namespace RogueElements
     {
         public Rect Bounds;
         public bool Immutable;
+        public bool PreferHall;
         public IRoomGen RoomGen;
 
         public GridRoomPlan(Rect bounds, IRoomGen roomGen)
         {
             Bounds = bounds;
             RoomGen = roomGen;
+        }
+
+        public bool CountsAsHall()
+        {
+            if (!PreferHall)
+                return false;
+            return RoomGen is IPermissiveRoomGen;
         }
     }
     

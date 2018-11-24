@@ -27,40 +27,13 @@ namespace RogueElements
             if (roomOpen < 1)
                 roomOpen = 1;
 
-            //open random rooms on all sides
-            for (int x = 1; x < floorPlan.GridWidth - 1; x++)
-            {
-                if (RollRatio(rand, ref roomOpen, ref roomMax))
-                {
-                    floorPlan.SetRoomGen(new Loc(x, 0), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(x, 0), new Loc(x, 1), GenericHalls.Pick(rand));
-                }
-                if (RollRatio(rand, ref roomOpen, ref roomMax))
-                {
-                    floorPlan.SetRoomGen(new Loc(x,floorPlan.GridHeight - 1), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(x, floorPlan.GridHeight - 1), new Loc(x, floorPlan.GridHeight - 2), GenericHalls.Pick(rand));
-                }
-            }
-            for (int y = 1; y < floorPlan.GridHeight - 1; y++)
-            {
-                if (RollRatio(rand, ref roomOpen, ref roomMax))
-                {
-                    floorPlan.SetRoomGen(new Loc(0, y), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(0, y), new Loc(1, y), GenericHalls.Pick(rand));
-                }
-                if (RollRatio(rand, ref roomOpen, ref roomMax))
-                {
-                    floorPlan.SetRoomGen(new Loc(floorPlan.GridWidth - 1, y), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, y), new Loc(floorPlan.GridWidth - 2, y), GenericHalls.Pick(rand));
-                }
-            }
 
             //set hallrooms in middle of grid and open hallways between them
             for (int x = 1; x < floorPlan.GridWidth - 1; x++)
             {
                 for (int y = 1; y < floorPlan.GridHeight - 1; y++)
                 {
-                    floorPlan.SetRoomGen(new Loc(x,y), GetDefaultGen());
+                    floorPlan.AddRoom(new Loc(x, y), GetDefaultGen(), false, true);
 
                     if (x > 1)
                         floorPlan.SetConnectingHall(new Loc(x - 1, y), new Loc(x, y), GenericHalls.Pick(rand));
@@ -69,21 +42,49 @@ namespace RogueElements
                 }
             }
 
+            //open random rooms on all sides
+            for (int x = 1; x < floorPlan.GridWidth - 1; x++)
+            {
+                if (RollRatio(rand, ref roomOpen, ref roomMax))
+                {
+                    floorPlan.AddRoom(new Loc(x, 0), GenericRooms.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(x, 0), new Loc(x, 1), GenericHalls.Pick(rand));
+                }
+                if (RollRatio(rand, ref roomOpen, ref roomMax))
+                {
+                    floorPlan.AddRoom(new Loc(x,floorPlan.GridHeight - 1), GenericRooms.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(x, floorPlan.GridHeight - 1), new Loc(x, floorPlan.GridHeight - 2), GenericHalls.Pick(rand));
+                }
+            }
+            for (int y = 1; y < floorPlan.GridHeight - 1; y++)
+            {
+                if (RollRatio(rand, ref roomOpen, ref roomMax))
+                {
+                    floorPlan.AddRoom(new Loc(0, y), GenericRooms.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(0, y), new Loc(1, y), GenericHalls.Pick(rand));
+                }
+                if (RollRatio(rand, ref roomOpen, ref roomMax))
+                {
+                    floorPlan.AddRoom(new Loc(floorPlan.GridWidth - 1, y), GenericRooms.Pick(rand));
+                    floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, y), new Loc(floorPlan.GridWidth - 2, y), GenericHalls.Pick(rand));
+                }
+            }
+
             //get all halls eligible to be opened
             List<Loc> hHallSites = new List<Loc>();
             List<Loc> vHallSites = new List<Loc>();
             for (int x = 1; x < floorPlan.GridWidth; x++)
             {
-                if (floorPlan.IsRoomOpen(new Loc(x,0)) || floorPlan.IsRoomOpen(new Loc(x - 1,0)))
+                if (floorPlan.GetRoomPlan(new Loc(x,0)) != null || floorPlan.GetRoomPlan(new Loc(x - 1,0)) != null)
                     hHallSites.Add(new Loc(x,0));
-                if (floorPlan.IsRoomOpen(new Loc(x,floorPlan.GridHeight - 1)) || floorPlan.IsRoomOpen(new Loc(x - 1,floorPlan.GridHeight - 1)))
+                if (floorPlan.GetRoomPlan(new Loc(x,floorPlan.GridHeight - 1)) != null || floorPlan.GetRoomPlan(new Loc(x - 1,floorPlan.GridHeight - 1)) != null)
                     hHallSites.Add(new Loc(x, floorPlan.GridHeight - 1));
             }
             for (int y = 1; y < floorPlan.GridHeight; y++)
             {
-                if (floorPlan.IsRoomOpen(new Loc(0,y)) || floorPlan.IsRoomOpen(new Loc(0,y-1)))
+                if (floorPlan.GetRoomPlan(new Loc(0,y)) != null || floorPlan.GetRoomPlan(new Loc(0,y-1)) != null)
                     vHallSites.Add(new Loc(0, y));
-                if (floorPlan.IsRoomOpen(new Loc(floorPlan.GridWidth - 1,y)) || floorPlan.IsRoomOpen(new Loc(floorPlan.GridWidth - 1,y-1)))
+                if (floorPlan.GetRoomPlan(new Loc(floorPlan.GridWidth - 1,y)) != null || floorPlan.GetRoomPlan(new Loc(floorPlan.GridWidth - 1,y-1)) != null)
                     vHallSites.Add(new Loc(floorPlan.GridWidth - 1, y));
             }
             int halls = hHallSites.Count + vHallSites.Count;
@@ -94,7 +95,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(hHallSites[ii], hHallSites[ii] - new Loc(1, 0), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
+                    SafeAddHall(hHallSites[ii], hHallSites[ii] - new Loc(1, 0), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
                     placedHalls--;
                 }
                 halls--;
@@ -103,7 +104,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(vHallSites[ii], vHallSites[ii] - new Loc(0, 1), floorPlan, GenericHalls.Pick(rand), GetDefaultGen());
+                    SafeAddHall(vHallSites[ii], vHallSites[ii] - new Loc(0, 1), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
                     placedHalls--;
                 }
                 halls--;
