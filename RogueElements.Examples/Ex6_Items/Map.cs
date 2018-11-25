@@ -22,12 +22,14 @@ namespace RogueElements.Examples.Ex6_Items
         public List<StairsUp> GenEntrances;
         public List<StairsDown> GenExits;
         public List<Item> Items;
+        public List<Mob> Mobs;
 
         public Map()
         {
             GenEntrances = new List<StairsUp>();
             GenExits = new List<StairsDown>();
             Items = new List<Item>();
+            Mobs = new List<Mob>();
         }
 
         public void InitializeTiles(int width, int height)

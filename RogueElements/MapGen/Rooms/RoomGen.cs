@@ -238,21 +238,24 @@ namespace RogueElements
                 unfulfilled[ii].AddRange(roomSideReqs[ii]);
             }
 
-            for (int ii = 0; ii < Draw.Width; ii++)
+            if (!openAll)
             {
-                if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y)))
-                    updateUnfulfilled(unfulfilled[(int)Dir4.Up], Draw.Start.X + ii);
+                for (int ii = 0; ii < Draw.Width; ii++)
+                {
+                    if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y)))
+                        updateUnfulfilled(unfulfilled[(int)Dir4.Up], Draw.Start.X + ii);
 
-                if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1)))
-                    updateUnfulfilled(unfulfilled[(int)Dir4.Down], Draw.Start.X + ii);
-            }
+                    if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1)))
+                        updateUnfulfilled(unfulfilled[(int)Dir4.Down], Draw.Start.X + ii);
+                }
 
-            for (int ii = 0; ii < Draw.Height; ii++)
-            {
-                if (!map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii)))
-                    updateUnfulfilled(unfulfilled[(int)Dir4.Left], Draw.Start.Y + ii);
-                if (!map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii)))
-                    updateUnfulfilled(unfulfilled[(int)Dir4.Right], Draw.Start.Y + ii);
+                for (int ii = 0; ii < Draw.Height; ii++)
+                {
+                    if (!map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii)))
+                        updateUnfulfilled(unfulfilled[(int)Dir4.Left], Draw.Start.Y + ii);
+                    if (!map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii)))
+                        updateUnfulfilled(unfulfilled[(int)Dir4.Right], Draw.Start.Y + ii);
+                }
             }
 
             for (int ii = 0; ii < unfulfilled.Length; ii++)

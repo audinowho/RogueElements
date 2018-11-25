@@ -11,6 +11,10 @@ namespace RogueElements.Examples
         {
             Console.WindowWidth = Console.LargestWindowWidth;
             Console.WindowHeight = Console.LargestWindowHeight;
+#if DEBUG
+            GenContextDebug.OnInit = ExampleDebug.Init;
+            GenContextDebug.OnStep = ExampleDebug.OnStep;
+#endif
             while (true)
             {
                 Console.WriteLine("Press a key 1-7:");

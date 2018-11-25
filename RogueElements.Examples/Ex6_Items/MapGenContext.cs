@@ -6,7 +6,9 @@ using RogueElements;
 namespace RogueElements.Examples.Ex6_Items
 {
 
-    public class MapGenContext : ITiledGenContext, IRoomGridGenContext, IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>, IPlaceableGenContext<Item>
+    public class MapGenContext : ITiledGenContext, IRoomGridGenContext,
+        IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>,
+        IPlaceableGenContext<Item>, IPlaceableGenContext<Mob>
     {
         public Map Map { get; set; }
 
@@ -97,6 +99,7 @@ namespace RogueElements.Examples.Ex6_Items
 
 
         List<Loc> IPlaceableGenContext<Item>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
+        List<Loc> IPlaceableGenContext<Mob>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
         List<Loc> IPlaceableGenContext<StairsUp>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
         List<Loc> IPlaceableGenContext<StairsDown>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
 
@@ -108,6 +111,7 @@ namespace RogueElements.Examples.Ex6_Items
         }
 
         List<Loc> IPlaceableGenContext<Item>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
+        List<Loc> IPlaceableGenContext<Mob>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
         List<Loc> IPlaceableGenContext<StairsUp>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
         List<Loc> IPlaceableGenContext<StairsDown>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
 
@@ -121,9 +125,10 @@ namespace RogueElements.Examples.Ex6_Items
             return Grid.FindTilesInBox(rect.Start, rect.Size, checkOp);
         }
 
-        bool IPlaceableGenContext<Item>.CanPlaceItem(Loc loc) { return isTileOccupied(loc); }
-        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) { return isTileOccupied(loc); }
-        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) { return isTileOccupied(loc); }
+        bool IPlaceableGenContext<Item>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
+        bool IPlaceableGenContext<Mob>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
+        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
+        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
 
         private bool isTileOccupied(Loc loc)
         {
@@ -131,6 +136,11 @@ namespace RogueElements.Examples.Ex6_Items
                 return true;
 
             foreach (Item item in Map.Items)
+            {
+                if (item.Loc == loc)
+                    return true;
+            }
+            foreach (Mob item in Map.Mobs)
             {
                 if (item.Loc == loc)
                     return true;
@@ -144,6 +154,11 @@ namespace RogueElements.Examples.Ex6_Items
         {
             Item newItem = new Item(item.ID, loc);
             Map.Items.Add(newItem);
+        }
+        void IPlaceableGenContext<Mob>.PlaceItem(Loc loc, Mob item)
+        {
+            Mob newItem = new Mob(item.ID, loc);
+            Map.Mobs.Add(newItem);
         }
         void IPlaceableGenContext<StairsUp>.PlaceItem(Loc loc, StairsUp item)
         {

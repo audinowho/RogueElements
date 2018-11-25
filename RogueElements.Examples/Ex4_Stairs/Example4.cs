@@ -12,7 +12,7 @@ namespace RogueElements.Examples.Ex4_Stairs
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
             //Initialize a 3x2 grid of 10x10 cells.
-            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>();
+            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>(1);
             startGen.CellX = 3;
             startGen.CellY = 2;
 

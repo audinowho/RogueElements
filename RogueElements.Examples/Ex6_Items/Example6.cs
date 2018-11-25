@@ -8,11 +8,11 @@ namespace RogueElements.Examples.Ex6_Items
     {
         public static void Run()
         {
-            string title = "6: A Map with Randomly Placed Items";
+            string title = "6: A Map with Randomly Placed Items/Mobs";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
             //Initialize a 6x4 grid of 10x10 cells.
-            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>();
+            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>(1);
             startGen.CellX = 6;
             startGen.CellY = 4;
 
@@ -81,7 +81,14 @@ namespace RogueElements.Examples.Ex6_Items
             RandomSpawnStep<MapGenContext, Item> itemPlacement = new RandomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(6, itemPlacement));
 
-            
+            //Apply Mobs
+            SpawnList<Mob> mobSpawns = new SpawnList<Mob>();
+            mobSpawns.Add(new Mob((int)'r'), 20);
+            mobSpawns.Add(new Mob((int)'T'), 10);
+            mobSpawns.Add(new Mob((int)'D'), 5);
+            RandomSpawnStep<MapGenContext, Mob> mobPlacement = new RandomSpawnStep<MapGenContext, Mob>(new PickerSpawner<MapGenContext, Mob>(new LoopedRand<Mob>(mobSpawns, new RandRange(10, 19))));
+            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(6, mobPlacement));
+
             //Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());
             Print(context.Map, title);
@@ -137,6 +144,14 @@ namespace RogueElements.Examples.Ex6_Items
 
 
                     foreach (Item item in map.Items)
+                    {
+                        if (item.Loc == loc)
+                        {
+                            tileChar = (char)item.ID;
+                            break;
+                        }
+                    }
+                    foreach (Mob item in map.Mobs)
                     {
                         if (item.Loc == loc)
                         {

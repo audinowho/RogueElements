@@ -119,8 +119,8 @@ namespace RogueElements.Examples.Ex5_Terrain
             return Grid.FindTilesInBox(rect.Start, rect.Size, checkOp);
         }
 
-        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) { return isTileOccupied(loc); }
-        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) { return isTileOccupied(loc); }
+        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
+        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
 
         private bool isTileOccupied(Loc loc)
         {

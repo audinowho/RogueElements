@@ -15,7 +15,7 @@ namespace RogueElements.Examples.Ex7_Integration
 
 
             //Initialize a 6x4 grid of 10x10 cells.
-            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>();
+            InitGridPlanStep<MapGenContext> startGen = new InitGridPlanStep<MapGenContext>(1);
             startGen.CellX = 6;
             startGen.CellY = 4;
 
