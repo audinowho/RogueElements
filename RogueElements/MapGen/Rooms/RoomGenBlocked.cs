@@ -36,6 +36,7 @@ namespace RogueElements
                 for (int y = 0; y < Draw.Size.Y; y++)
                     map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
             }
+            GenContextDebug.DebugProgress("Room Rect");
 
             Loc blockSize = new Loc(Math.Min(BlockWidth.Pick(map.Rand), Draw.Size.X - 2), Math.Min(BlockHeight.Pick(map.Rand), Draw.Size.Y - 2));
             Loc blockStart = new Loc(Draw.X + map.Rand.Next(1, Draw.Size.X - blockSize.X - 1), Draw.Y + map.Rand.Next(1, Draw.Size.Y - blockSize.Y - 1));
@@ -44,6 +45,7 @@ namespace RogueElements
                 for (int y = 0; y < blockSize.Y; y++)
                     map.SetTile(new Loc(blockStart.X + x, blockStart.Y + y), BlockTerrain.Copy());
             }
+            GenContextDebug.DebugProgress("Block Rect");
 
             //hall restrictions
             SetRoomBorders(map);

@@ -500,6 +500,7 @@ namespace RogueElements
                         map.SetTile(new Loc(ii, point1.Y), terrain.Copy());
                 }
             }
+            GenContextDebug.DebugProgress("Hall Line");
         }
     }
 }

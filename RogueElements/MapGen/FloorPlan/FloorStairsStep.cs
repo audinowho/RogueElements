@@ -42,6 +42,7 @@ namespace RogueElements
                 else
                     defaultLoc = start;
                 ((IPlaceableGenContext<E>)map).PlaceItem(start, Entrance[ii]);
+                GenContextDebug.DebugProgress("Entrance");
             }
 
             for (int ii = 0; ii < Exit.Count; ii++)
@@ -51,6 +52,7 @@ namespace RogueElements
                 if (end == new Loc(-1))
                     end = defaultLoc;
                 ((IPlaceableGenContext<F>)map).PlaceItem(end, Exit[ii]);
+                GenContextDebug.DebugProgress("Exit");
             }
         }
 

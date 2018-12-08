@@ -445,6 +445,16 @@ namespace RogueElements
         }
 
         /// <summary>
+        /// Creates a new <see cref="Rect"/> from one point.
+        /// </summary>
+        /// <param name="point">The point contained by the rect</param>
+        /// <returns></returns>
+        public static Rect FromPoint(Loc point)
+        {
+            return new Rect(point.X, point.Y, 1, 1);
+        }
+
+        /// <summary>
         /// Calculates the signed depth of intersection between two rectangles.
         /// </summary>
         /// <returns>

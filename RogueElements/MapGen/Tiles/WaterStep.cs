@@ -34,6 +34,7 @@ namespace RogueElements
                     }
                 }
             }
+            GenContextDebug.DebugProgress("Draw Blob");
         }
 
     }

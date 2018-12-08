@@ -23,10 +23,7 @@ namespace RogueElements
             T map = (T)Activator.CreateInstance(typeof(T));
             map.InitSeed(seed);
 
-#if DEBUG
-            if (GenContextDebug.OnInit != null)
-                GenContextDebug.OnInit();
-#endif
+            GenContextDebug.DebugInit(map);
 
             //postprocessing steps:
             StablePriorityQueue<int, IGenStep> queue = new StablePriorityQueue<int, IGenStep>();
@@ -47,12 +44,9 @@ namespace RogueElements
             while (queue.Count > 0)
             {
                 IGenStep postProc = queue.Dequeue();
+                GenContextDebug.StepIn(postProc.ToString());
                 postProc.Apply(map);
-
-#if DEBUG
-                if (GenContextDebug.OnStep != null)
-                    GenContextDebug.OnStep(map, postProc);
-#endif
+                GenContextDebug.StepOut();
             }
         }
 

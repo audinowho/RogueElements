@@ -23,6 +23,7 @@ namespace RogueElements
                     map.SetTile(new Loc(ii,jj), map.WallTerrain.Copy());
             }
             map.RoomPlan.MoveStart(new Loc(Padding));
+            GenContextDebug.DebugProgress("Moved Floor");
             map.RoomPlan.DrawOnMap(map);
         }
 

@@ -24,15 +24,19 @@ namespace RogueElements
             if (gapLength < 2 || sideLength < 1)
                 throw new InvalidOperationException("Not enough room to create path.");
 
+            GenContextDebug.StepIn("Initial Rooms");
+
             for (int ii = 0; ii < sideLength; ii++)
             {
                 //place the rooms at the edge
                 int x = Vertical ? ii : 0;
                 int y = Vertical ? 0 : ii;
                 floorPlan.AddRoom(new Loc(x, y), GenericRooms.Pick(rand));
+                GenContextDebug.DebugProgress("Room");
                 x = Vertical ? ii : gapLength - 1;
                 y = Vertical ? gapLength - 1 : ii;
                 floorPlan.AddRoom(new Loc(x, y), GenericRooms.Pick(rand));
+                GenContextDebug.DebugProgress("Room");
 
                 if (gapLength > 2)
                 {
@@ -42,9 +46,12 @@ namespace RogueElements
                     int w = Vertical ? 1 : gapLength - 2;
                     int h = Vertical ? gapLength - 2 : 1;
                     floorPlan.AddRoom(new Rect(x, y, w, h), GetDefaultGen(), false, true);
+                    GenContextDebug.DebugProgress("Mid Room");
                 }
             }
+            GenContextDebug.StepOut();
 
+            GenContextDebug.StepIn("Connecting Sides");
 
             //halls connecting two tiers of the same side
             bool[][] connections = new bool[sideLength - 1][];
@@ -67,9 +74,15 @@ namespace RogueElements
                 if (ii < sideLength - 1)
                 {
                     if (connections[ii][0])
+                    {
                         PlaceOrientedHall(Vertical, Dir4.Right, ii, 0, floorPlan, GenericHalls.Pick(rand));
+                        GenContextDebug.DebugProgress("Side Connection");
+                    }
                     if (connections[ii][1])
+                    {
                         PlaceOrientedHall(Vertical, Dir4.Right, ii, gapLength - 1, floorPlan, GenericHalls.Pick(rand));
+                        GenContextDebug.DebugProgress("Side Connection");
+                    }
                     
                 }
                 
@@ -77,9 +90,11 @@ namespace RogueElements
                 PlaceOrientedHall(Vertical, Dir4.Down, ii, 0, floorPlan, GenericHalls.Pick(rand));
                 if (gapLength > 2)
                     PlaceOrientedHall(Vertical, Dir4.Up, ii, gapLength - 1, floorPlan, GenericHalls.Pick(rand));
+                GenContextDebug.DebugProgress("Bridge");
 
             }
-            
+            GenContextDebug.StepOut();
+
         }
 
         public void PlaceOrientedHall(bool vertical, Dir4 dir, int sideWise, int gapWise, GridPlan floorPlan, PermissiveRoomGen<T> hallGen)

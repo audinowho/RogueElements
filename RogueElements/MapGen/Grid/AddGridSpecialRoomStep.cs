@@ -30,6 +30,7 @@ namespace RogueElements
                 plan.RoomGen = Rooms.Pick(rand).Copy();
                 plan.Immutable = true;
                 room_indices.RemoveAt(ind);
+                GenContextDebug.DebugProgress("Set Special Room");
             }
         }
 

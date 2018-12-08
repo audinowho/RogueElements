@@ -29,15 +29,21 @@ namespace RogueElements
             if (roomOpen < 1 && paths < 1)
                 roomOpen = 1;
 
+            GenContextDebug.StepIn("Outer Circle");
+
             //draw the top and bottom
             for (int xx = 0; xx < floorPlan.GridWidth; xx++)
             {
                 RollOpenRoom(rand, floorPlan, new Loc(xx, 0), ref roomOpen, ref maxRooms);
+                GenContextDebug.DebugProgress("Room");
                 RollOpenRoom(rand, floorPlan, new Loc(xx, floorPlan.GridHeight - 1), ref roomOpen, ref maxRooms);
+                GenContextDebug.DebugProgress("Room");
                 if (xx > 0)
                 {
                     floorPlan.SetConnectingHall(new Loc(xx - 1, 0), new Loc(xx, 0), GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Hall");
                     floorPlan.SetConnectingHall(new Loc(xx - 1, floorPlan.GridHeight - 1), new Loc(xx, floorPlan.GridHeight - 1), GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Hall");
                 }
             }
 
@@ -48,19 +54,29 @@ namespace RogueElements
                 if (yy > 0 && yy < floorPlan.GridHeight - 1)
                 {
                     RollOpenRoom(rand, floorPlan, new Loc(0, yy), ref roomOpen, ref maxRooms);
+                    GenContextDebug.DebugProgress("Room");
                     RollOpenRoom(rand, floorPlan, new Loc(floorPlan.GridWidth - 1, yy), ref roomOpen, ref maxRooms);
+                    GenContextDebug.DebugProgress("Room");
                 }
                 if (yy > 0)
                 {
                     floorPlan.SetConnectingHall(new Loc(0, yy - 1), new Loc(0, yy), GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Hall");
                     floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, yy - 1), new Loc(floorPlan.GridWidth - 1, yy), GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Hall");
                 }
             }
+
+            GenContextDebug.StepOut();
+
+            GenContextDebug.StepIn("Inner Paths");
 
             Rect innerRect = new Rect(1, 1, floorPlan.GridWidth - 2, floorPlan.GridHeight - 2);
             //create inner paths
             for (int pathsMade = 0; pathsMade < paths; pathsMade++)
             {
+                GenContextDebug.StepIn(String.Format("Path {0}", pathsMade));
+
                 Dir4 startDir = (Dir4)rand.Next(4);
                 int x = rand.Next(innerRect.Start.X, innerRect.End.X);
                 int y = rand.Next(innerRect.Start.Y, innerRect.End.Y);
@@ -111,6 +127,7 @@ namespace RogueElements
                             floorPlan.AddRoom(dest, GenericRooms.Pick(rand));
                         else
                             floorPlan.AddRoom(dest, GetDefaultGen(), false, true);
+                        GenContextDebug.DebugProgress("Room");
                     }
                     else if (existingRoom.CountsAsHall())
                     {
@@ -121,11 +138,15 @@ namespace RogueElements
                         }
                     }
                     floorPlan.SetConnectingHall(wanderer, dest, GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Hall");
 
                     wanderer = dest;
                     prevDir = chosenDir.Reverse();
                 }
+                GenContextDebug.StepOut();
             }
+
+            GenContextDebug.StepOut();
         }
 
         private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)

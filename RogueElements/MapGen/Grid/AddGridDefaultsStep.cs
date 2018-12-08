@@ -38,6 +38,7 @@ namespace RogueElements
                 plan.RoomGen = new RoomGenDefault<T>();
                 plan.PreferHall = true;
                 candidates.RemoveAt(randIndex);
+                GenContextDebug.DebugProgress("Defaulted Room");
             }
         }
 

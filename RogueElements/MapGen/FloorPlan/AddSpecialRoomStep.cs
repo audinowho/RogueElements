@@ -59,6 +59,7 @@ namespace RogueElements
                 {
                     newGen.SetLoc(placement);
                     PlaceRoom(rand, floorPlan, newGen, oldRoomHall);
+                    GenContextDebug.DebugProgress("Set Special Room");
                     return;
                 }
                 room_indices.RemoveAt(ind);

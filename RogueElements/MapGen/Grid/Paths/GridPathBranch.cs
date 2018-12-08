@@ -30,6 +30,9 @@ namespace RogueElements
 
                 Loc SourceRoom = new Loc(rand.Next(floorPlan.GridWidth), rand.Next(floorPlan.GridHeight)); // randomly determine start room
                 floorPlan.AddRoom(SourceRoom, GenericRooms.Pick(rand));
+
+                GenContextDebug.DebugProgress("Start Room");
+
                 roomsLeft--;
                 int pendingBranch = 0;
                 while (roomsLeft > 0)
@@ -72,6 +75,8 @@ namespace RogueElements
             Loc endLoc = chosenRay.Traverse(1);
             floorPlan.SetConnectingHall(chosenRay.Loc, endLoc, GenericHalls.Pick(rand));
             floorPlan.AddRoom(endLoc, GenericRooms.Pick(rand));
+
+            GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             return true;
         }
 

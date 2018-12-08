@@ -30,6 +30,7 @@ namespace RogueElements
                 SpecificGridRoomPlan<T> chosenRoom = SpecificRooms[ii];
                 
                 floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable, chosenRoom.PreferHall);
+                GenContextDebug.DebugProgress("Room");
             }
 
             //place halls
@@ -54,6 +55,7 @@ namespace RogueElements
         public void UnsafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen)
         {
             floorPlan.SetConnectingHall(room1, room2, hallGen);
+            GenContextDebug.DebugProgress("Hall");
             if (floorPlan.GetRoomPlan(room1) == null || floorPlan.GetRoomPlan(room2) == null)
             {
                 floorPlan.Clear();

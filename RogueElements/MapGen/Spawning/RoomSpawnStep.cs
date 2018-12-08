@@ -20,6 +20,7 @@ namespace RogueElements
                 //try to spawn the item
                 if (SpawnInRoom(map, roomIndex, spawns[spawns.Count - 1]))
                 {
+                    GenContextDebug.DebugProgress("Placed Object");
                     //remove the item spawn
                     spawns.RemoveAt(spawns.Count - 1);
 

@@ -89,6 +89,7 @@ namespace RogueElements
                 Loc chosenDest = chosenDir.Traverse(1);
                 floorPlan.SetConnectingHall(chosenDir.Loc, chosenDest, GenericHalls.Pick(rand));
                 candBranchPoints.RemoveAt(randIndex);
+                GenContextDebug.DebugProgress("Connected Branch");
                 connectionsLeft--;
                 //check to see if connection destination was also a candidate,
                 //counting this as a double if so

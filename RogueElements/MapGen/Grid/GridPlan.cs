@@ -109,6 +109,8 @@ namespace RogueElements
                     ChooseHallBounds(map.Rand, xx, yy, false);
             }
 
+            GenContextDebug.StepIn("Main Rooms");
+
             List<RoomHallIndex> roomToHall = new List<RoomHallIndex>();
             for (int ii = 0; ii < arrayRooms.Count; ii++)
             {
@@ -117,13 +119,18 @@ namespace RogueElements
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
                     map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen);
+                    GenContextDebug.DebugProgress("Add Hall Room");
                 }
                 else
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.RoomCount, false));
                     map.RoomPlan.AddRoom(plan.RoomGen, plan.Immutable);
+                    GenContextDebug.DebugProgress("Added Room");
                 }
             }
+            GenContextDebug.StepOut();
+
+            GenContextDebug.StepIn("Connecting Halls");
 
             for (int xx = 0; xx < vHalls.Length; xx++)
             {
@@ -151,6 +158,7 @@ namespace RogueElements
                                     adj.Add(roomToHall[downRoom]);
                             }
                             map.RoomPlan.AddHall(hall.Gens[ii], adj.ToArray());
+                            GenContextDebug.DebugProgress("Add Hall");
                         }
                     }
                 }
@@ -181,10 +189,12 @@ namespace RogueElements
                                     adj.Add(roomToHall[rightRoom]);
                             }
                             map.RoomPlan.AddHall(hall.Gens[ii], adj.ToArray());
+                            GenContextDebug.DebugProgress("Add Hall");
                         }
                     }
                 }
             }
+            GenContextDebug.StepOut();
 
         }
 

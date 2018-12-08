@@ -7,29 +7,42 @@ namespace RogueElements
 {
     public static class GenContextDebug
     {
-        public delegate void ProgressTrack(IGenContext map, IGenStep step);
+        public delegate void InitTrack(IGenContext map);
+        public delegate void ProgressTrack(string msg);
+        public delegate void DebugStepIn(string msg);
 
-        public static Action OnInit;
+        public static InitTrack OnInit;
         public static ProgressTrack OnStep;
+        public static DebugStepIn OnStepIn;
+        public static Action OnStepOut;
 
 
-        public static void StressTest<T>(MapGen<T> layout, int amount) where T : class, IGenContext
+        [Conditional("DEBUG")]
+        public static void StepIn(string msg)
         {
-            ulong seed = 0;
-            try
-            {
-                for (int ii = 0; ii < amount; ii++)
-                {
-                    seed = MathUtils.Rand.NextUInt64();
-                    layout.GenMap(seed);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Write("ERROR: " + seed);
-                Debug.Write(ex.ToString());
-                Debug.Write(ex.StackTrace);
-            }
+            if (OnStepIn != null)
+                OnStepIn(msg);
+        }
+
+        [Conditional("DEBUG")]
+        public static void StepOut()
+        {
+            if (OnStepOut != null)
+                OnStepOut();
+        }
+
+        [Conditional("DEBUG")]
+        public static void DebugInit(IGenContext map)
+        {
+            if (OnInit != null)
+                OnInit(map);
+        }
+
+        [Conditional("DEBUG")]
+        public static void DebugProgress(string msg)
+        {
+            if (OnStep != null)
+                OnStep(msg);
         }
 
     }

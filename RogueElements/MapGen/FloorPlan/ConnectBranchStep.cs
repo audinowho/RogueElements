@@ -40,6 +40,7 @@ namespace RogueElements
                     floorPlan.AddHall(hall, chosenDest.From, chosenDest.To);
                     candBranchPoints.RemoveAt(randIndex);
                     connectionsLeft--;
+                    GenContextDebug.DebugProgress("Added Connection");
 
                     //check to see if connection destination was also a candidate,
                     //counting this as a double if so

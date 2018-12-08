@@ -38,6 +38,7 @@ namespace RogueElements
                 room.SetLoc(new Loc(rand.Next(floorPlan.DrawRect.Left, floorPlan.DrawRect.Right - room.Draw.Width + 1),
                     rand.Next(floorPlan.DrawRect.Top, floorPlan.DrawRect.Bottom - room.Draw.Height + 1)));
                 floorPlan.AddRoom(room, false);
+                GenContextDebug.DebugProgress("Start Room");
 
                 tilesLeft -= room.Draw.Area;
 
@@ -102,6 +103,7 @@ namespace RogueElements
             floorPlan.AddRoom(expansion.Room, false, from);
             tilesCovered += expansion.Room.Draw.Area;
             roomsAdded++;
+            GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             //report the added area coverage
             return new ExpansionResult(tilesCovered, roomsAdded);
         }

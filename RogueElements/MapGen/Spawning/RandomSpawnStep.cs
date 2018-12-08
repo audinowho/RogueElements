@@ -22,6 +22,7 @@ namespace RogueElements
                 int randIndex = map.Rand.Next(freeTiles.Count);
                 map.PlaceItem(freeTiles[randIndex], item);
                 freeTiles.RemoveAt(randIndex);
+                GenContextDebug.DebugProgress("Placed Object");
             }
         }
     }

@@ -309,6 +309,7 @@ namespace RogueElements
         public void DrawOnMap(ITiledGenContext map)
         {
 
+            GenContextDebug.StepIn("Main Rooms");
             for (int ii = 0; ii < rooms.Count; ii++)
             {
                 //take in the broad fulfillables from adjacent rooms that have not yet drawn
@@ -323,7 +324,11 @@ namespace RogueElements
                 }
                 plan.Gen.DrawOnMap(map);
                 TransferBorderToAdjacents(new RoomHallIndex(ii, false));
+                GenContextDebug.DebugProgress("Draw Room");
             }
+            GenContextDebug.StepOut();
+
+            GenContextDebug.StepIn("Connecting Halls");
             for (int ii = 0; ii < halls.Count; ii++)
             {
                 //take in the broad fulfillables from adjacent rooms that have not yet drawn
@@ -338,7 +343,9 @@ namespace RogueElements
                 }
                 plan.Gen.DrawOnMap(map);
                 TransferBorderToAdjacents(new RoomHallIndex(ii, true));
+                GenContextDebug.DebugProgress("Draw Hall");
             }
+            GenContextDebug.StepOut();
         }
 
         private List<int> getBreadthFirstAdjacents(int nodeIndex)

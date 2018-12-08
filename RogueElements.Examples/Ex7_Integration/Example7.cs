@@ -67,9 +67,7 @@ namespace RogueElements.Examples.Ex7_Integration
 
         public static void Print(Map map, string title)
         {
-            int oldLeft = Console.CursorLeft;
-            int oldTop = Console.CursorTop;
-            Console.SetCursorPosition(0, 0);
+            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));
