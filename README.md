@@ -3,6 +3,8 @@
 
 RogueElements is a C# library that allows the user to randomly generate maps for use in roguelikes.  Generation is implemented in a series of interchangeable steps, similar to shader passes.  These steps all share a base class, which the user can inherit to make their own steps.  Additionally, RogueElements contains a collection of functions designed to make working with 4-directional and 8-directional tile maps more convenient.
 
+There exist a large base of unit tests that serve to cover the basic functions of the library.
+
 RogueElements does NOT provide a base engine for the gameplay of an actual roguelike; that's for the game developers themselves to decide on.  A map generation context specified by the developer is all that is needed to integrate the library with their game.  It will inherit all interfaces that the developer is interested in to allow the correct steps to apply to it.
 
 
