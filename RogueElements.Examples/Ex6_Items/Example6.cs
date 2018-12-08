@@ -8,6 +8,7 @@ namespace RogueElements.Examples.Ex6_Items
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "6: A Map with Randomly Placed Items/Mobs";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
@@ -97,7 +98,6 @@ namespace RogueElements.Examples.Ex6_Items
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));

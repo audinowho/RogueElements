@@ -10,6 +10,7 @@ namespace RogueElements.Examples.Ex7_Integration
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "7: Implementation as a MapCreationStrategy in RogueSharp";
             ExampleCreationStrategy<Map> exampleCreation = new ExampleCreationStrategy<Map>();
 
@@ -67,7 +68,6 @@ namespace RogueElements.Examples.Ex7_Integration
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));

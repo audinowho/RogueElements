@@ -8,6 +8,7 @@ namespace RogueElements.Examples.Ex4_Stairs
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "4: A Map with Stairs Up and Down";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
@@ -66,7 +67,6 @@ namespace RogueElements.Examples.Ex4_Stairs
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));

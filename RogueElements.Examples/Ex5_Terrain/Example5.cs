@@ -8,6 +8,7 @@ namespace RogueElements.Examples.Ex5_Terrain
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "5: A Map with Terrain Features";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
@@ -77,7 +78,6 @@ namespace RogueElements.Examples.Ex5_Terrain
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));

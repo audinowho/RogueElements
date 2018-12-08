@@ -8,6 +8,7 @@ namespace RogueElements.Examples.Ex2_Rooms
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "2: A Map Made with Rooms and Halls";
 
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
@@ -55,7 +56,6 @@ namespace RogueElements.Examples.Ex2_Rooms
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));

@@ -10,7 +10,7 @@ RogueElements does NOT provide a base engine for the gameplay of an actual rogue
 
 The presence of diagnostic methods also makes it easy to set breakpoints and view the entire map state at a given time:
 
-<p align="center"><img src="https://i.imgur.com/JH3fzoc.gif"></p>
+<p align="center"><img src="https://i.imgur.com/0Ir5F6I.gif"></p>
 
 # Overview #
 

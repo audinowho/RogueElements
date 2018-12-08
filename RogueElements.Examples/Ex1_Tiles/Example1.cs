@@ -8,6 +8,7 @@ namespace RogueElements.Examples.Ex1_Tiles
     {
         public static void Run()
         {
+            Console.Clear();
             string title = "1: A Static Map Example";
             MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
 
@@ -69,7 +70,6 @@ namespace RogueElements.Examples.Ex1_Tiles
 
         public static void Print(Map map, string title)
         {
-            Console.Clear();
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
             topString.Append(String.Format("{0,-82}", turnString));
