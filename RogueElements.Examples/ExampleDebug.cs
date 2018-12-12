@@ -157,6 +157,8 @@ namespace RogueElements.Examples
 
             for (int yy = 0; yy < context.Height; yy++)
             {
+                if (yy > 0)
+                    str.Append('\n');
                 for (int xx = 0; xx < context.Width; xx++)
                 {
                     if (context.GetTile(new Loc(xx, yy)).TileEquivalent(context.RoomTerrain))
@@ -171,7 +173,6 @@ namespace RogueElements.Examples
                             str.Append('_');
                     }
                 }
-                str.Append('\n');
             }
 
 
