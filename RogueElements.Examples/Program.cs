@@ -48,7 +48,7 @@ namespace RogueElements.Examples
                         {
                             Console.WriteLine("Stress Test WIP.");
                             //Console.WriteLine("Generating floor " + amt + " times.");
-                            //StressTestFloor(structure, floorIndex, amt);
+                            //StressTestFloor(layout, amt);
                             ConsoleKeyInfo afterKey = Console.ReadKey();
                             if (afterKey.Key == ConsoleKey.Escape)
                                 break;
