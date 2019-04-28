@@ -10,8 +10,6 @@ namespace RogueElements.Examples
     {
         static void Main(string[] args)
         {
-            Console.WindowWidth = Console.LargestWindowWidth;
-            Console.WindowHeight = Console.LargestWindowHeight;
 #if DEBUG
             GenContextDebug.OnInit = ExampleDebug.Init;
             GenContextDebug.OnStep = ExampleDebug.OnStep;

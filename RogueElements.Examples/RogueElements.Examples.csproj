@@ -1,123 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D2A41E4D-9EA5-446A-905E-334164E291AE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>RogueElements.Examples</RootNamespace>
     <AssemblyName>RogueElements.Examples</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DebugState.cs" />
-    <Compile Include="Ex1_Tiles\Map.cs" />
-    <Compile Include="Ex1_Tiles\MapGenContext.cs" />
-    <Compile Include="Ex1_Tiles\Tile.cs" />
-    <Compile Include="Ex1_Tiles\Example1.cs" />
-    <Compile Include="Ex2_Rooms\Example2.cs" />
-    <Compile Include="Ex2_Rooms\Map.cs" />
-    <Compile Include="Ex2_Rooms\MapGenContext.cs" />
-    <Compile Include="Ex2_Rooms\Tile.cs" />
-    <Compile Include="Ex3_Grid\Example3.cs" />
-    <Compile Include="Ex3_Grid\Map.cs" />
-    <Compile Include="Ex3_Grid\MapGenContext.cs" />
-    <Compile Include="Ex3_Grid\Tile.cs" />
-    <Compile Include="Ex4_Stairs\Example4.cs" />
-    <Compile Include="Ex4_Stairs\Map.cs" />
-    <Compile Include="Ex4_Stairs\MapGenContext.cs" />
-    <Compile Include="Ex4_Stairs\Stairs.cs" />
-    <Compile Include="Ex4_Stairs\Tile.cs" />
-    <Compile Include="Ex5_Terrain\Example5.cs" />
-    <Compile Include="Ex5_Terrain\Map.cs" />
-    <Compile Include="Ex5_Terrain\MapGenContext.cs" />
-    <Compile Include="Ex5_Terrain\Stairs.cs" />
-    <Compile Include="Ex5_Terrain\Tile.cs" />
-    <Compile Include="Ex6_Items\Example6.cs" />
-    <Compile Include="Ex6_Items\Mob.cs" />
-    <Compile Include="Ex6_Items\Item.cs" />
-    <Compile Include="Ex6_Items\Map.cs" />
-    <Compile Include="Ex6_Items\MapGenContext.cs" />
-    <Compile Include="Ex6_Items\Stairs.cs" />
-    <Compile Include="Ex6_Items\Tile.cs" />
-    <Compile Include="Ex7_Integration\Cell.cs" />
-    <Compile Include="Ex7_Integration\Example7.cs" />
-    <Compile Include="Ex7_Integration\ExampleCreationStrategy.cs" />
-    <Compile Include="Ex7_Integration\FieldOfView.cs" />
-    <Compile Include="Ex7_Integration\ICell.cs" />
-    <Compile Include="Ex7_Integration\IMap.cs" />
-    <Compile Include="Ex7_Integration\IMapCreationStrategy.cs" />
-    <Compile Include="Ex7_Integration\Map.cs" />
-    <Compile Include="Ex7_Integration\MapGenContext.cs" />
-    <Compile Include="ExampleDebug.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RogueElements\RogueElements.csproj">
       <Project>{a777bc3d-2635-401d-96d7-162178d8dfc4}</Project>
@@ -127,5 +17,4 @@
   <ItemGroup>
     <Content Include="Ex7_Integration\RogueSharp.LICENSE.txt" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
