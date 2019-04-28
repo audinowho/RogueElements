@@ -164,7 +164,6 @@
     <Compile Include="MapGen\Grid\InitGridPlanStep.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Collision.cs" />
-    <Compile Include="Fov.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Loc.cs" />
     <Compile Include="Dirs.cs" />
