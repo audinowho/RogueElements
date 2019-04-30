@@ -11,7 +11,10 @@ namespace RogueElements
         public RandRange WaterPercent;
         public int OrderComplexity;
         public int OrderSoftness;
-        //Decides if the water can paint over floor tiles if the blob itself does not break connectivity
+
+        /// <summary>
+        /// Decides if the water can paint over floor tiles if the blob itself does not break connectivity
+        /// </summary>
         public bool RespectFloor;
 
         public PerlinWaterStep() { }

@@ -44,6 +44,15 @@ namespace RogueElements
     public static class NoiseGen
     {
 
+        /// <summary>
+        /// Generates Nth degree perlin noise.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="degrees"></param>
+        /// <param name="expandDegrees"></param>
+        /// <returns></returns>
         public static int[][] PerlinNoise(IRandom rand, int width, int height, int degrees, int expandDegrees = 0)
         {
             if (degrees > 10)
@@ -84,26 +93,6 @@ namespace RogueElements
                 }
                 prev_noise = noise;
 
-                //Dictionary<int, int> dict = new Dictionary<int, int>();
-                //for (int nn = 0; nn < Math.Pow(2, degrees + expandDegrees); nn++)
-                //    dict.Add(nn, 0);
-                //for (int yy = 0; yy < gridHeight; yy++)
-                //{
-                //    for (int xx = 0; xx < gridWidth; xx++)
-                //    {
-                //        Debug.Write((char)(noise[xx][yy] > 9 ? noise[xx][yy] - 10 + 'A' : noise[xx][yy] + '0'));
-                //        dict[noise[xx][yy]] = dict[noise[xx][yy]] + 1;
-                //    }
-                //    Debug.Write('\n');
-                //}
-                //for (int nn = 0; nn < Math.Pow(2, degrees + expandDegrees); nn++)
-                //{
-                //    Debug.Write(nn.ToString() + ": ");
-                //    for (int mm = 0; mm < dict[nn]; mm++)
-                //        Debug.Write("|");
-                //    Debug.WriteLine(" " + dict[nn]);
-                //}
-                //Debug.Write('\n');
             }
 
             return noise;
