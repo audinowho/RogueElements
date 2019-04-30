@@ -19,7 +19,7 @@ namespace RogueElements.Examples.Ex1_Tiles
             InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>();
             startStep.Width = 30;
             startStep.Height = 25;
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(startStep));
+            layout.GenSteps.Add(0, startStep);
 
             //Draw a specific array of tiles onto the map at offset X2,Y3
             SpecificTilesStep<MapGenContext> drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
@@ -58,7 +58,7 @@ namespace RogueElements.Examples.Ex1_Tiles
                     drawStep.Tiles[xx][yy] = new Tile(id);
                 }
             }
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(drawStep));
+            layout.GenSteps.Add(0, drawStep);
 
 
 

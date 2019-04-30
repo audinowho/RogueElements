@@ -17,7 +17,7 @@ namespace RogueElements.Examples.Ex2_Rooms
             InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>();
             startGen.Width = 54;
             startGen.Height = 40;
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, startGen));
+            layout.GenSteps.Add(-2, startGen);
 
 
             //Create a path that is composed of a branching tree
@@ -40,11 +40,11 @@ namespace RogueElements.Examples.Ex2_Rooms
             genericHalls.Add(new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20);
             path.GenericHalls = genericHalls;
 
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-1, path));
+            layout.GenSteps.Add(-1, path);
 
 
             //Draw the rooms onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(0, new DrawFloorToTileStep<MapGenContext>(1)));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
 
 

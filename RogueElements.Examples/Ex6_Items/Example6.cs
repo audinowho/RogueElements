@@ -19,7 +19,7 @@ namespace RogueElements.Examples.Ex6_Items
 
             startGen.CellWidth = 9;
             startGen.CellHeight = 9;
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
+            layout.GenSteps.Add(-4, startGen);
 
 
 
@@ -39,34 +39,34 @@ namespace RogueElements.Examples.Ex6_Items
             genericHalls.Add(new RoomGenAngledHall<MapGenContext>(50));
             path.GenericHalls = genericHalls;
 
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, path));
+            layout.GenSteps.Add(-4, path);
 
 
 
             //Output the rooms into a FloorPlan
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, new DrawGridToFloorStep<MapGenContext>()));
+            layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext>());
 
 
 
 
             //Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(0, new DrawFloorToTileStep<MapGenContext>(1)));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
 
 
             //Add the stairs up and down
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown())));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown()));
 
 
             //Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
             int terrain = 2;
             PerlinWaterStep<MapGenContext> waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(3, waterPostProc));
+            layout.GenSteps.Add(3, waterPostProc);
 
             //Remove walls where diagonals of water exist and replace with water
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new DropDiagonalBlockStep<MapGenContext>(new Tile(terrain))));
+            layout.GenSteps.Add(4, new DropDiagonalBlockStep<MapGenContext>(new Tile(terrain)));
             //Remove water stuck in the walls
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain))));
+            layout.GenSteps.Add(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain)));
 
 
 
@@ -80,7 +80,7 @@ namespace RogueElements.Examples.Ex6_Items
             itemSpawns.Add(new Item((int)'/'), 10);
             itemSpawns.Add(new Item((int)'*'), 50);
             RandomSpawnStep<MapGenContext, Item> itemPlacement = new RandomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(6, itemPlacement));
+            layout.GenSteps.Add(6, itemPlacement);
 
             //Apply Mobs
             SpawnList<Mob> mobSpawns = new SpawnList<Mob>();
@@ -88,7 +88,7 @@ namespace RogueElements.Examples.Ex6_Items
             mobSpawns.Add(new Mob((int)'T'), 10);
             mobSpawns.Add(new Mob((int)'D'), 5);
             RandomSpawnStep<MapGenContext, Mob> mobPlacement = new RandomSpawnStep<MapGenContext, Mob>(new PickerSpawner<MapGenContext, Mob>(new LoopedRand<Mob>(mobSpawns, new RandRange(10, 19))));
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(6, mobPlacement));
+            layout.GenSteps.Add(6, mobPlacement);
 
             //Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());

@@ -19,7 +19,7 @@ namespace RogueElements.Examples.Ex4_Stairs
 
             startGen.CellWidth = 9;
             startGen.CellHeight = 9;
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
+            layout.GenSteps.Add(-4, startGen);
 
 
 
@@ -39,23 +39,23 @@ namespace RogueElements.Examples.Ex4_Stairs
             genericHalls.Add(new RoomGenAngledHall<MapGenContext>(50));
             path.GenericHalls = genericHalls;
 
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, path));
+            layout.GenSteps.Add(-4, path);
 
 
 
             //Output the rooms into a FloorPlan
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, new DrawGridToFloorStep<MapGenContext>()));
+            layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext>());
 
 
 
 
             //Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(0, new DrawFloorToTileStep<MapGenContext>(1)));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
 
 
             //Add the stairs up and down
-            layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown())));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown()));
 
 
 

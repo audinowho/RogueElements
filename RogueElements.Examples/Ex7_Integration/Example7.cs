@@ -22,7 +22,7 @@ namespace RogueElements.Examples.Ex7_Integration
 
             startGen.CellWidth = 9;
             startGen.CellHeight = 9;
-            exampleCreation.Layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, startGen));
+            exampleCreation.Layout.GenSteps.Add(-4, startGen);
 
 
 
@@ -42,18 +42,18 @@ namespace RogueElements.Examples.Ex7_Integration
             genericHalls.Add(new RoomGenAngledHall<MapGenContext>(50));
             path.GenericHalls = genericHalls;
 
-            exampleCreation.Layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-4, path));
+            exampleCreation.Layout.GenSteps.Add(-4, path);
 
 
 
             //Output the rooms into a FloorPlan
-            exampleCreation.Layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(-2, new DrawGridToFloorStep<MapGenContext>()));
+            exampleCreation.Layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext>());
 
 
 
 
             //Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            exampleCreation.Layout.GenSteps.Add(new GenPriority<GenStep<MapGenContext>>(0, new DrawFloorToTileStep<MapGenContext>(1)));
+            exampleCreation.Layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
 
 

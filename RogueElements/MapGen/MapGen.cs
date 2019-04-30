@@ -8,11 +8,11 @@ namespace RogueElements
     public class MapGen<T>
         where T : class, IGenContext
     {
-        public List<GenPriority<GenStep<T>>> GenSteps { get; set; }
+        public PriorityList<GenStep<T>> GenSteps { get; set; }
         
         public MapGen()
         {
-            GenSteps = new List<GenPriority<GenStep<T>>>();
+            GenSteps = new PriorityList<GenStep<T>>();
         }
         
 
@@ -27,8 +27,11 @@ namespace RogueElements
 
             //postprocessing steps:
             StablePriorityQueue<int, IGenStep> queue = new StablePriorityQueue<int, IGenStep>();
-            foreach (GenPriority<GenStep<T>> postProc in GenSteps)
-                queue.Enqueue(postProc.Priority, postProc.Item);
+            foreach (int priority in GenSteps.GetPriorities())
+            {
+                foreach (IGenStep genStep in GenSteps.GetItems(priority))
+                    queue.Enqueue(priority, genStep);
+            }
 
             ApplyGenSteps(map, queue);
             
@@ -50,32 +53,5 @@ namespace RogueElements
             }
         }
 
-    }
-
-
-    [Serializable]
-    public class GenPriority<T> : IGenPriority where T : IGenStep
-    {
-        public int Priority { get; set; }
-        public T Item;
-
-        public GenPriority() { }
-        public GenPriority(T effect)
-        {
-            Item = effect;
-        }
-        public GenPriority(int priority, T effect)
-        {
-            Priority = priority;
-            Item = effect;
-        }
-
-        public IGenStep GetItem() { return Item; }
-    }
-
-    public interface IGenPriority
-    {
-        int Priority { get; set; }
-        IGenStep GetItem();
     }
 }
