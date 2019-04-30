@@ -108,6 +108,13 @@ namespace RogueElements
             return new ExpansionResult(tilesCovered, roomsAdded);
         }
 
+        /// <summary>
+        /// Chooses a node to expand the path from based on the specified branch setting.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <param name="floorPlan"></param>
+        /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
+        /// <returns>A set of instructions on how to expand the path.</returns>
         public virtual ListPathBranchExpansion ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan, bool branch)
         {
             List<RoomHallIndex> availableExpansions = GetPossibleExpansions(floorPlan, branch);
@@ -175,7 +182,12 @@ namespace RogueElements
             return null;
         }
 
-
+        /// <summary>
+        /// Gets all possible places a new path node can be added.
+        /// </summary>
+        /// <param name="floorPlan"></param>
+        /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
+        /// <returns>All possible RoomHallIndex that can receive an expansion.</returns>
         public List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
         {
             List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
@@ -253,7 +265,13 @@ namespace RogueElements
         }
         
 
-
+        /// <summary>
+        /// Returns a random generic room or hall that can fit in the specified floor.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <param name="floorPlan"></param>
+        /// <param name="isHall"></param>
+        /// <returns></returns>
         public virtual RoomGen<T> PrepareRoom(IRandom rand, FloorPlan floorPlan, bool isHall)
         {
             RoomGen<T> room = null;

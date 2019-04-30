@@ -647,6 +647,8 @@ namespace RogueElements.Tests
     {
         public TestFloorPlanGen() { }
         public TestFloorPlanGen(char id) : base(id) { }
+        protected TestFloorPlanGen(TestFloorPlanGen other) : base(other) { }
+        public override RoomGen<IFloorPlanTestContext> Copy() { return new TestFloorPlanGen(this); }
     }
 
     public class TestFloorRoomGen<T> : PermissiveRoomGen<T>
@@ -655,24 +657,20 @@ namespace RogueElements.Tests
         public TestFloorRoomGen() { }
         public TestFloorRoomGen(char id) { Identifier = id; }
         protected TestFloorRoomGen(TestFloorRoomGen<T> other)
-        { Identifier = other.Identifier; }
-        public override RoomGen<T> Copy() { return new TestFloorRoomGen<T>(); }
+        { Identifier = other.Identifier; ProposedSize = other.ProposedSize; }
+        public override RoomGen<T> Copy() { return new TestFloorRoomGen<T>(this); }
 
         public char Identifier;
+        public Loc ProposedSize;
 
         public override Loc ProposeSize(IRandom rand)
         {
-            return draw.Size;
+            return ProposedSize;
         }
 
         public override void DrawOnMap(T map)
         {
             DrawMapDefault(map);
-        }
-
-        public void PrepareProposeSize(Loc size)
-        {
-            draw.Size = size;
         }
 
         public void PrepareDraw(Rect rect)

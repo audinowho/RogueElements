@@ -6,11 +6,17 @@ namespace RogueElements.Examples.Ex6_Items
 {
     public class StairsUp : Stairs
     {
+        public StairsUp() { }
+        protected StairsUp(StairsUp other) : base(other) { }
+        public override ISpawnable Copy() { return new StairsUp(this); }
     }
     public class StairsDown : Stairs
     {
+        public StairsDown() { }
+        protected StairsDown(StairsDown other) : base(other) { }
+        public override ISpawnable Copy() { return new StairsDown(this); }
     }
-    public class Stairs : ISpawnable
+    public abstract class Stairs : ISpawnable
     {
         public Loc Loc { get; set; }
 
@@ -19,6 +25,6 @@ namespace RogueElements.Examples.Ex6_Items
         {
             Loc = other.Loc;
         }
-        public ISpawnable Copy() { return new Stairs(this); }
+        public abstract ISpawnable Copy();
     }
 }

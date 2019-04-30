@@ -441,7 +441,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.PrepareProposeSize(new Loc(5, 5));
+                gen.ProposedSize = new Loc(5, 5);
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicVHalls[0][0].SetGen(new TestFloorPlanGen('a'));
@@ -486,7 +486,7 @@ namespace RogueElements.Tests
 
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen('A');
-                gen.PrepareProposeSize(new Loc(5, 5));
+                gen.ProposedSize = new Loc(5, 5);
                 gridPlan.PublicArrayRooms[0].RoomGen = gen;
             }
             {
@@ -495,7 +495,7 @@ namespace RogueElements.Tests
             }
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen('B');
-                gen.PrepareProposeSize(new Loc(5, 5));
+                gen.ProposedSize = new Loc(5, 5);
                 gridPlan.PublicArrayRooms[2].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('b'));
@@ -561,7 +561,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.PrepareProposeSize(new Loc(2, 2));
+                gen.ProposedSize = new Loc(2, 2);
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -606,7 +606,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.PrepareProposeSize(new Loc(2, 2));
+                gen.ProposedSize = new Loc(2, 2);
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -651,7 +651,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
                 TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.PrepareProposeSize(new Loc(2, 2));
+                gen.ProposedSize = new Loc(2, 2);
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -880,6 +880,8 @@ namespace RogueElements.Tests
     {
         public TestGridRoomGen() { }
         public TestGridRoomGen(char id) : base(id) { }
+        protected TestGridRoomGen(TestGridRoomGen other) : base(other) { }
+        public override RoomGen<IGridPathTestContext> Copy() { return new TestGridRoomGen(this); }
     }
 
     public class TestGridFloorPlan : GridPlan

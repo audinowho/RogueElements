@@ -68,7 +68,7 @@ namespace RogueElements.Tests
             roomGen.openLeft = openLeft;
             roomGen.openUp = openUp;
             roomGen.openRight = openRight;
-            Assert.Throws<NotImplementedException>(() => { roomGen.PrepareSize(testRand.Object, new Loc(1)); });
+            Assert.Throws<ArgumentException>(() => { roomGen.PrepareSize(testRand.Object, new Loc(1)); });
         }
 
 

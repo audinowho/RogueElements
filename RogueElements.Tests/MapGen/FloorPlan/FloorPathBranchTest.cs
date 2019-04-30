@@ -21,13 +21,13 @@ namespace RogueElements.Tests
 
             FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.PrepareDraw(new Rect(0, 0, 20, 20));
+            roomGen.ProposedSize = new Loc(20, 20);
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.GenericRooms = mockRooms.Object;
 
             TestFloorPlanGen roomGenCompare = new TestFloorPlanGen('A');
-            roomGenCompare.PrepareDraw(new Rect(0, 0, 8, 8));
+            roomGenCompare.PrepareDraw(new Rect(-1, -1, 8, 8));
 
             RoomGen<IFloorPlanTestContext> chosenRoom = pathGen.PrepareRoom(testRand.Object, floorPlan, false);
 
@@ -53,7 +53,7 @@ namespace RogueElements.Tests
             pathGen.CallBase = true;
             pathGen.Object.HallPercent = 0;
             TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.PrepareDraw(new Rect(0, 0, 2, 2));
+            roomGen.ProposedSize = new Loc(2, 2);
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -89,13 +89,13 @@ namespace RogueElements.Tests
             pathGen.Object.HallPercent = 100;
 
             TestFloorPlanGen hallGen = new TestFloorPlanGen('a');
-            hallGen.PrepareDraw(new Rect(0, 0, 2, 2));
+            hallGen.ProposedSize = new Loc(2, 2);
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(hallGen);
             pathGen.Object.GenericHalls = mockHalls.Object;
 
             TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.PrepareDraw(new Rect(0, 0, 2, 2));
+            roomGen.ProposedSize = new Loc(2, 2);
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -151,7 +151,7 @@ namespace RogueElements.Tests
             pathGen.CallBase = true;
             pathGen.Object.HallPercent = 0;
             TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.PrepareDraw(new Rect(0, 0, 2, 2));
+            roomGen.ProposedSize = new Loc(2, 2);
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
