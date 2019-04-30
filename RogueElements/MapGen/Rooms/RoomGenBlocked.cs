@@ -23,6 +23,15 @@ namespace RogueElements
             BlockWidth = blockWidth;
             BlockHeight = blockHeight;
         }
+        protected RoomGenBlocked(RoomGenBlocked<T> other)
+        {
+            BlockTerrain = other.BlockTerrain.Copy();
+            Width = other.Width;
+            Height = other.Height;
+            BlockWidth = other.BlockWidth;
+            BlockHeight = other.BlockHeight;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenBlocked<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

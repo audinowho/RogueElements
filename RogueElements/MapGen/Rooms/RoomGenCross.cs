@@ -30,6 +30,14 @@ namespace RogueElements
             MinorWidth = minorWidth;
             MinorHeight = minorHeight;
         }
+        protected RoomGenCross(RoomGenCross<T> other)
+        {
+            MajorWidth = other.MajorWidth;
+            MajorHeight = other.MajorHeight;
+            MinorWidth = other.MinorWidth;
+            MinorHeight = other.MinorHeight;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenCross<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

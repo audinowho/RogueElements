@@ -28,6 +28,12 @@ namespace RogueElements
             Width = width;
             Height = height;
         }
+        protected RoomGenCave(RoomGenCave<T> other)
+        {
+            Width = other.Width;
+            Height = other.Height;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenCave<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

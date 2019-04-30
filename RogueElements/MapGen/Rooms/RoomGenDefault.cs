@@ -7,6 +7,7 @@ namespace RogueElements
     public class RoomGenDefault<T> : PermissiveRoomGen<T> where T : ITiledGenContext
     {
         public RoomGenDefault() { }
+        public override RoomGen<T> Copy() { return new RoomGenDefault<T>(); }
 
 
         public override Loc ProposeSize(IRandom rand)

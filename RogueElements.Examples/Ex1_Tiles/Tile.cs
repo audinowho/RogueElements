@@ -16,6 +16,11 @@ namespace RogueElements.Examples.Ex1_Tiles
         {
             ID = id;
         }
+        protected Tile(Tile other)
+        {
+            ID = other.ID;
+        }
+        public ITile Copy() { return new Tile(this); }
 
         public bool TileEquivalent(ITile other)
         {

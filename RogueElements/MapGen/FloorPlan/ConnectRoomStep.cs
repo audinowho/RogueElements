@@ -35,7 +35,7 @@ namespace RogueElements
                 if (chosenDest != null)
                 {
                     //connect
-                    PermissiveRoomGen<T> hall = GenericHalls.Pick(rand).Copy();
+                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)GenericHalls.Pick(rand).Copy();
                     hall.PrepareSize(rand, chosenDest.Connector.Size);
                     hall.SetLoc(chosenDest.Connector.Start);
                     floorPlan.AddHall(hall, chosenDest.From, chosenDest.To);

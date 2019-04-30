@@ -10,8 +10,15 @@ namespace RogueElements.Examples.Ex5_Terrain
     public class StairsDown : Stairs
     {
     }
-    public class Stairs
+    public class Stairs : ISpawnable
     {
         public Loc Loc { get; set; }
+
+        public Stairs() { }
+        protected Stairs(Stairs other)
+        {
+            Loc = other.Loc;
+        }
+        public ISpawnable Copy() { return new Stairs(this); }
     }
 }

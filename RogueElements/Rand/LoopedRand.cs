@@ -17,6 +17,12 @@ namespace RogueElements
             Spawner = spawner;
             AmountSpawner = amountSpawner;
         }
+        protected LoopedRand(LoopedRand<T> other)
+        {
+            Spawner = other.Spawner.CopyState();
+            AmountSpawner = other.AmountSpawner.CopyState();
+        }
+        public IMultiRandPicker<T> CopyState() { return new LoopedRand<T>(this); }
 
         public List<T> Roll(IRandom rand)
         {

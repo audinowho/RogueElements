@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns objects of type E to IPlaceableGenContext T.
+    /// Child classes offer a different way to place the list of spawns provided by Spawn.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="E"></typeparam>
     [Serializable]
     public abstract class BaseSpawnStep<T, E> : GenStep<T>
         where T : class, IPlaceableGenContext<E>

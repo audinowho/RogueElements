@@ -24,6 +24,13 @@ namespace RogueElements
             Width = width;
             Height = height;
         }
+        protected RoomGenAngledHall(RoomGenAngledHall<T> other)
+        {
+            HallTurnBias = other.HallTurnBias;
+            Width = other.Width;
+            Height = other.Height;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenAngledHall<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

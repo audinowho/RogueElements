@@ -14,12 +14,12 @@ namespace RogueElements
         //Ranges that must have at least one of their permitted tiles touched
         [NonSerialized]
         protected List<Range>[] roomSideReqs;
-        
+
         //tiles that have been touched during room gen
         public bool GetOpenedBorder(Dir4 dir, int index) { return openedBorder[(int)dir][index]; }
         [NonSerialized]
         protected bool[][] openedBorder;
-        
+
         //tiles that this room can take as incoming paths
         public bool GetFulfillableBorder(Dir4 dir, int index) { return fulfillableBorder[(int)dir][index]; }
         [NonSerialized]
@@ -52,9 +52,27 @@ namespace RogueElements
             draw = new Rect(new Loc(-1), new Loc(-1));
         }
 
+        /// <summary>
+        /// Creates a copy of the object, to be placed in the generated layout.
+        /// </summary>
+        /// <returns></returns>
+        public abstract RoomGen<T> Copy();
+        IRoomGen IRoomGen.Copy() { return Copy(); }
+
         //this structure is serialized, so make sure runtime state variables are clean at start
 
+        /// <summary>
+        /// Returns a Loc that represents the dimensions that this RoomGen prefers to be.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <returns></returns>
         public abstract Loc ProposeSize(IRandom rand);
+
+        /// <summary>
+        /// Initializes the room to the specified size. If its proposed size is not used, it may draw a default empty square.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <param name="size"></param>
         public virtual void PrepareSize(IRandom rand, Loc size)
         {
             if (size.X <= 0 || size.Y <= 0)
@@ -84,7 +102,7 @@ namespace RogueElements
                     }
                 }
                 if (!hasRequestable)
-                    throw new NotImplementedException("PrepareFulfillableBorders did not open at least one open tile for each direction!");
+                    throw new ArgumentException("PrepareFulfillableBorders did not open at least one open tile for each direction!");
             }
         }
         
@@ -438,5 +456,7 @@ namespace RogueElements
         void DrawOnMap(ITiledGenContext map);
         Loc GetEdgeLoc(Dir4 dir, int scalar);
         Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar);
+
+        IRoomGen Copy();
     }
 }

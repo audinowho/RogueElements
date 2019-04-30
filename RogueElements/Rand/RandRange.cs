@@ -14,6 +14,12 @@ namespace RogueElements
 
         public RandRange(int num) { Min = num; Max = num; }
         public RandRange(int min, int max) { Min = min; Max = max; }
+        public RandRange(RandRange other)
+        {
+            Min = other.Min;
+            Max = other.Max;
+        }
+        public IRandPicker<int> CopyState() { return new RandRange(this); }
 
         public IEnumerator<int> GetEnumerator()
         {

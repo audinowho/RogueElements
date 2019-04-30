@@ -931,6 +931,11 @@ namespace RogueElements.Tests
                 return false;
             return other.ID == ID;
         }
+        protected TestTile(TestTile other)
+        {
+            ID = other.ID;
+        }
+        public ITile Copy() { return new TestTile(this); }
 
         public bool TileEquivalent(ITile other)
         {
@@ -1015,6 +1020,9 @@ namespace RogueElements.Tests
         public bool[][] PublicOpenedBorder { get { return openedBorder; } }
         public bool[][] PublicFulfillableBorder { get { return fulfillableBorder; } }
         public bool[][] PublicBorderToFulfill { get { return borderToFulfill; } }
+
+        public override RoomGen<T> Copy() { return new TestRoomGen<T>(); }
+
         public override Loc ProposeSize(IRandom rand) { return new Loc(); }
         public override void DrawOnMap(T map) { }
         protected override void PrepareFulfillableBorders(IRandom rand)

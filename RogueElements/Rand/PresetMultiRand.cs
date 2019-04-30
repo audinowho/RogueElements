@@ -13,6 +13,11 @@ namespace RogueElements
         public PresetMultiRand() { ToSpawn = new List<T>(); }
         public PresetMultiRand(params T[] toSpawn) : this() { ToSpawn.AddRange(toSpawn); }
         public PresetMultiRand(List<T> toSpawn) { ToSpawn = toSpawn; }
+        protected PresetMultiRand(PresetMultiRand<T> other) : this()
+        {
+            ToSpawn.AddRange(other.ToSpawn);
+        }
+        public IMultiRandPicker<T> CopyState() { return new PresetMultiRand<T>(this); }
 
         public List<T> Roll(IRandom rand)
         {

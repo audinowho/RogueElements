@@ -16,6 +16,12 @@ namespace RogueElements
             Width = width;
             Height = height;
         }
+        protected RoomGenSquare(RoomGenSquare<T> other)
+        {
+            Width = other.Width;
+            Height = other.Height;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenSquare<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

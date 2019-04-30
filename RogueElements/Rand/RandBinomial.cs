@@ -15,6 +15,13 @@ namespace RogueElements
 
         public RandBinomial(int trials, int percent) { Trials = trials; Percent = percent; }
         public RandBinomial(int trials, int percent, int offset) : this(trials, percent) { Offset = offset; }
+        protected RandBinomial(RandBinomial other)
+        {
+            Offset = other.Offset;
+            Trials = other.Trials;
+            Percent = other.Percent;
+        }
+        public IRandPicker<int> CopyState() { return new RandBinomial(this); }
 
         public IEnumerator<int> GetEnumerator()
         {

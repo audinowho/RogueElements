@@ -91,6 +91,10 @@ namespace RogueElements
             arrayRooms = new List<GridRoomPlan>();
         }
 
+        /// <summary>
+        /// Generates the position and location of each room and hall, and places it in the specified IFloorPlanGenContext.
+        /// </summary>
+        /// <param name="map"></param>
         public void PlaceRoomsOnFloor(IFloorPlanGenContext map)
         {
             //decide on room sizes
@@ -335,7 +339,7 @@ namespace RogueElements
                 throw new ArgumentException("Invalid direction.");
             IPermissiveRoomGen addHall = null;
             if (hallGen != null)
-                addHall = hallGen.Copy();
+                addHall = (IPermissiveRoomGen)hallGen.Copy();
             switch (locRay.Dir)
             {
                 case Dir4.Down:
@@ -368,7 +372,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Decides on the room bounds for each room
+        /// Decides on the room bounds for each room.
         /// </summary>
         /// <param name="map"></param>
         /// <param name="roomIndex"></param>
@@ -489,7 +493,7 @@ namespace RogueElements
                     Rect endBox = vertical ? new Rect(endDivRange.Min, divPoint, endDivRange.Length, end.Y - divPoint)
                         : new Rect(divPoint, endDivRange.Min, end.X - divPoint, endDivRange.Length);
 
-                    hall.Gens.Add(hall.MainGen.Copy());
+                    hall.Gens.Add((IPermissiveRoomGen)hall.MainGen.Copy());
                     hall.Gens[0].PrepareSize(rand, startBox.Size);
                     hall.Gens[0].SetLoc(startBox.Start);
                     hall.Gens[1].PrepareSize(rand, endBox.Size);

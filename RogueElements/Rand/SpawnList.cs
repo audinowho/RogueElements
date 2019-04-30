@@ -33,6 +33,12 @@ namespace RogueElements
         {
             spawns = new List<SpawnRate>();
         }
+        protected SpawnList(SpawnList<T> other) : this()
+        {
+            foreach (SpawnRate item in other.spawns)
+                spawns.Add(new SpawnRate(item.Spawn, item.Rate));
+        }
+        public IRandPicker<T> CopyState() { return new SpawnList<T>(this); }
 
         public void Add(T spawn)
         {

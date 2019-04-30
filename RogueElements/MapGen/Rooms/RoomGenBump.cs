@@ -20,7 +20,14 @@ namespace RogueElements
             Height = height;
             BumpPercent = bumpPercent;
         }
-        
+        protected RoomGenBump(RoomGenBump<T> other)
+        {
+            Width = other.Width;
+            Height = other.Height;
+            BumpPercent = other.BumpPercent;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenBump<T>(this); }
+
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(Width.Pick(rand), Height.Pick(rand));

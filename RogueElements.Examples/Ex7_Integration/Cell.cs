@@ -25,6 +25,15 @@ namespace RogueSharp
             IsInFov = isInFov;
             IsExplored = isExplored;
         }
+        protected Cell(Cell other)
+        {
+            X = other.X;
+            Y = other.Y;
+            IsTransparent = other.IsTransparent;
+            IsWalkable = other.IsWalkable;
+            IsInFov = other.IsInFov;
+        }
+        public ITile Copy() { return new Cell(this); }
 
         /// <summary>
         /// Construct a new unexplored Cell located at the specified x and y location with the specified properties

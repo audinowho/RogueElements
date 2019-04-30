@@ -17,7 +17,7 @@ namespace RogueElements
             Tiles = new ITile[width][];
             for (int xx = 0; xx < width; xx++)
                 Tiles[xx] = new ITile[height];
-            Borders = new bool[4][];
+            Borders = new bool[DirExt.DIR4_COUNT][];
             Borders[(int)Dir4.Down] = new bool[width];
             Borders[(int)Dir4.Up] = new bool[width];
             Borders[(int)Dir4.Left] = new bool[height];
@@ -28,6 +28,26 @@ namespace RogueElements
             RoomTerrain = roomTerrain;
             FulfillAll = fulfillAll;
         }
+        protected RoomGenSpecific(RoomGenSpecific<T> other)
+        {
+            RoomTerrain = other.RoomTerrain;
+            Tiles = new ITile[other.Tiles.Length][];
+            for (int xx = 0; xx < other.Tiles.Length; xx++)
+            {
+                Tiles[xx] = new ITile[other.Tiles[0].Length];
+                for (int yy = 0; yy < other.Tiles[0].Length; yy++)
+                    Tiles[xx][yy] = other.Tiles[xx][yy].Copy();
+            }
+            Borders = new bool[DirExt.DIR4_COUNT][];
+            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            {
+                Borders[ii] = new bool[other.Borders[ii].Length];
+                for (int jj = 0; jj < other.Borders[ii].Length; jj++)
+                    Borders[ii][jj] = other.Borders[ii][jj];
+            }
+            FulfillAll = other.FulfillAll;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenSpecific<T>(this); }
 
         public override Loc ProposeSize(IRandom rand)
         {

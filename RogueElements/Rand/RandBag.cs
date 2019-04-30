@@ -15,6 +15,12 @@ namespace RogueElements
         public RandBag() { ToSpawn = new List<T>(); }
         public RandBag(params T[] toSpawn) : this() { ToSpawn.AddRange(toSpawn); }
         public RandBag(List<T> toSpawn) { ToSpawn = toSpawn; }
+        protected RandBag(RandBag<T> other) : this()
+        {
+            ToSpawn.AddRange(other.ToSpawn);
+            RemoveOnRoll = other.RemoveOnRoll;
+        }
+        public IRandPicker<T> CopyState() { return new RandBag<T>(this); }
 
         public IEnumerator<T> GetEnumerator()
         {

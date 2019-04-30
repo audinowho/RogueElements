@@ -15,7 +15,13 @@ namespace RogueElements
             Width = width;
             Height = height;
         }
-        
+        protected RoomGenRound(RoomGenRound<T> other)
+        {
+            Width = other.Width;
+            Height = other.Height;
+        }
+        public override RoomGen<T> Copy() { return new RoomGenRound<T>(this); }
+
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(Width.Pick(rand), Height.Pick(rand));

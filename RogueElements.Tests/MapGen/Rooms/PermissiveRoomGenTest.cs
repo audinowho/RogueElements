@@ -55,6 +55,9 @@ namespace RogueElements.Tests
         public bool[][] PublicFulfillableBorder { get { return fulfillableBorder; } }
         public bool[][] PublicOpenedBorder { get { return openedBorder; } }
         public bool[][] PublicBorderToFulfill { get { return borderToFulfill; } }
+
+        public override RoomGen<T> Copy() { return new TestPermissiveRoomGen<T>(); }
+
         public override Loc ProposeSize(IRandom rand) { return new Loc(); }
         public override void DrawOnMap(T map) { }
 

@@ -654,6 +654,9 @@ namespace RogueElements.Tests
     {
         public TestFloorRoomGen() { }
         public TestFloorRoomGen(char id) { Identifier = id; }
+        protected TestFloorRoomGen(TestFloorRoomGen<T> other)
+        { Identifier = other.Identifier; }
+        public override RoomGen<T> Copy() { return new TestFloorRoomGen<T>(); }
 
         public char Identifier;
 

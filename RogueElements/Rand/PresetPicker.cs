@@ -14,6 +14,11 @@ namespace RogueElements
 
         public PresetPicker() { }
         public PresetPicker(T toSpawn) { ToSpawn = toSpawn; }
+        protected PresetPicker(PresetPicker<T> other)
+        {
+            ToSpawn = other.ToSpawn;
+        }
+        public IRandPicker<T> CopyState() { return new PresetPicker<T>(this); }
 
         public IEnumerator<T> GetEnumerator() { yield return ToSpawn; }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }

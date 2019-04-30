@@ -92,7 +92,7 @@ namespace RogueElements
                 else if (adjacentsByDir[ii].Count > 0)
                 {
                     Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, (Dir4)ii, adjacentsByDir[ii]);
-                    IPermissiveRoomGen supportHall = Halls.Pick(rand).Copy();
+                    IPermissiveRoomGen supportHall = (IPermissiveRoomGen)Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
                     supportHalls[ii] = supportHall;
