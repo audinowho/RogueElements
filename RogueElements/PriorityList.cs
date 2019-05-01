@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class PriorityList<T> : IEnumerable<T>, IEnumerable
+    public class PriorityList<T> : IEnumerable<T>, IPriorityList
     {
         private Dictionary<int, List<T>> data;
 
@@ -20,30 +20,42 @@ namespace RogueElements
                 data[priority] = new List<T>();
             data[priority].Add(item);
         }
+        void IPriorityList.Add(int priority, object item) { Add(priority, (T)item); }
 
         public void Insert(int priority, int index, T item)
         {
+            if (!data.ContainsKey(priority))
+            {
+                if (index != 0)
+                    throw new ArgumentOutOfRangeException("Index was out of bounds of the list.");
+                data[priority] = new List<T>();
+            }
             data[priority].Insert(index, item);
         }
+        void IPriorityList.Insert(int priority, int index, object item) { Insert(priority, index, (T)item); }
 
         public void RemoveAt(int priority, int index)
         {
             data[priority].RemoveAt(index);
+            if (data[priority].Count == 0)
+                data.Remove(priority);
         }
 
         public T Get(int priority, int index)
         {
             return data[priority][index];
         }
+        object IPriorityList.Get(int priority, int index) { return Get(priority, index); }
+
+        public void Set(int priority, int index, T item)
+        {
+            data[priority][index] = item;
+        }
+        void IPriorityList.Set(int priority, int index, object item) { Set(priority, index, (T)item); }
 
         public void Clear()
         {
             data.Clear();
-        }
-
-        public int GetCountAtPriority(int priority)
-        {
-            return data[priority].Count;
         }
 
 
@@ -58,6 +70,7 @@ namespace RogueElements
             foreach (T item in data[priority])
                 yield return item;
         }
+        IEnumerable IPriorityList.GetItems(int priority) { return GetItems(priority); }
 
 
         public IEnumerator<T> GetEnumerator()
@@ -69,6 +82,15 @@ namespace RogueElements
             }
         }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+
+        public int GetCountAtPriority(int priority)
+        {
+            List<T> items;
+            if (data.TryGetValue(priority, out items))
+                return items.Count;
+            return 0;
+        }
+        int IPriorityList.GetCountAtPriority(int priority) { return GetCountAtPriority(priority); }
 
         public int PriorityCount { get { return data.Count; } }
 
