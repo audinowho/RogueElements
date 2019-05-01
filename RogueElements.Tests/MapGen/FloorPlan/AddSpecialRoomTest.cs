@@ -269,9 +269,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -300,9 +300,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 4, 2));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -324,9 +324,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 4, 4));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep <IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -347,9 +347,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -377,9 +377,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, w, h));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
             
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -420,9 +420,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, w, h));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;
@@ -445,9 +445,9 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                adjacentsByDir[ii] = new List<IRoomGen>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                adjacentsByDir[dir] = new List<IRoomGen>();
 
             Mock<AddSpecialRoomStep<IFloorPlanTestContext>> pathGen = new Mock<AddSpecialRoomStep<IFloorPlanTestContext>>();
             pathGen.CallBase = true;

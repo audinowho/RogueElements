@@ -44,16 +44,14 @@ namespace RogueElements.Tests
             {
                 roomGen.PrepareSize(testRand.Object, size);
                 Assert.That(roomGen.Draw.Size, Is.EqualTo(size));
-                Assert.That(roomGen.PublicOpenedBorder.Length, Is.EqualTo(4));
-                Assert.That(roomGen.PublicFulfillableBorder.Length, Is.EqualTo(4));
-                Assert.That(roomGen.PublicOpenedBorder[0].Length, Is.EqualTo(x));
-                Assert.That(roomGen.PublicFulfillableBorder[0].Length, Is.EqualTo(x));
-                Assert.That(roomGen.PublicOpenedBorder[2].Length, Is.EqualTo(x));
-                Assert.That(roomGen.PublicFulfillableBorder[2].Length, Is.EqualTo(x));
-                Assert.That(roomGen.PublicOpenedBorder[1].Length, Is.EqualTo(y));
-                Assert.That(roomGen.PublicFulfillableBorder[1].Length, Is.EqualTo(y));
-                Assert.That(roomGen.PublicOpenedBorder[3].Length, Is.EqualTo(y));
-                Assert.That(roomGen.PublicFulfillableBorder[3].Length, Is.EqualTo(y));
+                Assert.That(roomGen.PublicOpenedBorder[Dir4.Down].Length, Is.EqualTo(x));
+                Assert.That(roomGen.PublicFulfillableBorder[Dir4.Down].Length, Is.EqualTo(x));
+                Assert.That(roomGen.PublicOpenedBorder[Dir4.Up].Length, Is.EqualTo(x));
+                Assert.That(roomGen.PublicFulfillableBorder[Dir4.Up].Length, Is.EqualTo(x));
+                Assert.That(roomGen.PublicOpenedBorder[Dir4.Left].Length, Is.EqualTo(y));
+                Assert.That(roomGen.PublicFulfillableBorder[Dir4.Left].Length, Is.EqualTo(y));
+                Assert.That(roomGen.PublicOpenedBorder[Dir4.Right].Length, Is.EqualTo(y));
+                Assert.That(roomGen.PublicFulfillableBorder[Dir4.Right].Length, Is.EqualTo(y));
             }
         }
 
@@ -92,15 +90,15 @@ namespace RogueElements.Tests
             roomGenTo.SetLoc(new Loc(x1, y1));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(w2, h2));
             roomGenFrom.SetLoc(new Loc(x2, y2));
-            for(int ii = 0; ii < roomGenFrom.PublicOpenedBorder[(int)dir.Reverse()].Length; ii++)
-                roomGenFrom.PublicOpenedBorder[(int)dir.Reverse()][ii] = true;
+            for(int ii = 0; ii < roomGenFrom.PublicOpenedBorder[dir.Reverse()].Length; ii++)
+                roomGenFrom.PublicOpenedBorder[dir.Reverse()][ii] = true;
 
             if (exception)
                 Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, dir); });
             else
             {
                 roomGenTo.ReceiveOpenedBorder(roomGenFrom, dir);
-                Range newRange = roomGenTo.RoomSideReqs[(int)dir][0];
+                Range newRange = roomGenTo.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
             }
         }
@@ -120,23 +118,23 @@ namespace RogueElements.Tests
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
             roomGenFrom.SetLoc(new Loc(0, 2));
-            roomGenFrom.PublicOpenedBorder[2][0] = firstHalf;
-            roomGenFrom.PublicOpenedBorder[2][1] = firstHalf;
-            roomGenFrom.PublicOpenedBorder[2][2] = secondHalf;
-            roomGenFrom.PublicOpenedBorder[2][3] = secondHalf;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][0] = firstHalf;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][1] = firstHalf;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][2] = secondHalf;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][3] = secondHalf;
 
             if (exception)
                 Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down); });
             else
             {
                 roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down);
-                bool[][] expectedBorderToFulfill = new bool[4][];
-                expectedBorderToFulfill[0] = new bool[3];
-                expectedBorderToFulfill[1] = new bool[2];
-                expectedBorderToFulfill[2] = new bool[3];
-                expectedBorderToFulfill[3] = new bool[2];
-                expectedBorderToFulfill[0][0] = true;
-                expectedBorderToFulfill[0][1] = true;
+                var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>();
+                expectedBorderToFulfill[Dir4.Down] = new bool[3];
+                expectedBorderToFulfill[Dir4.Left] = new bool[2];
+                expectedBorderToFulfill[Dir4.Up] = new bool[3];
+                expectedBorderToFulfill[Dir4.Right] = new bool[2];
+                expectedBorderToFulfill[Dir4.Down][0] = true;
+                expectedBorderToFulfill[Dir4.Down][1] = true;
                 Assert.That(roomGenTo.PublicBorderToFulfill, Is.EqualTo(expectedBorderToFulfill));
             }
         }
@@ -156,23 +154,23 @@ namespace RogueElements.Tests
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
             roomGenFrom.SetLoc(new Loc(0, 2));
-            roomGenFrom.PublicFulfillableBorder[2][0] = firstHalf;
-            roomGenFrom.PublicFulfillableBorder[2][1] = firstHalf;
-            roomGenFrom.PublicFulfillableBorder[2][2] = secondHalf;
-            roomGenFrom.PublicFulfillableBorder[2][3] = secondHalf;
+            roomGenFrom.PublicFulfillableBorder[Dir4.Up][0] = firstHalf;
+            roomGenFrom.PublicFulfillableBorder[Dir4.Up][1] = firstHalf;
+            roomGenFrom.PublicFulfillableBorder[Dir4.Up][2] = secondHalf;
+            roomGenFrom.PublicFulfillableBorder[Dir4.Up][3] = secondHalf;
 
             if (exception)
                 Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveFulfillableBorder(roomGenFrom, Dir4.Down); });
             else
             {
                 roomGenTo.ReceiveFulfillableBorder(roomGenFrom, Dir4.Down);
-                bool[][] expectedBorderToFulfill = new bool[4][];
-                expectedBorderToFulfill[0] = new bool[3];
-                expectedBorderToFulfill[1] = new bool[2];
-                expectedBorderToFulfill[2] = new bool[3];
-                expectedBorderToFulfill[3] = new bool[2];
-                expectedBorderToFulfill[0][0] = true;
-                expectedBorderToFulfill[0][1] = true;
+                var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>();
+                expectedBorderToFulfill[Dir4.Down] = new bool[3];
+                expectedBorderToFulfill[Dir4.Left] = new bool[2];
+                expectedBorderToFulfill[Dir4.Up] = new bool[3];
+                expectedBorderToFulfill[Dir4.Right] = new bool[2];
+                expectedBorderToFulfill[Dir4.Down][0] = true;
+                expectedBorderToFulfill[Dir4.Down][1] = true;
                 Assert.That(roomGenTo.PublicBorderToFulfill, Is.EqualTo(expectedBorderToFulfill));
             }
         }
@@ -189,10 +187,10 @@ namespace RogueElements.Tests
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
             roomGenFrom.SetLoc(new Loc(0, 2));
-            roomGenFrom.PublicOpenedBorder[2][0] = true;
-            roomGenFrom.PublicOpenedBorder[2][1] = true;
-            roomGenTo.PublicBorderToFulfill[0][0] = true;
-            roomGenTo.PublicBorderToFulfill[0][1] = true;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][0] = true;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][1] = true;
+            roomGenTo.PublicBorderToFulfill[Dir4.Down][0] = true;
+            roomGenTo.PublicBorderToFulfill[Dir4.Down][1] = true;
 
             Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down); });
         }
@@ -230,7 +228,7 @@ namespace RogueElements.Tests
             else
             {
                 roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir);
-                Range newRange = roomGen.RoomSideReqs[(int)dir][0];
+                Range newRange = roomGen.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
             }
         }
@@ -259,7 +257,7 @@ namespace RogueElements.Tests
             else
             {
                 roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir);
-                Range newRange = roomGen.RoomSideReqs[(int)dir][0];
+                Range newRange = roomGen.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
             }
         }
@@ -275,14 +273,14 @@ namespace RogueElements.Tests
             roomGen.SetLoc(new Loc(2, 3));
 
             roomGen.ReceiveBorderRange(new Range(1, 6), Dir4.Right);
-            bool[][] expectedBorderToFulfill = new bool[4][];
-            expectedBorderToFulfill[0] = new bool[5];
-            expectedBorderToFulfill[1] = new bool[7];
-            expectedBorderToFulfill[2] = new bool[5];
-            expectedBorderToFulfill[3] = new bool[7];
-            expectedBorderToFulfill[3][0] = true;
-            expectedBorderToFulfill[3][1] = true;
-            expectedBorderToFulfill[3][2] = true;
+            var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>();
+            expectedBorderToFulfill[Dir4.Down] = new bool[5];
+            expectedBorderToFulfill[Dir4.Left] = new bool[7];
+            expectedBorderToFulfill[Dir4.Up] = new bool[5];
+            expectedBorderToFulfill[Dir4.Right] = new bool[7];
+            expectedBorderToFulfill[Dir4.Right][0] = true;
+            expectedBorderToFulfill[Dir4.Right][1] = true;
+            expectedBorderToFulfill[Dir4.Right][2] = true;
             Assert.That(roomGen.PublicBorderToFulfill, Is.EqualTo(expectedBorderToFulfill));
         }
 
@@ -353,10 +351,10 @@ namespace RogueElements.Tests
 
             roomGen.SetRoomBorders(testContext);
 
-            Assert.That(roomGen.PublicOpenedBorder[0], Is.EqualTo(new bool[] { true, true, true, true, true }));
-            Assert.That(roomGen.PublicOpenedBorder[1], Is.EqualTo(new bool[] { true, true, true, true }));
-            Assert.That(roomGen.PublicOpenedBorder[2], Is.EqualTo(new bool[] { true, true, true, true, true }));
-            Assert.That(roomGen.PublicOpenedBorder[3], Is.EqualTo(new bool[] { true, true, true, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Down], Is.EqualTo(new bool[] { true, true, true, true, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Left], Is.EqualTo(new bool[] { true, true, true, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Up], Is.EqualTo(new bool[] { true, true, true, true, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Right], Is.EqualTo(new bool[] { true, true, true, true }));
         }
 
         [Test]
@@ -377,10 +375,10 @@ namespace RogueElements.Tests
 
             roomGen.SetRoomBorders(testContext);
 
-            Assert.That(roomGen.PublicOpenedBorder[0], Is.EqualTo(new bool[] { true, true, false, false, false }));
-            Assert.That(roomGen.PublicOpenedBorder[1], Is.EqualTo(new bool[] { false, true, true, true }));
-            Assert.That(roomGen.PublicOpenedBorder[2], Is.EqualTo(new bool[] { false, true, true, false, true }));
-            Assert.That(roomGen.PublicOpenedBorder[3], Is.EqualTo(new bool[] { true, true, false, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Down], Is.EqualTo(new bool[] { true, true, false, false, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Left], Is.EqualTo(new bool[] { false, true, true, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Up], Is.EqualTo(new bool[] { false, true, true, false, true }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Right], Is.EqualTo(new bool[] { true, true, false, false }));
         }
 
         [Test]
@@ -405,10 +403,10 @@ namespace RogueElements.Tests
 
             roomGen.SetRoomBorders(testContext);
 
-            Assert.That(roomGen.PublicOpenedBorder[0], Is.EqualTo(new bool[] { false, false, true, false, false }));
-            Assert.That(roomGen.PublicOpenedBorder[1], Is.EqualTo(new bool[] { false, false, true, false }));
-            Assert.That(roomGen.PublicOpenedBorder[2], Is.EqualTo(new bool[] { false, false, true, false, false }));
-            Assert.That(roomGen.PublicOpenedBorder[3], Is.EqualTo(new bool[] { false, false, true, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Down], Is.EqualTo(new bool[] { false, false, true, false, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Left], Is.EqualTo(new bool[] { false, false, true, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Up], Is.EqualTo(new bool[] { false, false, true, false, false }));
+            Assert.That(roomGen.PublicOpenedBorder[Dir4.Right], Is.EqualTo(new bool[] { false, false, true, false }));
         }
 
         [Test]
@@ -569,8 +567,8 @@ namespace RogueElements.Tests
             testContext.SetTestRand(testRand.Object);
             roomGen.Object.PrepareSize(testRand.Object, new Loc(5, 4));
             roomGen.Object.SetLoc(new Loc(2, 1));
-            roomGen.Object.PublicFulfillableBorder[(int)Dir4.Down][2] = false;
-            roomGen.Object.PublicFulfillableBorder[(int)Dir4.Down][3] = false;
+            roomGen.Object.PublicFulfillableBorder[Dir4.Down][2] = false;
+            roomGen.Object.PublicFulfillableBorder[Dir4.Down][3] = false;
             roomGen.Object.ReceiveBorderRange(new Range(2, 7), Dir4.Down);
             //find where the class chose to dig
 
@@ -1007,19 +1005,19 @@ namespace RogueElements.Tests
         
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
-            fulfillableBorder[0][fulfillableBorder[0].Length/2] = openDown;
-            fulfillableBorder[1][fulfillableBorder[1].Length/2] = openLeft;
-            fulfillableBorder[2][fulfillableBorder[2].Length/2] = openUp;
-            fulfillableBorder[3][fulfillableBorder[3].Length/2] = openRight;
+            fulfillableBorder[Dir4.Down][fulfillableBorder[Dir4.Down].Length/2] = openDown;
+            fulfillableBorder[Dir4.Left][fulfillableBorder[Dir4.Left].Length/2] = openLeft;
+            fulfillableBorder[Dir4.Up][fulfillableBorder[Dir4.Up].Length/2] = openUp;
+            fulfillableBorder[Dir4.Right][fulfillableBorder[Dir4.Right].Length/2] = openRight;
         }
     }
 
     public class TestRoomGen<T> : RoomGen<T> where T : ITiledGenContext
     {
-        public List<Range>[] RoomSideReqs { get { return roomSideReqs; } }
-        public bool[][] PublicOpenedBorder { get { return openedBorder; } }
-        public bool[][] PublicFulfillableBorder { get { return fulfillableBorder; } }
-        public bool[][] PublicBorderToFulfill { get { return borderToFulfill; } }
+        public Dictionary<Dir4, List<Range>> RoomSideReqs { get { return roomSideReqs; } }
+        public Dictionary<Dir4, bool[]> PublicOpenedBorder { get { return openedBorder; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicBorderToFulfill { get { return borderToFulfill; } }
 
         public override RoomGen<T> Copy() { return new TestRoomGen<T>(); }
 
@@ -1027,9 +1025,9 @@ namespace RogueElements.Tests
         public override void DrawOnMap(T map) { }
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
-                for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
-                    fulfillableBorder[ii][jj] = true;
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
+                    fulfillableBorder[dir][jj] = true;
         }
         
         public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)
