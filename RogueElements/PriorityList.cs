@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class PriorityList<T>
+    public class PriorityList<T> : IEnumerable<T>, IEnumerable
     {
         private Dictionary<int, List<T>> data;
 
@@ -58,6 +59,16 @@ namespace RogueElements
                 yield return item;
         }
 
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (int key in data.Keys)
+            {
+                foreach (T item in data[key])
+                    yield return item;
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
         public int PriorityCount { get { return data.Count; } }
 
