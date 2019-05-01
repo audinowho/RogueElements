@@ -63,7 +63,7 @@ namespace RogueElements
 
                 currentTile.Traversed = true;
 
-                for (int ii = 0; ii < 8; ii++)
+                for (int ii = 0; ii < DirExt.VALID_DIR8.Length; ii++)
                 {
                     if (!IsDirBlocked(currentTile.Location, ii.ToWrappedDir8(), checkBlock, checkDiagBlock))
                     {
@@ -300,7 +300,7 @@ namespace RogueElements
                         yield break;
                 }
 
-                for (int ii = 0; ii < 8; ii++)
+                for (int ii = 0; ii < DirExt.VALID_DIR8.Length; ii++)
                 {
                     Loc movedLoc = candidate + ii.ToWrappedDir8().GetLoc();
                     if (Collision.InBounds(rectSize.X, rectSize.Y, movedLoc) && !fillArray[movedLoc.X][movedLoc.Y] && !IsDirBlocked(candidate + rectStart, ii.ToWrappedDir8(), checkBlock, checkDiagBlock))
@@ -379,7 +379,7 @@ namespace RogueElements
             List<Dir8> forks = new List<Dir8>();
             bool prevBlocked = IsDirBlocked(point, Dir8.Down, checkBlock, checkDiagBlock);
             int switches = 0;
-            for (int ii = 0; ii < 8; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR8.Length; ii++)
             {
                 Dir8 dir = (Dir8)((ii + 1) % 8);
                 bool newBlock = IsDirBlocked(point, dir, checkBlock, checkDiagBlock);
@@ -402,7 +402,7 @@ namespace RogueElements
 
         public static bool IsDirBlocked(Loc loc, Dir8 dir, LocTest checkBlock, LocTest checkDiagBlock, int distance)
         {
-            if (dir < Dir8.None || (int)dir >= DirExt.DIR8_COUNT)
+            if (dir < Dir8.None || (int)dir >= DirExt.VALID_DIR8.Length)
                 throw new ArgumentException("Invalid value to check.");
             else if (dir == Dir8.None)
                 return false;

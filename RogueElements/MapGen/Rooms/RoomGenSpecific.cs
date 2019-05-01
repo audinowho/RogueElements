@@ -17,7 +17,7 @@ namespace RogueElements
             Tiles = new ITile[width][];
             for (int xx = 0; xx < width; xx++)
                 Tiles[xx] = new ITile[height];
-            Borders = new bool[DirExt.DIR4_COUNT][];
+            Borders = new bool[DirExt.VALID_DIR4.Length][];
             Borders[(int)Dir4.Down] = new bool[width];
             Borders[(int)Dir4.Up] = new bool[width];
             Borders[(int)Dir4.Left] = new bool[height];
@@ -38,8 +38,8 @@ namespace RogueElements
                 for (int yy = 0; yy < other.Tiles[0].Length; yy++)
                     Tiles[xx][yy] = other.Tiles[xx][yy].Copy();
             }
-            Borders = new bool[DirExt.DIR4_COUNT][];
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            Borders = new bool[DirExt.VALID_DIR4.Length][];
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 Borders[ii] = new bool[other.Borders[ii].Length];
                 for (int jj = 0; jj < other.Borders[ii].Length; jj++)
@@ -60,7 +60,7 @@ namespace RogueElements
             //the tile ID representing an opening must be specified on this class instead.
             if (Draw.Width != Tiles.Length || Draw.Height != Tiles[0].Length)
             {
-                for (int ii = 0; ii < 4; ii++)
+                for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                 {
                     for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
                         fulfillableBorder[ii][jj] = true;

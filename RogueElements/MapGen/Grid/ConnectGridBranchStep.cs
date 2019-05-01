@@ -43,7 +43,7 @@ namespace RogueElements
                 {
                     List<LocRay4> connectors = new List<LocRay4>();
                     List<LocRay4> candBonds = new List<LocRay4>();
-                    for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+                    for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                     {
                         if ((Dir4)ii != chosenBranch.Dir)
                         {

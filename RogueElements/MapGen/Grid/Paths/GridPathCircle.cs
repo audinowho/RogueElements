@@ -105,7 +105,7 @@ namespace RogueElements
                     if (currentLength > 0)
                     {
                         List<Dir4> dirs = new List<Dir4>();
-                        for (int dd = 0; dd < DirExt.DIR4_COUNT; dd++)
+                        for (int dd = 0; dd < DirExt.VALID_DIR4.Length; dd++)
                         {
                             Dir4 dir = (Dir4)dd;
                             //do not backtrack

@@ -676,7 +676,7 @@ namespace RogueElements.Tests
         public void PrepareDraw(Rect rect)
         {
             draw = rect;
-            for (int ii = 0; ii < 4; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 openedBorder[ii] = new bool[GetBorderLength((Dir4)ii)];
                 fulfillableBorder[ii] = new bool[GetBorderLength((Dir4)ii)];

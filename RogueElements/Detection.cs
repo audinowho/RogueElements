@@ -239,7 +239,7 @@ namespace RogueElements
             //check the four directions
             Dir4 chosenDir = Dir4.None;
             //ensure that there is only one direction where it is unblocked
-            for (int ii = 0; ii < 4; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 Loc newLoc = loc + ((Dir4)ii).GetLoc();
                 if (checkGround(newLoc))

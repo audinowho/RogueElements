@@ -47,8 +47,8 @@ namespace RogueElements
                 int ind = room_indices.PickIndex(rand);
                 RoomHallIndex oldRoomHall = room_indices.GetSpawn(ind);
                 List<RoomHallIndex>[] adjacentIndicesByDir = getDirectionAdjacents(floorPlan, oldRoomHall);
-                List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.DIR4_COUNT];
-                for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+                List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.VALID_DIR4.Length];
+                for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                 {
                     adjacentsByDir[ii] = new List<IRoomGen>();
                     foreach (RoomHallIndex adj in adjacentIndicesByDir[ii])
@@ -73,7 +73,7 @@ namespace RogueElements
             IRoomGen oldGen = floorPlan.GetRoomHall(oldRoomHall).Gen;
             //remove the room; update the adjacents too
             floorPlan.EraseRoomHall(oldRoomHall);
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 for (int jj = 0; jj < adjacentsByDir[ii].Count; jj++)
                 {
@@ -84,8 +84,8 @@ namespace RogueElements
                 }
             }
             List<RoomHallIndex> newAdjacents = new List<RoomHallIndex>();
-            IPermissiveRoomGen[] supportHalls = new IPermissiveRoomGen[DirExt.DIR4_COUNT];
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            IPermissiveRoomGen[] supportHalls = new IPermissiveRoomGen[DirExt.VALID_DIR4.Length];
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 if (newGen.Draw.GetScalar((Dir4)ii) == oldGen.Draw.GetScalar((Dir4)ii))
                     newAdjacents.AddRange(adjacentsByDir[ii]);
@@ -102,7 +102,7 @@ namespace RogueElements
             RoomHallIndex newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
             floorPlan.AddRoom(newGen, true, newAdjacents.ToArray());
             //add supporting halls
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 if (supportHalls[ii] != null)
                 {
@@ -260,9 +260,9 @@ namespace RogueElements
 
         private List<RoomHallIndex>[] getDirectionAdjacents(FloorPlan floorPlan, RoomHallIndex oldRoomHall)
         {
-            List<RoomHallIndex>[] adjacentsByDir = new List<RoomHallIndex>[DirExt.DIR4_COUNT];
+            List<RoomHallIndex>[] adjacentsByDir = new List<RoomHallIndex>[DirExt.VALID_DIR4.Length];
             BaseFloorRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 adjacentsByDir[ii] = new List<RoomHallIndex>();
                 foreach (RoomHallIndex adjacent in oldPlan.Adjacents)

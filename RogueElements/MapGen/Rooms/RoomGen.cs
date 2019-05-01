@@ -42,12 +42,12 @@ namespace RogueElements
         public RoomGen()
         {
 
-            roomSideReqs = new List<Range>[DirExt.DIR4_COUNT];
+            roomSideReqs = new List<Range>[DirExt.VALID_DIR4.Length];
             for (int ii = 0; ii < roomSideReqs.Length; ii++)
                 roomSideReqs[ii] = new List<Range>();
-            openedBorder = new bool[DirExt.DIR4_COUNT][];
-            fulfillableBorder = new bool[DirExt.DIR4_COUNT][];
-            borderToFulfill = new bool[DirExt.DIR4_COUNT][];
+            openedBorder = new bool[DirExt.VALID_DIR4.Length][];
+            fulfillableBorder = new bool[DirExt.VALID_DIR4.Length][];
+            borderToFulfill = new bool[DirExt.VALID_DIR4.Length][];
 
             draw = new Rect(new Loc(-1), new Loc(-1));
         }
@@ -80,7 +80,7 @@ namespace RogueElements
 
             draw.Size = size;
             //set all border tile classes to the correct length
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 openedBorder[ii] = new bool[GetBorderLength((Dir4)ii)];
                 fulfillableBorder[ii] = new bool[GetBorderLength((Dir4)ii)];
@@ -90,7 +90,7 @@ namespace RogueElements
             PrepareFulfillableBorders(rand);
 
             //verify that possible borders has at least one TRUE in each array
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 bool hasRequestable = false;
                 for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
@@ -182,7 +182,7 @@ namespace RogueElements
         {
             if (range.Length <= 0)
                 throw new ArgumentException("Range must have a positive length.");
-            if (dir <= Dir4.None || (int)dir >= DirExt.DIR4_COUNT)
+            if (dir <= Dir4.None || (int)dir >= DirExt.VALID_DIR4.Length)
                 throw new ArgumentException("Invalid dir value.");
             //also throw exception if the range fails to
             //hit at least one open requestableBorderTile

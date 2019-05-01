@@ -8,11 +8,12 @@ namespace RogueElements
     
     public static class DirExt
     {
-        public const int DIR2_COUNT = 2;
-        public const int DIR4_COUNT = 4;
-        public const int DIR8_COUNT = 8;
-        public const int AXIS4_COUNT = 2;
-        public const int AXIS8_COUNT = 4;
+        public static readonly DirH[] VALID_DIRH = { DirH.Left, DirH.Right };
+        public static readonly DirV[] VALID_DIRV = { DirV.Down, DirV.Up };
+        public static readonly Dir4[] VALID_DIR4 = { Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
+        public static readonly Dir8[] VALID_DIR8 = { Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
+        public static readonly Axis4[] VALID_AXIS4 = { Axis4.Vert, Axis4.Horiz };
+        public static readonly Axis8[] VALID_AXIS8 = { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
 
         public static int ToWrappedInt(this Dir8 dir)
         {
@@ -78,7 +79,7 @@ namespace RogueElements
         }
         public static Dir8 ToDir8(this Dir4 dir)
         {
-            if (dir < Dir4.None || (int)dir >= DIR4_COUNT)
+            if (dir < Dir4.None || (int)dir >= VALID_DIR4.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (dir == Dir4.None)
                 return (Dir8)((int)dir);
@@ -146,7 +147,7 @@ namespace RogueElements
 
         public static Axis8 ToAxis8(this Axis4 axis)
         {
-            if (axis < Axis4.None || (int)axis >= AXIS4_COUNT)
+            if (axis < Axis4.None || (int)axis >= VALID_AXIS4.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.None)
                 return (Axis8)((int)axis);
@@ -313,31 +314,31 @@ namespace RogueElements
 
         public static DirH Reverse(this DirH dir)
         {
-            if (dir < DirH.None || (int)dir >= DIR2_COUNT)
+            if (dir < DirH.None || (int)dir >= VALID_DIRH.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (dir == DirH.None) return dir;
-            return (DirH)(((int)dir + 1) % DIR2_COUNT);
+            return (DirH)(((int)dir + 1) % VALID_DIRH.Length);
         }
         public static DirV Reverse(this DirV dir)
         {
-            if (dir < DirV.None || (int)dir >= DIR2_COUNT)
+            if (dir < DirV.None || (int)dir >= VALID_DIRV.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (dir == DirV.None) return dir;
-            return (DirV)(((int)dir + 1) % DIR2_COUNT);
+            return (DirV)(((int)dir + 1) % VALID_DIRV.Length);
         }
         public static Dir4 Reverse(this Dir4 dir)
         {
-            if (dir < Dir4.None || (int)dir >= DIR4_COUNT)
+            if (dir < Dir4.None || (int)dir >= VALID_DIR4.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (dir == Dir4.None) return dir;
-            return (Dir4)(((int)dir + 2) % DIR4_COUNT);
+            return (Dir4)(((int)dir + 2) % VALID_DIR4.Length);
         }
         public static Dir8 Reverse(this Dir8 dir)
         {
-            if (dir < Dir8.None || (int)dir >= DIR8_COUNT)
+            if (dir < Dir8.None || (int)dir >= VALID_DIR8.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (dir == Dir8.None) return dir;
-            return (Dir8)(((int)dir + 4) % DIR8_COUNT);
+            return (Dir8)(((int)dir + 4) % VALID_DIR8.Length);
         }
 
 
@@ -375,7 +376,7 @@ namespace RogueElements
 
         public static void Separate(this Dir8 dir, out DirH horiz, out DirV vert)
         {
-            if (dir < Dir8.None || (int)dir >= DIR8_COUNT)
+            if (dir < Dir8.None || (int)dir >= VALID_DIR8.Length)
                 throw new ArgumentException("Invalid value to separate.");
             switch (dir)
             {
@@ -632,7 +633,7 @@ namespace RogueElements
 
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
-            if (dir1 < Dir4.None || (int)dir1 >= DIR4_COUNT || dir2 < Dir4.None || (int)dir2 >= DIR4_COUNT)
+            if (dir1 < Dir4.None || (int)dir1 >= VALID_DIR4.Length || dir2 < Dir4.None || (int)dir2 >= VALID_DIR4.Length)
                 throw new ArgumentException("Invalid value to add.");
             if (dir1 == Dir4.None || dir2 == Dir4.None)
                 return Dir4.None;
@@ -641,7 +642,7 @@ namespace RogueElements
 
         public static Dir8 AddAngles(Dir8 dir1, Dir8 dir2)
         {
-            if (dir1 < Dir8.None || (int)dir1 >= DIR8_COUNT || dir2 < Dir8.None || (int)dir2 >= DIR8_COUNT)
+            if (dir1 < Dir8.None || (int)dir1 >= VALID_DIR8.Length || dir2 < Dir8.None || (int)dir2 >= VALID_DIR8.Length)
                 throw new ArgumentException("Invalid value to add.");
             if (dir1 == Dir8.None || dir2 == Dir8.None)
                 return Dir8.None;
@@ -650,7 +651,7 @@ namespace RogueElements
         
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
-            if (axis <= Axis4.None || (int)axis >= AXIS4_COUNT)
+            if (axis <= Axis4.None || (int)axis >= VALID_AXIS4.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.Horiz)
                 return new Loc(scalar, orth);
@@ -660,7 +661,7 @@ namespace RogueElements
 
         public static int GetScalar(this Loc loc, Axis4 axis)
         {
-            if (axis <= Axis4.None || (int)axis >= AXIS4_COUNT)
+            if (axis <= Axis4.None || (int)axis >= VALID_AXIS4.Length)
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.Horiz)
                 return loc.X;

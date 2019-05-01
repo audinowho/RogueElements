@@ -41,7 +41,7 @@ namespace RogueElements
         {
             //check if there are any sides that have intersections such that straight lines are possible
             List<HashSet<int>>[] possibleStarts = new List<HashSet<int>>[4];
-            for (int ii = 0; ii < 4; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
             {
                 Dir4 dir = (Dir4)ii;
                 int scalarStart = Draw.Start.GetScalar(dir.ToAxis().Orth());

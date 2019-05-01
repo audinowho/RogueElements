@@ -126,7 +126,7 @@ namespace RogueElements.Tests
 
             //get a list of spawns
             List<char> spawns = new List<char>();
-            for (int ii = 0; ii < 4; ii++)
+            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                 spawns.Add('a');
 
             Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>>();

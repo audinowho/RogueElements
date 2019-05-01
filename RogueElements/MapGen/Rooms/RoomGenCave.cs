@@ -87,7 +87,7 @@ namespace RogueElements
             //accept nothing but the randomly chosen size
             if (Draw.Width != tiles.Length || Draw.Height != tiles[0].Length)
             {
-                for (int ii = 0; ii < 4; ii++)
+                for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                 {
                     for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
                         fulfillableBorder[ii][jj] = true;

@@ -39,7 +39,7 @@ namespace RogueElements
 
                 //exhausting all possible directions (randomly)
                 List<Dir4> dirs = new List<Dir4>();
-                for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+                for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
                 {
                     bool forbidExtend = false;
                     foreach (RoomHallIndex adjacent in planFrom.Adjacents)
