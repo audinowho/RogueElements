@@ -239,15 +239,15 @@ namespace RogueElements
             //check the four directions
             Dir4 chosenDir = Dir4.None;
             //ensure that there is only one direction where it is unblocked
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Loc newLoc = loc + ((Dir4)ii).GetLoc();
+                Loc newLoc = loc + dir.GetLoc();
                 if (checkGround(newLoc))
                 {
                     if (chosenDir != Dir4.None)
                         return new LocRay4(loc);
                     else
-                        chosenDir = ((Dir4)ii).Reverse();
+                        chosenDir = dir.Reverse();
                 }
                 else if (!checkBlock(newLoc))//all four directions must be valid ground, or valid block
                     return new LocRay4(loc);

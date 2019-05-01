@@ -391,12 +391,12 @@ namespace RogueElements
         public Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
         {
             Dir4 result = Dir4.None;
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                if (roomGenFrom.Draw.GetScalar((Dir4)ii) == roomGenTo.Draw.GetScalar(((Dir4)ii).Reverse()))
+                if (roomGenFrom.Draw.GetScalar(dir) == roomGenTo.Draw.GetScalar(dir.Reverse()))
                 {
                     if (result == Dir4.None)
-                        result = (Dir4)ii;
+                        result = dir;
                     else
                         return Dir4.None;
                 }

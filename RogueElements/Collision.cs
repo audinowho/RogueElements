@@ -14,7 +14,7 @@ namespace RogueElements
 
         public static bool InFront(Loc testLoc, Dir8 dir, int range)
         {
-            if (dir < Dir8.None || (int)dir >= DirExt.VALID_DIR8.Length)
+            if (!Enum.IsDefined(typeof(Dir8), dir))
                 throw new ArgumentException("Invalid value to convert.");
             if (testLoc == Loc.Zero) return true;
             int foundRange = testLoc.Dist8();

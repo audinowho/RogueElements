@@ -34,16 +34,16 @@ namespace RogueElements
             {
                 if (isTileWithinRoom(jj, 0, diameter, Draw.Size))
                 {
-                    fulfillableBorder[(int)Dir4.Up][jj] = true;
-                    fulfillableBorder[(int)Dir4.Down][jj] = true;
+                    fulfillableBorder[Dir4.Up][jj] = true;
+                    fulfillableBorder[Dir4.Down][jj] = true;
                 }
             }
             for (int jj = 0; jj < Draw.Height; jj++)
             {
                 if (isTileWithinRoom(0, jj, diameter, Draw.Size))
                 {
-                    fulfillableBorder[(int)Dir4.Left][jj] = true;
-                    fulfillableBorder[(int)Dir4.Right][jj] = true;
+                    fulfillableBorder[Dir4.Left][jj] = true;
+                    fulfillableBorder[Dir4.Right][jj] = true;
                 }
             }
         }

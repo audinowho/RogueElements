@@ -56,13 +56,13 @@ namespace RogueElements
 
             for (int jj = chosenOffsetX; jj < chosenOffsetX + chosenMinorWidth; jj++)
             {
-                fulfillableBorder[(int)Dir4.Up][jj] = true;
-                fulfillableBorder[(int)Dir4.Down][jj] = true;
+                fulfillableBorder[Dir4.Up][jj] = true;
+                fulfillableBorder[Dir4.Down][jj] = true;
             }
             for (int jj = chosenOffsetY; jj < chosenOffsetY + chosenMinorHeight; jj++)
             {
-                fulfillableBorder[(int)Dir4.Left][jj] = true;
-                fulfillableBorder[(int)Dir4.Right][jj] = true;
+                fulfillableBorder[Dir4.Left][jj] = true;
+                fulfillableBorder[Dir4.Right][jj] = true;
             }
         }
 

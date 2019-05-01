@@ -115,12 +115,12 @@ namespace RogueElements
         /// <returns></returns>
         private IEnumerable<Dir4> getRoomExpandDirs(GridPlan floorPlan, Loc loc)
         {
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Loc endLoc = loc + ((Dir4)ii).GetLoc();
+                Loc endLoc = loc + dir.GetLoc();
                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, endLoc)
                     && floorPlan.GetRoomPlan(endLoc) == null)
-                    yield return (Dir4)ii;
+                    yield return dir;
             }
         }
 

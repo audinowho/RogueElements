@@ -39,13 +39,13 @@ namespace RogueElements
 
                 //exhausting all possible directions (randomly)
                 List<Dir4> dirs = new List<Dir4>();
-                for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
                 {
                     bool forbidExtend = false;
                     foreach (RoomHallIndex adjacent in planFrom.Adjacents)
                     {
                         Rect adjRect = floorPlan.GetRoomHall(adjacent).Gen.Draw;
-                        if (planFrom.Gen.Draw.GetScalar((Dir4)ii) == adjRect.GetScalar(((Dir4)ii).Reverse()))
+                        if (planFrom.Gen.Draw.GetScalar(dir) == adjRect.GetScalar((dir).Reverse()))
                         {
                             forbidExtend = true;
                             break;
@@ -54,7 +54,7 @@ namespace RogueElements
                     if (!forbidExtend)
                     {
                         //find a rectangle to connect it with
-                        ListPathTraversalNode expandTo = GetRoomToConnect(floorPlan, chosenFrom, (Dir4)ii);
+                        ListPathTraversalNode expandTo = GetRoomToConnect(floorPlan, chosenFrom, dir);
 
                         if (expandTo != null)
                         {

@@ -43,18 +43,18 @@ namespace RogueElements
                 {
                     List<LocRay4> connectors = new List<LocRay4>();
                     List<LocRay4> candBonds = new List<LocRay4>();
-                    for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
                     {
-                        if ((Dir4)ii != chosenBranch.Dir)
+                        if (dir != chosenBranch.Dir)
                         {
-                            if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, (Dir4)ii)) != null)
-                                connectors.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
+                            if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, dir)) != null)
+                                connectors.Add(new LocRay4(chosenBranch.Loc, dir));
                             else
                             {
-                                Loc loc = chosenBranch.Loc + ((Dir4)ii).GetLoc();
+                                Loc loc = chosenBranch.Loc + dir.GetLoc();
                                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, loc)
                                     && floorPlan.GetRoomIndex(loc) > -1)
-                                    candBonds.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
+                                    candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
                             }
                         }
                     }

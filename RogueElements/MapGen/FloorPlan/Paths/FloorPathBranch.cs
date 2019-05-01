@@ -142,8 +142,8 @@ namespace RogueElements
 
                     //randomly choose a perimeter to assign this to
                     SpawnList<Loc> possibleHallPlacements = new SpawnList<Loc>();
-                    for (int dd = 0; dd < DirExt.VALID_DIR4.Length; dd++)
-                        AddLegalPlacements(possibleHallPlacements, floorPlan, expandFrom, roomFrom, hall, (Dir4)dd);
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
+                        AddLegalPlacements(possibleHallPlacements, floorPlan, expandFrom, roomFrom, hall, dir);
 
                     //at this point, all possible factors for whether a placement is legal or not is accounted for
                     //therefor just pick one
@@ -164,8 +164,8 @@ namespace RogueElements
 
                 //randomly choose a perimeter to assign this to
                 SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
-                for (int dd = 0; dd < DirExt.VALID_DIR4.Length; dd++)
-                    AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, (Dir4)dd);
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
+                    AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, dir);
 
                 //at this point, all possible factors for whether a placement is legal or not is accounted for
                 //therefor just pick one

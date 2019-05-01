@@ -79,27 +79,26 @@ namespace RogueElements
         }
         public static Dir8 ToDir8(this Dir4 dir)
         {
-            if (dir < Dir4.None || (int)dir >= VALID_DIR4.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (dir == Dir4.None)
-                return (Dir8)((int)dir);
-            else
-                return (Dir8)((int)dir * 2);
+            switch (dir)
+            {
+                case Dir4.None: return Dir8.None;
+                case Dir4.Down: return Dir8.Down;
+                case Dir4.Left: return Dir8.Left;
+                case Dir4.Up: return Dir8.Up;
+                case Dir4.Right: return Dir8.Right;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
         public static Dir4 ToDir4(this Dir8 dir)
         {
             switch (dir)
             {
-                case Dir8.None:
-                    return Dir4.None;
-                case Dir8.Down:
-                    return Dir4.Down;
-                case Dir8.Left:
-                    return Dir4.Left;
-                case Dir8.Up:
-                    return Dir4.Up;
-                case Dir8.Right:
-                    return Dir4.Right;
+                case Dir8.None: return Dir4.None;
+                case Dir8.Down: return Dir4.Down;
+                case Dir8.Left: return Dir4.Left;
+                case Dir8.Up: return Dir4.Up;
+                case Dir8.Right: return Dir4.Right;
                 default:
                     throw new ArgumentException("Invalid value to convert.");
             }
@@ -147,12 +146,17 @@ namespace RogueElements
 
         public static Axis8 ToAxis8(this Axis4 axis)
         {
-            if (axis < Axis4.None || (int)axis >= VALID_AXIS4.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (axis == Axis4.None)
-                return (Axis8)((int)axis);
-            else
-                return (Axis8)((int)axis * 2);
+            switch (axis)
+            {
+                case Axis4.None:
+                    return Axis8.None;
+                case Axis4.Horiz:
+                    return Axis8.Horiz;
+                case Axis4.Vert:
+                    return Axis8.Vert;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
 
         public static Axis4 ToAxis4(this Axis8 axis)
@@ -314,31 +318,75 @@ namespace RogueElements
 
         public static DirH Reverse(this DirH dir)
         {
-            if (dir < DirH.None || (int)dir >= VALID_DIRH.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (dir == DirH.None) return dir;
-            return (DirH)(((int)dir + 1) % VALID_DIRH.Length);
+            switch (dir)
+            {
+                case DirH.Left:
+                    return DirH.Right;
+                case DirH.Right:
+                    return DirH.Left;
+                case DirH.None:
+                    return DirH.None;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
         public static DirV Reverse(this DirV dir)
         {
-            if (dir < DirV.None || (int)dir >= VALID_DIRV.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (dir == DirV.None) return dir;
-            return (DirV)(((int)dir + 1) % VALID_DIRV.Length);
+            switch (dir)
+            {
+                case DirV.Down:
+                    return DirV.Up;
+                case DirV.Up:
+                    return DirV.Down;
+                case DirV.None:
+                    return DirV.None;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
         public static Dir4 Reverse(this Dir4 dir)
         {
-            if (dir < Dir4.None || (int)dir >= VALID_DIR4.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (dir == Dir4.None) return dir;
-            return (Dir4)(((int)dir + 2) % VALID_DIR4.Length);
+            switch (dir)
+            {
+                case Dir4.Down:
+                    return Dir4.Up;
+                case Dir4.Left:
+                    return Dir4.Right;
+                case Dir4.Up:
+                    return Dir4.Down;
+                case Dir4.Right:
+                    return Dir4.Left;
+                case Dir4.None:
+                    return Dir4.None;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
         public static Dir8 Reverse(this Dir8 dir)
         {
-            if (dir < Dir8.None || (int)dir >= VALID_DIR8.Length)
-                throw new ArgumentException("Invalid value to convert.");
-            if (dir == Dir8.None) return dir;
-            return (Dir8)(((int)dir + 4) % VALID_DIR8.Length);
+            switch (dir)
+            {
+                case Dir8.Down:
+                    return Dir8.Up;
+                case Dir8.DownLeft:
+                    return Dir8.UpRight;
+                case Dir8.Left:
+                    return Dir8.Right;
+                case Dir8.UpLeft:
+                    return Dir8.DownRight;
+                case Dir8.Up:
+                    return Dir8.Down;
+                case Dir8.UpRight:
+                    return Dir8.DownLeft;
+                case Dir8.Right:
+                    return Dir8.Left;
+                case Dir8.DownRight:
+                    return Dir8.UpLeft;
+                case Dir8.None:
+                    return Dir8.None;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
         }
 
 
@@ -376,7 +424,7 @@ namespace RogueElements
 
         public static void Separate(this Dir8 dir, out DirH horiz, out DirV vert)
         {
-            if (dir < Dir8.None || (int)dir >= VALID_DIR8.Length)
+            if (!Enum.IsDefined(typeof(Dir8), dir))
                 throw new ArgumentException("Invalid value to separate.");
             switch (dir)
             {
@@ -633,25 +681,25 @@ namespace RogueElements
 
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
-            if (dir1 < Dir4.None || (int)dir1 >= VALID_DIR4.Length || dir2 < Dir4.None || (int)dir2 >= VALID_DIR4.Length)
+            if (!Enum.IsDefined(typeof(Dir4), dir1) || !Enum.IsDefined(typeof(Dir4), dir2))
                 throw new ArgumentException("Invalid value to add.");
             if (dir1 == Dir4.None || dir2 == Dir4.None)
                 return Dir4.None;
-            return (Dir4)(((int)dir1 + (int)dir2) % 4);
+            return DirExt.VALID_DIR4[((int)dir1 + (int)dir2) % 4];
         }
 
         public static Dir8 AddAngles(Dir8 dir1, Dir8 dir2)
         {
-            if (dir1 < Dir8.None || (int)dir1 >= VALID_DIR8.Length || dir2 < Dir8.None || (int)dir2 >= VALID_DIR8.Length)
+            if (!Enum.IsDefined(typeof(Dir8), dir1) || !Enum.IsDefined(typeof(Dir8), dir2))
                 throw new ArgumentException("Invalid value to add.");
             if (dir1 == Dir8.None || dir2 == Dir8.None)
                 return Dir8.None;
-            return (Dir8)(((int)dir1 + (int)dir2) % 8);
+            return DirExt.VALID_DIR8[((int)dir1 + (int)dir2) % 8];
         }
         
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
-            if (axis <= Axis4.None || (int)axis >= VALID_AXIS4.Length)
+            if (axis == Axis4.None || !Enum.IsDefined(typeof(Axis4), axis))
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.Horiz)
                 return new Loc(scalar, orth);
@@ -661,7 +709,7 @@ namespace RogueElements
 
         public static int GetScalar(this Loc loc, Axis4 axis)
         {
-            if (axis <= Axis4.None || (int)axis >= VALID_AXIS4.Length)
+            if (axis == Axis4.None || !Enum.IsDefined(typeof(Axis4), axis))
                 throw new ArgumentException("Invalid value to convert.");
             if (axis == Axis4.Horiz)
                 return loc.X;

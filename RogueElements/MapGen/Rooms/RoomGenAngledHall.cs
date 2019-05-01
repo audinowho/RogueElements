@@ -40,33 +40,32 @@ namespace RogueElements
         public override void DrawOnMap(T map)
         {
             //check if there are any sides that have intersections such that straight lines are possible
-            List<HashSet<int>>[] possibleStarts = new List<HashSet<int>>[4];
-            for (int ii = 0; ii < DirExt.VALID_DIR4.Length; ii++)
+            var possibleStarts = new Dictionary<Dir4, List<HashSet<int>>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Dir4 dir = (Dir4)ii;
                 int scalarStart = Draw.Start.GetScalar(dir.ToAxis().Orth());
-                possibleStarts[ii] = ChoosePossibleStartRanges(map.Rand, scalarStart, borderToFulfill[(int)dir], roomSideReqs[ii]);
+                possibleStarts[dir] = ChoosePossibleStartRanges(map.Rand, scalarStart, borderToFulfill[dir], roomSideReqs[dir]);
             }
 
-            if ((possibleStarts[(int)Dir4.Down].Count == 0) != (possibleStarts[(int)Dir4.Up].Count == 0) &&
-                (possibleStarts[(int)Dir4.Left].Count == 0) != (possibleStarts[(int)Dir4.Right].Count == 0))
+            if ((possibleStarts[Dir4.Down].Count == 0) != (possibleStarts[Dir4.Up].Count == 0) &&
+                (possibleStarts[Dir4.Left].Count == 0) != (possibleStarts[Dir4.Right].Count == 0))
             {
                 //right angle situation
                 //HallTurnBias holds no sway here
                 //Get the two directions
                 List<Dir4> dirs = new List<Dir4>();
                 List<int[]> dirStarts = new List<int[]>();
-                for (int ii = 0; ii < possibleStarts.Length; ii++)
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
                 {
                     //choose vertical starts if vertical, horiz starts if otherwise
-                    if (possibleStarts[ii].Count > 0)
+                    if (possibleStarts[dir].Count > 0)
                     {
-                        int[] starts = new int[possibleStarts[ii].Count];
+                        int[] starts = new int[possibleStarts[dir].Count];
                         //choose their start points at random
                         for (int jj = 0; jj < starts.Length; jj++)
-                            starts[jj] = MathUtils.ChooseFromHash(possibleStarts[ii][jj], map.Rand);
+                            starts[jj] = MathUtils.ChooseFromHash(possibleStarts[dir][jj], map.Rand);
 
-                        dirs.Add((Dir4)ii);
+                        dirs.Add(dir);
                         dirStarts.Add(starts);
                     }
                 }
@@ -88,10 +87,10 @@ namespace RogueElements
             }
             else
             {
-                bool up = possibleStarts[(int)Dir4.Up].Count > 0;
-                bool down = possibleStarts[(int)Dir4.Down].Count > 0;
-                bool left = possibleStarts[(int)Dir4.Left].Count > 0;
-                bool right = possibleStarts[(int)Dir4.Right].Count > 0;
+                bool up = possibleStarts[Dir4.Up].Count > 0;
+                bool down = possibleStarts[Dir4.Down].Count > 0;
+                bool left = possibleStarts[Dir4.Left].Count > 0;
+                bool right = possibleStarts[Dir4.Right].Count > 0;
                 bool horiz = left && right;
                 bool vert = down && up;
                 if (!horiz && !vert)
@@ -99,21 +98,20 @@ namespace RogueElements
                     //if not a right angle situation, and no opposites here, then there's either 0 or 1 direction that the halls are coming from
                     bool hasHall = false;
                     //iterate through to find the one hall direction, and combine all of the halls (if applicable)
-                    for (int ii = 0; ii < possibleStarts.Length; ii++)
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
                     {
                         //choose vertical starts if vertical, horiz starts if otherwise
-                        if (possibleStarts[ii].Count > 0)
+                        if (possibleStarts[dir].Count > 0)
                         {
-                            Dir4 dir = (Dir4)ii;
                             Range side = Draw.GetSide(dir.ToAxis().Orth());
                             int forwardEnd = map.Rand.Next(side.Min + 1, side.Max - 1);
 
                             //choose the starts
-                            int[] starts = new int[possibleStarts[ii].Count];
-                            for (int jj = 0; jj < possibleStarts[ii].Count; jj++)
+                            int[] starts = new int[possibleStarts[dir].Count];
+                            for (int jj = 0; jj < possibleStarts[dir].Count; jj++)
                             {
                                 hasHall = true;
-                                starts[jj] = MathUtils.ChooseFromHash(possibleStarts[ii][jj], map.Rand);
+                                starts[jj] = MathUtils.ChooseFromHash(possibleStarts[dir][jj], map.Rand);
                             }
 
                             DrawCombinedHall(map, dir, forwardEnd, starts);
@@ -132,20 +130,20 @@ namespace RogueElements
 
                     //force a turn if the sides cannot be connected by a straight line
                     //force a straight line if the sides both land on a single aligned tile
-                    HashSet<int> horizCross = getIntersectedTiles(possibleStarts[(int)Dir4.Left], possibleStarts[(int)Dir4.Right]);
+                    HashSet<int> horizCross = getIntersectedTiles(possibleStarts[Dir4.Left], possibleStarts[Dir4.Right]);
                     if (horizCross.Count == 0)
                         horizTurn = true;
-                    else if (possibleStarts[(int)Dir4.Left].Count == 1 && possibleStarts[(int)Dir4.Right].Count == 1
-                        && possibleStarts[(int)Dir4.Left][0].Count == 1 && possibleStarts[(int)Dir4.Right][0].Count == 1
-                        && possibleStarts[(int)Dir4.Left][0].SetEquals(possibleStarts[(int)Dir4.Right][0]))
+                    else if (possibleStarts[Dir4.Left].Count == 1 && possibleStarts[Dir4.Right].Count == 1
+                        && possibleStarts[Dir4.Left][0].Count == 1 && possibleStarts[Dir4.Right][0].Count == 1
+                        && possibleStarts[Dir4.Left][0].SetEquals(possibleStarts[Dir4.Right][0]))
                         horizTurn = false;
 
-                    HashSet<int> vertCross = getIntersectedTiles(possibleStarts[(int)Dir4.Down], possibleStarts[(int)Dir4.Up]);
+                    HashSet<int> vertCross = getIntersectedTiles(possibleStarts[Dir4.Down], possibleStarts[Dir4.Up]);
                     if (vertCross.Count == 0)
                         vertTurn = true;
-                    else if (possibleStarts[(int)Dir4.Down].Count == 1 && possibleStarts[(int)Dir4.Up].Count == 1
-                        && possibleStarts[(int)Dir4.Down][0].Count == 1 && possibleStarts[(int)Dir4.Up][0].Count == 1
-                        && possibleStarts[(int)Dir4.Down][0].SetEquals(possibleStarts[(int)Dir4.Up][0]))
+                    else if (possibleStarts[Dir4.Down].Count == 1 && possibleStarts[Dir4.Up].Count == 1
+                        && possibleStarts[Dir4.Down][0].Count == 1 && possibleStarts[Dir4.Up][0].Count == 1
+                        && possibleStarts[Dir4.Down][0].SetEquals(possibleStarts[Dir4.Up][0]))
                         vertTurn = false;
 
                     //in the case where one hall is crossed and another hall isn't, draw the crossed hall first
@@ -192,7 +190,7 @@ namespace RogueElements
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
-        private void drawSecondaryHall(T map, HashSet<int> cross, List<HashSet<int>>[] possibleStarts, bool vertical, bool turn)
+        private void drawSecondaryHall(T map, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
@@ -202,8 +200,8 @@ namespace RogueElements
             else
             {
                 Dir4 forwardDir = vertical ? Dir4.Up : Dir4.Left;
-                List<HashSet<int>> starts = possibleStarts[(int)forwardDir];
-                List<HashSet<int>> ends = possibleStarts[(int)forwardDir.Reverse()];
+                List<HashSet<int>> starts = possibleStarts[forwardDir];
+                List<HashSet<int>> ends = possibleStarts[forwardDir.Reverse()];
 
                 //the chosen tiles to start digging the hall from
                 int[] startTiles = new int[starts.Count];
@@ -238,22 +236,22 @@ namespace RogueElements
                 else
                 {
                     //if turning, use the respective possible starts and draw until the primary lines are hit
-                    for (int ii = 0; ii < possibleStarts.Length; ii++)
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
                     {
                         //choose vertical starts if vertical, horiz starts if otherwise
-                        if ((((Dir4)ii).ToAxis() == Axis4.Vert) == vertical)
+                        if ((dir.ToAxis() == Axis4.Vert) == vertical)
                         {
-                            for (int jj = 0; jj < possibleStarts[ii].Count; jj++)
+                            for (int jj = 0; jj < possibleStarts[dir].Count; jj++)
                             {
-                                int[] crossArray = new int[possibleStarts[ii][jj].Count];
-                                possibleStarts[ii][jj].CopyTo(crossArray);
+                                int[] crossArray = new int[possibleStarts[dir][jj].Count];
+                                possibleStarts[dir][jj].CopyTo(crossArray);
                                 int startSideDist = crossArray[map.Rand.Next(crossArray.Length)];
-                                Loc forwardStart = (ii == (int)Dir4.Up || ii == (int)Dir4.Left) ? Draw.Start : Draw.End - new Loc(1);
+                                Loc forwardStart = (dir == Dir4.Up || dir == Dir4.Left) ? Draw.Start : Draw.End - new Loc(1);
                                 Loc startLoc = new Loc(vertical ? startSideDist : forwardStart.X, vertical ? forwardStart.Y : startSideDist);
                                 Loc endLoc = startLoc;
                                 //the assumption is that there is already roomterrain to cross over at another point in this room
                                 while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
-                                    endLoc = endLoc + ((Dir4)ii).Reverse().GetLoc();
+                                    endLoc = endLoc + dir.Reverse().GetLoc();
                                 drawHall(map, startLoc, endLoc, map.RoomTerrain);
                             }
                         }
@@ -272,7 +270,7 @@ namespace RogueElements
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
-        private void drawPrimaryHall(T map, HashSet<int> cross, List<HashSet<int>>[] possibleStarts, bool vertical, bool turn)
+        private void drawPrimaryHall(T map, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
@@ -284,8 +282,8 @@ namespace RogueElements
                 //if turning, use the respective possible starts
                 //there is a guarantee that both sides have at least one open bordertile
                 Dir4 forwardDir = vertical ? Dir4.Up : Dir4.Left;
-                List<HashSet<int>> starts = possibleStarts[(int)forwardDir];
-                List<HashSet<int>> ends = possibleStarts[(int)forwardDir.Reverse()];
+                List<HashSet<int>> starts = possibleStarts[forwardDir];
+                List<HashSet<int>> ends = possibleStarts[forwardDir.Reverse()];
 
                 //the chosen tiles to start digging the hall from
                 int[] startTiles = new int[starts.Count];

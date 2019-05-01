@@ -77,7 +77,7 @@ namespace RogueElements
             {
                 GenContextDebug.StepIn(String.Format("Path {0}", pathsMade));
 
-                Dir4 startDir = (Dir4)rand.Next(4);
+                Dir4 startDir = DirExt.VALID_DIR4[rand.Next(4)];
                 int x = rand.Next(innerRect.Start.X, innerRect.End.X);
                 int y = rand.Next(innerRect.Start.Y, innerRect.End.Y);
                 switch (startDir)
@@ -105,9 +105,8 @@ namespace RogueElements
                     if (currentLength > 0)
                     {
                         List<Dir4> dirs = new List<Dir4>();
-                        for (int dd = 0; dd < DirExt.VALID_DIR4.Length; dd++)
+                        foreach (Dir4 dir in DirExt.VALID_DIR4)
                         {
-                            Dir4 dir = (Dir4)dd;
                             //do not backtrack
                             if (dir == prevDir)
                                 continue;

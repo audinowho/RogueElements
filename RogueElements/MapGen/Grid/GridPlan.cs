@@ -335,7 +335,7 @@ namespace RogueElements
 
         public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen)
         {
-            if (locRay.Dir <= Dir4.None || (int)locRay.Dir >= DirExt.VALID_DIR4.Length)
+            if (locRay.Dir == Dir4.None || !Enum.IsDefined(typeof(Dir4), locRay.Dir))
                 throw new ArgumentException("Invalid direction.");
             IPermissiveRoomGen addHall = null;
             if (hallGen != null)
