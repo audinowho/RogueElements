@@ -378,19 +378,18 @@ namespace RogueElements
         {
             List<Dir8> forks = new List<Dir8>();
             bool prevBlocked = IsDirBlocked(point, Dir8.Down, checkBlock, checkDiagBlock);
-            int switches = 0;
-            for (int ii = 0; ii < DirExt.VALID_DIR8.Length; ii++)
+            Dir8 dir = Dir8.DownLeft;
+            do
             {
-                Dir8 dir = DirExt.VALID_DIR8[(ii + 1) % 8];
                 bool newBlock = IsDirBlocked(point, dir, checkBlock, checkDiagBlock);
                 if (newBlock != prevBlocked)
                 {
-                    switches++;
                     if (!newBlock)
                         forks.Add(dir);
                     prevBlocked = newBlock;
                 }
-            }
+                dir = dir.Rotate(1);
+            } while (dir != Dir8.DownLeft);
             return forks;
         }
 

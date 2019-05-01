@@ -196,11 +196,12 @@ namespace RogueElements.Tests
 
             IRoomGen oldGen = floorPlan.GetRoom(0);
 
+
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(x, y, 2, 2));
 
-            List<RoomHallIndex> adjacentsInDir = new List<RoomHallIndex>();
-            adjacentsInDir.Add(new RoomHallIndex((int)dir + 1, false));
+            var indexLookup = new Dictionary<Dir4, int>{ {Dir4.Down, 1}, {Dir4.Left, 2}, {Dir4.Up, 3}, {Dir4.Right, 4} };
+            List<RoomHallIndex> adjacentsInDir = new List<RoomHallIndex>{ new RoomHallIndex(indexLookup[dir], false) };
 
             AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
 

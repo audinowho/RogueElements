@@ -15,28 +15,6 @@ namespace RogueElements.Tests
         /// <param name="exception"></param>
 
         [Test]
-        [TestCase(Dir8.None, -1)]
-        [TestCase(Dir8.Down, 0)]
-        [TestCase(Dir8.Left, 1)]
-        [TestCase(Dir8.Up, 2)]
-        [TestCase(Dir8.Right, 3)]
-        [TestCase(Dir8.DownLeft, 4)]
-        [TestCase(Dir8.UpLeft, 5)]
-        [TestCase(Dir8.UpRight, 6)]
-        [TestCase(Dir8.DownRight, 7)]
-        [TestCase((Dir8)(-2), 0, true)]
-        [TestCase((Dir8)(8), 0, true)]
-        public void ToWrappedInt(Dir8 dir, int expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToWrappedInt(); });
-            else
-                Assert.That(dir.ToWrappedInt(), Is.EqualTo(expected));
-        }
-
-
-
-        [Test]
         [TestCase(DirH.None, Dir4.None)]
         [TestCase(DirH.Left, Dir4.Left)]
         [TestCase(DirH.Right, Dir4.Right)]
@@ -131,52 +109,6 @@ namespace RogueElements.Tests
                 Assert.That(dir.ToDir4(), Is.EqualTo(expected));
         }
 
-        //526
-        //1X3
-        //407
-        [Test]
-        [TestCase(-1, Dir8.None)]
-        [TestCase(0, Dir8.Down)]
-        [TestCase(1, Dir8.Left)]
-        [TestCase(2, Dir8.Up)]
-        [TestCase(3, Dir8.Right)]
-        [TestCase(4, Dir8.DownLeft)]
-        [TestCase(5, Dir8.UpLeft)]
-        [TestCase(6, Dir8.UpRight)]
-        [TestCase(7, Dir8.DownRight)]
-        [TestCase(-2, 0, true)]
-        [TestCase(8, 0, true)]
-        public void ToWrappedDir8(int n, Dir8 expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { n.ToWrappedDir8(); });
-            else
-                Assert.That(n.ToWrappedDir8(), Is.EqualTo(expected));
-        }
-
-
-        //576
-        //3X4
-        //102
-        [Test]
-        [TestCase(-1, Dir8.None)]
-        [TestCase(0, Dir8.Down)]
-        [TestCase(1, Dir8.DownLeft)]
-        [TestCase(2, Dir8.DownRight)]
-        [TestCase(3, Dir8.Left)]
-        [TestCase(4, Dir8.Right)]
-        [TestCase(5, Dir8.UpLeft)]
-        [TestCase(6, Dir8.UpRight)]
-        [TestCase(7, Dir8.Up)]
-        [TestCase(-2, 0, true)]
-        [TestCase(8, 0, true)]
-        public void ToFocusedDir8(int n, Dir8 expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { n.ToFocusedDir8(); });
-            else
-                Assert.That(n.ToFocusedDir8(), Is.EqualTo(expected));
-        }
 
         [Test]
         [TestCase(Axis4.None, Axis8.None)]

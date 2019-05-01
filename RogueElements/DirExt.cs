@@ -15,24 +15,6 @@ namespace RogueElements
         public static readonly Axis4[] VALID_AXIS4 = { Axis4.Vert, Axis4.Horiz };
         public static readonly Axis8[] VALID_AXIS8 = { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
 
-        public static int ToWrappedInt(this Dir8 dir)
-        {
-            switch (dir)
-            {
-                case Dir8.None: return -1;
-                case Dir8.Down: return 0;
-                case Dir8.Left: return 1;
-                case Dir8.Up: return 2;
-                case Dir8.Right: return 3;
-                case Dir8.DownLeft: return 4;
-                case Dir8.UpLeft: return 5;
-                case Dir8.UpRight: return 6;
-                case Dir8.DownRight: return 7;
-                default:
-                    throw new ArgumentException("Invalid value to convert.");
-            }
-        }
-
         public static Dir4 ToDir4(this DirH dir)
         {
             switch (dir)
@@ -99,46 +81,6 @@ namespace RogueElements
                 case Dir8.Left: return Dir4.Left;
                 case Dir8.Up: return Dir4.Up;
                 case Dir8.Right: return Dir4.Right;
-                default:
-                    throw new ArgumentException("Invalid value to convert.");
-            }
-        }
-        public static Dir8 ToWrappedDir8(this int n)
-        {
-            //526
-            //1X3
-            //407
-            switch (n)
-            {
-                case -1: return Dir8.None;
-                case 0: return Dir8.Down;
-                case 1: return Dir8.Left;
-                case 2: return Dir8.Up;
-                case 3: return Dir8.Right;
-                case 4: return Dir8.DownLeft;
-                case 5: return Dir8.UpLeft;
-                case 6: return Dir8.UpRight;
-                case 7: return Dir8.DownRight;
-                default:
-                    throw new ArgumentException("Invalid value to convert.");
-            }
-        }
-        public static Dir8 ToFocusedDir8(this int n)
-        {
-            //576
-            //3X4
-            //102
-            switch (n)
-            {
-                case -1: return Dir8.None;
-                case 0: return Dir8.Down;
-                case 1: return Dir8.DownLeft;
-                case 2: return Dir8.DownRight;
-                case 3: return Dir8.Left;
-                case 4: return Dir8.Right;
-                case 5: return Dir8.UpLeft;
-                case 6: return Dir8.UpRight;
-                case 7: return Dir8.Up;
                 default:
                     throw new ArgumentException("Invalid value to convert.");
             }
@@ -679,22 +621,32 @@ namespace RogueElements
             }
         }
 
+        public static Dir4 Rotate(this Dir4 dir, int n)
+        {
+            if (dir == Dir4.None)
+                return Dir4.None;
+            return (Dir4)(((int)dir + n) % VALID_DIR4.Length);
+        }
+
+        public static Dir8 Rotate(this Dir8 dir, int n)
+        {
+            if (dir == Dir8.None)
+                return Dir8.None;
+            return (Dir8)(((int)dir + n) % VALID_DIR8.Length);
+        }
+
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
             if (!Enum.IsDefined(typeof(Dir4), dir1) || !Enum.IsDefined(typeof(Dir4), dir2))
                 throw new ArgumentException("Invalid value to add.");
-            if (dir1 == Dir4.None || dir2 == Dir4.None)
-                return Dir4.None;
-            return DirExt.VALID_DIR4[((int)dir1 + (int)dir2) % 4];
+            return dir1.Rotate((int)dir2);
         }
 
         public static Dir8 AddAngles(Dir8 dir1, Dir8 dir2)
         {
             if (!Enum.IsDefined(typeof(Dir8), dir1) || !Enum.IsDefined(typeof(Dir8), dir2))
                 throw new ArgumentException("Invalid value to add.");
-            if (dir1 == Dir8.None || dir2 == Dir8.None)
-                return Dir8.None;
-            return DirExt.VALID_DIR8[((int)dir1 + (int)dir2) % 8];
+            return dir1.Rotate((int)dir2);
         }
         
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
