@@ -623,22 +623,36 @@ namespace RogueElements
 
         public static Dir4 Rotate(this Dir4 dir, int n)
         {
+            if (!Enum.IsDefined(typeof(Dir4), dir))
+                throw new ArgumentException("Invalid value to rotate.");
             if (dir == Dir4.None)
                 return Dir4.None;
-            return (Dir4)(((int)dir + n) % VALID_DIR4.Length);
+            int newDir = ((int)dir + n) % VALID_DIR4.Length;
+            // int.Mod can return negative; ensure it is positive
+            if (newDir < 0)
+                newDir += VALID_DIR4.Length;
+            return (Dir4)newDir;
         }
 
         public static Dir8 Rotate(this Dir8 dir, int n)
         {
+            if (!Enum.IsDefined(typeof(Dir8), dir))
+                throw new ArgumentException("Invalid value to rotate.");
             if (dir == Dir8.None)
                 return Dir8.None;
-            return (Dir8)(((int)dir + n) % VALID_DIR8.Length);
+            int newDir = ((int)dir + n) % VALID_DIR8.Length;
+            // int.Mod can return negative; ensure it is positive
+            if (newDir < 0)
+                newDir += VALID_DIR8.Length;
+            return (Dir8)newDir;
         }
 
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
             if (!Enum.IsDefined(typeof(Dir4), dir1) || !Enum.IsDefined(typeof(Dir4), dir2))
                 throw new ArgumentException("Invalid value to add.");
+            if (dir1 == Dir4.None || dir2 == Dir4.None)
+                return Dir4.None;
             return dir1.Rotate((int)dir2);
         }
 
@@ -646,6 +660,8 @@ namespace RogueElements
         {
             if (!Enum.IsDefined(typeof(Dir8), dir1) || !Enum.IsDefined(typeof(Dir8), dir2))
                 throw new ArgumentException("Invalid value to add.");
+            if (dir1 == Dir8.None || dir2 == Dir8.None)
+                return Dir8.None;
             return dir1.Rotate((int)dir2);
         }
         
@@ -661,24 +677,41 @@ namespace RogueElements
 
         public static Dir4 GetDir(this Axis4 axis, int scalar)
         {
+            if (!Enum.IsDefined(typeof(Axis4), axis))
+                throw new ArgumentException("Invalid value to convert.");
+            if (scalar == 0)
+                return Dir4.None;
             switch (axis)
             {
                 case Axis4.None:
                     return Dir4.None;
                 case Axis4.Horiz:
-                    if (scalar < 0)
-                        return Dir4.Left;
-                    else if (scalar > 0)
-                        return Dir4.Right;
-                    else
-                        return Dir4.None;
+                    return scalar < 0 ? Dir4.Left : Dir4.Right;
                 case Axis4.Vert:
-                    if (scalar < 0)
-                        return Dir4.Up;
-                    else if (scalar > 0)
-                        return Dir4.Down;
-                    else
-                        return Dir4.None;
+                    return scalar < 0 ? Dir4.Up : Dir4.Down;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
+        }
+
+        public static Dir8 GetDir(this Axis8 axis, int scalar)
+        {
+            if (!Enum.IsDefined(typeof(Axis8), axis))
+                throw new ArgumentException("Invalid value to convert.");
+            if (scalar == 0)
+                return Dir8.None;
+            switch (axis)
+            {
+                case Axis8.None:
+                    return Dir8.None;
+                case Axis8.Horiz:
+                    return scalar < 0 ? Dir8.Left : Dir8.Right;
+                case Axis8.Vert:
+                    return scalar < 0 ? Dir8.Up : Dir8.Down;
+                case Axis8.DiagBack:
+                    return scalar < 0 ? Dir8.UpLeft : Dir8.DownRight;
+                case Axis8.DiagForth:
+                    return scalar < 0 ? Dir8.DownLeft : Dir8.UpRight;
                 default:
                     throw new ArgumentException("Invalid value to convert.");
             }
