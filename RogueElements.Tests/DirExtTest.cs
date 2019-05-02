@@ -387,6 +387,51 @@ namespace RogueElements.Tests
         }
 
 
+        [Test]
+        [TestCase(Dir4.Down, 0, Dir4.Down)]
+        [TestCase(Dir4.Left, 0, Dir4.Left)]
+        [TestCase(Dir4.Left, -4, Dir4.Left)]
+        [TestCase(Dir4.Up, 4, Dir4.Up)]
+        [TestCase(Dir4.Down, 1, Dir4.Left)]
+        [TestCase(Dir4.Right, 1, Dir4.Down)]
+        [TestCase(Dir4.Left, 3, Dir4.Down)]
+        [TestCase(Dir4.Up, 10, Dir4.Down)]
+        [TestCase(Dir4.Right, -1, Dir4.Up)]
+        [TestCase(Dir4.Left, -7, Dir4.Up)]
+        [TestCase(Dir4.None, 1, Dir4.None)]
+        [TestCase(Dir4.None, -1, Dir4.None)]
+        [TestCase((Dir4)(-2), 0, Dir4.None, true)]
+        [TestCase((Dir4)(4), 0, Dir4.None, true)]
+        public void Rotate(Dir4 dir, int n, Dir4 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentException>(() => { DirExt.Rotate(dir, n); });
+            else
+                Assert.That(DirExt.Rotate(dir, n), Is.EqualTo(expected));
+        }
+
+        [Test]
+        [TestCase(Dir8.Down, 0, Dir8.Down)]
+        [TestCase(Dir8.Left, 0, Dir8.Left)]
+        [TestCase(Dir8.Left, -8, Dir8.Left)]
+        [TestCase(Dir8.Up, 8, Dir8.Up)]
+        [TestCase(Dir8.Down, 1, Dir8.DownLeft)]
+        [TestCase(Dir8.Right, 1, Dir8.DownRight)]
+        [TestCase(Dir8.Left, 3, Dir8.UpRight)]
+        [TestCase(Dir8.Up, 10, Dir8.Right)]
+        [TestCase(Dir8.Right, -1, Dir8.UpRight)]
+        [TestCase(Dir8.Left, -13, Dir8.UpRight)]
+        [TestCase(Dir8.None, 1, Dir8.None)]
+        [TestCase(Dir8.None, -1, Dir8.None)]
+        [TestCase((Dir8)(-2), 0, Dir8.None, true)]
+        [TestCase((Dir8)(8), 0, Dir8.None, true)]
+        public void Rotate(Dir8 dir, int n, Dir8 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentException>(() => { DirExt.Rotate(dir, n); });
+            else
+                Assert.That(DirExt.Rotate(dir, n), Is.EqualTo(expected));
+        }
 
         [Test]
         [TestCase(Dir4.Down, Dir4.Down, Dir4.Down)]
@@ -456,6 +501,56 @@ namespace RogueElements.Tests
                 Assert.Throws<ArgumentException>(() => { DirExt.CreateLoc(axis, scalar, 0); });
             else
                 Assert.That(DirExt.CreateLoc(axis, scalar, 0), Is.EqualTo(new Loc(expectedX, expectedY)));
+        }
+
+        [Test]
+        [TestCase(Axis4.Horiz, 1, Dir4.Right)]
+        [TestCase(Axis4.Horiz, -1, Dir4.Left)]
+        [TestCase(Axis4.Vert, 1, Dir4.Down)]
+        [TestCase(Axis4.Vert, -1, Dir4.Up)]
+        [TestCase(Axis4.Horiz, Int32.MaxValue, Dir4.Right)]
+        [TestCase(Axis4.Vert, Int32.MinValue, Dir4.Up)]
+        [TestCase(Axis4.None, 0, Dir4.None)]
+        [TestCase(Axis4.None, 1, Dir4.None)]
+        [TestCase(Axis4.None, -1, Dir4.None)]
+        [TestCase(Axis4.Horiz, 0, Dir4.None)]
+        [TestCase(Axis4.Vert, 0, Dir4.None)]
+        [TestCase((Axis4)(-2), 0, Dir4.None, true)]
+        [TestCase((Axis4)(2), 0, Dir4.None, true)]
+        public void DirFromAxis(Axis4 axis, int scalar, Dir4 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentException>(() => { DirExt.GetDir(axis, scalar); });
+            else
+                Assert.That(DirExt.GetDir(axis, scalar), Is.EqualTo(expected));
+        }
+
+        [Test]
+        [TestCase(Axis8.Horiz, 1, Dir8.Right)]
+        [TestCase(Axis8.Horiz, -1, Dir8.Left)]
+        [TestCase(Axis8.Vert, 1, Dir8.Down)]
+        [TestCase(Axis8.Vert, -1, Dir8.Up)]
+        [TestCase(Axis8.DiagBack, 1, Dir8.DownRight)]
+        [TestCase(Axis8.DiagBack, -1, Dir8.UpLeft)]
+        [TestCase(Axis8.DiagForth, 1, Dir8.UpRight)]
+        [TestCase(Axis8.DiagForth, -1, Dir8.DownLeft)]
+        [TestCase(Axis8.Horiz, Int32.MaxValue, Dir8.Right)]
+        [TestCase(Axis8.Vert, Int32.MinValue, Dir8.Up)]
+        [TestCase(Axis8.None, 0, Dir8.None)]
+        [TestCase(Axis8.None, 1, Dir8.None)]
+        [TestCase(Axis8.None, -1, Dir8.None)]
+        [TestCase(Axis8.Horiz, 0, Dir8.None)]
+        [TestCase(Axis8.Vert, 0, Dir8.None)]
+        [TestCase(Axis8.DiagBack, 0, Dir8.None)]
+        [TestCase(Axis8.DiagForth, 0, Dir8.None)]
+        [TestCase((Axis8)(-2), 0, Dir8.None, true)]
+        [TestCase((Axis8)(4), 0, Dir8.None, true)]
+        public void DirFromAxis(Axis8 axis, int scalar, Dir8 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentException>(() => { DirExt.GetDir(axis, scalar); });
+            else
+                Assert.That(DirExt.GetDir(axis, scalar), Is.EqualTo(expected));
         }
 
         [Test]
