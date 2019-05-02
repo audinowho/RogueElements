@@ -86,8 +86,7 @@ namespace RogueElements
                 List<LocRay4> candBonds = candBranchPoints[randIndex];
                 LocRay4 chosenDir = candBonds[rand.Next(candBonds.Count)];
                 //connect
-                Loc chosenDest = chosenDir.Traverse(1);
-                floorPlan.SetConnectingHall(chosenDir.Loc, chosenDest, GenericHalls.Pick(rand));
+                floorPlan.SetHall(chosenDir, GenericHalls.Pick(rand));
                 candBranchPoints.RemoveAt(randIndex);
                 GenContextDebug.DebugProgress("Connected Branch");
                 connectionsLeft--;
@@ -95,7 +94,7 @@ namespace RogueElements
                 //counting this as a double if so
                 for (int ii = candBranchPoints.Count - 1; ii >= 0; ii--)
                 {
-                    if (candBranchPoints[ii][0].Loc == chosenDest)
+                    if (candBranchPoints[ii][0].Loc == chosenDir.Traverse(1))
                     {
                         candBranchPoints.RemoveAt(ii);
                         connectionsLeft--;

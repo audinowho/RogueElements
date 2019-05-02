@@ -361,16 +361,6 @@ namespace RogueElements
             }
         }
 
-        public void SetConnectingHall(Loc room1, Loc room2, IPermissiveRoomGen hallGen)
-        {
-            Loc diff = room2 - room1;
-            Dir8 dir = diff.GetDir();
-            if (diff.Dist8() != 1)
-                throw new ArgumentException("Cannot add hall between " + room1.X + "," + room1.Y + " and " + room2.X + "," + room2.Y);
-            else
-                SetHall(new LocRay4(room1, dir.ToDir4()), hallGen);
-        }
-
         /// <summary>
         /// Decides on the room bounds for each room.
         /// </summary>

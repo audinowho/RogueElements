@@ -73,8 +73,8 @@ namespace RogueElements
             if (chosenRay.Dir == Dir4.None)
                 return false;
             Loc endLoc = chosenRay.Traverse(1);
-            floorPlan.SetConnectingHall(chosenRay.Loc, endLoc, GenericHalls.Pick(rand));
-            floorPlan.AddRoom(endLoc, GenericRooms.Pick(rand));
+            floorPlan.SetHall(chosenRay, GenericHalls.Pick(rand));
+            floorPlan.AddRoom(chosenRay.Traverse(1), GenericRooms.Pick(rand));
 
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             return true;

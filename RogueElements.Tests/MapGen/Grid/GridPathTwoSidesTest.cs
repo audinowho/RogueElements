@@ -18,6 +18,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
             GridPathTwoSides<IGridPathTestContext> pathGen = new GridPathTwoSides<IGridPathTestContext>();
+            pathGen.GapAxis = Axis4.Horiz;
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             pathGen.GenericHalls = mockHalls.Object;
@@ -39,6 +40,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
             GridPathTwoSides<IGridPathTestContext> pathGen = new GridPathTwoSides<IGridPathTestContext>();
+            pathGen.GapAxis = Axis4.Horiz;
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -80,6 +82,7 @@ namespace RogueElements.Tests
 
             Mock<GridPathTwoSides<IGridPathTestContext>> pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>>();
             pathGen.CallBase = true;
+            pathGen.Object.GapAxis = Axis4.Horiz;
 
             Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
@@ -136,7 +139,7 @@ namespace RogueElements.Tests
 
             Mock<GridPathTwoSides<IGridPathTestContext>> pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>>();
             pathGen.CallBase = true;
-            pathGen.Object.Vertical = true;
+            pathGen.Object.GapAxis = Axis4.Vert;
 
             Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
@@ -189,6 +192,7 @@ namespace RogueElements.Tests
 
             Mock<GridPathTwoSides<IGridPathTestContext>> pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>>();
             pathGen.CallBase = true;
+            pathGen.Object.GapAxis = Axis4.Horiz;
 
             Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
@@ -243,6 +247,7 @@ namespace RogueElements.Tests
 
             Mock<GridPathTwoSides<IGridPathTestContext>> pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>>();
             pathGen.CallBase = true;
+            pathGen.Object.GapAxis = Axis4.Horiz;
 
             Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));

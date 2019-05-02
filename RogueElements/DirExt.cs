@@ -659,6 +659,31 @@ namespace RogueElements
                 return new Loc(orth, scalar);
         }
 
+        public static Dir4 GetDir(this Axis4 axis, int scalar)
+        {
+            switch (axis)
+            {
+                case Axis4.None:
+                    return Dir4.None;
+                case Axis4.Horiz:
+                    if (scalar < 0)
+                        return Dir4.Left;
+                    else if (scalar > 0)
+                        return Dir4.Right;
+                    else
+                        return Dir4.None;
+                case Axis4.Vert:
+                    if (scalar < 0)
+                        return Dir4.Up;
+                    else if (scalar > 0)
+                        return Dir4.Down;
+                    else
+                        return Dir4.None;
+                default:
+                    throw new ArgumentException("Invalid value to convert.");
+            }
+        }
+
         public static int GetScalar(this Loc loc, Axis4 axis)
         {
             if (axis == Axis4.None || !Enum.IsDefined(typeof(Axis4), axis))
@@ -668,6 +693,5 @@ namespace RogueElements
             else
                 return loc.Y;
         }
-
     }
 }
