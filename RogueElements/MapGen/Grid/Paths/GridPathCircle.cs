@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RogueElements
 {
@@ -77,7 +78,7 @@ namespace RogueElements
             {
                 GenContextDebug.StepIn(String.Format("Path {0}", pathsMade));
 
-                Dir4 startDir = DirExt.VALID_DIR4[rand.Next(DirExt.VALID_DIR4.Length)];
+                Dir4 startDir = DirExt.VALID_DIR4.ElementAt(rand.Next(DirExt.DIR4_COUNT));
                 int x = rand.Next(innerRect.Start.X, innerRect.End.X);
                 int y = rand.Next(innerRect.Start.Y, innerRect.End.Y);
                 switch (startDir)

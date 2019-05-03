@@ -8,12 +8,19 @@ namespace RogueElements
     
     public static class DirExt
     {
-        public static readonly DirH[] VALID_DIRH = { DirH.Left, DirH.Right };
-        public static readonly DirV[] VALID_DIRV = { DirV.Down, DirV.Up };
-        public static readonly Dir4[] VALID_DIR4 = { Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
-        public static readonly Dir8[] VALID_DIR8 = { Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
-        public static readonly Axis4[] VALID_AXIS4 = { Axis4.Vert, Axis4.Horiz };
-        public static readonly Axis8[] VALID_AXIS8 = { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
+        public const int DIRH_COUNT = 2;
+        public const int DIRV_COUNT = 2;
+        public const int DIR4_COUNT = 4;
+        public const int DIR8_COUNT = 8;
+        public const int AXIS4_COUNT = 2;
+        public const int AXIS8_COUNT = 4;
+
+        public static IEnumerable<DirH> VALID_DIRH => ((DirH[])Enum.GetValues(typeof(DirH))).Where(x => x != DirH.None);
+        public static IEnumerable<DirV> VALID_DIRV => ((DirV[])Enum.GetValues(typeof(DirV))).Where(x => x != DirV.None);
+        public static IEnumerable<Dir4> VALID_DIR4 => ((Dir4[])Enum.GetValues(typeof(Dir4))).Where(x => x != Dir4.None);
+        public static IEnumerable<Dir8> VALID_DIR8 => ((Dir8[])Enum.GetValues(typeof(Dir8))).Where(x => x != Dir8.None);
+        public static IEnumerable<Axis4> VALID_AXIS4 => ((Axis4[])Enum.GetValues(typeof(Axis4))).Where(x => x != Axis4.None);
+        public static IEnumerable<Axis8> VALID_AXIS8 => ((Axis8[])Enum.GetValues(typeof(Axis8))).Where(x => x != Axis8.None);
 
         public static Dir4 ToDir4(this DirH dir)
         {
@@ -627,10 +634,10 @@ namespace RogueElements
                 throw new ArgumentException("Invalid value to rotate.");
             if (dir == Dir4.None)
                 return Dir4.None;
-            int newDir = ((int)dir + n) % VALID_DIR4.Length;
+            int newDir = ((int)dir + n) % DIR4_COUNT;
             // int.Mod can return negative; ensure it is positive
             if (newDir < 0)
-                newDir += VALID_DIR4.Length;
+                newDir += DIR4_COUNT;
             return (Dir4)newDir;
         }
 
@@ -640,10 +647,10 @@ namespace RogueElements
                 throw new ArgumentException("Invalid value to rotate.");
             if (dir == Dir8.None)
                 return Dir8.None;
-            int newDir = ((int)dir + n) % VALID_DIR8.Length;
+            int newDir = ((int)dir + n) % DIR8_COUNT;
             // int.Mod can return negative; ensure it is positive
             if (newDir < 0)
-                newDir += VALID_DIR8.Length;
+                newDir += DIR8_COUNT;
             return (Dir8)newDir;
         }
 
