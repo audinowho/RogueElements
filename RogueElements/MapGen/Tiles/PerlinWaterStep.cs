@@ -3,13 +3,30 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a random spread of water on the map. This is achieved by generating a heightmap using Perlin Noise,
+    /// then converting all tiles with a height value below a certain threshold to water.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class PerlinWaterStep<T> : WaterStep<T> where T : class, ITiledGenContext
     {
         const int BUFFER_SIZE = 5;
 
+        /// <summary>
+        /// The percent chance of water occurring.
+        /// </summary>
         public RandRange WaterPercent;
+
+
+        /// <summary>
+        /// Determines how many iterations of Perlin noise to generate the heightmap with. Higher complexity = higher variation of heights and more natural looking terrain.
+        /// </summary>
         public int OrderComplexity;
+
+        /// <summary>
+        /// Determines the smallest uit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
+        /// </summary>
         public int OrderSoftness;
 
         /// <summary>

@@ -4,7 +4,10 @@ using System.Collections;
 
 namespace RogueElements
 {
-
+    /// <summary>
+    /// Generates an item that is predefined by the user.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class PresetPicker<T> : IRandPicker<T>
     {

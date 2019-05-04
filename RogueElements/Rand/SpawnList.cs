@@ -4,7 +4,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-
+    /// <summary>
+    /// Selects an item randomly from a weighted list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SpawnList<T> : IRandPicker<T>
     {

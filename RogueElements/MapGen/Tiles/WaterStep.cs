@@ -6,6 +6,9 @@ namespace RogueElements
     [Serializable]
     public abstract class WaterStep<T> : GenStep<T> where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Tile representing the water terrain to paint with.
+        /// </summary>
         public ITile Terrain;
 
         public WaterStep() { }

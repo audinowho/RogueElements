@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Selects an integer in a predefined range.
+    /// </summary>
     [Serializable]
     public struct RandRange : IRandPicker<int>
     {
