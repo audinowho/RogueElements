@@ -6,6 +6,7 @@ namespace RogueElements
     [Serializable]
     public class RandomSpawnStep<T, E> : BaseSpawnStep<T, E>
         where T : class, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public RandomSpawnStep() { }
 

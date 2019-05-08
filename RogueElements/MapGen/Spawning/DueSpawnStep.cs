@@ -6,6 +6,8 @@ namespace RogueElements
     [Serializable]
     public class DueSpawnStep<T, E, F> : RoomSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IViewPlaceableGenContext<F>
+        where E : ISpawnable
+        where F : ISpawnable
     {
         public int SuccessPercent;
 

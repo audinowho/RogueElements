@@ -6,6 +6,7 @@ namespace RogueElements
     [Serializable]
     public abstract class RoomSpawnStep<T, E> : BaseSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
 
         public RoomSpawnStep() { }

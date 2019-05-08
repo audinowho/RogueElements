@@ -6,6 +6,7 @@ namespace RogueElements
     [Serializable]
     public class ContextSpawner<T, E> : IStepSpawner<T, E> 
         where T : ISpawningGenContext<E>
+        where E : ISpawnable
     {
         public RandRange Amount;
 

@@ -5,6 +5,7 @@ namespace RogueElements
     [Serializable]
     public class DetectIsolatedStep<T, E> : GenStep<T>
         where T : class, ITiledGenContext, IViewPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public DetectIsolatedStep() { }
 

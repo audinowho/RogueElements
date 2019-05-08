@@ -12,6 +12,7 @@ namespace RogueElements
     [Serializable]
     public abstract class BaseSpawnStep<T, E> : GenStep<T>
         where T : class, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public IStepSpawner<T, E> Spawn;
 

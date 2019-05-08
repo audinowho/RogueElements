@@ -6,6 +6,7 @@ namespace RogueElements
     [Serializable]
     public class SpecificSpawnStep<T, E> : GenStep<T>
         where T : class, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public List<Tuple<E, Loc>> Spawns;
 

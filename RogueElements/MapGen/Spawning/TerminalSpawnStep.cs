@@ -6,6 +6,7 @@ namespace RogueElements
     [Serializable]
     public class TerminalSpawnStep<T, E> : RoomSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public bool IncludeHalls;
         public TerminalSpawnStep() { }
