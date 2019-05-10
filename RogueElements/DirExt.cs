@@ -15,19 +15,12 @@ namespace RogueElements
         public const int AXIS4_COUNT = 2;
         public const int AXIS8_COUNT = 4;
 
-        private static DirH[] _validDirH = ((DirH[])Enum.GetValues(typeof(DirH))).Where(x => x != DirH.None).ToArray();
-        private static DirV[] _validDirV = ((DirV[])Enum.GetValues(typeof(DirV))).Where(x => x != DirV.None).ToArray();
-        private static Dir4[] _validDir4 = ((Dir4[])Enum.GetValues(typeof(Dir4))).Where(x => x != Dir4.None).ToArray();
-        private static Dir8[] _validDir8 = ((Dir8[])Enum.GetValues(typeof(Dir8))).Where(x => x != Dir8.None).ToArray();
-        private static Axis4[] _validAxis4 = ((Axis4[])Enum.GetValues(typeof(Axis4))).Where(x => x != Axis4.None).ToArray();
-        private static Axis8[] _validAxis8 = ((Axis8[])Enum.GetValues(typeof(Axis8))).Where(x => x != Axis8.None).ToArray();
-
-        public static IEnumerable<DirH> VALID_DIRH => _validDirH;
-        public static IEnumerable<DirV> VALID_DIRV => _validDirV;
-        public static IEnumerable<Dir4> VALID_DIR4 => _validDir4;
-        public static IEnumerable<Dir8> VALID_DIR8 => _validDir8;
-        public static IEnumerable<Axis4> VALID_AXIS4 => _validAxis4;
-        public static IEnumerable<Axis8> VALID_AXIS8 => _validAxis8;
+        public static readonly IEnumerable<DirH> VALID_DIRH = new DirH[]{ DirH.Left, DirH.Right };
+        public static readonly IEnumerable<DirV> VALID_DIRV = new DirV[]{ DirV.Up, DirV.Down };
+        public static readonly IEnumerable<Dir4> VALID_DIR4 = new Dir4[]{ Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
+        public static readonly IEnumerable<Dir8> VALID_DIR8 = new Dir8[]{ Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
+        public static readonly IEnumerable<Axis4> VALID_AXIS4 = new Axis4[]{ Axis4.Vert, Axis4.Horiz };
+        public static readonly IEnumerable<Axis8> VALID_AXIS8 = new Axis8[]{ Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
 
         public static bool Validate(this DirV dir)
         {
