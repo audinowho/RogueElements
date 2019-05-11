@@ -75,7 +75,7 @@ namespace RogueElements
             //create inner paths
             for (int pathsMade = 0; pathsMade < paths; pathsMade++)
             {
-                GenContextDebug.StepIn(String.Format("Path {0}", pathsMade));
+                GenContextDebug.StepIn($"Path {pathsMade}");
 
                 Dir4 startDir = (Dir4)rand.Next(4);
                 int x = rand.Next(innerRect.Start.X, innerRect.End.X);

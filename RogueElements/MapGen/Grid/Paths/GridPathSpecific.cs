@@ -64,7 +64,7 @@ namespace RogueElements
         }
     }
 
-
+    [Serializable]
     public class SpecificGridRoomPlan<T> where T : ITiledGenContext
     {
         public Rect Bounds;

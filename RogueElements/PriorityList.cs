@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class PriorityList<T> : IEnumerable<T>, IPriorityList
+    public class PriorityList<T> : IEnumerable<T>, IPriorityList<T>
     {
         private Dictionary<int, List<T>> data;
 
@@ -27,7 +27,7 @@ namespace RogueElements
             if (!data.ContainsKey(priority))
             {
                 if (index != 0)
-                    throw new ArgumentOutOfRangeException("Index was out of bounds of the list.");
+                    throw new ArgumentOutOfRangeException(nameof(index), "Index was out of bounds of the list.");
                 data[priority] = new List<T>();
             }
             data[priority].Insert(index, item);

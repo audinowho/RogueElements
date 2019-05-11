@@ -70,7 +70,7 @@ namespace RogueElements.Examples.Ex7_Integration
         {
             StringBuilder topString = new StringBuilder("");
             string turnString = title;
-            topString.Append(String.Format("{0,-82}", turnString));
+            topString.Append($"{turnString,-82}");
             topString.Append('\n');
             for (int i = 0; i < map.Width + 1; i++)
                 topString.Append("=");

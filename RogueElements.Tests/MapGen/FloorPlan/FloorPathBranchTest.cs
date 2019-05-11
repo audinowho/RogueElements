@@ -13,9 +13,9 @@ namespace RogueElements.Tests
         {
             //confirm the room is properly downsized
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(8, 8),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
@@ -40,8 +40,8 @@ namespace RogueElements.Tests
             //choose from a single room, add a room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(5, 5, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
@@ -74,8 +74,8 @@ namespace RogueElements.Tests
             //choose from a single room, add a hall and a room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(5, 5, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
@@ -120,8 +120,8 @@ namespace RogueElements.Tests
             //choose from a single room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
@@ -140,8 +140,8 @@ namespace RogueElements.Tests
             //choose from a single room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(2, 2),
                 new Rect[] { new Rect(1, 1, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
@@ -169,8 +169,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect() },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
 
             FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
@@ -189,7 +189,7 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
 
@@ -212,7 +212,7 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C') });
 
 
@@ -287,7 +287,7 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'), new Tuple<char, char>('A', 'D') });
 
 
@@ -316,8 +316,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(5, 5, 3, 3) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
             
             TestFloorPlanGen gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 2));
@@ -411,7 +411,7 @@ namespace RogueElements.Tests
             }
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 rooms.ToArray(), halls.ToArray(),
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlanGen gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 2));
@@ -446,8 +446,8 @@ namespace RogueElements.Tests
             //|  CC
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(1, 1, 2, 2), new Rect(3, 1, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlanGen gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(0, 0, 2, 2));
@@ -475,8 +475,8 @@ namespace RogueElements.Tests
             //|CCCC
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(1, 1, 2, 2), new Rect(4, 1, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlanGen gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(0, 0, 4, 2));
@@ -507,8 +507,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(w, h),
                 new Rect[] { new Rect(x, y, 3, 3) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlanGen gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 3));
@@ -526,14 +526,14 @@ namespace RogueElements.Tests
         public void CreatePath0Percent()
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(14, 10),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(14, 10),
                 new Rect[] { new Rect(2, 3, 4, 5) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
@@ -565,9 +565,9 @@ namespace RogueElements.Tests
         public void CreatePath100Percent()
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 4),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 4),
                 new Rect[] { new Rect(0, 0, 6, 4), new Rect(7, 0, 6, 4), new Rect(14, 0, 6, 4) },
@@ -622,9 +622,9 @@ namespace RogueElements.Tests
         public void CreatePath50Percent()
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 12),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 12),
                 new Rect[] { new Rect(0, 0, 6, 4), new Rect(7, 0, 6, 4), new Rect(14, 0, 6, 4), new Rect(14, 5, 6, 4), new Rect(4, 5, 6, 4) },
@@ -696,9 +696,9 @@ namespace RogueElements.Tests
             //a situation in which a no-branching path
             //is forced to branch to make the room quota
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 9),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 9),
                 new Rect[] { new Rect(0, 0, 6, 4), new Rect(7, 0, 6, 4), new Rect(7, 5, 6, 4), new Rect(0, 5, 6, 4), new Rect(14, 0, 6, 4) },
@@ -778,9 +778,9 @@ namespace RogueElements.Tests
         {
             //cannot make branch quota after ten tries
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 9),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 9),
                 new Rect[] { new Rect(0, 0, 6, 4), new Rect(7, 0, 6, 4), new Rect(7, 5, 6, 4), new Rect(0, 5, 6, 4) },
@@ -857,9 +857,9 @@ namespace RogueElements.Tests
             //  | | |
             //  E H K
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(32, 8),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(32, 8),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(4, 0, 4, 4), new Rect(8, 0, 4, 4), new Rect(12, 0, 4, 4),
@@ -868,7 +868,7 @@ namespace RogueElements.Tests
                     new Rect(9, 4, 2, 4),
                     new Rect(24, 0, 4, 4), new Rect(28, 0, 4, 4),
                     new Rect(13, 4, 2, 4) },
-                new Rect[] {  },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'), new Tuple<char, char>('C', 'D'),
                     new Tuple<char, char>('B', 'E'),
                     new Tuple<char, char>('D', 'F'), new Tuple<char, char>('F', 'G'),
@@ -966,9 +966,9 @@ namespace RogueElements.Tests
             //  | | |
             //  E G I
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(24, 12),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(24, 12),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(4, 0, 4, 4), new Rect(8, 0, 4, 4), new Rect(12, 0, 4, 4),
@@ -1071,9 +1071,9 @@ namespace RogueElements.Tests
             //  | | |
             //  D F H
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 8),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 8),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(4, 0, 4, 4), new Rect(8, 0, 4, 4),
@@ -1082,7 +1082,7 @@ namespace RogueElements.Tests
                     new Rect(9, 4, 2, 4),
                     new Rect(16, 0, 4, 4),
                     new Rect(13, 4, 2, 4) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'),
                     new Tuple<char, char>('B', 'D'),
                     new Tuple<char, char>('C', 'E'),
@@ -1167,9 +1167,9 @@ namespace RogueElements.Tests
             //  | | |
             //  F I L
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(24, 12),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(24, 12),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(4, 0, 4, 4), new Rect(8, 0, 4, 4), new Rect(12, 0, 4, 4),
@@ -1178,7 +1178,7 @@ namespace RogueElements.Tests
                     new Rect(9, 4, 2, 4), new Rect(8, 8, 4, 4),
                     new Rect(20, 0, 4, 4),
                     new Rect(13, 4, 2, 4), new Rect(12, 8, 4, 4) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'), new Tuple<char, char>('C', 'D'),
                     new Tuple<char, char>('B', 'E'), new Tuple<char, char>('E', 'F'),
                     new Tuple<char, char>('D', 'G'),
@@ -1285,9 +1285,9 @@ namespace RogueElements.Tests
             //  | |
             //  D F
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(17, 12),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(17, 12),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(4, 0, 4, 4), new Rect(8, 0, 4, 4),
@@ -1369,9 +1369,9 @@ namespace RogueElements.Tests
             //  | | |
             //  C E F
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 8),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(20, 8),
                 new Rect[] { new Rect(0, 0, 4, 4), new Rect(8, 0, 4, 4),
@@ -1458,9 +1458,9 @@ namespace RogueElements.Tests
             //   / \ / \ / \
             //   F G K L P Q
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(30, 4),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(30, 4),
                 new Rect[] { new Rect(0, 1, 6, 2), new Rect(6, 1, 6, 2), new Rect(12, 1, 6, 2),
@@ -1469,7 +1469,7 @@ namespace RogueElements.Tests
                     new Rect(13, 0, 1, 1), new Rect(15, 0, 1, 1), new Rect(13, 3, 1, 1), new Rect(15, 3, 1, 1),
                     new Rect(24, 1, 6, 2),
                     new Rect(19, 0, 1, 1), new Rect(21, 0, 1, 1), new Rect(19, 3, 1, 1), new Rect(21, 3, 1, 1) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'),
                     new Tuple<char, char>('B', 'D'), new Tuple<char, char>('B', 'E'), new Tuple<char, char>('B', 'F'), new Tuple<char, char>('B', 'G'),
                     new Tuple<char, char>('C', 'H'),

@@ -956,7 +956,7 @@ namespace RogueElements.Tests
                         else if (val == '0')
                             floorPlan.rooms[x][y] = -1;
                         else
-                            throw new ArgumentException(String.Format("Bad input grid val at room {0},{1}!", x, y));
+                            throw new ArgumentException($"Bad input grid val at room {x},{y}!");
                     }
                     else if (xx % 2 == 0 && yy % 2 == 1)
                     {
@@ -966,7 +966,7 @@ namespace RogueElements.Tests
                         else if (val == '.')
                             floorPlan.vHalls[x][y].SetGen(null);
                         else
-                            throw new ArgumentException(String.Format("Bad input grid val at vertical hall {0},{1}!", x, y));
+                            throw new ArgumentException($"Bad input grid val at vertical hall {x},{y}!");
                     }
                     else if (xx % 2 == 1 && yy % 2 == 0)
                     {
@@ -976,13 +976,13 @@ namespace RogueElements.Tests
                         else if (val == '.')
                             floorPlan.hHalls[x][y].SetGen(null);
                         else
-                            throw new ArgumentException(String.Format("Bad input grid val at horizontal hall {0},{1}!", x, y));
+                            throw new ArgumentException($"Bad input grid val at horizontal hall {x},{y}!");
                     }
                     else if (xx % 2 == 1 && yy % 2 == 1)
                     {
                         //blank
                         if (val != ' ')
-                            throw new ArgumentException(String.Format("Bad input grid val at blank zone!"));
+                            throw new ArgumentException("Bad input grid val at blank zone!");
                     }
                 }
             }

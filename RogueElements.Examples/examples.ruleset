@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="RogueElements.Examples" ToolsVersion="15.0">
+   <Include Path="../base.ruleset" Action="Default" />
+   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+     <Rule Id="CA1819" Action="None" />
+   </Rules>
+</RuleSet>

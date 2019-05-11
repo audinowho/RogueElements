@@ -11,39 +11,23 @@ namespace RogueElements
         public delegate void ProgressTrack(string msg);
         public delegate void DebugStepIn(string msg);
 
-        public static InitTrack OnInit;
-        public static ProgressTrack OnStep;
-        public static DebugStepIn OnStepIn;
-        public static Action OnStepOut;
+        public static event InitTrack OnInit = delegate{};
+        public static event ProgressTrack OnStep = delegate{};
+        public static event DebugStepIn OnStepIn = delegate{};
+        public static event Action OnStepOut = delegate{};
 
 
         [Conditional("DEBUG")]
-        public static void StepIn(string msg)
-        {
-            if (OnStepIn != null)
-                OnStepIn(msg);
-        }
+        public static void StepIn(string msg) => OnStepIn(msg);
 
         [Conditional("DEBUG")]
-        public static void StepOut()
-        {
-            if (OnStepOut != null)
-                OnStepOut();
-        }
+        public static void StepOut() => OnStepOut();
 
         [Conditional("DEBUG")]
-        public static void DebugInit(IGenContext map)
-        {
-            if (OnInit != null)
-                OnInit(map);
-        }
+        public static void DebugInit(IGenContext map) => OnInit(map);
 
         [Conditional("DEBUG")]
-        public static void DebugProgress(string msg)
-        {
-            if (OnStep != null)
-                OnStep(msg);
-        }
+        public static void DebugProgress(string msg) => OnStep(msg);
 
     }
 }

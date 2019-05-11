@@ -106,7 +106,7 @@ namespace RogueElements
         {
             if (minValue > maxValue)
             {
-                throw new ArgumentOutOfRangeException("minValue", "minValue must be lower than or equal to maxValue");
+                throw new ArgumentOutOfRangeException(nameof(minValue), $"{nameof(minValue)} must be lower than or equal to {nameof(maxValue)}");
             }
             Contract.EndContractBlock();
 
@@ -121,7 +121,7 @@ namespace RogueElements
         {
             if (maxValue < 0)
             {
-                throw new ArgumentOutOfRangeException("maxValue", "maxValue must be equal to or greater than zero");
+                throw new ArgumentOutOfRangeException(nameof(maxValue), $"{nameof(maxValue)} must be equal to or greater than zero");
             }
             Contract.EndContractBlock();
             if (maxValue == 0)

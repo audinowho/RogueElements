@@ -365,7 +365,7 @@ namespace RogueElements
             return result;
         }
 
-        private void choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
+        private static void choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
         {
             //special case; make sure that start and end are NOT aligned to each other because we want a bend
             //This method is run with the assumption that the following is never true:
@@ -477,7 +477,7 @@ namespace RogueElements
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="terrain"></param>
-        private void drawHall(ITiledGenContext map, Loc point1, Loc point2, ITile terrain)
+        private static void drawHall(ITiledGenContext map, Loc point1, Loc point2, ITile terrain)
         {
             if (point1 == point2)
                 map.SetTile(point1, terrain.Copy());

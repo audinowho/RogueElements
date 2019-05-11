@@ -64,7 +64,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return String.Format("({0}, {1}]", Min, Max);
+            return $"({Min}, {Max}]";
         }
 
         public override bool Equals(object obj)
@@ -83,9 +83,13 @@ namespace RogueElements
         }
 
 
-        public static Range operator +(Range value1, int value2)
+        public Range Add(int value)
         {
-            return new Range(value1.Min + value2, value1.Max + value2);
+            return new Range(Min + value, Max + value);
         }
+
+        public static bool operator ==(Range lhs, Range rhs) => lhs.Equals(rhs);
+        public static bool operator !=(Range lhs, Range rhs) => !lhs.Equals(rhs);
+        public static Range operator +(Range lhs, int rhs) => lhs.Add(rhs);
     }
 }

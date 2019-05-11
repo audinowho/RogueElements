@@ -205,10 +205,10 @@ namespace RogueElements.Examples
                 {
                     int farthestPrint = end.Y;
                     Loc mapLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
-                    rewriteLine(farthestPrint, String.Format("X:{0}  Y:{1}", mapLoc.X.ToString("D3"), mapLoc.Y.ToString("D3")));
+                    rewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
                     farthestPrint++;
                     ITile tile = context.GetTile(mapLoc);
-                    rewriteLine(farthestPrint, String.Format("Tile: {0}", tile.ToString()));
+                    rewriteLine(farthestPrint, $"Tile: {tile}");
                     farthestPrint++;
 
                     for (int ii = farthestPrint; ii < prevFarthestPrint; ii++)
@@ -328,7 +328,7 @@ namespace RogueElements.Examples
                 {
                     int farthestPrint = end.Y;
                     Loc mapLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
-                    rewriteLine(farthestPrint, String.Format("X:{0}  Y:{1}", mapLoc.X.ToString("D3"), mapLoc.Y.ToString("D3")));
+                    rewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
                     farthestPrint++;
 
                     for (int ii = 0; ii < plan.RoomCount; ii++)
@@ -337,7 +337,7 @@ namespace RogueElements.Examples
                         if (roomPlan.Gen.Draw.Contains(mapLoc))
                         {
                             //stats
-                            string roomString = String.Format("Room #{0}: {1}x{2} {3}", ii, roomPlan.Gen.Draw.X, roomPlan.Gen.Draw.Y, roomPlan.RoomGen.ToString());
+                            string roomString = $"Room #{ii}: {roomPlan.Gen.Draw.X}x{roomPlan.Gen.Draw.Y} {roomPlan.RoomGen}";
                             if (roomPlan.Immutable)
                                 roomString += " [Immutable]";
                             rewriteLine(farthestPrint, roomString);
@@ -369,7 +369,7 @@ namespace RogueElements.Examples
                         IPermissiveRoomGen gen = plan.GetHall(ii);
                         if (gen.Draw.Contains(mapLoc))
                         {
-                            string roomString = String.Format("Hall #{0}: {1}x{2} {3}", ii, gen.Draw.X, gen.Draw.Y, gen.ToString());
+                            string roomString = $"Hall #{ii}: {gen.Draw.X}x{gen.Draw.Y} {gen}";
                             rewriteLine(farthestPrint, roomString);
                             farthestPrint++;
                         }
@@ -482,7 +482,7 @@ namespace RogueElements.Examples
                     int farthestPrint = end.Y;
                     Loc gridLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
                     Loc mapLoc = gridLoc / 2;
-                    rewriteLine(farthestPrint, String.Format("X:{0:0.0}  Y:{1:0.0}", ((float)gridLoc.X / 2), ((float)gridLoc.Y / 2)));
+                    rewriteLine(farthestPrint, $"X:{gridLoc.X / 2f:0.0}  Y:{gridLoc.Y / 2f:0.0}");
                     farthestPrint++;
 
                     bool alignX = gridLoc.X % 2 == 0;
@@ -494,7 +494,7 @@ namespace RogueElements.Examples
                         GridRoomPlan roomPlan = plan.GetRoomPlan(mapLoc);
                         if (roomPlan != null)
                         {
-                            string roomString = String.Format("Room #{0}: {1}", index, roomPlan.RoomGen.ToString());
+                            string roomString = $"Room #{index}: {roomPlan.RoomGen}";
                             if (roomPlan.Immutable)
                                 roomString += " [Immutable]";
                             if (roomPlan.PreferHall)

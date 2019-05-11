@@ -46,15 +46,15 @@ namespace RogueElements
                 int pendingBranch = 0;
                 while (tilesLeft > 0)
                 {
-                    ExpansionResult terminalResult = expandPath(rand, floorPlan, false);
-                    ExpansionResult branchResult = new ExpansionResult();
-                    if (terminalResult.Area > 0)
+                    (int area, int rooms) terminalResult = expandPath(rand, floorPlan, false);
+                    (int area, int rooms) branchResult = (0, 0);
+                    if (terminalResult.area > 0)
                     {
-                        tilesLeft -= terminalResult.Area;
+                        tilesLeft -= terminalResult.area;
                         //add branch PER ROOM when we add over the min threshold
-                        for (int jj = 0; jj < terminalResult.Rooms; jj++)
+                        for (int jj = 0; jj < terminalResult.rooms; jj++)
                         {
-                            if (floorPlan.RoomCount + floorPlan.HallCount- terminalResult.Rooms + jj + 1 > 2)
+                            if (floorPlan.RoomCount + floorPlan.HallCount- terminalResult.rooms + jj + 1 > 2)
                                 pendingBranch += addBranch;
                         }
                     }
@@ -65,14 +65,14 @@ namespace RogueElements
                     while (pendingBranch >= 100 && tilesLeft > 0)
                     {
                         branchResult = expandPath(rand, floorPlan, true);
-                        if (branchResult.Area == 0)
+                        if (branchResult.area == 0)
                             break;
                         pendingBranch -= 100;
                         //if we add any more than one room, that also counts as a branchable node
-                        pendingBranch += (branchResult.Rooms - 1) * addBranch;
-                        tilesLeft -= branchResult.Area;
+                        pendingBranch += (branchResult.rooms - 1) * addBranch;
+                        tilesLeft -= branchResult.area;
                     }
-                    if (terminalResult.Area == 0 && branchResult.Area == 0)
+                    if (terminalResult.area == 0 && branchResult.area == 0)
                         break;
                 }
 
@@ -81,12 +81,12 @@ namespace RogueElements
             }
         }
 
-        private ExpansionResult expandPath(IRandom rand, FloorPlan floorPlan, bool branch)
+        private (int area, int rooms) expandPath(IRandom rand, FloorPlan floorPlan, bool branch)
         {
             ListPathBranchExpansion expansion = ChooseRoomExpansion(rand, floorPlan, branch);
 
             if (expansion == null)
-                return new ExpansionResult();
+                return (0, 0);
 
             int tilesCovered = 0;
             int roomsAdded = 0;
@@ -105,7 +105,7 @@ namespace RogueElements
             roomsAdded++;
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             //report the added area coverage
-            return new ExpansionResult(tilesCovered, roomsAdded);
+            return (tilesCovered, roomsAdded);
         }
 
         /// <summary>
@@ -290,18 +290,6 @@ namespace RogueElements
             return room;
         }
         
-    }
-
-    public struct ExpansionResult
-    {
-        public int Area;
-        public int Rooms;
-
-        public ExpansionResult(int area, int rooms)
-        {
-            Area = area;
-            Rooms = rooms;
-        }
     }
 
     public class ListPathBranchExpansion

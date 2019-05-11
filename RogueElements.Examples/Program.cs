@@ -8,13 +8,13 @@ namespace RogueElements.Examples
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
 #if DEBUG
-            GenContextDebug.OnInit = ExampleDebug.Init;
-            GenContextDebug.OnStep = ExampleDebug.OnStep;
-            GenContextDebug.OnStepIn = ExampleDebug.StepIn;
-            GenContextDebug.OnStepOut = ExampleDebug.StepOut;
+            GenContextDebug.OnInit += ExampleDebug.Init;
+            GenContextDebug.OnStep += ExampleDebug.OnStep;
+            GenContextDebug.OnStepIn += ExampleDebug.StepIn;
+            GenContextDebug.OnStepOut += ExampleDebug.StepOut;
 #endif
             ConsoleKey lastKey = ConsoleKey.Enter;
             bool wasNonAction = false;
@@ -161,6 +161,7 @@ namespace RogueElements.Examples
             {
                 Debug.Write("ERROR: " + structSeed);
                 PrintError(ex);
+                throw;
             }
             finally
             {

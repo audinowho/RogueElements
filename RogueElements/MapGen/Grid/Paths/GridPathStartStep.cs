@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using RogueElements;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RogueElements
 {
@@ -8,7 +8,6 @@ namespace RogueElements
     public abstract class GridPathStartStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
-
         public void CreateErrorPath(IRandom rand, GridPlan floorPlan)
         {
             floorPlan.Clear();

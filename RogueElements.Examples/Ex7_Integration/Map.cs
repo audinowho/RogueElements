@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using RogueSharp.MapCreation;
 
 namespace RogueSharp
@@ -10,6 +11,7 @@ namespace RogueSharp
     /// A Map represents a rectangular grid of Cells, each of which has a number of properties for determining walkability, field-of-view and so on
     /// The upper left corner of the Map is Cell (0,0) and the X value increases to the right, as the Y value increases downward
     /// </summary>
+    [SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional")]
     public class Map : IMap
     {
         private FieldOfView _fieldOfView;
@@ -236,16 +238,16 @@ namespace RogueSharp
         {
             if (sourceMap == null)
             {
-                throw new ArgumentNullException("sourceMap", "Source map cannot be null");
+                throw new ArgumentNullException(nameof(sourceMap), "Source map cannot be null");
             }
 
             if (sourceMap.Width + left > Width)
             {
-                throw new ArgumentException("Source map 'width' + 'left' cannot be larger than the destination map width");
+                throw new ArgumentException($"Source map '{nameof(sourceMap.Width)}' + '{nameof(left)}' cannot be larger than the destination map width");
             }
             if (sourceMap.Height + top > Height)
             {
-                throw new ArgumentException("Source map 'height' + 'top' cannot be larger than the destination map height");
+                throw new ArgumentException($"Source map '{nameof(sourceMap.Height)}' + '{nameof(top)}' cannot be larger than the destination map height");
             }
             foreach (ICell cell in sourceMap.GetAllCells())
             {
@@ -736,7 +738,7 @@ namespace RogueSharp
         {
             if (state == null)
             {
-                throw new ArgumentNullException("state", "Map state cannot be null");
+                throw new ArgumentNullException(nameof(state), "Map state cannot be null");
             }
 
             var inFov = new HashSet<int>();
@@ -770,7 +772,7 @@ namespace RogueSharp
         {
             if (mapCreationStrategy == null)
             {
-                throw new ArgumentNullException("mapCreationStrategy", "Map creation strategy cannot be null");
+                throw new ArgumentNullException(nameof(mapCreationStrategy), "Map creation strategy cannot be null");
             }
 
             return mapCreationStrategy.CreateMap();
@@ -810,7 +812,7 @@ namespace RogueSharp
         {
             if (cell == null)
             {
-                throw new ArgumentNullException("cell", "Cell cannot be null");
+                throw new ArgumentNullException(nameof(cell), "Cell cannot be null");
             }
 
             return (cell.Y * Width) + cell.X;

@@ -15,8 +15,8 @@ namespace RogueElements.Tests
             //two isolated rooms
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2), new Rect(3, 9, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             List<RoomHallIndex> candList = new List<RoomHallIndex>();
             candList.Add(new RoomHallIndex(0, false));
@@ -106,8 +106,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
@@ -125,8 +125,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(4, 4, 2, 2), new Rect(blockX, blockY, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), dir);
@@ -152,7 +152,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 rooms.ToArray(),
                 halls.ToArray(),
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
@@ -181,8 +181,8 @@ namespace RogueElements.Tests
                 rooms.Add(new Rect(7, 7, 2, 2));
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 rooms.ToArray(),
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
@@ -197,8 +197,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(4, 4, 2, 2), new Rect(4, 10, 2, 2), new Rect(2, 7, 2, 2), new Rect(6, 7, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);

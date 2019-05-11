@@ -92,14 +92,14 @@ namespace RogueElements.Tests
         {
             //add to empty space
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(1, 1, 2, 3) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.CallBase = true;
@@ -117,7 +117,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(1, 1, 2, 3) },
                 new Rect[] { new Rect(6, 1, 3, 3) },
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
@@ -151,7 +151,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 rooms.ToArray(),
                 halls.ToArray(),
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.CallBase = true;
@@ -186,14 +186,14 @@ namespace RogueElements.Tests
         {
             //add to empty space
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
-                new Rect[] { },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Rect[] { new Rect(1, 1, 2, 3) },
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.CallBase = true;
@@ -209,14 +209,14 @@ namespace RogueElements.Tests
         {
             //add on top of existing hall, no consequences
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Rect[] { new Rect(1, 1, 2, 3) },
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Rect[] { new Rect(1, 1, 2, 3), new Rect(2, 2, 4, 4) },
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.CallBase = true;
@@ -235,8 +235,8 @@ namespace RogueElements.Tests
             //add on top of existing room?
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(1, 1, 2, 3) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.CallBase = true;
@@ -256,7 +256,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect() },
                 new Rect[] { new Rect() },
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             List<int> adjacentRooms = floorPlan.GetAdjacentRooms(0);
             List<int> expectedRooms = new List<int>();
@@ -272,7 +272,7 @@ namespace RogueElements.Tests
             //C
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'), new Tuple<char, char>('B', 'C') });
 
             List<int> adjacentRooms = floorPlan.GetAdjacentRooms(0);
@@ -349,7 +349,7 @@ namespace RogueElements.Tests
             //A-B C
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
             int distance = floorPlan.GetDistance(new RoomHallIndex(0, false), new RoomHallIndex(2, false));
@@ -363,7 +363,7 @@ namespace RogueElements.Tests
             //A-B
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
             int distance = floorPlan.GetDistance(new RoomHallIndex(0, false), new RoomHallIndex(0, false));
@@ -393,7 +393,7 @@ namespace RogueElements.Tests
             //B-C
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'),
                                         new Tuple<char, char>('C', 'D'), new Tuple<char, char>('D', 'E'), new Tuple<char, char>('A', 'D')});
 
@@ -408,8 +408,8 @@ namespace RogueElements.Tests
             //A
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect() },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
 
             bool result = floorPlan.IsChokePoint(new RoomHallIndex(0, false));
@@ -422,7 +422,7 @@ namespace RogueElements.Tests
             //A-B C
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(), new Rect(), new Rect() },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
 
@@ -548,7 +548,7 @@ namespace RogueElements.Tests
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(dx, dy, 2, 2));
 
             TestFloorPlan testFloorPlan = new TestFloorPlan();
-            Dir4 dir = testFloorPlan.GetDirAdjacent(mockFrom.Object, mockTo.Object);
+            Dir4 dir = FloorPlan.GetDirAdjacent(mockFrom.Object, mockTo.Object);
             Assert.That(dir, Is.EqualTo(expectedDir));
         }
 
@@ -575,7 +575,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 rooms.ToArray(),
                 halls.ToArray(),
-                new Tuple<char, char>[] { });
+                Array.Empty<Tuple<char, char>>());
 
             List<RoomHallIndex> collides = floorPlan.CheckCollision(new Rect(2, 2, 4, 6));
             Assert.That(collidesCompare, Is.EqualTo(collides));

@@ -5,6 +5,7 @@
     <RootNamespace>RogueElements.Tests</RootNamespace>
     <AssemblyName>RogueElements.Tests</AssemblyName>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <CodeAnalysisRuleSet>./tests.ruleset</CodeAnalysisRuleSet>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -13,6 +14,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="Moq" Version="4.8.0.0"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RogueElements\RogueElements.csproj">

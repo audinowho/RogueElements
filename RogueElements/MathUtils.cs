@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RogueElements
 {
-    public class MathUtils
+    public static class MathUtils
     {
         private static ReRandom rand = new ReRandom();
         public static ReRandom Rand

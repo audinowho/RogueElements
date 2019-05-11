@@ -8,7 +8,7 @@ namespace RogueElements
     public class RangeList<T>
     {
         [Serializable]
-        public class ItemRange
+        private class ItemRange
         {
             public T Element;
             public Range Range;

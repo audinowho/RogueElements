@@ -80,7 +80,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return String.Format("X:{0} Y:{1}", X, Y);
+            return $"X:{X} Y:{Y}";
         }
 
         public override bool Equals(object obj)
@@ -97,6 +97,16 @@ namespace RogueElements
         {
             return X.GetHashCode() ^ Y.GetHashCode();
         }
+
+        public Loc Negate() => -this;
+        public Loc Add(Loc other) => this + other;
+        public Loc Subtract(Loc other) => this - other;
+        public Loc Multiply(Loc other) => this * other;
+        public Loc Multiply(int scaleFactor) => this * scaleFactor;
+        public Loc Divide(Loc other) => this / other;
+        public Loc Divide(int scaleFactor) => this / scaleFactor;
+        public Loc Mod(Loc other) => this % other;
+        public Loc Mod(int scaleFactor) => this % scaleFactor;
 
         public static bool operator ==(Loc value1, Loc value2)
         {

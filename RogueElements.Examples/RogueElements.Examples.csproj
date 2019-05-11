@@ -5,9 +5,13 @@
     <RootNamespace>RogueElements.Examples</RootNamespace>
     <AssemblyName>RogueElements.Examples</AssemblyName>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <CodeAnalysisRuleSet>./examples.ruleset</CodeAnalysisRuleSet>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RogueElements\RogueElements.csproj">
       <Project>{a777bc3d-2635-401d-96d7-162178d8dfc4}</Project>

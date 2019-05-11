@@ -51,11 +51,11 @@ namespace RogueElements.Tests
             //the new room touches its only adjacent of the old room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(5, 1, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(5, 1, 2, 2), new Rect(5, 3, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('B', 'A') });
             ((TestFloorPlanGen)compareFloorPlan.GetRoom(0)).Identifier = 'B';
             ((TestFloorPlanGen)compareFloorPlan.GetRoom(1)).Identifier = 'C';
@@ -79,11 +79,11 @@ namespace RogueElements.Tests
             //the new room touches adjacents of two sides of the old room
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(3, 1, 2, 2), new Rect(1, 3, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C') });
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 1, 2, 2), new Rect(1, 3, 2, 2), new Rect(3, 3, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('C', 'B'), new Tuple<char, char>('C', 'A') });
             ((TestFloorPlanGen)compareFloorPlan.GetRoom(0)).Identifier = 'B';
             ((TestFloorPlanGen)compareFloorPlan.GetRoom(1)).Identifier = 'C';
@@ -108,7 +108,7 @@ namespace RogueElements.Tests
             //needs a supporting hall for one side
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(5, 1, 2, 2), new Rect(5, 9, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C') });
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(5, 1, 2, 2), new Rect(5, 9, 2, 2), new Rect(5, 3, 2, 2) },
@@ -140,7 +140,7 @@ namespace RogueElements.Tests
             //needs a supporting hall for all sides
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(5, 9, 2, 2), new Rect(1, 5, 2, 2), new Rect(5, 1, 2, 2), new Rect(9, 5, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'),
                                         new Tuple<char, char>('A', 'D'), new Tuple<char, char>('A', 'E') });
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
@@ -190,7 +190,7 @@ namespace RogueElements.Tests
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(5, 9, 2, 2), new Rect(1, 5, 2, 2),
                             new Rect(5, 1, 2, 2), new Rect(9, 5, 2, 2)},
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'),
                                         new Tuple<char, char>('A', 'D'), new Tuple<char, char>('A', 'E') });
 
@@ -215,7 +215,7 @@ namespace RogueElements.Tests
             //the adjacent tile crosses past the border
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(1, 9, 4, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
             IRoomGen oldGen = floorPlan.GetRoom(0);
@@ -239,7 +239,7 @@ namespace RogueElements.Tests
             //the adjacent tile crosses past the border
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 6, 6), new Rect(3, 9, 2, 2), new Rect(7, 9, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C') });
 
             IRoomGen oldGen = floorPlan.GetRoom(0);

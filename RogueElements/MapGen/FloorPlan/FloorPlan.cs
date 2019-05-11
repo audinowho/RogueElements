@@ -388,7 +388,7 @@ namespace RogueElements
             }
         }
 
-        public Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
+        public static Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
         {
             Dir4 result = Dir4.None;
             for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)

@@ -287,7 +287,7 @@ namespace RogueElements
         {
             Rect floorRect = new Rect(0, 0, GridWidth, GridHeight);
             if (!floorRect.Contains(rect))
-                throw new ArgumentOutOfRangeException("Cannot add room out of bounds!");
+                throw new ArgumentOutOfRangeException(nameof(rect), "Cannot add room out of bounds!");
 
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {

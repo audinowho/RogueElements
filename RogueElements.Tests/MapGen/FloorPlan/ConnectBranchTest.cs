@@ -143,11 +143,11 @@ namespace RogueElements.Tests
             //A-B-C-D-E
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2), new Rect(5, 3, 2, 2), new Rect(7, 3, 2, 2), new Rect(9, 3, 2, 2), new Rect(11, 3, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'), new Tuple<char, char>('C', 'D'), new Tuple<char, char>('D', 'E') });
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2), new Rect(5, 3, 2, 2), new Rect(7, 3, 2, 2), new Rect(9, 3, 2, 2), new Rect(11, 3, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'), new Tuple<char, char>('C', 'D'), new Tuple<char, char>('D', 'E') });
 
 
@@ -165,8 +165,8 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2) },
-                new Rect[] { },
-                new Tuple<char, char>[] { });
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
 
             List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
 
@@ -181,7 +181,7 @@ namespace RogueElements.Tests
         {
             TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(new Loc(22, 14),
                 new Rect[] { new Rect(3, 3, 2, 2), new Rect(3, 5, 2, 2), new Rect(3, 7, 2, 2) },
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C') });
 
             List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
@@ -226,7 +226,7 @@ namespace RogueElements.Tests
                             new Rect(3, 5, 2, 2), new Rect(3, 3, 2, 2), 
                             new Rect(3, 9, 2, 2), new Rect(3, 11, 2, 2),
                             new Rect(5, 7, 2, 2), new Rect(7, 7, 2, 2)},
-                new Rect[] { },
+                Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C'),
                                         new Tuple<char, char>('A', 'D'), new Tuple<char, char>('D', 'E'),
                                         new Tuple<char, char>('A', 'F'), new Tuple<char, char>('F', 'G')});
