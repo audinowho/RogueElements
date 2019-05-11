@@ -4,28 +4,30 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class GenStep<T> : IGenStep
-        where T : class, IGenContext
+    public abstract class GenStep<T> : IGenStep<T>
+        where T : IGenContext
     {
         //change activemap into an interface that supports tile, mob, and item modification
         public abstract void Apply(T map);
 
         public bool CanApply(IGenContext context)
         {
-            T map = context as T;
-            if (map == null)
+            if (context is T)
+                return true;
+            else
                 return false;
-            return true;
         }
 
         public void Apply(IGenContext context)
         {
-            T map = context as T;
-            if (map == null)
-                return;
-
-            Apply(map);
+            if (context is T)
+                Apply((T)context);
         }
+    }
+
+    public interface IGenStep<in T> : IGenStep
+        where T : IGenContext
+    {
     }
 
     public interface IGenStep

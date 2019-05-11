@@ -8,11 +8,11 @@ namespace RogueElements
     public class MapGen<T>
         where T : class, IGenContext
     {
-        public PriorityList<GenStep<T>> GenSteps { get; set; }
+        public PriorityList<IGenStep<T>> GenSteps { get; set; }
         
         public MapGen()
         {
-            GenSteps = new PriorityList<GenStep<T>>();
+            GenSteps = new PriorityList<IGenStep<T>>();
         }
         
 
