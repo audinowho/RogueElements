@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Loc.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
