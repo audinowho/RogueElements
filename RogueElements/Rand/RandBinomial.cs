@@ -29,6 +29,7 @@ namespace RogueElements
         public bool ChangesState { get { return false; } }
         public bool CanPick { get { return true; } }
 
+        public RandBinomial() { }
         public RandBinomial(int trials, int percent) { Trials = trials; Percent = percent; }
         public RandBinomial(int trials, int percent, int offset) : this(trials, percent) { Offset = offset; }
         protected RandBinomial(RandBinomial other)
