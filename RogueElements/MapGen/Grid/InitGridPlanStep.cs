@@ -24,7 +24,7 @@ namespace RogueElements
         public override void Apply(T map)
         {
             //initialize grid
-            GridPlan floorPlan = new GridPlan();
+            var floorPlan = new GridPlan();
             floorPlan.InitSize(CellX, CellY, CellWidth, CellHeight, CellWall);
 
             map.InitGrid(floorPlan);

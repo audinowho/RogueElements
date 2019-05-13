@@ -29,7 +29,7 @@ namespace RogueElements
 
             //TODO: accept smaller rooms to replace
             //bulldozing the surrounding rooms to get the space
-            SpawnList<RoomHallIndex> room_indices = new SpawnList<RoomHallIndex>();
+            var room_indices = new SpawnList<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 FloorRoomPlan plan = floorPlan.GetRoomPlan(ii);
@@ -40,7 +40,7 @@ namespace RogueElements
             }
             for (int ii = 0; ii < floorPlan.HallCount; ii++)
             {
-                RoomHallIndex roomHall = new RoomHallIndex(ii, true);
+                var roomHall = new RoomHallIndex(ii, true);
                 BaseFloorRoomPlan plan = floorPlan.GetRoomHall(roomHall);
                 if (plan.Gen.Draw.Width >= newGen.Draw.Width &&
                     plan.Gen.Draw.Height >= newGen.Draw.Height)
@@ -97,14 +97,14 @@ namespace RogueElements
                 else if (adjacentsByDir[ii].Count > 0)
                 {
                     Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, (Dir4)ii, adjacentsByDir[ii]);
-                    IPermissiveRoomGen supportHall = (IPermissiveRoomGen)Halls.Pick(rand).Copy();
+                    var supportHall = (IPermissiveRoomGen)Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
                     supportHalls[ii] = supportHall;
                 }
             }
             //add the new room
-            RoomHallIndex newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
+            var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
             floorPlan.AddRoom(newGen, true, newAdjacents.ToArray());
             //add supporting halls
             for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)

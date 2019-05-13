@@ -81,7 +81,7 @@ namespace RogueElements
 
             //compute a goal amount of terminals to connect
             //this computation ignores the fact that some terminals may be impossible
-            RandBinomial randBin = new RandBinomial(candBranchPoints.Count, ConnectPercent);
+            var randBin = new RandBinomial(candBranchPoints.Count, ConnectPercent);
             int connectionsLeft = randBin.Pick(rand);
 
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)

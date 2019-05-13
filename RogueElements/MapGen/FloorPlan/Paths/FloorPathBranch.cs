@@ -198,14 +198,14 @@ namespace RogueElements
             List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                RoomHallIndex listHall = new RoomHallIndex(ii, false);
+                var listHall = new RoomHallIndex(ii, false);
                 List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
                 if ((adjacents.Count <= 1) != branch)
                     availableExpansions.Add(listHall);
             }
             for (int ii = 0; ii < floorPlan.HallCount; ii++)
             {
-                RoomHallIndex listHall = new RoomHallIndex(ii, true);
+                var listHall = new RoomHallIndex(ii, true);
                 List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
                 if ((adjacents.Count <= 1) != branch)
                     availableExpansions.Add(listHall);

@@ -55,7 +55,7 @@ namespace RogueElements.Tests
                                 ". . .",
                                 "0.0.0"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('A');
+            var gen = new TestGridRoomGen('A');
             floorPlan.AddRoom(new Rect(1, 0, 1, 1), gen);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
@@ -79,7 +79,7 @@ namespace RogueElements.Tests
                                 ". . . .",
                                 "0.A.A.A"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('A');
+            var gen = new TestGridRoomGen('A');
             floorPlan.AddRoom(new Rect(1, 1, 3, 2), gen);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
@@ -97,7 +97,7 @@ namespace RogueElements.Tests
                                 ". . . .",
                                 "0.A.A.A"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('B');
+            var gen = new TestGridRoomGen('B');
             Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 0, 2, 2), gen); });
 
         }
@@ -149,7 +149,7 @@ namespace RogueElements.Tests
             }
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('A');
+            var gen = new TestGridRoomGen('A');
             Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen); });
             
         }
@@ -169,7 +169,7 @@ namespace RogueElements.Tests
                                 "# . . #",
                                 "G#I.I#H"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('I');
+            var gen = new TestGridRoomGen('I');
             floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen);
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -190,7 +190,7 @@ namespace RogueElements.Tests
                                 ". . . .",
                                 "0.0.0.0"};
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen('A');
+            var gen = new TestGridRoomGen('A');
             Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(new Rect(x, y, w, h), gen); });
 
         }
@@ -251,7 +251,7 @@ namespace RogueElements.Tests
                 exception = true;
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen((char)0);
+            var gen = new TestGridRoomGen((char)0);
             if (exception)
             {
                 if (dir == Dir4.None)
@@ -333,7 +333,7 @@ namespace RogueElements.Tests
                 exception = true;
             
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridRoomGen gen = new TestGridRoomGen((char)0);
+            var gen = new TestGridRoomGen((char)0);
             if (exception)
             {
                 Assert.Throws<ArgumentException>(() => { floorPlan.SetConnectingHall(new Loc(x1, y1), new Loc(x2, y2), gen); });
@@ -467,7 +467,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(gridPlan.Size);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
@@ -513,7 +513,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(gridPlan.Size);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
@@ -585,7 +585,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(9);
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(gridPlan.Size);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
@@ -632,7 +632,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(0);
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(gridPlan.Size);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
@@ -679,7 +679,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(9);
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(gridPlan.Size);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
@@ -801,7 +801,7 @@ namespace RogueElements.Tests
         [TestCase(0, 0, 3, 2, 0, 0, 17, 7)]
         public void GetCellBounds(int cellX, int cellY, int cellW, int cellH, int x, int y, int w, int h)
         {
-            TestGridFloorPlan floorPlan = new TestGridFloorPlan();
+            var floorPlan = new TestGridFloorPlan();
             floorPlan.InitSize(5, 5, 5, 3);
             Rect bounds = floorPlan.GetCellBounds(new Rect(cellX, cellY, cellW, cellH));
             Rect compareBounds = new Rect(x, y, w, h);
@@ -924,7 +924,7 @@ namespace RogueElements.Tests
             //transposes
             if (inGrid.Length % 2 == 0 || inGrid[0].Length % 2 == 0)
                 throw new ArgumentException("Bad input grid!");
-            TestGridFloorPlan floorPlan = new TestGridFloorPlan();
+            var floorPlan = new TestGridFloorPlan();
             floorPlan.InitSize(inGrid[0].Length / 2 + 1, inGrid.Length / 2 + 1, widthPerCell, heightPerCell);
             GridRoomPlan[] addedRooms = new GridRoomPlan[26];
 

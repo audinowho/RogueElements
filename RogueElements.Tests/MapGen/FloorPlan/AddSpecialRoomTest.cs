@@ -62,10 +62,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             
-            TestFloorPlanGen gen = new TestFloorPlanGen('C');
+            var gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(5, 3, 2, 2));
             
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
             
             pathGen.PlaceRoom(testRand.Object, floorPlan, gen, new RoomHallIndex(0, false));
 
@@ -91,10 +91,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('D');
+            var gen = new TestFloorPlanGen('D');
             gen.PrepareDraw(new Rect(3, 3, 2, 2));
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
 
             pathGen.PlaceRoom(testRand.Object, floorPlan, gen, new RoomHallIndex(0, false));
 
@@ -120,10 +120,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('D');
+            var gen = new TestFloorPlanGen('D');
             gen.PrepareDraw(new Rect(5, 3, 2, 2));
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('a'));
             pathGen.Halls = mockHalls.Object;
@@ -156,10 +156,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('F');
+            var gen = new TestFloorPlanGen('F');
             gen.PrepareDraw(new Rect(5, 5, 2, 2));
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('a'));
@@ -201,7 +201,7 @@ namespace RogueElements.Tests
 
             List<RoomHallIndex> adjacentsInDir = new List<RoomHallIndex> { new RoomHallIndex((int)dir + 1, false) };
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
 
             Rect rect = pathGen.GetSupportRect(floorPlan, oldGen, mockTo.Object, dir, adjacentsInDir);
 
@@ -224,7 +224,7 @@ namespace RogueElements.Tests
 
             List<RoomHallIndex> adjacentsInDir = new List<RoomHallIndex> { new RoomHallIndex(1, false) };
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
 
             Rect rect = pathGen.GetSupportRect(floorPlan, oldGen, mockTo.Object, Dir4.Down, adjacentsInDir);
 
@@ -251,7 +251,7 @@ namespace RogueElements.Tests
                 new RoomHallIndex(2, false)
             };
 
-            AddSpecialRoomStep<IFloorPlanTestContext> pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
+            var pathGen = new AddSpecialRoomStep<IFloorPlanTestContext>();
 
             Rect rect = pathGen.GetSupportRect(floorPlan, oldGen, mockTo.Object, Dir4.Down, adjacentsInDir);
 

@@ -11,8 +11,8 @@ namespace RogueElements.Tests
         [Test]
         public void LoopedRand()
         {
-            RandRange amountRange = new RandRange(3, 6);
-            RandRange valueRange = new RandRange(0, 4);
+            var amountRange = new RandRange(3, 6);
+            var valueRange = new RandRange(0, 4);
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.SetupSequence(p => p.Next(3, 6)).Returns(4);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(0, 4));
@@ -81,7 +81,7 @@ namespace RogueElements.Tests
         [TestCase(5, 50, 49, 10)]
         public void RandBinomial(int offset, int percent, int rollResult, int result)
         {
-            RandBinomial testPicker = new RandBinomial(5, percent, offset);
+            var testPicker = new RandBinomial(5, percent, offset);
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(100)).Returns(rollResult);
             Assert.That(testPicker.Pick(testRand.Object), Is.EqualTo(result));
@@ -90,8 +90,8 @@ namespace RogueElements.Tests
         [Test]
         public void RandRangeCanPick0()
         {
-            RandRange testPicker = new RandRange();
-            ReRandom rand = new ReRandom(0);
+            var testPicker = new RandRange();
+            var rand = new ReRandom(0);
             Assert.That(testPicker.CanPick, Is.EqualTo(true));
             Assert.That(testPicker.Pick(rand), Is.EqualTo(0));
         }
@@ -104,7 +104,7 @@ namespace RogueElements.Tests
         public void SpawnListEmptyChoose()
         {
             //choose when empty
-            SpawnList<string> spawnList = new SpawnList<string>();
+            var spawnList = new SpawnList<string>();
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Assert.That(spawnList.CanPick, Is.EqualTo(false));
             Assert.Throws<InvalidOperationException>(() => { spawnList.Pick(testRand.Object); });
@@ -130,7 +130,7 @@ namespace RogueElements.Tests
         public void SpawnListAddNegative()
         {
             //add negative
-            SpawnList<string> spawnList = new SpawnList<string>();
+            var spawnList = new SpawnList<string>();
             Assert.Throws<ArgumentException>(() => { spawnList.Add("apple", -1); });
         }
 

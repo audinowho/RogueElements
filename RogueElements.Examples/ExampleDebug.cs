@@ -87,7 +87,7 @@ namespace RogueElements.Examples
 
         private static string createStackString()
         {
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
             for (int ii = 0; ii < stepStack.Count; ii++)
             {
                 if (ii > 0)
@@ -152,7 +152,7 @@ namespace RogueElements.Examples
             if (!context.TilesInitialized)
                 return ConsoleKey.Enter;
 
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
 
             for (int yy = 0; yy < context.Height; yy++)
             {
@@ -238,7 +238,7 @@ namespace RogueElements.Examples
             if (!(map is IFloorPlanGenContext context))
                 return ConsoleKey.Enter;
 
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
             FloorPlan plan = context.RoomPlan;
             if (plan == null)
                 return ConsoleKey.Enter;
@@ -337,7 +337,7 @@ namespace RogueElements.Examples
                             rewriteLine(farthestPrint, roomString);
                             farthestPrint++;
                             //borders
-                            StringBuilder lineString = new StringBuilder(" ");
+                            var lineString = new StringBuilder(" ");
                             for (int xx = 0; xx < roomPlan.Gen.Draw.Width; xx++)
                                 lineString.Append(roomPlan.Gen.GetFulfillableBorder(Dir4.Up, xx) ? "^" : " ");
                             rewriteLine(farthestPrint, lineString.ToString());
@@ -398,7 +398,7 @@ namespace RogueElements.Examples
             if (!(map is IRoomGridGenContext context))
                 return ConsoleKey.Enter;
 
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
             GridPlan plan = context.GridPlan;
             if (plan == null)
                 return ConsoleKey.Enter;

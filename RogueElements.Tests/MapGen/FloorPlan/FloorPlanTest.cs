@@ -168,7 +168,7 @@ namespace RogueElements.Tests
         public void AddRoomToOutOfBounds(int x, int y)
         {
             //attempt to touch out of bounds
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(new Loc(22, 14));
             Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
             gen.SetupGet(p => p.Draw).Returns(new Rect(x, y, 2, 3));
@@ -460,7 +460,7 @@ namespace RogueElements.Tests
             List<Mock<IRoomGen>> roomGenTarget = new List<Mock<IRoomGen>>();
             List<Mock<IPermissiveRoomGen>> hallGenTarget = new List<Mock<IPermissiveRoomGen>>();
 
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(new Loc(22, 14));
 
             for (int ii = 0; ii < 5; ii++)
@@ -472,7 +472,7 @@ namespace RogueElements.Tests
                     roomGen.Setup(p => p.ReceiveOpenedBorder(It.IsAny<IRoomGen>(), It.IsAny<Dir4>()));
                     roomGenTarget.Add(roomGen);
                 }
-                FloorRoomPlan roomPlan = new FloorRoomPlan(roomGen.Object);
+                var roomPlan = new FloorRoomPlan(roomGen.Object);
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
@@ -488,7 +488,7 @@ namespace RogueElements.Tests
                     roomGen.Setup(p => p.ReceiveOpenedBorder(It.IsAny<IRoomGen>(), It.IsAny<Dir4>()));
                     hallGenTarget.Add(roomGen);
                 }
-                FloorHallPlan roomPlan = new FloorHallPlan(roomGen.Object);
+                var roomPlan = new FloorHallPlan(roomGen.Object);
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
@@ -534,7 +534,7 @@ namespace RogueElements.Tests
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(dx, dy, 2, 2));
 
-            TestFloorPlan testFloorPlan = new TestFloorPlan();
+            var testFloorPlan = new TestFloorPlan();
             Dir4 dir = FloorPlan.GetDirAdjacent(mockFrom.Object, mockTo.Object);
             Assert.That(dir, Is.EqualTo(expectedDir));
         }
@@ -709,7 +709,7 @@ namespace RogueElements.Tests
 
         public static TestFloorPlan InitFloorToContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
-            TestFloorPlan floorPlan = new TestFloorPlan();
+            var floorPlan = new TestFloorPlan();
             InitFloorToContext(floorPlan, size, rooms, halls, links);
             return floorPlan;
         }
@@ -727,13 +727,13 @@ namespace RogueElements.Tests
             //a list of rects for rooms, a list of rects for halls
             for (int ii = 0; ii < rooms.Length; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen((char)('A' + ii));
+                var gen = new TestFloorPlanGen((char)('A' + ii));
                 gen.PrepareDraw(rooms[ii]);
                 floorPlan.PublicRooms.Add(new FloorRoomPlan(gen));
             }
             for (int ii = 0; ii < halls.Length; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen((char)('a' + ii));
+                var gen = new TestFloorPlanGen((char)('a' + ii));
                 gen.PrepareDraw(halls[ii]);
                 floorPlan.PublicHalls.Add(new FloorHallPlan(gen));
             }
@@ -745,8 +745,8 @@ namespace RogueElements.Tests
                 int index1 = hall1 ? links[ii].Item1 - 'a' : links[ii].Item1 - 'A';
                 bool hall2 = links[ii].Item2 >= 'a';
                 int index2 = hall2 ? links[ii].Item2 - 'a' : links[ii].Item2 - 'A';
-                RoomHallIndex link1 = new RoomHallIndex(index1, hall1);
-                RoomHallIndex link2 = new RoomHallIndex(index2, hall2);
+                var link1 = new RoomHallIndex(index1, hall1);
+                var link2 = new RoomHallIndex(index2, hall2);
                 BaseFloorRoomPlan from1 = floorPlan.GetRoomHall(link1);
                 BaseFloorRoomPlan from2 = floorPlan.GetRoomHall(link2);
                 from1.Adjacents.Add(link2);

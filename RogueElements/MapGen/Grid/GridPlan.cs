@@ -309,7 +309,7 @@ namespace RogueElements
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
                 }
             }
-            GridRoomPlan room = new GridRoomPlan(rect, gen.Copy())
+            var room = new GridRoomPlan(rect, gen.Copy())
             {
                 Immutable = immutable,
                 PreferHall = preferHall

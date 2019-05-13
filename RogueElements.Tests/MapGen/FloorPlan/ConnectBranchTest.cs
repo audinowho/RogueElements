@@ -151,7 +151,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -167,7 +167,7 @@ namespace RogueElements.Tests
 
             List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             List<List<RoomHallIndex>> arms = pathGen.GetBranchArms(floorPlan);
 
             Assert.That(arms, Is.EqualTo(expectedArms));

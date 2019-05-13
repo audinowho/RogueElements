@@ -16,7 +16,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3, 5)).Returns(3);
             testRand.Setup(p => p.Next(4, 7)).Returns(4);
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>(new TestTile(1), new RandRange(3, 5), new RandRange(4, 7), new RandRange(), new RandRange());
+            var roomGen = new RoomGenBlocked<ITiledGenContext>(new TestTile(1), new RandRange(3, 5), new RandRange(4, 7), new RandRange(), new RandRange());
 
             Loc compare = roomGen.ProposeSize(testRand.Object);
 

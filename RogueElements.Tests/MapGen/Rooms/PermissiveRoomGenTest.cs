@@ -16,7 +16,7 @@ namespace RogueElements.Tests
             //verify all fulfillableborders set to true
             //as well as bordertofulfill set to correct sizes
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestPermissiveRoomGen<ITiledGenContext> roomGen = new TestPermissiveRoomGen<ITiledGenContext>();
+            var roomGen = new TestPermissiveRoomGen<ITiledGenContext>();
             roomGen.PrepareSize(testRand.Object, new Loc(2, 3));
 
 

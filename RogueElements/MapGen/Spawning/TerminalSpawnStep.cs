@@ -21,8 +21,8 @@ namespace RogueElements
         {
             //random per room, not per-tile
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
-            SpawnList<RoomHallIndex> terminalRooms = new SpawnList<RoomHallIndex>();
+            var spawningRooms = new SpawnList<RoomHallIndex>();
+            var terminalRooms = new SpawnList<RoomHallIndex>();
 
             //TODO: higher likelihoods for terminals at the ends of longer paths
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)

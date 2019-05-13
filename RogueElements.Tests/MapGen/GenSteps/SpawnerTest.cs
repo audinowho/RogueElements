@@ -90,7 +90,7 @@ namespace RogueElements.Tests
 
             Mock<IRoomGen> mockRoom = new Mock<IRoomGen>(MockBehavior.Strict);
             mockRoom.SetupGet(p => p.Draw).Returns(new Rect(10,20,30,40));
-            FloorRoomPlan roomPlan = new FloorRoomPlan(mockRoom.Object);
+            var roomPlan = new FloorRoomPlan(mockRoom.Object);
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(roomPlan);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);

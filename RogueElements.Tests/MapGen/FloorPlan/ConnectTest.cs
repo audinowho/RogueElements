@@ -54,7 +54,7 @@ namespace RogueElements.Tests
                 new RoomHallIndex(2, false)
             };
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
             
             Assert.That(nodes.Count, Is.EqualTo(2));
@@ -98,7 +98,7 @@ namespace RogueElements.Tests
                 new RoomHallIndex(6, false)
             };
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
 
             Assert.That(nodes.Count, Is.EqualTo(8));
@@ -112,7 +112,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
 
             Assert.That(node, Is.EqualTo(null));
@@ -131,7 +131,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), dir);
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
@@ -159,7 +159,7 @@ namespace RogueElements.Tests
                 halls.ToArray(),
                 Array.Empty<Tuple<char, char>>());
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
@@ -191,7 +191,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
@@ -207,7 +207,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
 
             Assert.That(node, Is.EqualTo(null));
@@ -235,7 +235,7 @@ namespace RogueElements.Tests
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(2, 3, 5))).Returns(false);
             Rect rectTo = new Rect(x, 0, 2, 2);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             bool hasOpening = pathGen.HasBorderOpening(mockFrom.Object, rectTo, expandTo);
 
             Assert.That(hasOpening, Is.EqualTo(expected));

@@ -84,7 +84,7 @@ namespace RogueElements
                 throw new InvalidOperationException("Tried to add out of range!");
             //we expect that the room has already been given a size
             //and that its fulfillables match up with its adjacent's fulfillables.
-            FloorRoomPlan plan = new FloorRoomPlan(gen) { Immutable = immutable };
+            var plan = new FloorRoomPlan(gen) { Immutable = immutable };
             //attach everything
             plan.Adjacents.AddRange(attached);
             foreach (RoomHallIndex fromRoom in attached)
@@ -108,7 +108,7 @@ namespace RogueElements
             //check against rooms that go out of bounds
             if (!DrawRect.Contains(gen.Draw))
                 throw new InvalidOperationException("Tried to add out of range!");
-            FloorHallPlan plan = new FloorHallPlan(gen);
+            var plan = new FloorHallPlan(gen);
             //attach everything
             plan.Adjacents.AddRange(attached);
             foreach (RoomHallIndex fromRoom in attached)

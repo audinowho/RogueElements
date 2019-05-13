@@ -131,13 +131,13 @@ namespace RogueElements.Examples.Ex5_Terrain
 
         void IPlaceableGenContext<StairsUp>.PlaceItem(Loc loc, StairsUp item)
         {
-            StairsUp stairs = (StairsUp)item.Copy();
+            var stairs = (StairsUp)item.Copy();
             stairs.Loc = loc;
             GenEntrances.Add(stairs);
         }
         void IPlaceableGenContext<StairsDown>.PlaceItem(Loc loc, StairsDown item)
         {
-            StairsDown stairs = (StairsDown)item.Copy();
+            var stairs = (StairsDown)item.Copy();
             stairs.Loc = loc;
             GenExits.Add(stairs);
         }

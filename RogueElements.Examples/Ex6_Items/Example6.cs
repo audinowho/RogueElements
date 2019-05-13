@@ -10,7 +10,7 @@ namespace RogueElements.Examples.Ex6_Items
         {
             Console.Clear();
             string title = "6: A Map with Randomly Placed Items/Mobs";
-            MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
+            var layout = new MapGen<MapGenContext>();
 
             //Initialize a 6x4 grid of 10x10 cells.
             var startGen = new InitGridPlanStep<MapGenContext>(1)
@@ -67,7 +67,7 @@ namespace RogueElements.Examples.Ex6_Items
 
             //Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
             int terrain = 2;
-            PerlinWaterStep<MapGenContext> waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
+            var waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, 1, new Tile(terrain), false);
             layout.GenSteps.Add(3, waterPostProc);
 
             //Remove walls where diagonals of water exist and replace with water
@@ -109,7 +109,7 @@ namespace RogueElements.Examples.Ex6_Items
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder("");
             string turnString = title;
             topString.Append($"{turnString,-82}");
             topString.Append('\n');

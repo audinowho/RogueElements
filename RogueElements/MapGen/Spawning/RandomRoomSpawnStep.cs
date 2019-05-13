@@ -21,7 +21,7 @@ namespace RogueElements
         {
             //random per room, not per-tile
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
+            var spawningRooms = new SpawnList<RoomHallIndex>();
 
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {

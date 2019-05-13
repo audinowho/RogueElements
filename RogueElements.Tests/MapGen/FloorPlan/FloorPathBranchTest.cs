@@ -25,7 +25,7 @@ namespace RogueElements.Tests
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.GenericRooms = mockRooms.Object;
 
-            TestFloorPlanGen roomGenCompare = new TestFloorPlanGen('A');
+            var roomGenCompare = new TestFloorPlanGen('A');
             roomGenCompare.PrepareDraw(new Rect(-1, -1, 8, 8));
 
             RoomGen<IFloorPlanTestContext> chosenRoom = pathGen.PrepareRoom(testRand.Object, floorPlan, false);
@@ -50,12 +50,12 @@ namespace RogueElements.Tests
 
             var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 0;
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
+            var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
 
-            TestFloorPlanGen roomGenCompare = new TestFloorPlanGen('A');
+            var roomGenCompare = new TestFloorPlanGen('A');
             roomGenCompare.PrepareDraw(new Rect(4, 7, 2, 2));
             
             ListPathBranchExpansion expansion = pathGen.Object.ChooseRoomExpansion(testRand.Object, floorPlan, false);
@@ -84,20 +84,20 @@ namespace RogueElements.Tests
             var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 100;
 
-            TestFloorPlanGen hallGen = new TestFloorPlanGen('a') { ProposedSize = new Loc(2, 2) };
+            var hallGen = new TestFloorPlanGen('a') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(hallGen);
             pathGen.Object.GenericHalls = mockHalls.Object;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
+            var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
 
 
-            TestFloorPlanGen hallGenCompare = new TestFloorPlanGen('a');
+            var hallGenCompare = new TestFloorPlanGen('a');
             hallGenCompare.PrepareDraw(new Rect(5, 7, 2, 2));
-            TestFloorPlanGen roomGenCompare = new TestFloorPlanGen('A');
+            var roomGenCompare = new TestFloorPlanGen('A');
             roomGenCompare.PrepareDraw(new Rect(5, 9, 2, 2));
 
             ListPathBranchExpansion expansion = pathGen.Object.ChooseRoomExpansion(testRand.Object, floorPlan, false);
@@ -120,7 +120,7 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             
             ListPathBranchExpansion expansion = pathGen.ChooseRoomExpansion(testRand.Object, floorPlan, true);
 
@@ -143,7 +143,7 @@ namespace RogueElements.Tests
 
             var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 0;
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
+            var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -165,7 +165,7 @@ namespace RogueElements.Tests
                 Array.Empty<Tuple<char, char>>());
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -185,7 +185,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B') });
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -208,7 +208,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C') });
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -233,7 +233,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'B') });
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -258,7 +258,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('A', 'b') });
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -283,7 +283,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'), new Tuple<char, char>('A', 'D') });
 
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
             List<RoomHallIndex> roomsFrom = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<RoomHallIndex> compare = new List<RoomHallIndex>();
             if (!branch)
@@ -311,10 +311,10 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
             
-            TestFloorPlanGen gen = new TestFloorPlanGen('B');
+            var gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 2));
             
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
 
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
 
@@ -405,10 +405,10 @@ namespace RogueElements.Tests
                 rooms.ToArray(), halls.ToArray(),
                 Array.Empty<Tuple<char, char>>());
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('B');
+            var gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 2));
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
 
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
 
@@ -441,10 +441,10 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('C');
+            var gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(0, 0, 2, 2));
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
 
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
 
@@ -470,10 +470,10 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('C');
+            var gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(0, 0, 4, 2));
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
 
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
 
@@ -502,10 +502,10 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            TestFloorPlanGen gen = new TestFloorPlanGen('B');
+            var gen = new TestFloorPlanGen('B');
             gen.PrepareDraw(new Rect(0, 0, 3, 3));
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
 
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
 
@@ -538,7 +538,7 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 5));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
             
@@ -577,22 +577,22 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 6, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(7, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(6, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(14, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(13, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
@@ -634,36 +634,36 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 6, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(7, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(6, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(14, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(13, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(14, 5, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                var addedHall = new TestFloorPlanGen('c');
                 addedHall.PrepareDraw(new Rect(15, 4, 4, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(4, 5, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('d');
+                var addedHall = new TestFloorPlanGen('d');
                 addedHall.PrepareDraw(new Rect(10, 5, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, addedHall));
             }
@@ -707,44 +707,44 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 6, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(7, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(6, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(7, 5, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(8, 4, 4, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(0, 5, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                var addedHall = new TestFloorPlanGen('c');
                 addedHall.PrepareDraw(new Rect(6, 5, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(0, 5, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                var addedHall = new TestFloorPlanGen('c');
                 addedHall.PrepareDraw(new Rect(6, 5, 1, 4));
                 pathSeq = pathSeq.Returns(null);
             }
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(14, 0, 6, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('d');
+                var addedHall = new TestFloorPlanGen('d');
                 addedHall.PrepareDraw(new Rect(13, 0, 1, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
@@ -788,7 +788,7 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = true;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 6, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
@@ -796,30 +796,30 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 10; ii++)
             {
                 {
-                    TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                    var addedGen = new TestFloorPlanGen('B');
                     addedGen.PrepareDraw(new Rect(7, 0, 6, 4));
-                    TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                    var addedHall = new TestFloorPlanGen('a');
                     addedHall.PrepareDraw(new Rect(6, 0, 1, 4));
                     pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, addedHall));
                 }
                 {
-                    TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                    var addedGen = new TestFloorPlanGen('C');
                     addedGen.PrepareDraw(new Rect(7, 5, 6, 4));
-                    TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                    var addedHall = new TestFloorPlanGen('b');
                     addedHall.PrepareDraw(new Rect(8, 4, 4, 1));
                     pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
                 }
                 {
-                    TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                    var addedGen = new TestFloorPlanGen('D');
                     addedGen.PrepareDraw(new Rect(0, 5, 6, 4));
-                    TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                    var addedHall = new TestFloorPlanGen('c');
                     addedHall.PrepareDraw(new Rect(6, 5, 1, 4));
                     pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, addedHall));
                 }
                 {
-                    TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                    var addedGen = new TestFloorPlanGen('D');
                     addedGen.PrepareDraw(new Rect(0, 5, 6, 4));
-                    TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                    var addedHall = new TestFloorPlanGen('c');
                     addedHall.PrepareDraw(new Rect(6, 5, 1, 4));
                     pathSeq = pathSeq.Returns(null);
                 }
@@ -875,59 +875,59 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(12, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(16, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('G');
+                var addedGen = new TestFloorPlanGen('G');
                 addedGen.PrepareDraw(new Rect(20, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(5, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('I');
+                var addedGen = new TestFloorPlanGen('I');
                 addedGen.PrepareDraw(new Rect(24, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(6, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('J');
+                var addedGen = new TestFloorPlanGen('J');
                 addedGen.PrepareDraw(new Rect(28, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(8, false), addedGen, null));
             }
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('H');
+                var addedGen = new TestFloorPlanGen('H');
                 addedGen.PrepareDraw(new Rect(9, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('K');
+                var addedGen = new TestFloorPlanGen('K');
                 addedGen.PrepareDraw(new Rect(13, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, null));
             }
@@ -983,56 +983,56 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(12, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(16, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('H');
+                var addedGen = new TestFloorPlanGen('H');
                 addedGen.PrepareDraw(new Rect(20, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(5, false), addedGen, null));
             }
             
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(4, 8, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('G');
+                var addedGen = new TestFloorPlanGen('G');
                 addedGen.PrepareDraw(new Rect(8, 8, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(9, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('I');
+                var addedGen = new TestFloorPlanGen('I');
                 addedGen.PrepareDraw(new Rect(12, 8, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('c');
+                var addedHall = new TestFloorPlanGen('c');
                 addedHall.PrepareDraw(new Rect(13, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, addedHall));
             }
@@ -1087,45 +1087,45 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(100);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(12, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('G');
+                var addedGen = new TestFloorPlanGen('G');
                 addedGen.PrepareDraw(new Rect(16, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(4, false), addedGen, null));
             }
 
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(9, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('H');
+                var addedGen = new TestFloorPlanGen('H');
                 addedGen.PrepareDraw(new Rect(13, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(4, false), addedGen, null));
             }
@@ -1182,65 +1182,65 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(12, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(4, 8, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(4, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('G');
+                var addedGen = new TestFloorPlanGen('G');
                 addedGen.PrepareDraw(new Rect(16, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('I');
+                var addedGen = new TestFloorPlanGen('I');
                 addedGen.PrepareDraw(new Rect(8, 8, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('J');
+                var addedGen = new TestFloorPlanGen('J');
                 addedGen.PrepareDraw(new Rect(20, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(6, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('L');
+                var addedGen = new TestFloorPlanGen('L');
                 addedGen.PrepareDraw(new Rect(12, 8, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(10, false), addedGen, null));
             }
 
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('H');
+                var addedGen = new TestFloorPlanGen('H');
                 addedGen.PrepareDraw(new Rect(9, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('K');
+                var addedGen = new TestFloorPlanGen('K');
                 addedGen.PrepareDraw(new Rect(13, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(3, false), addedGen, null));
             }
@@ -1296,39 +1296,39 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(100);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
 
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(4, 8, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(13, 4, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(7, 5, 6, 2));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, true), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(9, 7, 2, 5));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, true), addedGen, null));
             }
@@ -1383,39 +1383,39 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(100);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 4, 4));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(8, 0, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('a');
+                var addedHall = new TestFloorPlanGen('a');
                 addedHall.PrepareDraw(new Rect(4, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, addedHall));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(16, 0, 4, 4));
-                TestFloorPlanGen addedHall = new TestFloorPlanGen('b');
+                var addedHall = new TestFloorPlanGen('b');
                 addedHall.PrepareDraw(new Rect(12, 0, 4, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, addedHall));
             }
 
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(5, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, true), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(9, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(13, 4, 2, 4));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, true), addedGen, null));
             }
@@ -1473,90 +1473,90 @@ namespace RogueElements.Tests
             pathGen.Object.BranchRatio = new RandRange(400);
             pathGen.Object.NoForcedBranches = false;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
+            var roomGen = new TestFloorPlanGen('A');
             roomGen.PrepareDraw(new Rect(0, 0, 6, 2));
             pathGen.Setup(p => p.PrepareRoom(testRand.Object, floorPlan, false)).Returns(roomGen);
 
             Moq.Language.ISetupSequentialResult<ListPathBranchExpansion> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('B');
+                var addedGen = new TestFloorPlanGen('B');
                 addedGen.PrepareDraw(new Rect(6, 1, 6, 2));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(0, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('C');
+                var addedGen = new TestFloorPlanGen('C');
                 addedGen.PrepareDraw(new Rect(12, 1, 6, 2));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('H');
+                var addedGen = new TestFloorPlanGen('H');
                 addedGen.PrepareDraw(new Rect(18, 1, 6, 2));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('M');
+                var addedGen = new TestFloorPlanGen('M');
                 addedGen.PrepareDraw(new Rect(24, 1, 6, 2));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }
 
             pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('D');
+                var addedGen = new TestFloorPlanGen('D');
                 addedGen.PrepareDraw(new Rect(7, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('E');
+                var addedGen = new TestFloorPlanGen('E');
                 addedGen.PrepareDraw(new Rect(9, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('F');
+                var addedGen = new TestFloorPlanGen('F');
                 addedGen.PrepareDraw(new Rect(7, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('G');
+                var addedGen = new TestFloorPlanGen('G');
                 addedGen.PrepareDraw(new Rect(9, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(1, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('I');
+                var addedGen = new TestFloorPlanGen('I');
                 addedGen.PrepareDraw(new Rect(13, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('J');
+                var addedGen = new TestFloorPlanGen('J');
                 addedGen.PrepareDraw(new Rect(15, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('K');
+                var addedGen = new TestFloorPlanGen('K');
                 addedGen.PrepareDraw(new Rect(13, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('L');
+                var addedGen = new TestFloorPlanGen('L');
                 addedGen.PrepareDraw(new Rect(15, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(2, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('N');
+                var addedGen = new TestFloorPlanGen('N');
                 addedGen.PrepareDraw(new Rect(19, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('O');
+                var addedGen = new TestFloorPlanGen('O');
                 addedGen.PrepareDraw(new Rect(21, 0, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('P');
+                var addedGen = new TestFloorPlanGen('P');
                 addedGen.PrepareDraw(new Rect(19, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }
             {
-                TestFloorPlanGen addedGen = new TestFloorPlanGen('Q');
+                var addedGen = new TestFloorPlanGen('Q');
                 addedGen.PrepareDraw(new Rect(21, 3, 1, 1));
                 pathSeq = pathSeq.Returns(new ListPathBranchExpansion(new RoomHallIndex(7, false), addedGen, null));
             }

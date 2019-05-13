@@ -30,7 +30,7 @@ namespace RogueElements
         {
             //get all probabilities.
             //the probability of an extension is the distance that the target room is from the start room, in rooms
-            SpawnList<ListPathTraversalNode> expansions = new SpawnList<ListPathTraversalNode>();
+            var expansions = new SpawnList<ListPathTraversalNode>();
 
             for(int nn = 0; nn < candList.Count; nn++)
             {
@@ -86,7 +86,7 @@ namespace RogueElements
             sampleRect.Expand(dir, vertical ? floorPlan.Size.Y : floorPlan.Size.X);
 
             //find the closest room.
-            RoomHallIndex chosenTo = new RoomHallIndex(-1, false);
+            var chosenTo = new RoomHallIndex(-1, false);
             foreach (RoomHallIndex collision in floorPlan.CheckCollision(sampleRect))
             {
                 Rect collidedRect = floorPlan.GetRoomHall(collision).Gen.Draw;

@@ -25,7 +25,7 @@ namespace RogueElements
             //gather up all rooms and put in a spawn list
             //rooms that are farther from the start are more likely to have items
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
+            var spawningRooms = new SpawnList<RoomHallIndex>();
             int[] roomWeights = new int[map.RoomPlan.RoomCount];
 
             //get the start room

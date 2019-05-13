@@ -10,7 +10,7 @@ namespace RogueElements.Examples.Ex1_Tiles
         {
             Console.Clear();
             string title = "1: A Static Map Example";
-            MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
+            var layout = new MapGen<MapGenContext>();
 
 
 
@@ -24,7 +24,7 @@ namespace RogueElements.Examples.Ex1_Tiles
             layout.GenSteps.Add(0, startStep);
 
             //Draw a specific array of tiles onto the map at offset X2,Y3
-            SpecificTilesStep<MapGenContext> drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
+            var drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
             string[] level = {
                             ".........................",
                             ".........................",
@@ -72,7 +72,7 @@ namespace RogueElements.Examples.Ex1_Tiles
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder("");
             string turnString = title;
             topString.Append($"{turnString,-82}");
             topString.Append('\n');

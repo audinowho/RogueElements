@@ -29,7 +29,7 @@ namespace RogueElements.Tests
         public void DrawOnMap()
         {
             //verify it fills up the entire square area!
-            RoomGenSquare<ITiledGenContext> roomGen = new RoomGenSquare<ITiledGenContext>();
+            var roomGen = new RoomGenSquare<ITiledGenContext>();
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",

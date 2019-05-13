@@ -132,7 +132,7 @@ namespace RogueElements.Examples
                 Dictionary<int, int> generatedItems = new Dictionary<int, int>();
                 Dictionary<int, int> generatedEnemies = new Dictionary<int, int>();
 
-                Stopwatch watch = new Stopwatch();
+                var watch = new Stopwatch();
                 TimeSpan minTime = TimeSpan.MaxValue;
                 TimeSpan maxTime = TimeSpan.MinValue;
 
@@ -152,7 +152,7 @@ namespace RogueElements.Examples
 
                 }
 
-                TimeSpan avgTime = new TimeSpan(watch.Elapsed.Ticks / amount);
+                var avgTime = new TimeSpan(watch.Elapsed.Ticks / amount);
                 Console.WriteLine("Completed in {0}.", watch.Elapsed.ToString());
                 Console.WriteLine("MIN: {0}    AVG: {1}    MAX: {2}", minTime.ToString(), avgTime.ToString(), maxTime.ToString());
 

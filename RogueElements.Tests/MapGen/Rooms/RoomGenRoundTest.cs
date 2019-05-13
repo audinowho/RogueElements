@@ -237,7 +237,7 @@ namespace RogueElements.Tests
         {
             //normal circle 1x1
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(1, 1));
             
             bool[][] expectedFulfillable = new bool[4][];
@@ -258,7 +258,7 @@ namespace RogueElements.Tests
         {
             //normal circle 4x1
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(4, 1));
 
             bool[][] expectedFulfillable = new bool[4][];
@@ -288,7 +288,7 @@ namespace RogueElements.Tests
             //larger width circle 4x8
             //larger height circle 8x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(7, 7));
 
             bool[][] expectedFulfillable = new bool[4][];
@@ -336,7 +336,7 @@ namespace RogueElements.Tests
             //larger width circle 4x8
             //larger height circle 8x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(8, 8));
 
             bool[][] expectedFulfillable = new bool[4][];
@@ -387,7 +387,7 @@ namespace RogueElements.Tests
             //larger height circle 4x7
             //larger width circle 7x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(4, 7));
 
             bool[][] expectedFulfillable = new bool[4][];
@@ -427,7 +427,7 @@ namespace RogueElements.Tests
         {
             //larger width circle 7x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenRound<ITiledGenContext> roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext>();
             roomGen.PrepareSize(mockRand.Object, new Loc(7, 4));
 
             bool[][] expectedFulfillable = new bool[4][];

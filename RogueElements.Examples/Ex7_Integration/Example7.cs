@@ -72,7 +72,7 @@ namespace RogueElements.Examples.Ex7_Integration
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder("");
             string turnString = title;
             topString.Append($"{turnString,-82}");
             topString.Append('\n');

@@ -11,7 +11,7 @@ namespace RogueElements.Examples.Ex3_Grid
             Console.Clear();
             string title = "3: A Map made with Rooms and Halls arranged in a grid.";
 
-            MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
+            var layout = new MapGen<MapGenContext>();
 
             //Initialize a 6x4 grid of 10x10 cells.
             var startGen = new InitGridPlanStep<MapGenContext>(1)
@@ -68,7 +68,7 @@ namespace RogueElements.Examples.Ex3_Grid
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder("");
             string turnString = title;
             topString.Append($"{turnString,-82}");
             topString.Append('\n');

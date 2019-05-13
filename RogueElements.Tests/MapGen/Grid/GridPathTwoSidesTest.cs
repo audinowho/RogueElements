@@ -17,7 +17,7 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathTwoSides<IGridPathTestContext> pathGen = new GridPathTwoSides<IGridPathTestContext>();
+            var pathGen = new GridPathTwoSides<IGridPathTestContext>();
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             pathGen.GenericHalls = mockHalls.Object;
@@ -38,7 +38,7 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathTwoSides<IGridPathTestContext> pathGen = new GridPathTwoSides<IGridPathTestContext>();
+            var pathGen = new GridPathTwoSides<IGridPathTestContext>();
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());

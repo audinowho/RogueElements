@@ -11,7 +11,7 @@ namespace RogueElements.Examples.Ex2_Rooms
             Console.Clear();
             string title = "2: A Map Made with Rooms and Halls";
 
-            MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
+            var layout = new MapGen<MapGenContext>();
 
             //Initialize a 54x40 floorplan with which to populate with rectangular floor and halls.
             InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>
@@ -64,7 +64,7 @@ namespace RogueElements.Examples.Ex2_Rooms
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder("");
             string turnString = title;
             topString.Append($"{turnString,-82}");
             topString.Append('\n');

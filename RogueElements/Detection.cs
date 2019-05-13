@@ -17,7 +17,7 @@ namespace RogueElements
             if (isValid == null)
                 throw new ArgumentNullException(nameof(isValid));
 
-            BlobMap blobMap = new BlobMap(rect.Width, rect.Height);
+            var blobMap = new BlobMap(rect.Width, rect.Height);
 
             for (int xx = rect.X; xx < rect.End.X; xx++)
             {
@@ -25,7 +25,7 @@ namespace RogueElements
                 {
                     if (isValid(new Loc(xx,yy)) && blobMap.Map[xx][yy] == -1)
                     {
-                        MapBlob blob = new MapBlob(new Rect(xx, yy, 1, 1), 0);
+                        var blob = new MapBlob(new Rect(xx, yy, 1, 1), 0);
 
                         //fill the area, keeping track of the total area and blob bounds
                         Grid.FloodFill(rect,

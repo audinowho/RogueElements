@@ -21,7 +21,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -48,7 +48,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -79,7 +79,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -113,7 +113,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -149,7 +149,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -185,7 +185,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -210,7 +210,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
@@ -235,7 +235,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
 
@@ -253,7 +253,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
+            var pathGen = new GridPathBranch<IGridPathTestContext>();
             List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
 
