@@ -373,7 +373,7 @@ namespace RogueElements
                 case Dir4.None:
                     throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
                 default:
-                    throw new ArgumentOutOfRangeException("Invalid enum value.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
             }
         }
 
@@ -392,7 +392,7 @@ namespace RogueElements
                 case Dir4.None:
                     throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
                 default:
-                    throw new ArgumentOutOfRangeException("Invalid enum value.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
             }
             throw new ArgumentException("Must specify a valid direction!");
         }

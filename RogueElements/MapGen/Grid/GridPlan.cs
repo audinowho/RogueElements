@@ -229,7 +229,7 @@ namespace RogueElements
                 case Dir4.None:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("Invalid enum value.");
+                    throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
             }
             return null;
         }
@@ -367,9 +367,9 @@ namespace RogueElements
                         hHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall);
                     break;
                 case Dir4.None:
-                    break;
+                    throw new ArgumentException($"No hall for dir {nameof(Dir4.None)}");
                 default:
-                    throw new ArgumentOutOfRangeException("Invalid enum value.");
+                    throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
             }
         }
 

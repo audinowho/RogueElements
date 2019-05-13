@@ -102,7 +102,7 @@ namespace RogueElements
                     case Dir4.None:
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException("Invalid enum value.");
+                        throw new ArgumentOutOfRangeException(nameof(startDir), "Invalid enum value.");
                 }
                 Loc wanderer = new Loc(x, y);
                 Dir4 prevDir = Dir4.None; // direction of movement

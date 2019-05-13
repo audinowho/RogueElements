@@ -254,7 +254,10 @@ namespace RogueElements.Tests
             TestGridRoomGen gen = new TestGridRoomGen((char)0);
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
+                if (dir == Dir4.None)
+                    Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
+                else
+                    Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
                 return;
             }
             else
