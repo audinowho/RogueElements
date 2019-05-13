@@ -18,8 +18,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            List<RoomHallIndex> candList = new List<RoomHallIndex>();
-            candList.Add(new RoomHallIndex(0, false));
+            var candList = new List<RoomHallIndex> { new RoomHallIndex(0, false) };
 
             ConnectBranchStep <IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
@@ -48,10 +47,12 @@ namespace RogueElements.Tests
                                         new Tuple<char, char>('D', 'G')});
 
 
-            List<RoomHallIndex> candList = new List<RoomHallIndex>();
-            candList.Add(new RoomHallIndex(0, false));
-            candList.Add(new RoomHallIndex(1, false));
-            candList.Add(new RoomHallIndex(2, false));
+            var candList = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(0, false),
+                new RoomHallIndex(1, false),
+                new RoomHallIndex(2, false)
+            };
 
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
@@ -90,11 +91,13 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(5, 7, 2, 2) },
                 new Tuple<char, char>[] { new Tuple<char, char>('D', 'a'), new Tuple<char, char>('a', 'G') });
 
-            List<RoomHallIndex> candList = new List<RoomHallIndex>();
-            candList.Add(new RoomHallIndex(3, false));
-            candList.Add(new RoomHallIndex(0, true));
-            candList.Add(new RoomHallIndex(6, false));
-            
+            var candList = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(3, false),
+                new RoomHallIndex(0, true),
+                new RoomHallIndex(6, false)
+            };
+
             ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
 
@@ -141,10 +144,12 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetRoomToConnectBlockedMultiple(bool hall)
         {
-            List<Rect> rooms = new List<Rect>();
-            rooms.Add(new Rect(4, 4, 2, 2));
-            rooms.Add(new Rect(4, 10, 2, 2));
-            List<Rect> halls = new List<Rect>();
+            var rooms = new List<Rect>
+            {
+                new Rect(4, 4, 2, 2),
+                new Rect(4, 10, 2, 2)
+            };
+            var halls = new List<Rect>();
             if (!hall)
                 rooms.Add(new Rect(4, 7, 1, 2));
             else
@@ -172,9 +177,11 @@ namespace RogueElements.Tests
         [TestCase(true, true, 5, 1)]
         public void GetRoomToConnectRetracted(bool retractLeft, bool retractRight, int rectX, int rectW)
         {
-            List<Rect> rooms = new List<Rect>();
-            rooms.Add(new Rect(4, 4, 3, 2));
-            rooms.Add(new Rect(4, 10, 2, 2));
+            List<Rect> rooms = new List<Rect>
+            {
+                new Rect(4, 4, 3, 2),
+                new Rect(4, 10, 2, 2)
+            };
             if (retractLeft)
                 rooms.Add(new Rect(2, 7, 2, 2));
             if (retractRight)

@@ -276,9 +276,7 @@ namespace RogueElements.Tests
         public void CombineAndBreak(DirH horiz, DirV vert, Dir8 dir)
         {
             Assert.That(DirExt.Combine(horiz, vert), Is.EqualTo(dir));
-            DirH resH;
-            DirV resV;
-            dir.Separate(out resH, out resV);
+            dir.Separate(out DirH resH, out DirV resV);
             Assert.AreEqual(resH, horiz);
             Assert.AreEqual(resV, vert);
         }
@@ -299,7 +297,7 @@ namespace RogueElements.Tests
         [TestCase((Dir8)(8))]
         public void SeparateEx(Dir8 dir)
         {
-            Assert.Throws<ArgumentException>(() => { DirH resH; DirV resV; dir.Separate(out resH, out resV); });
+            Assert.Throws<ArgumentException>(() => { dir.Separate(out DirH resH, out DirV resV); });
         }
 
 

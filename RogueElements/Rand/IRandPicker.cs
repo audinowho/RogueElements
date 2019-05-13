@@ -41,5 +41,5 @@ namespace RogueElements
         /// <returns></returns>
         IRandPicker<T> CopyState();
     }
-    
+
 }

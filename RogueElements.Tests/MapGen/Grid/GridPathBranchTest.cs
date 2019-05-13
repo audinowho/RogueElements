@@ -287,10 +287,12 @@ namespace RogueElements.Tests
             seq = seq.Returns(2);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            pathGen.RoomRatio = new RandRange(0);
-            pathGen.BranchRatio = new RandRange(0);
-            pathGen.NoForcedBranches = false;
+            var pathGen = new GridPathBranch<IGridPathTestContext>
+            {
+                RoomRatio = new RandRange(0),
+                BranchRatio = new RandRange(0),
+                NoForcedBranches = false
+            };
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());

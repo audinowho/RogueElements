@@ -26,7 +26,7 @@ namespace RogueElements
             }
         }
 
-        private List<SpawnRate> spawns;
+        private readonly List<SpawnRate> spawns;
         private int spawnTotal;
 
         public int Count { get { return spawns.Count; } }
@@ -91,7 +91,7 @@ namespace RogueElements
             }
             throw new InvalidOperationException("Cannot spawn from a spawnlist of total rate 0!");
         }
-        
+
         public T GetSpawn(int index)
         {
             return spawns[index].Spawn;
@@ -124,7 +124,7 @@ namespace RogueElements
             spawnTotal = spawnTotal - spawns[index].Rate + rate;
             spawns[index].Rate = rate;
         }
-        
+
         public void RemoveAt(int index)
         {
             spawnTotal -= spawns[index].Rate;
@@ -133,8 +133,7 @@ namespace RogueElements
 
         public override bool Equals(object obj)
         {
-            SpawnList<T> other = obj as SpawnList<T>;
-            if (other == null)
+            if (!(obj is SpawnList<T> other))
                 return false;
             if (spawns.Count != other.spawns.Count)
                 return false;

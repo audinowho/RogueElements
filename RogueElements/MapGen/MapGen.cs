@@ -14,12 +14,12 @@ namespace RogueElements
         where T : class, IGenContext
     {
         public PriorityList<GenStep<T>> GenSteps { get; set; }
-        
+
         public MapGen()
         {
             GenSteps = new PriorityList<GenStep<T>>();
         }
-        
+
 
         //an initial create-map method
         public T GenMap(ulong seed)
@@ -39,7 +39,7 @@ namespace RogueElements
             }
 
             ApplyGenSteps(map, queue);
-            
+
             map.FinishGen();
 
             return map;

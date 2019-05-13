@@ -78,11 +78,13 @@ namespace RogueElements.Tests
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(2));
             seq = seq.Returns(1);
             seq = seq.Returns(0);
-            TestRoomGenCross<ITiledGenContext> roomGen = new TestRoomGenCross<ITiledGenContext>();
-            roomGen.MajorWidth = new RandRange(2, 4);
-            roomGen.MajorHeight = new RandRange(3, 9);
-            roomGen.MinorWidth = new RandRange(1, 3);
-            roomGen.MinorHeight = new RandRange(1, 7);
+            var roomGen = new TestRoomGenCross<ITiledGenContext>
+            {
+                MajorWidth = new RandRange(2, 4),
+                MajorHeight = new RandRange(3, 9),
+                MinorWidth = new RandRange(1, 3),
+                MinorHeight = new RandRange(1, 7)
+            };
 
             bool[][] expectedFulfillable = new bool[4][];
             expectedFulfillable[0] = new bool[2];

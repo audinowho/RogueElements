@@ -62,5 +62,5 @@ namespace RogueElements
         Horiz = 2,
         DiagBack = 3
     }
-    
+
 }

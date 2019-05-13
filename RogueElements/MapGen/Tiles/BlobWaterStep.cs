@@ -20,7 +20,7 @@ namespace RogueElements
         public RandRange StartScale;
 
         public BlobWaterStep() { }
-        
+
         public BlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale) : base(terrain)
         {
             Blobs = blobs;
@@ -33,7 +33,7 @@ namespace RogueElements
             int blobs = Blobs.Pick(map.Rand);
             int startScale = Math.Max(MinScale, StartScale.Pick(map.Rand));
             for (int ii = 0; ii < blobs; ii++)
-            {                
+            {
                 Loc size = new Loc(map.Width * startScale / 100, map.Height * startScale / 100);
                 int area = size.X * size.Y;
                 bool placed = false;
@@ -49,7 +49,7 @@ namespace RogueElements
 
                     noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
 
-                    Grid.LocTest isWaterValid = (Loc loc) => { return noise[loc.X][loc.Y]; };
+                    bool isWaterValid(Loc loc) => noise[loc.X][loc.Y];
 
                     BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, noise.Length, noise[0].Length), isWaterValid);
 

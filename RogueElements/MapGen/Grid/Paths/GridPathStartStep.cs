@@ -18,7 +18,7 @@ namespace RogueElements
             floorPlan.Clear();
             floorPlan.AddRoom(new Loc(0, 0), GetDefaultGen());
         }
-        
+
         public static bool RollRatio(IRandom rand, ref int ratio, ref int max)
         {
             bool roll = false;
@@ -45,5 +45,5 @@ namespace RogueElements
             return new RoomGenDefault<T>();
         }
     }
-    
+
 }

@@ -69,7 +69,7 @@ namespace RogueElements
                             map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
                     }
                 }
-                
+
             }
             else
             {

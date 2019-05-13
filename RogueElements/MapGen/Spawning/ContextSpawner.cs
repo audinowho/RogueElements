@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class ContextSpawner<T, E> : IStepSpawner<T, E> 
+    public class ContextSpawner<T, E> : IStepSpawner<T, E>
         where T : ISpawningGenContext<E>
     {
         public RandRange Amount;

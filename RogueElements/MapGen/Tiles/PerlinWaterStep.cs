@@ -74,25 +74,25 @@ namespace RogueElements
             while (waterMark > 0)
             {
 
-                Grid.LocTest isWaterValid = (Loc loc) =>
+                bool isWaterValid(Loc loc)
                 {
                     int heightPercent = Math.Min(100, Math.Min(Math.Min(loc.X * 100 / BUFFER_SIZE, loc.Y * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - loc.X) * 100 / BUFFER_SIZE, (map.Height - 1 - loc.Y) * 100 / BUFFER_SIZE)));
                     int noiseVal = noise[loc.X][loc.Y] * heightPercent / 100 + depthRange * (100 - heightPercent) / 100;
                     return noiseVal < waterMark;
-                };
+                }
 
                 BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, map.Width, map.Height), isWaterValid);
 
-                Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
+                bool isMapValid(Loc loc) { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); }
 
                 int blobIdx = 0;
-                Grid.LocTest isBlobValid = (Loc loc) =>
+                bool isBlobValid(Loc loc)
                 {
                     Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
                     if (!map.CanSetTile(srcLoc, Terrain))
                         return false;
                     return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
-                };
+                }
 
                 for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
                 {
@@ -134,6 +134,6 @@ namespace RogueElements
                 }
             }
         }
-        
+
     }
 }

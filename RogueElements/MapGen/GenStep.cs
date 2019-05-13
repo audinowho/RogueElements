@@ -17,18 +17,15 @@ namespace RogueElements
 
         public bool CanApply(IGenContext context)
         {
-            T map = context as T;
-            if (map == null)
+            if (!(context is T))
                 return false;
             return true;
         }
 
         public void Apply(IGenContext context)
         {
-            T map = context as T;
-            if (map == null)
+            if (!(context is T map))
                 return;
-
             Apply(map);
         }
     }

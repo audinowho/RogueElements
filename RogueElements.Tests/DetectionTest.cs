@@ -27,7 +27,7 @@ namespace RogueElements.Tests
 
             List<MapBlob> compareBlobs = new List<MapBlob>();
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0,0, map.Length, map[0].Length),locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
@@ -52,10 +52,9 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            List<MapBlob> compareBlobs = new List<MapBlob>();
-            compareBlobs.Add(new MapBlob(new Rect(1,1,4,3), 7));
+            var compareBlobs = new List<MapBlob> { new MapBlob(new Rect(1, 1, 4, 3), 7) };
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
@@ -83,11 +82,13 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            List<MapBlob> compareBlobs = new List<MapBlob>();
-            compareBlobs.Add(new MapBlob(new Rect(1, 1, 2, 2), 4));
-            compareBlobs.Add(new MapBlob(new Rect(3, 3, 2, 2), 4));
+            var compareBlobs = new List<MapBlob>
+            {
+                new MapBlob(new Rect(1, 1, 2, 2), 4),
+                new MapBlob(new Rect(3, 3, 2, 2), 4)
+            };
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
@@ -111,11 +112,13 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            List<MapBlob> compareBlobs = new List<MapBlob>();
-            compareBlobs.Add(new MapBlob(new Rect(0, 0, 2, 2), 4));
-            compareBlobs.Add(new MapBlob(new Rect(4, 0, 2, 2), 4));
+            var compareBlobs = new List<MapBlob>
+            {
+                new MapBlob(new Rect(0, 0, 2, 2), 4),
+                new MapBlob(new Rect(4, 0, 2, 2), 4)
+            };
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
             Assert.That(result.Map, Is.EqualTo(blob));
             Assert.That(result.Blobs, Is.EqualTo(compareBlobs));
@@ -136,8 +139,8 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
-            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
+            bool blobTest(Loc loc) => blob[loc.X][loc.Y];
             bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(false));
         }
@@ -157,8 +160,8 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
-            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
+            bool blobTest(Loc loc) => blob[loc.X][loc.Y];
             bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(2,1), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -178,8 +181,8 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
-            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
+            bool blobTest(Loc loc) => blob[loc.X][loc.Y];
             bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(1,1), new Loc(blob.Length, blob[0].Length), blobTest, true);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -200,8 +203,8 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             bool[][] blob = GridTest.InitBoolGrid(blobGrid);
 
-            Grid.LocTest locTest = (Loc loc) => { return map[loc.X][loc.Y]; };
-            Grid.LocTest blobTest = (Loc loc) => { return blob[loc.X][loc.Y]; };
+            bool locTest(Loc loc) => map[loc.X][loc.Y];
+            bool blobTest(Loc loc) => blob[loc.X][loc.Y];
             bool result = Detection.DetectDisconnect(new Rect(0, 0, map.Length, map[0].Length), locTest, new Loc(1,1), new Loc(blob.Length, blob[0].Length), blobTest, false);
             Assert.That(result, Is.EqualTo(false));
         }
@@ -283,9 +286,9 @@ namespace RogueElements.Tests
 
             char[][] map = GridTest.InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkGround = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == '.'; };
-            
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool checkGround(Loc testLoc) => map[testLoc.X][testLoc.Y] == '.';
+
             LocRay4 locRay = Detection.GetWallDir(new Loc(1), checkBlock, checkGround);
             Assert.That(locRay, Is.EqualTo(new LocRay4(new Loc(1), result)));
         }
@@ -304,8 +307,7 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(6, 0, 4, 3));
+            var compare = new List<Rect> { new Rect(6, 0, 4, 3) };
             Assert.That(result, Is.EqualTo(compare));
         }
 
@@ -322,9 +324,11 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(0, 0, 2, 3));
-            compare.Add(new Rect(8, 3, 2, 2));
+            var compare = new List<Rect>
+            {
+                new Rect(0, 0, 2, 3),
+                new Rect(8, 3, 2, 2)
+            };
             Assert.That(result, Is.EqualTo(compare));
         }
 
@@ -341,9 +345,11 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(4, 1, 2, 3));
-            compare.Add(new Rect(4, 2, 3, 2));
+            var compare = new List<Rect>
+            {
+                new Rect(4, 1, 2, 3),
+                new Rect(4, 2, 3, 2)
+            };
             Assert.That(result, Is.EqualTo(compare));
         }
 
@@ -360,10 +366,12 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(7, 0, 2, 5));
-            compare.Add(new Rect(6, 1, 3, 3));
-            compare.Add(new Rect(4, 1, 5, 2));
+            var compare = new List<Rect>
+            {
+                new Rect(7, 0, 2, 5),
+                new Rect(6, 1, 3, 3),
+                new Rect(4, 1, 5, 2)
+            };
             Assert.That(result, Is.EqualTo(compare));
         }
 
@@ -380,10 +388,12 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(0, 1, 2, 4));
-            compare.Add(new Rect(3, 2, 2, 3));
-            compare.Add(new Rect(0, 3, 5, 2));
+            var compare = new List<Rect>
+            {
+                new Rect(0, 1, 2, 4),
+                new Rect(3, 2, 2, 3),
+                new Rect(0, 3, 5, 2)
+            };
             Assert.That(result, Is.EqualTo(compare));
         }
 
@@ -404,18 +414,20 @@ namespace RogueElements.Tests
             bool[][] map = InitGrid(inGrid);
 
             List<Rect> result = Detection.FindAllRects(map);
-            List<Rect> compare = new List<Rect>();
-            compare.Add(new Rect(2, 0, 1, 8));
-            compare.Add(new Rect(1, 0, 2, 2));
-            compare.Add(new Rect(4, 0, 2, 8));
-            compare.Add(new Rect(7, 0, 1, 8));
-            compare.Add(new Rect(7, 0, 2, 2));
-            compare.Add(new Rect(2, 1, 6, 6));
-            compare.Add(new Rect(1, 1, 8, 1));
-            compare.Add(new Rect(1, 3, 8, 2));
-            compare.Add(new Rect(1, 6, 2, 2));
-            compare.Add(new Rect(7, 6, 2, 2));
-            compare.Add(new Rect(1, 6, 8, 1));
+            var compare = new List<Rect>
+            {
+                new Rect(2, 0, 1, 8),
+                new Rect(1, 0, 2, 2),
+                new Rect(4, 0, 2, 8),
+                new Rect(7, 0, 1, 8),
+                new Rect(7, 0, 2, 2),
+                new Rect(2, 1, 6, 6),
+                new Rect(1, 1, 8, 1),
+                new Rect(1, 3, 8, 2),
+                new Rect(1, 6, 2, 2),
+                new Rect(7, 6, 2, 2),
+                new Rect(1, 6, 8, 1)
+            };
             Assert.That(result, Is.EqualTo(compare));
         }
 

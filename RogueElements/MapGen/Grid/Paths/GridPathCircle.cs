@@ -16,7 +16,7 @@ namespace RogueElements
         public RandRange CircleRoomRatio;
 
         public RandRange Paths;
-        
+
         public GridPathCircle()
             : base()
         {
@@ -99,6 +99,10 @@ namespace RogueElements
                     case Dir4.Right:
                         x = 0;
                         break;
+                    case Dir4.None:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Invalid enum value.");
                 }
                 Loc wanderer = new Loc(x, y);
                 Dir4 prevDir = Dir4.None; // direction of movement

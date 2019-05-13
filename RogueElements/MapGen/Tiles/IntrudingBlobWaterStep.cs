@@ -13,18 +13,18 @@ namespace RogueElements
     {
 
         public IntrudingBlobWaterStep() { }
-        
+
         public IntrudingBlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale) : base(blobs, terrain, minScale, startScale)
         {
         }
-        
+
         protected override bool AttemptBlob(T map, BlobMap blobMap, int blobIdx)
         {
-            Grid.LocTest isMapValid = (Loc loc) => { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); };
+            bool isMapValid(Loc loc) { return map.GetTile(loc).TileEquivalent(map.RoomTerrain); }
 
             //the XY to add to translate from point on the map to point on the blob map
             Loc offset = new Loc();
-            Grid.LocTest isBlobValid = (Loc loc) =>
+            bool isBlobValid(Loc loc)
             {
                 Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
                 if (!Collision.InBounds(blobMap.Blobs[blobIdx].Bounds, srcLoc))
@@ -33,7 +33,7 @@ namespace RogueElements
                 if (!map.CanSetTile(destLoc, Terrain))
                     return false;
                 return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
-            };
+            }
 
             //attempt to place in 20 locations
             for (int jj = 0; jj < 20; jj++)

@@ -16,8 +16,8 @@ namespace RogueElements
     public abstract class PermissiveRoomGen<T> : RoomGen<T>, IPermissiveRoomGen where T : ITiledGenContext
     {
 
-        public PermissiveRoomGen() { }
-        
+        protected PermissiveRoomGen() { }
+
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             for (int ii = 0; ii < 4; ii++)
@@ -26,11 +26,11 @@ namespace RogueElements
                     fulfillableBorder[ii][jj] = true;
             }
         }
-        
+
     }
-    
+
     public interface IPermissiveRoomGen : IRoomGen
     {
     }
-    
+
 }

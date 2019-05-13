@@ -25,7 +25,7 @@ namespace RogueElements
             }
         }
 
-        private List<ItemRange> items;
+        private readonly List<ItemRange> items;
 
         public int Count { get { return items.Count; } }
 
@@ -41,7 +41,7 @@ namespace RogueElements
             Erase(range);
             items.Add(new ItemRange(spawn, range));
         }
-        
+
         public void Erase(Range range)
         {
             for(int ii = items.Count-1; ii >= 0; ii--)
@@ -81,7 +81,7 @@ namespace RogueElements
                     return true;
                 }
             }
-            outItem = default(T);
+            outItem = default;
             return false;
         }
         public T GetItem(int index)
@@ -91,10 +91,10 @@ namespace RogueElements
                 if (item.Range.Min <= index && index < item.Range.Max)
                     return item.Element;
             }
-            return default(T);
+            return default;
             //TODO: exception
         }
-        
+
 
     }
 }

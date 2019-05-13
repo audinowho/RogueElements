@@ -11,7 +11,7 @@ namespace RogueElements
     [Serializable]
     public class RoomGenCross<T> : RoomGen<T> where T : ITiledGenContext
     {
-        
+
         public RandRange MajorWidth;
         public RandRange MajorHeight;
         public RandRange MinorHeight;
@@ -78,7 +78,7 @@ namespace RogueElements
 
             Loc start1 = new Loc(Draw.X, Draw.Y + chosenOffsetY);
             Loc start2 = new Loc(Draw.X + chosenOffsetX, Draw.Y);
-            
+
             for (int x = 0; x < size1.X; x++)
             {
                 for (int y = 0; y < size1.Y; y++)

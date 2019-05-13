@@ -27,8 +27,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathSpecific<IGridPathTestContext> pathGen = new GridPathSpecific<IGridPathTestContext>();
-            pathGen.SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[vwidth][];
+            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            {
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[vwidth][]
+            };
             for (int ii = 0; ii < vwidth; ii++)
                 pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[vheight];
             pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[hwidth][];
@@ -62,8 +64,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathSpecific<IGridPathTestContext> pathGen = new GridPathSpecific<IGridPathTestContext>();
-            pathGen.SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[3][];
+            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            {
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[3][]
+            };
             for (int ii = 0; ii < 3; ii++)
                 pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[2];
             pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[2][];

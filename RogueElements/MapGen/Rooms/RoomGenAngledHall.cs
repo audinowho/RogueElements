@@ -83,7 +83,7 @@ namespace RogueElements
                 DrawCombinedHall(map, dirs[0], minMax1, dirStarts[0]);
                 int minMax2 = getHallMinMax(dirStarts[0], dirs[1].Reverse(), !extendFar);
                 DrawCombinedHall(map, dirs[1], minMax2, dirStarts[1]);
-                
+
                 //TODO: a better way to resolve right-angle multi-halls
                 //if there are NO opposite sides of sideReqs at all, we have a right angle situation
                 //always connect the closest lines
@@ -192,7 +192,6 @@ namespace RogueElements
         /// In a 4- or 3-way hall situation, this method is called to add the remaining ways after the first two have been added.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="room"></param>
         /// <param name="cross"></param>
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
@@ -225,7 +224,7 @@ namespace RogueElements
                         Loc endLoc = startLoc;
                         //the assumption is that there is already roomterrain to cross over at another point in this room
                         while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
-                            endLoc = endLoc + forwardDir.Reverse().GetLoc();
+                            endLoc += forwardDir.Reverse().GetLoc();
                         drawHall(map, startLoc, endLoc, map.RoomTerrain);
                     }
 
@@ -236,7 +235,7 @@ namespace RogueElements
                         Loc endLoc = startLoc;
                         //the assumption is that there is already roomterrain to cross over at another point in this room
                         while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
-                            endLoc = endLoc + forwardDir.GetLoc();
+                            endLoc += forwardDir.GetLoc();
                         drawHall(map, startLoc, endLoc, map.RoomTerrain);
                     }
                 }
@@ -258,7 +257,7 @@ namespace RogueElements
                                 Loc endLoc = startLoc;
                                 //the assumption is that there is already roomterrain to cross over at another point in this room
                                 while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
-                                    endLoc = endLoc + ((Dir4)ii).Reverse().GetLoc();
+                                    endLoc += ((Dir4)ii).Reverse().GetLoc();
                                 drawHall(map, startLoc, endLoc, map.RoomTerrain);
                             }
                         }
@@ -272,7 +271,6 @@ namespace RogueElements
         /// Draws the hall connecting the first opposite pair of sides.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="room"></param>
         /// <param name="cross"></param>
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
@@ -410,7 +408,6 @@ namespace RogueElements
         /// Draws a bundle of halls from one direction, going up to the specified point, and connects them.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="room"></param>
         /// <param name="dir"></param>
         /// <param name="forwardEnd"></param>
         /// <param name="starts"></param>
@@ -445,7 +442,6 @@ namespace RogueElements
         /// Draws a single straight hall in the specified direction, choosing ONE of the scalars provided in cross.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="room"></param>
         /// <param name="cross"></param>
         /// <param name="vertical"></param>
         private void drawStraightHall(T map, HashSet<int> cross, bool vertical)
@@ -455,7 +451,7 @@ namespace RogueElements
             Loc endLoc = new Loc(vertical ? startSideDist : Draw.End.X - 1, vertical ? Draw.End.Y - 1 : startSideDist);
             drawHall(map, startLoc, endLoc, map.RoomTerrain);
         }
-        
+
 
         /// <summary>
         /// Returns the intersection of two hashsets IF they both contain only one hashset.  Returns an empty hashset otherwise.
@@ -474,7 +470,7 @@ namespace RogueElements
             }
             return intersect;
         }
-        
+
         /// <summary>
         /// Draws a hall in a straight cardinal direction, starting with one point and ending with another (inclusive).
         /// </summary>

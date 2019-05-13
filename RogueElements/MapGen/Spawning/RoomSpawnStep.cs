@@ -13,8 +13,8 @@ namespace RogueElements
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
     {
 
-        public RoomSpawnStep() { }
-        public RoomSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
+        protected RoomSpawnStep() { }
+        protected RoomSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
 
         public virtual void SpawnRandInCandRooms(T map, SpawnList<RoomHallIndex> spawningRooms, List<E> spawns, int successPercent)
         {

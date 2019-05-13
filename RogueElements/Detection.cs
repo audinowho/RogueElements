@@ -14,6 +14,9 @@ namespace RogueElements
     {
         public static BlobMap DetectBlobs(Rect rect, Grid.LocTest isValid)
         {
+            if (isValid == null)
+                throw new ArgumentNullException(nameof(isValid));
+
             BlobMap blobMap = new BlobMap(rect.Width, rect.Height);
 
             for (int xx = rect.X; xx < rect.End.X; xx++)
@@ -38,7 +41,7 @@ namespace RogueElements
                         {
                             blobMap.Map[fillLoc.X][fillLoc.Y] = blobMap.Blobs.Count;
                             blob.Bounds = Rect.IncludeLoc(blob.Bounds, fillLoc);
-                            blob.Area = blob.Area + 1;
+                            blob.Area += 1;
                         },
                         new Loc(xx, yy));
 
@@ -63,6 +66,11 @@ namespace RogueElements
         /// <returns></returns>
         public static bool DetectDisconnect(Rect mapBounds, Grid.LocTest isMapValid, Loc blobDest, Loc blobSize, Grid.LocTest isBlobValid, bool countErasures)
         {
+            if (isMapValid == null)
+                throw new ArgumentNullException(nameof(isMapValid));
+            if (isBlobValid == null)
+                throw new ArgumentNullException(nameof(isBlobValid));
+
             List<int> mapBlobCounts = new List<int>();
             int[][] fullGrid = new int[mapBounds.Width][];
             int[][] splitGrid = new int[mapBounds.Width][];
@@ -178,6 +186,11 @@ namespace RogueElements
         /// <returns></returns>
         public static List<LocRay4> DetectWalls(Loc start, Rect rect, Grid.LocTest checkBlock, Grid.LocTest checkGround)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (checkGround == null)
+                throw new ArgumentNullException(nameof(checkGround));
+
             bool[][] checkGrid = new bool[rect.Width][];
             bool[][] fillGrid = new bool[rect.Width][];
             for (int xx = 0; xx < rect.Width; xx++)
@@ -220,6 +233,9 @@ namespace RogueElements
         /// <returns></returns>
         public static List<LocRay4> DetectWalls(Rect rect, Grid.LocTest checkBlock, Grid.LocTest checkGround)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+
             List<LocRay4> walls = new List<LocRay4>();
 
             for (int xx = rect.X; xx < rect.Width; xx++)
@@ -241,6 +257,11 @@ namespace RogueElements
 
         public static LocRay4 GetWallDir(Loc loc, Grid.LocTest checkBlock, Grid.LocTest checkGround)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (checkGround == null)
+                throw new ArgumentNullException(nameof(checkGround));
+
             //check the four directions
             Dir4 chosenDir = Dir4.None;
             //ensure that there is only one direction where it is unblocked
@@ -291,7 +312,7 @@ namespace RogueElements
                 results.Add(queue.Dequeue());
             return results;
         }
-        
+
 
         public delegate void RectFunc(Rect rect);
 
@@ -299,7 +320,6 @@ namespace RogueElements
         /// Gets all rectangles in the grid that are not a subset of a larger rectangle.
         /// </summary>
         /// <param name="grid"></param>
-        /// <param name="action"></param>
         public static List<Rect> FindAllRects(bool[][] grid)
         {
             List<Rect> resultRects = new List<Rect>();

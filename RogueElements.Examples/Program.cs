@@ -114,7 +114,7 @@ namespace RogueElements.Examples
                 else if (key.Key == ConsoleKey.Backspace)
                 {
                     Console.Write("\b \b");
-                    result = result / 10;
+                    result /= 10;
                 }
                 key = Console.ReadKey(true);
             }

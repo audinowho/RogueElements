@@ -20,7 +20,7 @@ namespace RogueElements
             Entrance = new List<E>();
             Exit = new List<F>();
         }
-        
+
         public StairsStep(E entrance, F exit) : this()
         {
             Entrance.Add(entrance);

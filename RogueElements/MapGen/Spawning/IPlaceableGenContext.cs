@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    
+
 
     public interface IPlaceableGenContext<T> : IGenContext
     {
@@ -17,5 +17,5 @@ namespace RogueElements
         bool CanPlaceItem(Loc loc);
         void PlaceItem(Loc loc, T item);
     }
-    
+
 }

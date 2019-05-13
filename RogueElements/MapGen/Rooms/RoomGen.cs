@@ -110,9 +110,9 @@ namespace RogueElements
                     throw new ArgumentException("PrepareFulfillableBorders did not open at least one open tile for each direction!");
             }
         }
-        
+
         public void SetLoc(Loc loc) { draw.Start = loc; }
-        
+
         protected abstract void PrepareFulfillableBorders(IRandom rand);
 
 
@@ -146,7 +146,7 @@ namespace RogueElements
             //compute the starting index in otherBorder to start transferring
             Range sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
             fillSideReq(sourceSide, dir);
-            
+
             bool[] destBorder = borderToFulfill[(int)dir];
             Loc diff = sourceRoom.Draw.Start - Draw.Start;//how far ahead the start of source is to dest
             //compute the starting index in otherBorder to start transferring
@@ -157,7 +157,7 @@ namespace RogueElements
             int sourceLength = sourceRoom.GetBorderLength(dir.Reverse());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
             {
-                bool sourceOpened = false;
+                bool sourceOpened;
                 if (fulfillable)
                     sourceOpened = sourceRoom.GetFulfillableBorder(dir.Reverse(), ii - offset);
                 else
@@ -173,7 +173,7 @@ namespace RogueElements
         public virtual void ReceiveBorderRange(Range range, Dir4 dir)
         {
             fillSideReq(range, dir);
-            
+
             bool[] destBorder = borderToFulfill[(int)dir];
             //compute the starting index in otherBorder to start transferring
             int offset = range.Min - Draw.Start.GetScalar(dir.ToAxis().Orth());
@@ -234,7 +234,7 @@ namespace RogueElements
                 openedBorder[(int)Dir4.Up][ii] = fulfillableBorder[(int)Dir4.Up][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y));
                 openedBorder[(int)Dir4.Down][ii] = fulfillableBorder[(int)Dir4.Down][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1));
             }
-            
+
             for (int ii = 0; ii < Draw.Height; ii++)
             {
                 openedBorder[(int)Dir4.Left][ii] = fulfillableBorder[(int)Dir4.Left][ii] && !map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii));
@@ -322,7 +322,6 @@ namespace RogueElements
         /// Digs inwards from a border until it reaches a traversible tile.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="room"></param>
         /// <param name="dir">The direction of the border, facing outwards.</param>
         /// <param name="scalar"></param>
         public virtual void DigAtBorder(ITiledGenContext map, Dir4 dir, int scalar)
@@ -343,7 +342,7 @@ namespace RogueElements
             if (!foundTile)//complain if we reach the end
                 throw new ArgumentException("Room border auto-tunneling could not find open tile.");
         }
-        
+
         private void updateUnfulfilled(List<Range> unfulfilled, int ii)
         {
             for (int jj = unfulfilled.Count - 1; jj >= 0; jj--)
@@ -352,10 +351,12 @@ namespace RogueElements
                     unfulfilled.RemoveAt(jj);
             }
         }
-        
+
         /// <summary>
         /// Gets the loc just inside the room, from the specified direction, with the specified scalar.  The scalar determines X if it's a vertical, and Y if it's a horizontal side.
         /// </summary>
+        /// <param name="dir">todo: describe dir parameter on GetEdgeLoc</param>
+        /// <param name="scalar">todo: describe scalar parameter on GetEdgeLoc</param>
         /// <returns></returns>
         public Loc GetEdgeLoc(Dir4 dir, int scalar)
         {
@@ -369,10 +370,13 @@ namespace RogueElements
                     return new Loc(scalar, Draw.Y);
                 case Dir4.Right:
                     return new Loc(Draw.End.X - 1, scalar);
+                case Dir4.None:
+                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid enum value.");
             }
-            throw new ArgumentException("Must specify a valid direction!");
         }
-        
+
         public Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar)
         {
             switch (dir)
@@ -385,6 +389,10 @@ namespace RogueElements
                     return new Loc(scalar, Draw.Y - size.Y);
                 case Dir4.Right:
                     return new Loc(Draw.End.X, scalar);
+                case Dir4.None:
+                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid enum value.");
             }
             throw new ArgumentException("Must specify a valid direction!");
         }
@@ -393,8 +401,10 @@ namespace RogueElements
         /// Returns a list of tile-collections, the whole of which would cover all sidereqs.
         /// The sets are all mutually exclusive to each other, and the minimum amount is always chosen.
         /// </summary>
-        /// <param name="room"></param>
-        /// <param name="dir"></param>
+        /// <param name="rand">todo: describe rand parameter on ChoosePossibleStartRanges</param>
+        /// <param name="scalarStart">todo: describe scalarStart parameter on ChoosePossibleStartRanges</param>
+        /// <param name="permittedRange">todo: describe permittedRange parameter on ChoosePossibleStartRanges</param>
+        /// <param name="origSideReqs">todo: describe origSideReqs parameter on ChoosePossibleStartRanges</param>
         /// <returns></returns>
         public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)
         {

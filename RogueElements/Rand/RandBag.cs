@@ -43,5 +43,5 @@ namespace RogueElements
             return choice;
         }
     }
-    
+
 }

@@ -13,7 +13,7 @@ namespace RogueElements
     {
         protected List<FloorRoomPlan> rooms;
         protected List<FloorHallPlan> halls;
-        
+
         public Loc Size;
         public Loc Start { get; private set; }
 
@@ -69,15 +69,13 @@ namespace RogueElements
         public void AddRoom(IRoomGen gen, bool immutable, params RoomHallIndex[] attached)
         {
             //check against colliding on other rooms (and not halls)
-            for (int ii = 0; ii < rooms.Count; ii++)
+            foreach (var room in rooms)
             {
-                FloorRoomPlan room = rooms[ii];
                 if (Collision.Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
-            for (int ii = 0; ii < halls.Count; ii++)
+            foreach (var hall in halls)
             {
-                FloorHallPlan hall = halls[ii];
                 if (Collision.Collides(hall.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing hall!");
             }
@@ -86,8 +84,7 @@ namespace RogueElements
                 throw new InvalidOperationException("Tried to add out of range!");
             //we expect that the room has already been given a size
             //and that its fulfillables match up with its adjacent's fulfillables.
-            FloorRoomPlan plan = new FloorRoomPlan(gen);
-            plan.Immutable = immutable;
+            FloorRoomPlan plan = new FloorRoomPlan(gen) { Immutable = immutable };
             //attach everything
             plan.Adjacents.AddRange(attached);
             foreach (RoomHallIndex fromRoom in attached)
@@ -103,9 +100,8 @@ namespace RogueElements
         {
             //we expect that the hall has already been given a size...
             //check against colliding on other rooms (and not halls)
-            for (int ii = 0; ii < rooms.Count; ii++)
+            foreach (var room in rooms)
             {
-                FloorRoomPlan room = rooms[ii];
                 if (Collision.Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
@@ -132,9 +128,8 @@ namespace RogueElements
 
             //go through the rest of the rooms, removing the removed listroomhall from adjacents
             //also correcting their indices
-            for (int ii = 0; ii < rooms.Count; ii++)
+            foreach (var plan in rooms)
             {
-                FloorRoomPlan plan = rooms[ii];
                 for (int jj = plan.Adjacents.Count - 1; jj >= 0; jj--)
                 {
                     RoomHallIndex adj = plan.Adjacents[jj];
@@ -147,9 +142,8 @@ namespace RogueElements
                     }
                 }
             }
-            for (int ii = 0; ii < halls.Count; ii++)
+            foreach (var plan in halls)
             {
-                FloorHallPlan plan = halls[ii];
                 for (int jj = plan.Adjacents.Count - 1; jj >= 0; jj--)
                 {
                     RoomHallIndex adj = plan.Adjacents[jj];
@@ -176,7 +170,7 @@ namespace RogueElements
             //but all setups are completable.
             List<int> returnList = new List<int>();
 
-            Graph.DistNodeAction nodeAct = (int nodeIndex, int distance) =>
+            void nodeAct(int nodeIndex, int distance)
             {
                 //only add nodes that are
                 //A) Not the start node
@@ -187,8 +181,8 @@ namespace RogueElements
                     return;
 
                 returnList.Add(nodeIndex);
-            };
-            Graph.GetAdjacents getAdjacents = (int nodeIndex) =>
+            }
+            List<int> getAdjacents(int nodeIndex)
             {
                 List<int> adjacents = new List<int>();
                 List<RoomHallIndex> roomAdjacents = new List<RoomHallIndex>();
@@ -199,7 +193,7 @@ namespace RogueElements
                     roomAdjacents = rooms[roomIndex].Adjacents;
                 else if (nodeIndex >= rooms.Count)
                     roomAdjacents = halls[nodeIndex - rooms.Count].Adjacents;
-                
+
                 foreach (RoomHallIndex adjacentRoom in roomAdjacents)
                 {
                     if (adjacentRoom.IsHall)
@@ -209,7 +203,7 @@ namespace RogueElements
                 }
 
                 return adjacents;
-            };
+            }
 
             Graph.TraverseBreadthFirst(rooms.Count + halls.Count, roomIndex, nodeAct, getAdjacents);
 
@@ -224,14 +218,14 @@ namespace RogueElements
             int startIndex = roomFrom.Index + (roomFrom.IsHall ? rooms.Count : 0);
             int endIndex = roomTo.Index + (roomTo.IsHall ? rooms.Count : 0);
 
-            Graph.DistNodeAction nodeAct = (int nodeIndex, int distance) =>
+            void nodeAct(int nodeIndex, int distance)
             {
                 if (nodeIndex == endIndex)
                     returnValue = distance;
-            };
+            }
 
             Graph.TraverseBreadthFirst(rooms.Count + halls.Count, startIndex, nodeAct, getBreadthFirstAdjacents);
-            
+
             return returnValue;
         }
 
@@ -240,13 +234,13 @@ namespace RogueElements
             int roomsHit = 0;
             int hallsHit = 0;
 
-            Graph.DistNodeAction nodeAct = (int nodeIndex, int distance) =>
+            void nodeAct(int nodeIndex, int distance)
             {
                 if (nodeIndex < rooms.Count)
                     roomsHit++;
                 else
                     hallsHit++;
-            };
+            }
 
             int startIndex = room.Index + (room.IsHall ? rooms.Count : 0);
 
@@ -263,7 +257,7 @@ namespace RogueElements
                 hallsHit++;
 
 
-            Graph.GetAdjacents getChokeAdjacents = (int nodeIndex) =>
+            List<int> getChokeAdjacents(int nodeIndex)
             {
                 List<int> adjacents = new List<int>();
                 List<RoomHallIndex> roomAdjacents = new List<RoomHallIndex>();
@@ -287,7 +281,7 @@ namespace RogueElements
                 }
 
                 return adjacents;
-            };
+            }
 
             BaseFloorRoomPlan plan = GetRoomHall(room);
             if (plan.Adjacents.Count > 0)
@@ -356,7 +350,7 @@ namespace RogueElements
         private List<int> getBreadthFirstAdjacents(int nodeIndex)
         {
             List<int> adjacents = new List<int>();
-            List<RoomHallIndex> roomAdjacents = new List<RoomHallIndex>();
+            List<RoomHallIndex> roomAdjacents;
 
             //do not add adjacents if we arrive on a room
             //unless it's the first one.
@@ -427,7 +421,7 @@ namespace RogueElements
             }
             return results;
         }
-        
+
 
         public static int GetBorderMatch(IRoomGen roomFrom, IRoomGen room, Loc candLoc, Dir4 expandTo)
         {
@@ -451,5 +445,5 @@ namespace RogueElements
         }
 
     }
-    
+
 }

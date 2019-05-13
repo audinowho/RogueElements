@@ -13,7 +13,7 @@ namespace RogueElements
     {
         public int Width;
         public int Height;
-        
+
         public InitTilesStep() { }
 
         public override void Apply(T map)

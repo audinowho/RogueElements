@@ -20,8 +20,8 @@ namespace RogueElements
     {
         public IStepSpawner<T, E> Spawn;
 
-        public BaseSpawnStep() { }
-        public BaseSpawnStep(IStepSpawner<T, E> spawn)
+        protected BaseSpawnStep() { }
+        protected BaseSpawnStep(IStepSpawner<T, E> spawn)
         {
             Spawn = spawn;
         }

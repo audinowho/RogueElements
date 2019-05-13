@@ -16,9 +16,11 @@ namespace RogueElements.Examples.Ex1_Tiles
 
 
             //Initialize a 30x25 blank map full of Wall tiles
-            InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>();
-            startStep.Width = 30;
-            startStep.Height = 25;
+            InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>
+            {
+                Width = 30,
+                Height = 25
+            };
             layout.GenSteps.Add(0, startStep);
 
             //Draw a specific array of tiles onto the map at offset X2,Y3
@@ -82,8 +84,7 @@ namespace RogueElements.Examples.Ex1_Tiles
             {
                 for (int x = 0; x < map.Width; x++)
                 {
-                    Loc loc = new Loc(x, y);
-                    char tileChar = ' ';
+                    char tileChar;
                     Tile tile = map.Tiles[x][y];
                     if (tile.ID <= 0)//wall
                         tileChar = '#';

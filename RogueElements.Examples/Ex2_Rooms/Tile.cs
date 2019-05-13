@@ -24,8 +24,7 @@ namespace RogueElements.Examples.Ex2_Rooms
 
         public bool TileEquivalent(ITile other)
         {
-            Tile tile = other as Tile;
-            if (tile == null)
+            if (!(other is Tile tile))
                 return false;
             return tile.ID == ID;
         }

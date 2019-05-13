@@ -29,10 +29,12 @@ namespace RogueElements.Tests
         public void DrawOnMapNone()
         {
             //verify it fills up the entire square area!
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
-            roomGen.BlockWidth = new RandRange(0);
-            roomGen.BlockHeight = new RandRange(0);
-            roomGen.BlockTerrain = new TestTile(1);
+            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            {
+                BlockWidth = new RandRange(0),
+                BlockHeight = new RandRange(0),
+                BlockTerrain = new TestTile(1)
+            };
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -71,10 +73,12 @@ namespace RogueElements.Tests
         public void DrawOnMapMin()
         {
             //verify it fills up the entire square area!
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
-            roomGen.BlockWidth = new RandRange(2);
-            roomGen.BlockHeight = new RandRange(1);
-            roomGen.BlockTerrain = new TestTile(1);
+            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            {
+                BlockWidth = new RandRange(2),
+                BlockHeight = new RandRange(1),
+                BlockTerrain = new TestTile(1)
+            };
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -115,10 +119,12 @@ namespace RogueElements.Tests
         public void DrawOnMapMax()
         {
             //verify it fills up the entire square area!
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
-            roomGen.BlockWidth = new RandRange(2);
-            roomGen.BlockHeight = new RandRange(1);
-            roomGen.BlockTerrain = new TestTile(1);
+            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            {
+                BlockWidth = new RandRange(2),
+                BlockHeight = new RandRange(1),
+                BlockTerrain = new TestTile(1)
+            };
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",
@@ -159,10 +165,12 @@ namespace RogueElements.Tests
         public void DrawOnMapOversize()
         {
             //verify it fills up the entire square area!
-            RoomGenBlocked<ITiledGenContext> roomGen = new RoomGenBlocked<ITiledGenContext>();
-            roomGen.BlockWidth = new RandRange(200);
-            roomGen.BlockHeight = new RandRange(100);
-            roomGen.BlockTerrain = new TestTile(1);
+            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            {
+                BlockWidth = new RandRange(200),
+                BlockHeight = new RandRange(100),
+                BlockTerrain = new TestTile(1)
+            };
             string[] inGrid =  { "XXXXXXXX",
                                  "XXXXXXXX",
                                  "XXXXXXXX",

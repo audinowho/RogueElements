@@ -440,8 +440,10 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.ProposedSize = new Loc(5, 5);
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(5, 5)
+                };
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicVHalls[0][0].SetGen(new TestFloorPlanGen('a'));
@@ -485,8 +487,7 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
 
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen('A');
-                gen.ProposedSize = new Loc(5, 5);
+                var gen = new TestFloorPlanGen('A') { ProposedSize = new Loc(5, 5) };
                 gridPlan.PublicArrayRooms[0].RoomGen = gen;
             }
             {
@@ -494,8 +495,7 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[1].PreferHall = true;
             }
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen('B');
-                gen.ProposedSize = new Loc(5, 5);
+                var gen = new TestFloorPlanGen('B') { ProposedSize = new Loc(5, 5) };
                 gridPlan.PublicArrayRooms[2].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('b'));
@@ -560,8 +560,10 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.ProposedSize = new Loc(2, 2);
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(2, 2)
+                };
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -605,8 +607,10 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.ProposedSize = new Loc(2, 2);
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(2, 2)
+                };
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -650,8 +654,10 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                TestFloorPlanGen gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier);
-                gen.ProposedSize = new Loc(2, 2);
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(2, 2)
+                };
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
             gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
@@ -710,11 +716,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             List<int> rooms = floorPlan.GetAdjacentRooms(0);
-            List<int> compare = new List<int>();
-            compare.Add(3);
-            compare.Add(1);
-            compare.Add(2);
-            compare.Add(4);
+            List<int> compare = new List<int> { 3, 1, 2, 4 };
             Assert.That(rooms, Is.EqualTo(compare));
         }
 
@@ -750,17 +752,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             List<int> rooms = floorPlan.GetAdjacentRooms(0);
-            List<int> compare = new List<int>();
-            compare.Add(6);
-            compare.Add(1);
-            compare.Add(7);
-            compare.Add(2);
-            compare.Add(8);
-            compare.Add(3);
-            compare.Add(4);
-            compare.Add(9);
-            compare.Add(5);
-            compare.Add(10);
+            List<int> compare = new List<int> { 6, 1, 7, 2, 8, 3, 4, 9, 5, 10 };
             Assert.That(rooms, Is.EqualTo(compare));
         }
 
@@ -778,10 +770,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             List<int> rooms = floorPlan.GetAdjacentRooms(0);
-            List<int> compare = new List<int>();
-            compare.Add(2);
-            compare.Add(1);
-            compare.Add(3);
+            List<int> compare = new List<int> { 2, 1, 3 };
             Assert.That(rooms, Is.EqualTo(compare));
         }
 

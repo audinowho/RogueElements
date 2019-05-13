@@ -55,7 +55,7 @@ namespace RogueElements
 
                 noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
 
-                Grid.LocTest isValid = (Loc loc) => { return noise[loc.X][loc.Y]; };
+                bool isValid(Loc loc) => noise[loc.X][loc.Y];
 
                 BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, noise.Length, noise[0].Length), isValid);
 

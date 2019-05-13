@@ -16,23 +16,23 @@ namespace RogueElements
         public delegate void ProgressTrack(string msg);
         public delegate void DebugStepIn(string msg);
 
-        public static event InitTrack OnInit = delegate{};
-        public static event ProgressTrack OnStep = delegate{};
-        public static event DebugStepIn OnStepIn = delegate{};
-        public static event Action OnStepOut = delegate{};
+        public static event InitTrack OnInit;
+        public static event ProgressTrack OnStep;
+        public static event DebugStepIn OnStepIn;
+        public static event Action OnStepOut;
 
 
         [Conditional("DEBUG")]
-        public static void StepIn(string msg) => OnStepIn(msg);
+        public static void StepIn(string msg) => OnStepIn?.Invoke(msg);
 
         [Conditional("DEBUG")]
-        public static void StepOut() => OnStepOut();
+        public static void StepOut() => OnStepOut?.Invoke();
 
         [Conditional("DEBUG")]
-        public static void DebugInit(IGenContext map) => OnInit(map);
+        public static void DebugInit(IGenContext map) => OnInit?.Invoke(map);
 
         [Conditional("DEBUG")]
-        public static void DebugProgress(string msg) => OnStep(msg);
+        public static void DebugProgress(string msg) => OnStep?.Invoke(msg);
 
     }
 }

@@ -13,13 +13,13 @@ namespace RogueElements
     {
         public ITile Terrain;
 
-        public WaterStep() { }
+        protected WaterStep() { }
 
-        public WaterStep(ITile terrain)
+        protected WaterStep(ITile terrain)
         {
             Terrain = terrain;
         }
-        
+
 
         protected void drawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
         {

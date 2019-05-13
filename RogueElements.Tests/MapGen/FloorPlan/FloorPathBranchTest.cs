@@ -17,12 +17,11 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            var testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            FloorPathBranch<IFloorPlanTestContext> pathGen = new FloorPathBranch<IFloorPlanTestContext>();
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.ProposedSize = new Loc(20, 20);
-            Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var pathGen = new FloorPathBranch<IFloorPlanTestContext>();
+            var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(20, 20) };
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.GenericRooms = mockRooms.Object;
 
@@ -49,11 +48,9 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(100)).Returns(0);
             testRand.Setup(p => p.Next(64)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 0;
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.ProposedSize = new Loc(2, 2);
+            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -84,18 +81,15 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(64)).Returns(4);
             testRand.Setup(p => p.Next(24)).Returns(4);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 100;
 
-            TestFloorPlanGen hallGen = new TestFloorPlanGen('a');
-            hallGen.ProposedSize = new Loc(2, 2);
+            TestFloorPlanGen hallGen = new TestFloorPlanGen('a') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(hallGen);
             pathGen.Object.GenericHalls = mockHalls.Object;
 
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.ProposedSize = new Loc(2, 2);
+            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -147,11 +141,9 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             testRand.Setup(p => p.Next(100)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.HallPercent = 0;
-            TestFloorPlanGen roomGen = new TestFloorPlanGen('A');
-            roomGen.ProposedSize = new Loc(2, 2);
+            TestFloorPlanGen roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
             pathGen.Object.GenericRooms = mockRooms.Object;
@@ -540,8 +532,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 11)).Returns(2);
             testRand.Setup(p => p.Next(0, 6)).Returns(3);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(0);
             pathGen.Object.HallPercent = 0;
             pathGen.Object.BranchRatio = new RandRange(0);
@@ -580,8 +571,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 15)).Returns(0);
             testRand.Setup(p => p.Next(0, 1)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(100);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(0);
@@ -638,8 +628,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 15)).Returns(0);
             testRand.Setup(p => p.Next(0, 9)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(50);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(0);
@@ -712,8 +701,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 15)).Returns(0);
             testRand.Setup(p => p.Next(0, 6)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(75);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(0);
@@ -794,8 +782,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 15)).Returns(0);
             testRand.Setup(p => p.Next(0, 6)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(75);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(0);
@@ -882,8 +869,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 29)).Returns(0);
             testRand.Setup(p => p.Next(0, 5)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(58);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(50);
@@ -991,8 +977,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 21)).Returns(0);
             testRand.Setup(p => p.Next(0, 9)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(55);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(50);
@@ -1096,8 +1081,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 17)).Returns(0);
             testRand.Setup(p => p.Next(0, 5)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(65);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(100);
@@ -1192,8 +1176,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 21)).Returns(0);
             testRand.Setup(p => p.Next(0, 9)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
-            pathGen.CallBase = true;
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.Object.FillPercent = new RandRange(55);
             pathGen.Object.HallPercent = 50;
             pathGen.Object.BranchRatio = new RandRange(50);
@@ -1306,7 +1289,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 14)).Returns(0);
             testRand.Setup(p => p.Next(0, 9)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.CallBase = true;
             pathGen.Object.FillPercent = new RandRange(50);
             pathGen.Object.HallPercent = 50;
@@ -1393,7 +1376,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 17)).Returns(0);
             testRand.Setup(p => p.Next(0, 5)).Returns(0);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.CallBase = true;
             pathGen.Object.FillPercent = new RandRange(65);
             pathGen.Object.HallPercent = 50;
@@ -1483,7 +1466,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 25)).Returns(0);
             testRand.Setup(p => p.Next(0, 3)).Returns(1);
 
-            Mock<FloorPathBranch<IFloorPlanTestContext>> pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>>();
+            var pathGen = new Mock<FloorPathBranch<IFloorPlanTestContext>> { CallBase = true };
             pathGen.CallBase = true;
             pathGen.Object.FillPercent = new RandRange(60);
             pathGen.Object.HallPercent = 50;

@@ -26,7 +26,7 @@ namespace RogueElements
         }
 
         //uses Heap, represented as list
-        private List<StablePriorityQueueItem<P, T>> data;
+        private readonly List<StablePriorityQueueItem<P, T>> data;
         private uint insertions;
 
         public StablePriorityQueue()
@@ -61,6 +61,9 @@ namespace RogueElements
 
         public void OperateAllPriority(PriorityOp<P> op)
         {
+            if (op == null)
+                throw new ArgumentNullException(nameof(op));
+
             foreach (StablePriorityQueueItem<P, T> item in data)
                 op(item.priority);
         }
@@ -146,7 +149,7 @@ namespace RogueElements
                 }
             }
 
-            priority = default(P);
+            priority = default;
             return false;
         }
 

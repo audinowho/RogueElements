@@ -41,15 +41,12 @@ namespace RogueElements
             }
 
             int maxVal = 1;
-            Graph.DistNodeAction nodeAct = (int nodeIndex, int distance) =>
+            void nodeAct(int nodeIndex, int distance)
             {
                 roomWeights[nodeIndex] = distance + 1;
                 maxVal = Math.Max(maxVal, roomWeights[nodeIndex]);
-            };
-            Graph.GetAdjacents getAdjacents = (int nodeIndex) =>
-            {
-                return map.RoomPlan.GetAdjacentRooms(nodeIndex);
-            };
+            }
+            List<int> getAdjacents(int nodeIndex) => map.RoomPlan.GetAdjacentRooms(nodeIndex);
 
             Graph.TraverseBreadthFirst(roomWeights.Length, startRoom, nodeAct, getAdjacents);
 

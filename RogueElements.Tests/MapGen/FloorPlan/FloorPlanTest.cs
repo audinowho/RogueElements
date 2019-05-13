@@ -101,8 +101,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(1, 1, 2, 3));
             gen.Object.Identifier = 'A';
             floorPlan.AddRoom(gen.Object, false);
@@ -125,8 +124,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(6, 1, 3, 3) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('a', 'B') });
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(3, 2, 3, 5));
             gen.Object.Identifier = 'B';
 
@@ -153,8 +151,7 @@ namespace RogueElements.Tests
                 halls.ToArray(),
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             gen.Object.Identifier = 'B';
 
@@ -195,8 +192,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(1, 1, 2, 3) },
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(1, 1, 2, 3));
             gen.Object.Identifier = 'a';
             floorPlan.AddHall(gen.Object);
@@ -218,8 +214,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(1, 1, 2, 3), new Rect(2, 2, 4, 4) },
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             gen.Object.Identifier = 'b';
 
@@ -238,8 +233,7 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            Mock<TestFloorPlanGen> gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose);
-            gen.CallBase = true;
+            var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             gen.Object.Identifier = 'b';
 
@@ -276,9 +270,7 @@ namespace RogueElements.Tests
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('A', 'C'), new Tuple<char, char>('B', 'C') });
 
             List<int> adjacentRooms = floorPlan.GetAdjacentRooms(0);
-            List<int> expectedRooms = new List<int>();
-            expectedRooms.Add(1);
-            expectedRooms.Add(2);
+            var expectedRooms = new List<int> { 1, 2 };
             Assert.That(adjacentRooms, Is.EqualTo(expectedRooms));
         }
 
@@ -311,9 +303,7 @@ namespace RogueElements.Tests
                                         new Tuple<char, char>('a', 'b') });
 
             List<int> adjacentRooms = floorPlan.GetAdjacentRooms(0);
-            List<int> expectedRooms = new List<int>();
-            expectedRooms.Add(1);
-            expectedRooms.Add(2);
+            var expectedRooms = new List<int> { 1, 2 };
             Assert.That(adjacentRooms, Is.EqualTo(expectedRooms));
         }
 
@@ -333,10 +323,7 @@ namespace RogueElements.Tests
                                         new Tuple<char, char>('a', 'b'), new Tuple<char, char>('a', 'c'), new Tuple<char, char>('d', 'd'), new Tuple<char, char>('b', 'd') });
 
             List<int> adjacentRooms = floorPlan.GetAdjacentRooms(0);
-            List<int> expectedRooms = new List<int>();
-            expectedRooms.Add(1);
-            expectedRooms.Add(2);
-            expectedRooms.Add(3);
+            List<int> expectedRooms = new List<int> { 1, 2, 3 };
             Assert.That(adjacentRooms, Is.EqualTo(expectedRooms));
         }
 
@@ -687,9 +674,8 @@ namespace RogueElements.Tests
 
         public override bool Equals(object obj)
         {
-            TestFloorRoomGen<T> roomGen = obj as TestFloorRoomGen<T>;
-            if (roomGen != null && roomGen.Identifier == Identifier && roomGen.Draw == Draw)
-                return true;
+            if (obj is TestFloorRoomGen<T> roomGen)
+                return roomGen.Identifier == Identifier && roomGen.Draw == Draw;
             return false;
         }
         public override int GetHashCode() { return Identifier; }
@@ -729,8 +715,7 @@ namespace RogueElements.Tests
         }
         public static Mock<TestFloorPlan> InitFloorToMockContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
-            Mock<TestFloorPlan> floorPlan = new Mock<TestFloorPlan>();
-            floorPlan.CallBase = true;
+            var floorPlan = new Mock<TestFloorPlan> { CallBase = true };
             InitFloorToContext(floorPlan.Object, size, rooms, halls, links);
             return floorPlan;
         }

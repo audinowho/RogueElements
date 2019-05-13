@@ -31,7 +31,7 @@ namespace RogueElements
 
         //TODO: sniff out off-by-ones with this...
         public int Bottom { get { return Y + Height; } }
-        
+
         public int Area { get { return Width * Height; } }
 
         public int Perimeter { get { return Width * 2 +  Height * 2; } }
@@ -219,7 +219,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Adjusts the edges of this <see cref="Rect"/> by specified horizontal and vertical amounts. 
+        /// Adjusts the edges of this <see cref="Rect"/> by specified horizontal and vertical amounts.
         /// </summary>
         /// <param name="horizontalAmount">Value to adjust the left and right edges.</param>
         /// <param name="verticalAmount">Value to adjust the top and bottom edges.</param>
@@ -232,7 +232,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Adjusts the edges of this <see cref="Rect"/> in a specified direction. 
+        /// Adjusts the edges of this <see cref="Rect"/> in a specified direction.
         /// </summary>
         /// <param name="direction">Direction to expand in.</param>
         /// <param name="amount">Value to expand by.</param>
@@ -252,7 +252,7 @@ namespace RogueElements
                     Y -= amount;
             }
         }
-        
+
         public Range GetSide(Axis4 axis)
         {
             switch (axis)
@@ -346,8 +346,7 @@ namespace RogueElements
         /// <returns>Overlapping region of the two rectangles.</returns>
         public static Rect Intersect(Rect value1, Rect value2)
         {
-            Rect rectangle;
-            Intersect(ref value1, ref value2, out rectangle);
+            Intersect(ref value1, ref value2, out Rect rectangle);
             return rectangle;
         }
 
@@ -462,6 +461,7 @@ namespace RogueElements
         /// <summary>
         /// Calculates the signed depth of intersection between two rectangles.
         /// </summary>
+        /// <param name="other">todo: describe other parameter on IntersectionDepth</param>
         /// <returns>
         /// The amount of overlap between two intersecting rectangles. These
         /// depth values can be negative depending on which wides the rectangles

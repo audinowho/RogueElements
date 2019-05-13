@@ -19,8 +19,7 @@ namespace RogueElements
 
         private static List<Loc> getBackreference(PathTile currentTile)
         {
-            List<Loc> path = new List<Loc>();
-            path.Add(currentTile.Location);
+            List<Loc> path = new List<Loc> { currentTile.Location };
             while (currentTile.BackReference != null)
             {
                 currentTile = currentTile.BackReference;
@@ -99,9 +98,12 @@ namespace RogueElements
 
         public static Loc ResizeJustified<T>(ref T[][] array, int width, int height, Dir8 dir, LocAction newLocOp, LocAction newTileOp)
         {
-            DirV vert;
-            DirH horiz;
-            dir.Separate(out horiz, out vert);
+            if (newLocOp == null)
+                throw new ArgumentNullException(nameof(newLocOp));
+            if (newTileOp == null)
+                throw new ArgumentNullException(nameof(newTileOp));
+
+            dir.Separate(out DirH horiz, out DirV vert);
 
             Loc offset = new Loc();
             if (horiz == DirH.None)
@@ -143,6 +145,11 @@ namespace RogueElements
             int min, int max, int range_min, int range_max, int y, bool isNext, DirV dir,
             Stack<ScanLineTile> stack)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (fillOp == null)
+                throw new ArgumentNullException(nameof(fillOp));
+
             //move y down or up
             int new_y = y + dir.GetLoc().Y;
 
@@ -193,6 +200,11 @@ namespace RogueElements
         /// <param name="loc"></param>
         public static void FloodFill(Rect rect, LocTest checkBlock, LocTest checkDiagBlock, LocAction fillOp, Loc loc)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (fillOp == null)
+                throw new ArgumentNullException(nameof(fillOp));
+
             Stack<ScanLineTile> stack = new Stack<ScanLineTile>();
             stack.Push(new ScanLineTile(loc.X, loc.X, loc.Y, DirV.None, true, true));
             fillOp(loc);
@@ -231,14 +243,17 @@ namespace RogueElements
 
         public static List<Loc> FindConnectedTiles(Loc rectStart, Loc rectSize, LocTest checkOp, LocTest checkBlock, LocTest checkDiagBlock, Loc loc)
         {
+            if (checkOp == null)
+                throw new ArgumentNullException(nameof(checkOp));
+
             //use efficient fill method
             List<Loc> locList = new List<Loc>();
 
-            LocAction action = (Loc actLoc) =>
+            void action(Loc actLoc)
             {
                 if (checkOp(actLoc))
                     locList.Add(actLoc);
-            };
+            }
 
             AffectConnectedTiles(rectStart, rectSize, action, checkBlock, checkDiagBlock, loc);
 
@@ -248,6 +263,13 @@ namespace RogueElements
 
         public static void AffectConnectedTiles(Loc rectStart, Loc rectSize, LocAction action, LocTest checkBlock, LocTest checkDiagBlock, Loc loc)
         {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (checkDiagBlock == null)
+                throw new ArgumentNullException(nameof(checkDiagBlock));
+
             //create an array to cache which tiles were already traversed
             bool[][] fillArray = new bool[rectSize.X][];
             for (int ii = 0; ii < rectSize.X; ii++)
@@ -269,7 +291,7 @@ namespace RogueElements
                     fillArray[actLoc.X - rectStart.X][actLoc.Y - rectStart.Y] = true;
                 },
                 loc);
-            
+
         }
 
 
@@ -282,6 +304,9 @@ namespace RogueElements
 
         public static IEnumerable<Loc> FindClosestConnectedTiles(Loc rectStart, Loc rectSize, LocTest checkFree, LocTest checkBlock, LocTest checkDiagBlock, Loc loc, int amount)
         {
+            if (checkFree == null)
+                throw new ArgumentNullException(nameof(checkFree));
+
             //create an array to cache which tiles were already traversed
             bool[][] fillArray = new bool[rectSize.X][];
             for (int ii = 0; ii < rectSize.X; ii++)
@@ -296,7 +321,7 @@ namespace RogueElements
             while (locList.Count > 0)
             {
                 Loc candidate = locList.Dequeue();
-                
+
                 if (checkFree(candidate + rectStart))
                 {
                     yield return candidate + rectStart;
@@ -320,6 +345,9 @@ namespace RogueElements
 
         public static List<Loc> FindTilesInBox(Loc rectStart, Loc rectSize, LocTest checkOp)
         {
+            if (checkOp == null)
+                throw new ArgumentNullException(nameof(checkOp));
+
             List<Loc> locList = new List<Loc>();
             for (int x = rectStart.X; x < rectStart.X + rectSize.X; x++)
             {
@@ -335,6 +363,11 @@ namespace RogueElements
 
         public static bool IsChokePoint(Loc rectStart, Loc rectSize, Loc point, LocTest checkBlock, LocTest checkDiagBlock)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (checkDiagBlock == null)
+                throw new ArgumentNullException(nameof(checkDiagBlock));
+
             List<Dir8> forks = GetForkDirs(point, checkBlock, checkDiagBlock);
             if (forks.Count < 2)
                 return false;
@@ -356,24 +389,24 @@ namespace RogueElements
                 forkList.Add(loc);
             }
 
-            LocTest checkChokeBlock = (Loc loc) =>
+            bool checkChokeBlock(Loc loc)
             {
                 if (fillArray[loc.X - rectStart.X][loc.Y - rectStart.Y])
                     return true;
                 return checkBlock(loc);
-            };
-            LocTest checkDiagChokeBlock = (Loc loc) =>
+            }
+            bool checkDiagChokeBlock(Loc loc)
             {
                 if (fillArray[loc.X - rectStart.X][loc.Y - rectStart.Y])
                     return true;
                 return checkDiagBlock(loc);
-            };
-            LocAction fill = (Loc loc) =>
+            }
+            void fill(Loc loc)
             {
                 fillArray[loc.X][loc.Y] = true;
                 if (forkList.Contains(loc))
                     forkList.Remove(loc);
-            };
+            }
             FloodFill(new Rect(rectStart, rectSize), checkChokeBlock, checkDiagChokeBlock, fill, forkList[0]);
 
             return forkList.Count > 0;
@@ -407,6 +440,11 @@ namespace RogueElements
 
         public static bool IsDirBlocked(Loc loc, Dir8 dir, LocTest checkBlock, LocTest checkDiagBlock, int distance)
         {
+            if (checkBlock == null)
+                throw new ArgumentNullException(nameof(checkBlock));
+            if (checkDiagBlock == null)
+                throw new ArgumentNullException(nameof(checkDiagBlock));
+
             if (dir < Dir8.None || (int)dir >= DirExt.DIR8_COUNT)
                 throw new ArgumentException("Invalid value to check.");
             else if (dir == Dir8.None)
@@ -416,9 +454,7 @@ namespace RogueElements
             {
                 if (dir.IsDiagonal())
                 {
-                    DirH horiz;
-                    DirV vert;
-                    dir.Separate(out horiz, out vert);
+                    dir.Separate(out DirH horiz, out DirV vert);
 
                     Loc diagLoc = loc + horiz.GetLoc();
                     if (checkDiagBlock(diagLoc))
@@ -428,7 +464,7 @@ namespace RogueElements
                     if (checkDiagBlock(diagLoc))
                         return true;
                 }
-                loc = loc + dir.GetLoc();
+                loc += dir.GetLoc();
 
                 if (checkBlock(loc))
                     return true;

@@ -45,7 +45,7 @@ namespace RogueElements
 
             //first attempt to spawn in the terminals; remove from terminal list if successful
             SpawnRandInCandRooms(map, terminalRooms, spawns, 0);
-            
+
             SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
         }
     }

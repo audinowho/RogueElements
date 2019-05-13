@@ -71,7 +71,7 @@ namespace RogueElements
                 else
                     connections[ii][1] = true;
             }
-            
+
             //paint hallways
             for (int ii = 0; ii < sideLength; ii++)
             {
@@ -88,9 +88,9 @@ namespace RogueElements
                         PlaceOrientedHall(Vertical, Dir4.Right, ii, gapLength - 1, floorPlan, GenericHalls.Pick(rand));
                         GenContextDebug.DebugProgress("Side Connection");
                     }
-                    
+
                 }
-                
+
                 //place halls to bridge the gap
                 PlaceOrientedHall(Vertical, Dir4.Down, ii, 0, floorPlan, GenericHalls.Pick(rand));
                 if (gapLength > 2)
@@ -109,7 +109,7 @@ namespace RogueElements
             Loc newLoc = new Loc(vertical ? moveLoc.X : moveLoc.Y, vertical ? moveLoc.Y : moveLoc.X);
             floorPlan.SetConnectingHall(loc, newLoc, hallGen);
         }
-        
+
 
     }
 }

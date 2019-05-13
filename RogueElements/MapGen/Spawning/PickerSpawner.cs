@@ -14,7 +14,7 @@ namespace RogueElements
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="E"></typeparam>
     [Serializable]
-    public class PickerSpawner<T, E> : IStepSpawner<T, E> 
+    public class PickerSpawner<T, E> : IStepSpawner<T, E>
         where T : IGenContext
         where E : ISpawnable
     {

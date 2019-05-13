@@ -13,7 +13,7 @@ namespace RogueElements
     {
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls;
 
-        public ConnectStep()
+        protected ConnectStep()
         {
             GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
         }
@@ -23,10 +23,7 @@ namespace RogueElements
         {
             SpawnList<ListPathTraversalNode> expansions = GetPossibleExpansions(floorPlan, candList);
 
-            if (expansions.Count > 0)
-                return expansions.Pick(rand);
-            else
-                return null;
+            return expansions.Count > 0 ? expansions.Pick(rand) : null;
         }
 
         public SpawnList<ListPathTraversalNode> GetPossibleExpansions(FloorPlan floorPlan, List<RoomHallIndex> candList)
@@ -43,7 +40,6 @@ namespace RogueElements
                 BaseFloorRoomPlan planFrom = floorPlan.GetRoomHall(chosenFrom);
 
                 //exhausting all possible directions (randomly)
-                List<Dir4> dirs = new List<Dir4>();
                 for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
                 {
                     bool forbidExtend = false;
@@ -85,10 +81,10 @@ namespace RogueElements
             IRoomGen genFrom = floorPlan.GetRoomHall(chosenFrom).Gen;
             Rect sampleRect = genFrom.Draw;
             //expand from the start of that border direction to the borders of the floor
-            sampleRect.Start = sampleRect.Start + dir.GetLoc() * sampleRect.Size.GetScalar(dir.ToAxis());
+            sampleRect.Start += dir.GetLoc() * sampleRect.Size.GetScalar(dir.ToAxis());
             //it doesn't have to be exactly the borders so just add the total size to be sure
             sampleRect.Expand(dir, vertical ? floorPlan.Size.Y : floorPlan.Size.X);
-            
+
             //find the closest room.
             RoomHallIndex chosenTo = new RoomHallIndex(-1, false);
             foreach (RoomHallIndex collision in floorPlan.CheckCollision(sampleRect))
@@ -150,10 +146,7 @@ namespace RogueElements
             bool foundTo = HasBorderOpening(genTo, sampleRect, dir.Reverse());
 
             //return the expansion if one is found
-            if (foundFrom && foundTo)
-                return new ListPathTraversalNode(chosenFrom, chosenTo, sampleRect);
-            else
-                return null;
+            return foundFrom && foundTo ? new ListPathTraversalNode(chosenFrom, chosenTo, sampleRect) : null;
         }
 
 

@@ -30,10 +30,8 @@ namespace RogueElements
                 floorPlan.GridHeight != SpecificHHalls[0].Length)
                 throw new InvalidOperationException("Incorrect hall path sizes.");
 
-            for (int ii = 0; ii < SpecificRooms.Count; ii++)
+            foreach (var chosenRoom in SpecificRooms)
             {
-                SpecificGridRoomPlan<T> chosenRoom = SpecificRooms[ii];
-                
                 floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable, chosenRoom.PreferHall);
                 GenContextDebug.DebugProgress("Room");
             }

@@ -173,7 +173,7 @@ namespace RogueSharp
         /// <returns>True if the instances are equal; False otherwise</returns>
         public bool Equals(ICell other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -191,7 +191,7 @@ namespace RogueSharp
         /// <returns>True if the instances are equal; False otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }

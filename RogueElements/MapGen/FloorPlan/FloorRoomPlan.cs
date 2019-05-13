@@ -21,7 +21,7 @@ namespace RogueElements
         {
             RoomGen = roomGen;
         }
-        
+
 
     }
 
@@ -42,7 +42,7 @@ namespace RogueElements
         public abstract IRoomGen Gen { get; }
         public List<RoomHallIndex> Adjacents;
 
-        public BaseFloorRoomPlan()
+        protected BaseFloorRoomPlan()
         {
             Adjacents = new List<RoomHallIndex>();
         }

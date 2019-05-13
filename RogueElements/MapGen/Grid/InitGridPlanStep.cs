@@ -28,7 +28,7 @@ namespace RogueElements
             floorPlan.InitSize(CellX, CellY, CellWidth, CellHeight, CellWall);
 
             map.InitGrid(floorPlan);
-            
+
         }
 
     }

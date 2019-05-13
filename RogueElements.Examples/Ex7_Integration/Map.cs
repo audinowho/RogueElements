@@ -337,13 +337,13 @@ namespace RogueSharp
                 int e2 = 2 * err;
                 if (e2 > -dy)
                 {
-                    err = err - dy;
-                    xOrigin = xOrigin + sx;
+                    err -= dy;
+                    xOrigin += sx;
                 }
                 if (e2 < dx)
                 {
-                    err = err + dx;
-                    yOrigin = yOrigin + sy;
+                    err += dx;
+                    yOrigin += sy;
                 }
             }
         }
@@ -705,10 +705,12 @@ namespace RogueSharp
         /// <returns>Mapstate POCO (Plain Old C# Object) which represents this Map and can be easily serialized</returns>
         public MapState Save()
         {
-            var mapState = new MapState();
-            mapState.Width = Width;
-            mapState.Height = Height;
-            mapState.Cells = new MapState.CellProperties[Width * Height];
+            var mapState = new MapState
+            {
+                Width = Width,
+                Height = Height,
+                Cells = new MapState.CellProperties[Width * Height]
+            };
             foreach (ICell cell in GetAllCells())
             {
                 var cellProperties = MapState.CellProperties.None;

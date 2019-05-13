@@ -20,7 +20,7 @@ namespace RogueElements
             Entrance = new List<E>();
             Exit = new List<F>();
         }
-        
+
         public FloorStairsStep(E entrance, F exit) : this()
         {
             Entrance.Add(entrance);
@@ -47,7 +47,7 @@ namespace RogueElements
                 else
                     defaultLoc = start;
                 ((IPlaceableGenContext<E>)map).PlaceItem(start, Entrance[ii]);
-                GenContextDebug.DebugProgress("Entrance");
+                GenContextDebug.DebugProgress(nameof(Entrance));
             }
 
             for (int ii = 0; ii < Exit.Count; ii++)
@@ -57,13 +57,16 @@ namespace RogueElements
                 if (end == new Loc(-1))
                     end = defaultLoc;
                 ((IPlaceableGenContext<F>)map).PlaceItem(end, Exit[ii]);
-                GenContextDebug.DebugProgress("Exit");
+                GenContextDebug.DebugProgress(nameof(Exit));
             }
         }
 
         /// <summary>
         /// Attempt to choose a room with no entrance/exit, and updates their availability.  If none exists, default to a chosen room.
         /// </summary>
+        /// <param name="rand">todo: describe rand parameter on NextRoom</param>
+        /// <param name="room_indices">todo: describe room_indices parameter on NextRoom</param>
+        /// <param name="used_indices">todo: describe used_indices parameter on NextRoom</param>
         /// <returns></returns>
         private int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
         {

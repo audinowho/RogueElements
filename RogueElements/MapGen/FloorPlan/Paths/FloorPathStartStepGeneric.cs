@@ -18,7 +18,7 @@ namespace RogueElements
         public IRandPicker<RoomGen<T>> GenericRooms;
 
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls;
-        
+
         public override void Apply(T map)
         {
             if (!GenericRooms.CanPick || !GenericHalls.CanPick)

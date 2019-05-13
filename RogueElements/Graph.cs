@@ -24,6 +24,11 @@ namespace RogueElements
         /// <param name="getAdjacents"></param>
         public static void TraverseBreadthFirst(int count, int start, DistNodeAction nodeAct, GetAdjacents getAdjacents)
         {
+            if (nodeAct == null)
+                throw new ArgumentNullException(nameof(nodeAct));
+            if (getAdjacents == null)
+                throw new ArgumentNullException(nameof(getAdjacents));
+
             int[] found = new int[count];
             for (int ii = 0; ii < found.Length; ii++)
                 found[ii] = -1;
@@ -49,6 +54,6 @@ namespace RogueElements
                 }
             }
         }
-        
+
     }
 }

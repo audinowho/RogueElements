@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="RogueElements" ToolsVersion="15.0">
    <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
-     <Rule Id="CA1051" Action="None" />
-     <Rule Id="CA1707" Action="None" />
-     <Rule Id="CA1710" Action="None" />
-     <Rule Id="CA1714" Action="None" />
-     <Rule Id="CA1715" Action="None" />
-     <Rule Id="CA1716" Action="None" />
      <!-- Primitives raise false positives; remove this suppression once bug is fixed -->
      <Rule Id="CA2235" Action="None" />
+   </Rules>
+   <Rules AnalyzerId="CodeCracker.CSharp" RuleNamespace="CodeCracker.CSharp">
+     <Rule Id="CC0001" Action="None" />
+     <Rule Id="CC0105" Action="None" />
+   </Rules>
+   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.CSharp.LayoutRules">
+     <Rule Id="SA1503" Action="None" />
+
+     <Rule Id="SA1200" Action="None" />
+     <Rule Id="SA1600" Action="None" />
+     <Rule Id="SA1602" Action="None" />
+     <Rule Id="SA1614" Action="None" />
+     <Rule Id="SA1616" Action="None" />
+     <Rule Id="SA1629" Action="None" />
+     <Rule Id="SA1636" Action="None" />
    </Rules>
 </RuleSet>

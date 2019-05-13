@@ -112,8 +112,7 @@ namespace RogueElements
                 if (supportHalls[ii] != null)
                 {
                     //include an attachment to the newly added room
-                    List<RoomHallIndex> adjToAdd = new List<RoomHallIndex>();
-                    adjToAdd.Add(newRoomInd);
+                    List<RoomHallIndex> adjToAdd = new List<RoomHallIndex> { newRoomInd };
                     adjToAdd.AddRange(adjacentsByDir[ii]);
                     floorPlan.AddHall(supportHalls[ii], adjToAdd.ToArray());
                 }
@@ -125,7 +124,7 @@ namespace RogueElements
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
             Rect supportRect = newGen.Draw;
-            supportRect.Start = supportRect.Start + dir.GetLoc() * supportRect.Size.GetScalar(dir.ToAxis());
+            supportRect.Start += dir.GetLoc() * supportRect.Size.GetScalar(dir.ToAxis());
             supportRect.SetScalar(dir, oldGen.Draw.GetScalar(dir));
 
             Range minMax = newGen.Draw.GetSide(dir.ToAxis());
@@ -157,10 +156,7 @@ namespace RogueElements
         public Loc FindPlacement(IRandom rand, List<IRoomGen>[] adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
         {
             SpawnList<Loc> possiblePlacements = GetPossiblePlacements(adjacentsByDir, newGen, oldGen);
-            if (possiblePlacements.SpawnTotal == 0)
-                return new Loc(-1);
-            else
-                return possiblePlacements.Pick(rand);
+            return possiblePlacements.SpawnTotal == 0 ? new Loc(-1) : possiblePlacements.Pick(rand);
         }
 
         public SpawnList<Loc> GetPossiblePlacements(List<IRoomGen>[] adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)

@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace RogueElements
 {
     [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface",
-        MessageId = "IPriorityList", Justification = "Non-generic interface for typically generic classes")]
+        MessageId = nameof(IPriorityList), Justification = "Non-generic interface for typically generic classes")]
     public interface IPriorityList : IEnumerable
     {
 

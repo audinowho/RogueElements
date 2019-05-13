@@ -36,8 +36,10 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3)).Returns(roll);
 
-            AddGridSpecialRoomStep<IGridPathTestContext> pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>();
-            pathGen.Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>());
+            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            {
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>())
+            };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -75,8 +77,10 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            AddGridSpecialRoomStep<IGridPathTestContext> pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>();
-            pathGen.Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>());
+            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            {
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>())
+            };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 

@@ -10,7 +10,7 @@ using System.Text;
 
 namespace RogueElements
 {
-    
+
     public static class DirExt
     {
         public const int DIR2_COUNT = 2;
@@ -424,7 +424,7 @@ namespace RogueElements
                     break;
             }
         }
-        
+
 
         public static Dir8 GetDir(Loc loc1, Loc loc2)
         {
@@ -652,7 +652,7 @@ namespace RogueElements
                 return Dir8.None;
             return (Dir8)(((int)dir1 + (int)dir2) % 8);
         }
-        
+
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
             if (axis <= Axis4.None || (int)axis >= AXIS4_COUNT)

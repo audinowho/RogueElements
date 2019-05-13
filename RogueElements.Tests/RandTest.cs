@@ -22,11 +22,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(3);
             LoopedRand<int> looped = new LoopedRand<int>(valueRange, amountRange);
             List<int> result = looped.Roll(testRand.Object);
-            List<int> compare = new List<int>();
-            compare.Add(0);
-            compare.Add(1);
-            compare.Add(2);
-            compare.Add(3);
+            List<int> compare = new List<int> { 0, 1, 2, 3 };
             Assert.That(result, Is.EquivalentTo(compare));
             testRand.Verify(p => p.Next(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(5));
         }
@@ -36,11 +32,7 @@ namespace RogueElements.Tests
         {
             PresetMultiRand<int> testPicker = new PresetMultiRand<int>(5, 3, 1, 8);
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            List<int> compare = new List<int>();
-            compare.Add(5);
-            compare.Add(3);
-            compare.Add(1);
-            compare.Add(8);
+            List<int> compare = new List<int> { 5, 3, 1, 8 };
             Assert.That(testPicker.Roll(testRand.Object), Is.EquivalentTo(compare));
         }
 
@@ -56,8 +48,7 @@ namespace RogueElements.Tests
         [Test]
         public void RandBagRemovable()
         {
-            RandBag<int> testPicker = new RandBag<int>(8, 5, 2, 3, 4, 1, 6, 7);
-            testPicker.RemoveOnRoll = true;
+            RandBag<int> testPicker = new RandBag<int>(8, 5, 2, 3, 4, 1, 6, 7) { RemoveOnRoll = true };
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(8)).Returns(3);
             testRand.Setup(p => p.Next(7)).Returns(6);
@@ -124,9 +115,11 @@ namespace RogueElements.Tests
         public void SpawnListZeroChoose()
         {
             //choose when all 0's
-            SpawnList<string> spawnList = new SpawnList<string>();
-            spawnList.Add("apple", 0);
-            spawnList.Add("orange", 0);
+            SpawnList<string> spawnList = new SpawnList<string>
+            {
+                { "apple", 0 },
+                { "orange", 0 }
+            };
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Assert.That(spawnList.CanPick, Is.EqualTo(false));
             Assert.That(spawnList.SpawnTotal, Is.EqualTo(0));
@@ -146,8 +139,7 @@ namespace RogueElements.Tests
         public void SpawnListSetNegative()
         {
             //set negative
-            SpawnList<string> spawnList = new SpawnList<string>();
-            spawnList.Add("apple", 1);
+            SpawnList<string> spawnList = new SpawnList<string> { { "apple", 1 } };
             Assert.Throws<ArgumentException>(() => { spawnList.SetSpawnRate(0, -1); });
         }
 
@@ -162,10 +154,12 @@ namespace RogueElements.Tests
         [SetUp]
         public void SpawnListSetUp()
         {
-            spawnList = new SpawnList<string>();
-            spawnList.Add("apple", 10);
-            spawnList.Add("orange", 20);
-            spawnList.Add("banana", 30);
+            spawnList = new SpawnList<string>
+            {
+                { "apple", 10 },
+                { "orange", 20 },
+                { "banana", 30 }
+            };
         }
 
 

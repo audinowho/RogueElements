@@ -31,8 +31,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            pathGen.ConnectPercent = 100;
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext> { ConnectPercent = 100 };
 
             Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('b'));
@@ -68,10 +67,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            pathGen.ConnectPercent = 100;
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('b'));
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -114,10 +112,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            pathGen.ConnectPercent = 100;
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('c'));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('d'));
@@ -184,14 +181,16 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'B'), new Tuple<char, char>('B', 'C') });
 
-            List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
-            List<RoomHallIndex> arm = new List<RoomHallIndex>();
-            arm.Add(new RoomHallIndex(0, false));
-            arm.Add(new RoomHallIndex(1, false));
-            arm.Add(new RoomHallIndex(2, false));
+            var expectedArms = new List<List<RoomHallIndex>>();
+            var arm = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(0, false),
+                new RoomHallIndex(1, false),
+                new RoomHallIndex(2, false)
+            };
             expectedArms.Add(arm);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             List<List<RoomHallIndex>> arms = pathGen.GetBranchArms(floorPlan);
 
             Assert.That(arms, Is.EqualTo(expectedArms));
@@ -205,14 +204,16 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(3, 5, 2, 2) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'B') });
 
-            List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
-            List<RoomHallIndex> arm = new List<RoomHallIndex>();
-            arm.Add(new RoomHallIndex(0, false));
-            arm.Add(new RoomHallIndex(0, true));
-            arm.Add(new RoomHallIndex(1, false));
+            var expectedArms = new List<List<RoomHallIndex>>();
+            var arm = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(0, false),
+                new RoomHallIndex(0, true),
+                new RoomHallIndex(1, false)
+            };
             expectedArms.Add(arm);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             List<List<RoomHallIndex>> arms = pathGen.GetBranchArms(floorPlan);
 
             Assert.That(arms, Is.EqualTo(expectedArms));
@@ -231,21 +232,27 @@ namespace RogueElements.Tests
                                         new Tuple<char, char>('A', 'D'), new Tuple<char, char>('D', 'E'),
                                         new Tuple<char, char>('A', 'F'), new Tuple<char, char>('F', 'G')});
 
-            List<List<RoomHallIndex>> expectedArms = new List<List<RoomHallIndex>>();
-            List<RoomHallIndex> arm = new List<RoomHallIndex>();
-            arm.Add(new RoomHallIndex(2, false));
-            arm.Add(new RoomHallIndex(1, false));
+            var expectedArms = new List<List<RoomHallIndex>>();
+            var arm = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(2, false),
+                new RoomHallIndex(1, false)
+            };
             expectedArms.Add(arm);
-            arm = new List<RoomHallIndex>();
-            arm.Add(new RoomHallIndex(4, false));
-            arm.Add(new RoomHallIndex(3, false));
+            arm = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(4, false),
+                new RoomHallIndex(3, false)
+            };
             expectedArms.Add(arm);
-            arm = new List<RoomHallIndex>();
-            arm.Add(new RoomHallIndex(6, false));
-            arm.Add(new RoomHallIndex(5, false));
+            arm = new List<RoomHallIndex>
+            {
+                new RoomHallIndex(6, false),
+                new RoomHallIndex(5, false)
+            };
             expectedArms.Add(arm);
 
-            ConnectBranchStep<IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
             List<List<RoomHallIndex>> arms = pathGen.GetBranchArms(floorPlan);
 
             Assert.That(arms, Is.EqualTo(expectedArms));

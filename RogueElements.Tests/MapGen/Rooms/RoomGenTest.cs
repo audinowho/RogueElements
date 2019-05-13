@@ -63,11 +63,13 @@ namespace RogueElements.Tests
         public void PrepareSizeIncompleteFulfillableException(bool openDown, bool openLeft, bool openUp, bool openRight)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenException<ITiledGenContext> roomGen = new TestRoomGenException<ITiledGenContext>();
-            roomGen.openDown = openDown;
-            roomGen.openLeft = openLeft;
-            roomGen.openUp = openUp;
-            roomGen.openRight = openRight;
+            var roomGen = new TestRoomGenException<ITiledGenContext>
+            {
+                openDown = openDown,
+                openLeft = openLeft,
+                openUp = openUp,
+                openRight = openRight
+            };
             Assert.Throws<ArgumentException>(() => { roomGen.PrepareSize(testRand.Object, new Loc(1)); });
         }
 
@@ -246,11 +248,13 @@ namespace RogueElements.Tests
         public void ReceiveBorderRangeFulfilledTile(int rangeStart, int rangeEnd, Dir4 dir, int expectedStart, int expectedEnd, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            TestRoomGenException<ITiledGenContext> roomGen = new TestRoomGenException<ITiledGenContext>();
-            roomGen.openDown = true;
-            roomGen.openLeft = true;
-            roomGen.openUp = true;
-            roomGen.openRight = true;
+            var roomGen = new TestRoomGenException<ITiledGenContext>
+            {
+                openDown = true,
+                openLeft = true,
+                openUp = true,
+                openRight = true
+            };
             roomGen.PrepareSize(testRand.Object, new Loc(5, 7));
             roomGen.SetLoc(new Loc(1, 2));
 
@@ -386,11 +390,13 @@ namespace RogueElements.Tests
         [Test]
         public void SetRoomBordersSubFulfillable()
         {
-            TestRoomGenException<ITiledGenContext> roomGen = new TestRoomGenException<ITiledGenContext>();
-            roomGen.openDown = true;
-            roomGen.openLeft = true;
-            roomGen.openUp = true;
-            roomGen.openRight = true;
+            var roomGen = new TestRoomGenException<ITiledGenContext>
+            {
+                openDown = true,
+                openLeft = true,
+                openUp = true,
+                openRight = true
+            };
             string[] inGrid =  { "XXXXXXXX",
                                  "XX.....X",
                                  "XX.....X",
@@ -693,17 +699,13 @@ namespace RogueElements.Tests
         public void ChoosePossibleStartsOneReq()
         {
             //one sidereq, 3 tiles
-            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            var testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(5, 8));
-            List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(5);
-            set.Add(6);
-            set.Add(7);
+            var sideReqs = new List<Range> { new Range(5, 8) };
+            var compare = new List<HashSet<int>>();
+            var set = new HashSet<int> { 5, 6, 7 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -721,11 +723,9 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, false, true, false, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(5, 8));
+            List<Range> sideReqs = new List<Range> { new Range(5, 8) };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(6);
+            HashSet<int> set = new HashSet<int> { 6 };
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
             compare.Add(set);
@@ -743,17 +743,15 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 6));
-            sideReqs.Add(new Range(7, 9));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 6),
+                new Range(7, 9)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(7);
-            set.Add(8);
+            HashSet<int> set = new HashSet<int> { 7, 8 };
             compare.Add(set);
-            set = new HashSet<int>();
-            set.Add(4);
-            set.Add(5);
+            set = new HashSet<int> { 4, 5 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -774,13 +772,13 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 7));
-            sideReqs.Add(new Range(5, 8));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 7),
+                new Range(5, 8)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(5);
-            set.Add(6);
+            HashSet<int> set = new HashSet<int> { 5, 6 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -801,13 +799,13 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 9));
-            sideReqs.Add(new Range(6, 8));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 9),
+                new Range(6, 8)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(6);
-            set.Add(7);
+            HashSet<int> set = new HashSet<int> { 6, 7 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -826,15 +824,15 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, false, false, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 7));
-            sideReqs.Add(new Range(5, 8));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 7),
+                new Range(5, 8)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(4);
+            HashSet<int> set = new HashSet<int> { 4 };
             compare.Add(set);
-            set = new HashSet<int>();
-            set.Add(7);
+            set = new HashSet<int> { 7 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -859,17 +857,16 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 6));
-            sideReqs.Add(new Range(5, 8));
-            sideReqs.Add(new Range(7, 9));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 6),
+                new Range(5, 8),
+                new Range(7, 9)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(5);
+            HashSet<int> set = new HashSet<int> { 5 };
             compare.Add(set);
-            set = new HashSet<int>();
-            set.Add(7);
-            set.Add(8);
+            set = new HashSet<int> { 7, 8 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -894,17 +891,16 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             TestRoomGen<ITiledGenContext> roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>();
-            sideReqs.Add(new Range(4, 6));
-            sideReqs.Add(new Range(5, 8));
-            sideReqs.Add(new Range(7, 9));
+            List<Range> sideReqs = new List<Range>
+            {
+                new Range(4, 6),
+                new Range(5, 8),
+                new Range(7, 9)
+            };
             List<HashSet<int>> compare = new List<HashSet<int>>();
-            HashSet<int> set = new HashSet<int>();
-            set.Add(7);
+            HashSet<int> set = new HashSet<int> { 7 };
             compare.Add(set);
-            set = new HashSet<int>();
-            set.Add(4);
-            set.Add(5);
+            set = new HashSet<int> { 4, 5 };
             compare.Add(set);
 
             List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
@@ -926,8 +922,7 @@ namespace RogueElements.Tests
 
         public override bool Equals(object obj)
         {
-            TestTile other = obj as TestTile;
-            if (other == null)
+            if (!(obj is TestTile other))
                 return false;
             return other.ID == ID;
         }

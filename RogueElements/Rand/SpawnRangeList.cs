@@ -27,7 +27,7 @@ namespace RogueElements
             }
         }
         //TODO: Binary Space Partition Tree
-        private List<SpawnRange> spawns;
+        private readonly List<SpawnRange> spawns;
 
         public int Count { get { return spawns.Count; } }
 
@@ -93,14 +93,14 @@ namespace RogueElements
             return newList;
         }
 
-        
+
         public bool CanPick(int level)
         {
             foreach (SpawnRange spawn in spawns)
             {
                 if (spawn.Range.Min <= level && level < spawn.Range.Max && spawn.Rate > 0)
                     return true;
-                    
+
             }
             return false;
         }
@@ -128,7 +128,7 @@ namespace RogueElements
             throw new InvalidOperationException("Cannot spawn from a spawnlist of total rate 0!");
         }
 
-        
+
 
     }
 }

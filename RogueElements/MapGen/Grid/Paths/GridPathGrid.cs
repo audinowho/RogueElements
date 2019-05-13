@@ -105,7 +105,7 @@ namespace RogueElements
             }
             int halls = hHallSites.Count + vHallSites.Count;
             int placedHalls = halls * HallRatio / 100;
-            
+
             //place the halls
             for (int ii = 0; ii < hHallSites.Count; ii++)
             {

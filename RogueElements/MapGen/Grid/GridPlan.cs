@@ -12,17 +12,17 @@ namespace RogueElements
     public class GridPlan
     {
         public int CellWall;
-        
+
         public int WidthPerCell;
         public int HeightPerCell;
 
         protected int[][] rooms;
         protected GridHallPlan[][] vHalls;
         protected GridHallPlan[][] hHalls;
-        
+
         public int GridWidth { get { return rooms.Length; } }
         public int GridHeight { get { return rooms[0].Length; } }
-        
+
         public Loc Size
         {
             get
@@ -36,11 +36,11 @@ namespace RogueElements
         //list of all rooms on the entire floor
         //each entry is a different room, guaranteed
         protected List<GridRoomPlan> arrayRooms;
-        
+
         public int RoomCount { get { return arrayRooms.Count; } }
 
         public GridPlan() { }
-        
+
         public void InitSize(int width, int height, int widthPerCell, int heightPerCell, int cellWall = 1)
         {
             rooms = new int[width][];
@@ -121,9 +121,8 @@ namespace RogueElements
             GenContextDebug.StepIn("Main Rooms");
 
             List<RoomHallIndex> roomToHall = new List<RoomHallIndex>();
-            for (int ii = 0; ii < arrayRooms.Count; ii++)
+            foreach (var plan in arrayRooms)
             {
-                GridRoomPlan plan = arrayRooms[ii];
                 if (plan.CountsAsHall())
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
@@ -227,6 +226,10 @@ namespace RogueElements
                     if (locRay.Loc.X < GridWidth - 1)
                         return hHalls[locRay.Loc.X][locRay.Loc.Y].MainGen;
                     break;
+                case Dir4.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid enum value.");
             }
             return null;
         }
@@ -306,9 +309,11 @@ namespace RogueElements
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
                 }
             }
-            GridRoomPlan room = new GridRoomPlan(rect, gen.Copy());
-            room.Immutable = immutable;
-            room.PreferHall = preferHall;
+            GridRoomPlan room = new GridRoomPlan(rect, gen.Copy())
+            {
+                Immutable = immutable,
+                PreferHall = preferHall
+            };
             arrayRooms.Add(room);
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
@@ -322,7 +327,7 @@ namespace RogueElements
             Rect floorRect = new Rect(0, 0, GridWidth, GridHeight);
             if (!floorRect.Contains(rect))
                 return false;
-            
+
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
@@ -340,8 +345,6 @@ namespace RogueElements
 
         public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen)
         {
-            if (locRay.Dir <= Dir4.None || (int)locRay.Dir >= DirExt.DIR4_COUNT)
-                throw new ArgumentException("Invalid direction.");
             IPermissiveRoomGen addHall = null;
             if (hallGen != null)
                 addHall = (IPermissiveRoomGen)hallGen.Copy();
@@ -363,6 +366,10 @@ namespace RogueElements
                     if (locRay.Loc.X < GridWidth - 1)
                         hHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall);
                     break;
+                case Dir4.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid enum value.");
             }
         }
 
@@ -379,7 +386,7 @@ namespace RogueElements
         /// <summary>
         /// Decides on the room bounds for each room.
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="rand"></param>
         /// <param name="roomIndex"></param>
         public void ChooseRoomBounds(IRandom rand, int roomIndex)
         {
@@ -397,15 +404,15 @@ namespace RogueElements
         /// <summary>
         /// Decides on the bounds for each hall.  Also writes to the adjacent rooms' SideReqs and tile permissions
         /// </summary>
-        /// <param name="map"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="vertical"></param>
+        /// <param name="rand">todo: describe rand parameter on ChooseHallBounds</param>
         public void ChooseHallBounds(IRandom rand, int x, int y, bool vertical)
         {
             GridRoomPlan startRoom = GetRoomPlan(new Loc(x, y));
             GridRoomPlan endRoom = GetRoomPlan(new Loc(x + (vertical ? 0 : 1), y + (vertical ? 1 : 0)));
-            
+
             GridHallPlan hall = vertical ? vHalls[x][y] : hHalls[x][y];
             if (hall.MainGen != null)//also sets the sidereqs
             {
@@ -547,7 +554,7 @@ namespace RogueElements
             }
             return -1;
         }
-        
+
         public virtual Rect GetCellBounds(Rect bounds)
         {
             return new Rect(bounds.X * (WidthPerCell + CellWall), bounds.Y * (HeightPerCell + CellWall),
@@ -555,7 +562,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="room"></param>
         /// <param name="dir">Direction from room to hall.</param>
@@ -588,7 +595,7 @@ namespace RogueElements
                     break;
                 }
             }
-            
+
             int tierStart = vertical ? tier * (WidthPerCell + CellWall) : tier * (HeightPerCell + CellWall);
             int tierLength = vertical ? WidthPerCell : HeightPerCell;
             Range newRange = new Range(Math.Max(startRange.Min, tierStart), Math.Min(startRange.Max, tierStart+tierLength));
@@ -603,5 +610,5 @@ namespace RogueElements
             return newRange;
         }
     }
-    
+
 }

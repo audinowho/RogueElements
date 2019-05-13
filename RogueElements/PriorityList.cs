@@ -12,7 +12,7 @@ namespace RogueElements
     [Serializable]
     public class PriorityList<T> : IEnumerable<T>, IPriorityList<T>
     {
-        private Dictionary<int, List<T>> data;
+        private readonly Dictionary<int, List<T>> data;
 
         public PriorityList()
         {
@@ -90,8 +90,7 @@ namespace RogueElements
 
         public int GetCountAtPriority(int priority)
         {
-            List<T> items;
-            if (data.TryGetValue(priority, out items))
+            if (data.TryGetValue(priority, out List<T> items))
                 return items.Count;
             return 0;
         }

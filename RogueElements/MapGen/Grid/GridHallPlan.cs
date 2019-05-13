@@ -15,16 +15,7 @@ namespace RogueElements
     {
         public List<IPermissiveRoomGen> Gens;
 
-        public IPermissiveRoomGen MainGen
-        {
-            get
-            {
-                if (Gens.Count > 0)
-                    return Gens[0];
-                else
-                    return null;
-            }
-        }
+        public IPermissiveRoomGen MainGen => Gens.Count > 0 ? Gens[0] : null;
 
         public GridHallPlan()
         {
@@ -38,5 +29,5 @@ namespace RogueElements
                 Gens.Add(roomGen);
         }
     }
-    
+
 }

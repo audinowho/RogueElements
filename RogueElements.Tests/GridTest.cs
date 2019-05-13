@@ -80,9 +80,9 @@ namespace RogueElements.Tests
             char[][] map = InitGrid(inGrid);
             char[][] result_map = InitGrid(outGrid);
             //nothing is blocked
-            Grid.LocTest checkBlock = (Loc testLoc) => { return false; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return false; };
-            Grid.LocAction fill = (Loc fillLoc) => { map[fillLoc.X][fillLoc.Y] = '~'; };
+            bool checkBlock(Loc testLoc) => false;
+            bool checkDiag(Loc testLoc) => false;
+            void fill(Loc fillLoc) => map[fillLoc.X][fillLoc.Y] = '~';
 
             Grid.FloodFill(new Rect(new Loc(2), new Loc(3)), checkBlock, checkDiag, fill, new Loc(2));
             Assert.That(map, Is.EqualTo(result_map));
@@ -130,9 +130,9 @@ namespace RogueElements.Tests
             char[][] map = InitGrid(inGrid);
             char[][] result_map = InitGrid(outGrid);
             //nothing is blocked
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocAction fill = (Loc fillLoc) => { map[fillLoc.X][fillLoc.Y] = '~'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+            bool checkDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+            void fill(Loc fillLoc) => map[fillLoc.X][fillLoc.Y] = '~';
 
             Grid.FloodFill(new Rect(new Loc(), new Loc(map[0].Length, map.Length)), checkBlock, checkDiag, fill, new Loc(startX, startY));
             Assert.That(map, Is.EqualTo(result_map));
@@ -175,14 +175,15 @@ namespace RogueElements.Tests
             else
                 result_map = InitGrid(outGrid1);
             //nothing is blocked
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocTest checkDiag;
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
 
+            Grid.LocTest checkDiag;
             if (diagonal)
-                checkDiag = (Loc testLoc) => { return false; };
+                checkDiag = (Loc testLoc) => false;
             else
-                checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocAction fill = (Loc fillLoc) => { map[fillLoc.X][fillLoc.Y] = '~'; };
+                checkDiag = (Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+
+            void fill(Loc fillLoc) => map[fillLoc.X][fillLoc.Y] = '~';
 
             Grid.FloodFill(new Rect(new Loc(), new Loc(map[0].Length, map.Length)), checkBlock, checkDiag, fill, new Loc(3, 3));
             Assert.That(map, Is.EqualTo(result_map));
@@ -205,9 +206,9 @@ namespace RogueElements.Tests
             char[][] map = InitGrid(inGrid);
             char[][] result_map = InitGrid(outGrid);
             //nothing is blocked
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocAction fill = (Loc fillLoc) => { map[fillLoc.X][fillLoc.Y] = '~'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+            bool checkDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+            void fill(Loc fillLoc) => map[fillLoc.X][fillLoc.Y] = '~';
 
             Grid.FloodFill(new Rect(new Loc(), new Loc(map.Length, map[0].Length)), checkBlock, checkDiag, fill, new Loc(3, 1));
             Assert.That(map, Is.EqualTo(result_map));
@@ -301,8 +302,8 @@ namespace RogueElements.Tests
                 throw new Exception();
             char[][] map = InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool checkDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             bool isChoke = Grid.IsChokePoint(new Loc(), new Loc(map[0].Length, map.Length), new Loc(2), checkBlock, checkDiag);
             Assert.That(isChoke, Is.EqualTo(result));
@@ -320,13 +321,13 @@ namespace RogueElements.Tests
                                 ".XXX." };
             char[][] map = InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkDiag;
+            bool checkBlock(Loc testLoc) { return map[testLoc.X][testLoc.Y] == 'X'; }
 
+            Grid.LocTest checkDiag;
             if (diagonal)
-                checkDiag = (Loc testLoc) => { return false; };
+                checkDiag = (Loc testLoc) => false;
             else
-                checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
+                checkDiag = (Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             bool isChoke = Grid.IsChokePoint(new Loc(), new Loc(map[0].Length, map.Length), new Loc(2), checkBlock, checkDiag);
             Assert.That(isChoke, Is.EqualTo(result));
@@ -344,13 +345,13 @@ namespace RogueElements.Tests
                                 "....." };
             char[][] map = InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkDiag;
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
+            Grid.LocTest checkDiag;
             if (diagonal)
-                checkDiag = (Loc testLoc) => { return false; };
+                checkDiag = (Loc testLoc) => false;
             else
-                checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
+                checkDiag = (Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             bool isChoke = Grid.IsChokePoint(new Loc(1), new Loc(map[0].Length, map.Length) - new Loc(2), new Loc(2), checkBlock, checkDiag);
             Assert.That(isChoke, Is.EqualTo(true));
@@ -438,13 +439,13 @@ namespace RogueElements.Tests
             foreach (Dir8 dir in resultList)
                 compare.Add(dir);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkDiag;
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
+            Grid.LocTest checkDiag;
             if (diagonal)
-                checkDiag = (Loc testLoc) => { return false; };
+                checkDiag = (Loc testLoc) => false;
             else
-                checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
+                checkDiag = (Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             List<Dir8> result = Grid.GetForkDirs(new Loc(1), checkBlock, checkDiag);
             Assert.That(result, Is.EquivalentTo(compare));
@@ -473,8 +474,8 @@ namespace RogueElements.Tests
             map[start.X][start.Y] = 'X';
 
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool checkDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             bool blocked = Grid.IsDirBlocked(new Loc(1, 1), Dir8.Right, checkBlock, checkDiag, distance);
             Assert.That(blocked, Is.EqualTo(result));
@@ -507,8 +508,8 @@ namespace RogueElements.Tests
 
             char[][] map = InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+            bool checkDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
 
             bool blocked = Grid.IsDirBlocked(new Loc(6, 6), dir, checkBlock, checkDiag, distance);
             Assert.That(blocked, Is.EqualTo(result));
@@ -528,12 +529,13 @@ namespace RogueElements.Tests
 
             char[][] map = InitGrid(inGrid);
 
-            Grid.LocTest checkBlock = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
+            bool checkBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
+
             Grid.LocTest checkDiag;
             if (diagonal)
-                checkDiag = (Loc testLoc) => { return false; };
+                checkDiag = (Loc testLoc) => false;
             else
-                checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] != '.'; };
+                checkDiag = (Loc testLoc) => map[testLoc.X][testLoc.Y] != '.';
 
             bool blocked = Grid.IsDirBlocked(new Loc(1, 1), Dir8.DownRight, checkBlock, checkDiag, 3);
             Assert.That(blocked, Is.EqualTo(result));
@@ -546,9 +548,9 @@ namespace RogueElements.Tests
         public void IsDirBlockedException(Dir8 dir)
         {
             //nothing is blocked
-            Grid.LocTest checkBlock = (Loc testLoc) => { return false; };
-            Grid.LocTest checkDiag = (Loc testLoc) => { return false; };
-            
+            bool checkBlock(Loc testLoc) => false;
+            bool checkDiag(Loc testLoc) => false;
+
             Assert.Throws<ArgumentException>(() => { Grid.IsDirBlocked(new Loc(), dir, checkBlock, checkDiag, 0); });
         }
     }

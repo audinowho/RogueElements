@@ -30,13 +30,13 @@ namespace RogueElements
             //compute a goal amount of terminals to connect
             //this computation ignores the fact that some terminals may be impossible
             int connectionsLeft = ConnectFactor.Pick(rand) * candBranchPoints.Count / 2 / 100;
-            
+
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)
             {
                 //choose random point to connect from
                 int randIndex = rand.Next(candBranchPoints.Count);
                 ListPathTraversalNode chosenDest = chooseConnection(rand, floorPlan, candBranchPoints);
-                
+
                 if (chosenDest != null)
                 {
                     //connect

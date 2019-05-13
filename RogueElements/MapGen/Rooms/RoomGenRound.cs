@@ -66,7 +66,7 @@ namespace RogueElements
                         map.SetTile(new Loc(Draw.X + ii, Draw.Y + jj), map.RoomTerrain.Copy());
                 }
             }
-            
+
             //hall restrictions
             SetRoomBorders(map);
         }

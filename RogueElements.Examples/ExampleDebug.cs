@@ -147,8 +147,7 @@ namespace RogueElements.Examples
 
         public static ConsoleKey PrintTiles(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
-            ITiledGenContext context = map as ITiledGenContext;
-            if (context == null)
+            if (!(map is ITiledGenContext context))
                 return ConsoleKey.Enter;
             if (!context.TilesInitialized)
                 return ConsoleKey.Enter;
@@ -236,8 +235,7 @@ namespace RogueElements.Examples
 
         public static ConsoleKey PrintListRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
-            IFloorPlanGenContext context = map as IFloorPlanGenContext;
-            if (context == null)
+            if (!(map is IFloorPlanGenContext context))
                 return ConsoleKey.Enter;
 
             StringBuilder str = new StringBuilder();
@@ -255,9 +253,7 @@ namespace RogueElements.Examples
 
             for (int ii = 0; ii < plan.RoomCount; ii++)
             {
-                char chosenChar = '@';
-                //if (ii < 26)
-                chosenChar = (char)('A' + ii % 26);
+                char chosenChar = (char)('A' + ii % 26);
                 IRoomGen gen = plan.GetRoom(ii);
                 for (int xx = gen.Draw.Left; xx < gen.Draw.Right; xx++)
                 {
@@ -274,9 +270,7 @@ namespace RogueElements.Examples
             }
             for (int ii = 0; ii < plan.HallCount; ii++)
             {
-                char chosenChar = '#';
-                //if (ii < 26)
-                chosenChar = (char)('a' + ii % 26);
+                char chosenChar = (char)('a' + ii % 26);
 
                 IRoomGen gen = plan.GetHall(ii);
 
@@ -401,8 +395,7 @@ namespace RogueElements.Examples
 
         public static ConsoleKey PrintGridRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
-            IRoomGridGenContext context = map as IRoomGridGenContext;
-            if (context == null)
+            if (!(map is IRoomGridGenContext context))
                 return ConsoleKey.Enter;
 
             StringBuilder str = new StringBuilder();

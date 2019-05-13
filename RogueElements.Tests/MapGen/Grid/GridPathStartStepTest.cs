@@ -18,9 +18,8 @@ namespace RogueElements.Tests
             string[] outGrid = { "A.0",
                                  ". .",
                                  "0.0" };
-            
-            Mock<GridPathStartStepGeneric<IGridPathTestContext>> pathGen = new Mock<GridPathStartStepGeneric<IGridPathTestContext>>();
-            pathGen.CallBase = true;
+
+            var pathGen = new Mock<GridPathStartStepGeneric<IGridPathTestContext>> { CallBase = true };
 
             Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('A'));

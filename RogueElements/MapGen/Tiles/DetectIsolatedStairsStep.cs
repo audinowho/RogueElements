@@ -15,8 +15,8 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
-            int offX = 0;
-            int offY = 0;
+            const int offX = 0;
+            const int offY = 0;
             int lX = map.Width;
             int lY = map.Height;
             bool[][] connectionGrid = new bool[lX][];

@@ -29,13 +29,13 @@ namespace RogueElements
             //this computation ignores the fact that some terminals may be impossible
             RandBinomial randBin = new RandBinomial(candBranchPoints.Count, ConnectPercent);
             int connectionsLeft = randBin.Pick(rand);
-            
+
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)
             {
                 //choose random point to connect from
                 int randIndex = rand.Next(candBranchPoints.Count);
                 ListPathTraversalNode chosenDest = chooseConnection(rand, floorPlan, candBranchPoints[randIndex]);
-                
+
                 if (chosenDest != null)
                 {
                     //connect

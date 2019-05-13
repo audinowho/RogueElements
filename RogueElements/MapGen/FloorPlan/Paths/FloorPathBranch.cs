@@ -268,7 +268,7 @@ namespace RogueElements
                 currentScalar = maxCollideScalar + 1;
             }
         }
-        
+
 
         /// <summary>
         /// Returns a random generic room or hall that can fit in the specified floor.
@@ -279,7 +279,7 @@ namespace RogueElements
         /// <returns></returns>
         public virtual RoomGen<T> PrepareRoom(IRandom rand, FloorPlan floorPlan, bool isHall)
         {
-            RoomGen<T> room = null;
+            RoomGen<T> room;
             if (!isHall) //choose a room
                 room = GenericRooms.Pick(rand).Copy();
             else // chose a hall
@@ -294,7 +294,7 @@ namespace RogueElements
             room.PrepareSize(rand, size);
             return room;
         }
-        
+
     }
 
     public class ListPathBranchExpansion
@@ -311,5 +311,5 @@ namespace RogueElements
         }
     }
 
-    
+
 }

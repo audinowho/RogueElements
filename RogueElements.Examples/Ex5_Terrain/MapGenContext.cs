@@ -111,10 +111,7 @@ namespace RogueElements.Examples.Ex5_Terrain
 
         protected List<Loc> getOpenTiles(Rect rect)
         {
-            Grid.LocTest checkOp = (Loc loc) =>
-            {
-                return !isTileOccupied(loc);
-            };
+            bool checkOp(Loc loc) => !isTileOccupied(loc);
 
             return Grid.FindTilesInBox(rect.Start, rect.Size, checkOp);
         }

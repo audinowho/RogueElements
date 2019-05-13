@@ -32,7 +32,7 @@ namespace RogueElements
     {
         public Rect Bounds;
         public int Area;
-        
+
         public MapBlob(Rect bounds, int area)
         {
             Bounds = bounds;

@@ -12,7 +12,7 @@ namespace RogueElements
     [Serializable]
     public abstract class FloorPlanStep<T> : GenStep<T> where T : class, IFloorPlanGenContext
     {
-        public FloorPlanStep() { }
+        protected FloorPlanStep() { }
 
         public abstract void ApplyToPath(IRandom rand, FloorPlan floorPlan);
 

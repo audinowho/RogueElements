@@ -77,11 +77,13 @@ namespace RogueElements.Tests
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
             //get free tiles
-            List<Loc> freeLocs = new List<Loc>();
-            freeLocs.Add(new Loc(1, 2));
-            freeLocs.Add(new Loc(3, 4));
-            freeLocs.Add(new Loc(5, 5));
-            freeLocs.Add(new Loc(3, 2));
+            var freeLocs = new List<Loc>
+            {
+                new Loc(1, 2),
+                new Loc(3, 4),
+                new Loc(5, 5),
+                new Loc(3, 2)
+            };
             mockMap.Setup(p => p.GetFreeTiles(new Rect(10, 20, 30, 40))).Returns(freeLocs);
             //expect place item
             mockMap.Setup(p => p.PlaceItem(new Loc(locX, locY), 'a'));
@@ -93,8 +95,7 @@ namespace RogueElements.Tests
             mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(roomPlan);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
-            Mock<RoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RoomSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<RoomSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
 
             roomSpawner.Object.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), 'a');
 
@@ -119,18 +120,19 @@ namespace RogueElements.Tests
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
-            spawningRooms.Add(new RoomHallIndex(0, false), 1);
-            spawningRooms.Add(new RoomHallIndex(1, false), 1);
-            spawningRooms.Add(new RoomHallIndex(2, false), 1);
+            var spawningRooms = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), 1 },
+                { new RoomHallIndex(1, false), 1 },
+                { new RoomHallIndex(2, false), 1 }
+            };
 
             //get a list of spawns
             List<char> spawns = new List<char>();
             for (int ii = 0; ii < 4; ii++)
                 spawns.Add('a');
 
-            Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), 'a')).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), 'a')).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), 'a')).Returns(true);
@@ -162,18 +164,19 @@ namespace RogueElements.Tests
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
-            spawningRooms.Add(new RoomHallIndex(0, false), 1);
-            spawningRooms.Add(new RoomHallIndex(1, false), 1);
-            spawningRooms.Add(new RoomHallIndex(2, false), 1);
+            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), 1 },
+                { new RoomHallIndex(1, false), 1 },
+                { new RoomHallIndex(2, false), 1 }
+            };
 
             //get a list of spawns
             List<char> spawns = new List<char>();
             for (int ii = 0; ii < 5; ii++)
                 spawns.Add('a');
 
-            Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), 'a')).Returns(successful);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), 'a')).Returns(successful);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), 'a')).Returns(successful);
@@ -202,18 +205,19 @@ namespace RogueElements.Tests
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
-            spawningRooms.Add(new RoomHallIndex(0, false), 4);
-            spawningRooms.Add(new RoomHallIndex(1, false), 4);
-            spawningRooms.Add(new RoomHallIndex(2, false), 4);
+            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), 4 },
+                { new RoomHallIndex(1, false), 4 },
+                { new RoomHallIndex(2, false), 4 }
+            };
 
             //get a list of spawns
             List<char> spawns = new List<char>();
             for (int ii = 0; ii < 5; ii++)
                 spawns.Add('a');
 
-            Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), 'a')).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), 'a')).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), 'a')).Returns(true);
@@ -246,13 +250,14 @@ namespace RogueElements.Tests
 
             Mock<List<char>> mockSpawns = new Mock<List<char>>(MockBehavior.Strict);
 
-            Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
 
-            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>();
-            compare.Add(new RoomHallIndex(0, false));
-            compare.Add(new RoomHallIndex(1, false));
-            compare.Add(new RoomHallIndex(2, false));
+            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>
+            {
+                new RoomHallIndex(0, false),
+                new RoomHallIndex(1, false),
+                new RoomHallIndex(2, false)
+            };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, 100));
             
@@ -276,32 +281,31 @@ namespace RogueElements.Tests
             mockFloor.Setup(p => p.GetRoom(3)).Returns(new TestFloorPlanGen('D'));
             List<int> adjacents = new List<int>();
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(2);
+            adjacents = new List<int> { 2 };
             mockFloor.Setup(p => p.GetAdjacentRooms(1)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(1);
-            adjacents.Add(3);
+            adjacents = new List<int> { 1, 3 };
             mockFloor.Setup(p => p.GetAdjacentRooms(2)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(2);
+            adjacents = new List<int>  { 2 };
             mockFloor.Setup(p => p.GetAdjacentRooms(3)).Returns(adjacents);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             Mock<List<char>> mockSpawns = new Mock<List<char>>(MockBehavior.Strict);
 
 
-            Mock<TerminalSpawnStep<IPlaceableRoomTestContext, char>> roomSpawner = new Mock<TerminalSpawnStep<IPlaceableRoomTestContext, char>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<TerminalSpawnStep<IPlaceableRoomTestContext, char>> { CallBase = true };
 
-            SpawnList<RoomHallIndex> compare1 = new SpawnList<RoomHallIndex>();
-            compare1.Add(new RoomHallIndex(1, false));
-            compare1.Add(new RoomHallIndex(3, false));
-            SpawnList<RoomHallIndex> compare2 = new SpawnList<RoomHallIndex>();
-            compare2.Add(new RoomHallIndex(0, false));
-            compare2.Add(new RoomHallIndex(1, false));
-            compare2.Add(new RoomHallIndex(2, false));
-            compare2.Add(new RoomHallIndex(3, false));
+            var compare1 = new SpawnList<RoomHallIndex>
+            {
+                new RoomHallIndex(1, false),
+                new RoomHallIndex(3, false)
+            };
+            var compare2 = new SpawnList<RoomHallIndex>
+            {
+                new RoomHallIndex(0, false),
+                new RoomHallIndex(1, false),
+                new RoomHallIndex(2, false),
+                new RoomHallIndex(3, false)
+            };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, It.IsAny<int>()));
 
@@ -327,15 +331,11 @@ namespace RogueElements.Tests
             mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
-            List<int> adjacents = new List<int>();
-            adjacents.Add(1);
+            List<int> adjacents = new List<int> { 1 };
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(0);
-            adjacents.Add(2);
+            adjacents = new List<int> { 0, 2 };
             mockFloor.Setup(p => p.GetAdjacentRooms(1)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(1);
+            adjacents = new List<int> { 1 };
             mockFloor.Setup(p => p.GetAdjacentRooms(2)).Returns(adjacents);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -344,16 +344,17 @@ namespace RogueElements.Tests
             Mock<List<char>> mockSpawns = new Mock<List<char>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>> { CallBase = true };
             roomSpawner.Object.SuccessPercent = 100;
 
             int maxVal = 3;
             int rooms = 3;
-            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>();
-            compare.Add(new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 1);
-            compare.Add(new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 2);
-            compare.Add(new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 3);
+            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 1 },
+                { new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 2 },
+                { new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 3 }
+            };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, 100));
 
@@ -379,15 +380,11 @@ namespace RogueElements.Tests
             mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
-            List<int> adjacents = new List<int>();
-            adjacents.Add(1);
+            List<int> adjacents = new List<int> { 1 };
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(0);
-            adjacents.Add(2);
+            adjacents = new List<int> { 0, 2 };
             mockFloor.Setup(p => p.GetAdjacentRooms(1)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(1);
+            adjacents = new List<int> { 1 };
             mockFloor.Setup(p => p.GetAdjacentRooms(2)).Returns(adjacents);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -396,16 +393,20 @@ namespace RogueElements.Tests
             Mock<List<char>> mockSpawns = new Mock<List<char>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>>
+            {
+                CallBase = true
+            };
             roomSpawner.Object.SuccessPercent = 100;
 
             int maxVal = 2;
             int rooms = 3;
-            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>();
-            compare.Add(new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 2);
-            compare.Add(new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 1);
-            compare.Add(new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 2);
+            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 2 },
+                { new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 1 },
+                { new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 2 }
+            };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, 100));
 
@@ -434,21 +435,13 @@ namespace RogueElements.Tests
             mockFloor.Setup(p => p.GetRoom(3)).Returns(new TestFloorPlanGen('D'));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
-            List<int> adjacents = new List<int>();
-            adjacents.Add(1);
-            adjacents.Add(2);
+            List<int> adjacents = new List<int> { 1, 2 };
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(0);
-            adjacents.Add(3);
+            adjacents = new List<int> { 0, 3 };
             mockFloor.Setup(p => p.GetAdjacentRooms(1)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(0);
-            adjacents.Add(3);
+            adjacents = new List<int> { 0, 3 };
             mockFloor.Setup(p => p.GetAdjacentRooms(2)).Returns(adjacents);
-            adjacents = new List<int>();
-            adjacents.Add(2);
-            adjacents.Add(1);
+            adjacents = new List<int> { 2, 1 };
             mockFloor.Setup(p => p.GetAdjacentRooms(3)).Returns(adjacents);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -457,17 +450,18 @@ namespace RogueElements.Tests
             Mock<List<char>> mockSpawns = new Mock<List<char>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>>();
-            roomSpawner.CallBase = true;
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, char, int>> { CallBase = true };
             roomSpawner.Object.SuccessPercent = 100;
 
             int maxVal = 3;
             int rooms = 4;
-            SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>();
-            compare.Add(new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 1);
-            compare.Add(new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 2);
-            compare.Add(new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 2);
-            compare.Add(new RoomHallIndex(3, false), Int32.MaxValue / maxVal / rooms * 3);
+            var compare = new SpawnList<RoomHallIndex>
+            {
+                { new RoomHallIndex(0, false), Int32.MaxValue / maxVal / rooms * 1 },
+                { new RoomHallIndex(1, false), Int32.MaxValue / maxVal / rooms * 2 },
+                { new RoomHallIndex(2, false), Int32.MaxValue / maxVal / rooms * 2 },
+                { new RoomHallIndex(3, false), Int32.MaxValue / maxVal / rooms * 3 }
+            };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, 100));
 
