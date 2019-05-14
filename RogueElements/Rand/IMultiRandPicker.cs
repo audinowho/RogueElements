@@ -38,5 +38,4 @@ namespace RogueElements
         /// <returns></returns>
         IMultiRandPicker<T> CopyState();
     }
-
 }

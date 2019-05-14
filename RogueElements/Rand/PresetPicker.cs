@@ -4,8 +4,8 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -16,20 +16,35 @@ namespace RogueElements
     [Serializable]
     public class PresetPicker<T> : IRandPicker<T>
     {
-        public T ToSpawn;
-        public bool ChangesState { get { return false; } }
-        public bool CanPick { get { return true; } }
+        public PresetPicker()
+        {
+        }
 
-        public PresetPicker() { }
-        public PresetPicker(T toSpawn) { ToSpawn = toSpawn; }
+        public PresetPicker(T toSpawn)
+        {
+            this.ToSpawn = toSpawn;
+        }
+
         protected PresetPicker(PresetPicker<T> other)
         {
-            ToSpawn = other.ToSpawn;
+            this.ToSpawn = other.ToSpawn;
         }
-        public IRandPicker<T> CopyState() { return new PresetPicker<T>(this); }
 
-        public IEnumerator<T> GetEnumerator() { yield return ToSpawn; }
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
-        public T Pick(IRandom rand) { return ToSpawn; }
+        public T ToSpawn { get; }
+
+        public bool ChangesState => false;
+
+        public bool CanPick => true;
+
+        public IRandPicker<T> CopyState() => new PresetPicker<T>(this);
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            yield return this.ToSpawn;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        public T Pick(IRandom rand) => this.ToSpawn;
     }
 }

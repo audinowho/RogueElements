@@ -17,33 +17,50 @@ namespace RogueElements
     {
         public int Min;
         public int Max;
-        public bool ChangesState => false;
-        public bool CanPick => Min <= Max;
 
-        public RandRange(int num) { Min = num; Max = num; }
-        public RandRange(int min, int max) { Min = min; Max = max; }
+        public RandRange(int num)
+        {
+            this.Min = num;
+            this.Max = num;
+        }
+
+        public RandRange(int min, int max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
         public RandRange(RandRange other)
         {
-            Min = other.Min;
-            Max = other.Max;
+            this.Min = other.Min;
+            this.Max = other.Max;
         }
+
+        public bool ChangesState => false;
+
+        public bool CanPick => this.Min <= this.Max;
+
+        public static bool operator ==(RandRange lhs, RandRange rhs) => lhs.Equals(rhs);
+
+        public static bool operator !=(RandRange lhs, RandRange rhs) => !lhs.Equals(rhs);
+
         public IRandPicker<int> CopyState() => new RandRange(this);
 
         public IEnumerator<int> GetEnumerator()
         {
-            yield return Min;
-            for (int ii = Min + 1; ii < Max; ii++)
+            yield return this.Min;
+            for (int ii = this.Min + 1; ii < this.Max; ii++)
                 yield return ii;
         }
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public int Pick(IRandom rand) => rand.Next(Min, Max);
 
-        public bool Equals(RandRange other) => Min == other.Min && Max == other.Max;
-        public override bool Equals(object obj) => (obj is RandRange) && Equals((RandRange)obj);
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        public override int GetHashCode() => unchecked(191 + (Min.GetHashCode() * 313) ^ (Max.GetHashCode() * 739));
+        public int Pick(IRandom rand) => rand.Next(this.Min, this.Max);
 
-        public static bool operator ==(RandRange lhs, RandRange rhs) => lhs.Equals(rhs);
-        public static bool operator !=(RandRange lhs, RandRange rhs) => !lhs.Equals(rhs);
+        public bool Equals(RandRange other) => this.Min == other.Min && this.Max == other.Max;
+
+        public override bool Equals(object obj) => (obj is RandRange) && this.Equals((RandRange)obj);
+
+        public override int GetHashCode() => unchecked(191 + (this.Min.GetHashCode() * 313) ^ (this.Max.GetHashCode() * 739));
     }
 }

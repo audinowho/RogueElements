@@ -10,7 +10,6 @@ using System.Text;
 
 namespace RogueElements
 {
-
     public static class DirExt
     {
         public const int DIRH_COUNT = 2;
@@ -20,12 +19,12 @@ namespace RogueElements
         public const int AXIS4_COUNT = 2;
         public const int AXIS8_COUNT = 4;
 
-        public static readonly IEnumerable<DirH> VALID_DIRH = new DirH[]{ DirH.Left, DirH.Right };
-        public static readonly IEnumerable<DirV> VALID_DIRV = new DirV[]{ DirV.Up, DirV.Down };
-        public static readonly IEnumerable<Dir4> VALID_DIR4 = new Dir4[]{ Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
-        public static readonly IEnumerable<Dir8> VALID_DIR8 = new Dir8[]{ Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
-        public static readonly IEnumerable<Axis4> VALID_AXIS4 = new Axis4[]{ Axis4.Vert, Axis4.Horiz };
-        public static readonly IEnumerable<Axis8> VALID_AXIS8 = new Axis8[]{ Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
+        public static readonly IEnumerable<DirH> VALID_DIRH = new DirH[] { DirH.Left, DirH.Right };
+        public static readonly IEnumerable<DirV> VALID_DIRV = new DirV[] { DirV.Up, DirV.Down };
+        public static readonly IEnumerable<Dir4> VALID_DIR4 = new Dir4[] { Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
+        public static readonly IEnumerable<Dir8> VALID_DIR8 = new Dir8[] { Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
+        public static readonly IEnumerable<Axis4> VALID_AXIS4 = new Axis4[] { Axis4.Vert, Axis4.Horiz };
+        public static readonly IEnumerable<Axis8> VALID_AXIS8 = new Axis8[] { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
 
         public static bool Validate(this DirV dir)
         {
@@ -138,6 +137,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir8 ToDir8(this DirH dir)
         {
             switch (dir)
@@ -149,6 +149,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir8 ToDir8(this DirV dir)
         {
             switch (dir)
@@ -160,6 +161,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir8 ToDir8(this Dir4 dir)
         {
             switch (dir)
@@ -173,6 +175,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir4 ToDir4(this Dir8 dir)
         {
             switch (dir)
@@ -310,6 +313,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Loc GetLoc(this DirV dir)
         {
             switch (dir)
@@ -371,7 +375,6 @@ namespace RogueElements
             }
         }
 
-
         public static DirH Reverse(this DirH dir)
         {
             switch (dir)
@@ -386,6 +389,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static DirV Reverse(this DirV dir)
         {
             switch (dir)
@@ -400,6 +404,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir4 Reverse(this Dir4 dir)
         {
             switch (dir)
@@ -418,6 +423,7 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
+
         public static Dir8 Reverse(this Dir8 dir)
         {
             switch (dir)
@@ -447,37 +453,50 @@ namespace RogueElements
 
         public static Dir8 Combine(DirH horiz, DirV vert)
         {
-            if (vert == DirV.Down)
+            switch (vert)
             {
-                if (horiz == DirH.Right)
-                    return Dir8.DownRight;
-                else if (horiz == DirH.Left)
-                    return Dir8.DownLeft;
-                else if (horiz == DirH.None)
-                    return Dir8.Down;
+                case DirV.Down:
+                    switch (horiz)
+                    {
+                        case DirH.Right:
+                            return Dir8.DownRight;
+                        case DirH.Left:
+                            return Dir8.DownLeft;
+                        case DirH.None:
+                            return Dir8.Down;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(horiz), horiz, "Invalid enum value.");
+                    }
+
+                case DirV.Up:
+                    switch (horiz)
+                    {
+                        case DirH.Right:
+                            return Dir8.UpRight;
+                        case DirH.Left:
+                            return Dir8.UpLeft;
+                        case DirH.None:
+                            return Dir8.Up;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(horiz), horiz, "Invalid enum value.");
+                    }
+
+                case DirV.None:
+                    switch (horiz)
+                    {
+                        case DirH.Right:
+                            return Dir8.Right;
+                        case DirH.Left:
+                            return Dir8.Left;
+                        case DirH.None:
+                            return Dir8.None;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(horiz), horiz, "Invalid enum value.");
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(vert), vert, "Invalid enum value.");
             }
-            else if (vert == DirV.Up)
-            {
-                if (horiz == DirH.Right)
-                    return Dir8.UpRight;
-                else if (horiz == DirH.Left)
-                    return Dir8.UpLeft;
-                else if (horiz == DirH.None)
-                    return Dir8.Up;
-            }
-            else if (vert == DirV.None)
-            {
-                if (horiz == DirH.Right)
-                    return Dir8.Right;
-                else if (horiz == DirH.Left)
-                    return Dir8.Left;
-                else if (horiz == DirH.None)
-                    return Dir8.None;
-            }
-            if (!horiz.Validate())
-                throw new ArgumentOutOfRangeException(nameof(horiz), horiz, "Invalid enum value.");
-            else
-                throw new ArgumentOutOfRangeException(nameof(vert), vert, "Invalid enum value.");
         }
 
         public static void Separate(this Dir8 dir, out DirH horiz, out DirV vert)
@@ -489,16 +508,12 @@ namespace RogueElements
                 case Dir8.Down:
                 case Dir8.DownLeft:
                 case Dir8.DownRight:
-                    {
-                        vert = DirV.Down;
-                    }
+                    vert = DirV.Down;
                     break;
                 case Dir8.Up:
                 case Dir8.UpLeft:
                 case Dir8.UpRight:
-                    {
-                        vert = DirV.Up;
-                    }
+                    vert = DirV.Up;
                     break;
                 default:
                     vert = DirV.None;
@@ -510,23 +525,18 @@ namespace RogueElements
                 case Dir8.Left:
                 case Dir8.UpLeft:
                 case Dir8.DownLeft:
-                    {
-                        horiz = DirH.Left;
-                    }
+                    horiz = DirH.Left;
                     break;
                 case Dir8.Right:
                 case Dir8.UpRight:
                 case Dir8.DownRight:
-                    {
-                        horiz = DirH.Right;
-                    }
+                    horiz = DirH.Right;
                     break;
                 default:
                     horiz = DirH.None;
                     break;
             }
         }
-
 
         public static Dir8 GetDir(Loc loc1, Loc loc2)
         {
@@ -563,8 +573,6 @@ namespace RogueElements
                     return Dir8.None;
             }
         }
-
-
 
         public static Dir8 GetBoundsDir(Loc start, Loc size, Loc point)
         {
@@ -615,17 +623,17 @@ namespace RogueElements
             {
                 if (loc.Y >= loc.X)
                     return Dir4.Down;
-                else if (loc.Y <= -loc.X)//Y is negative; flip X
-                    return Dir4.Up;
+                else if (loc.Y <= -loc.X)
+                    return Dir4.Up; // Y is negative; flip X
                 else
                     return Dir4.Right;
             }
             else if (loc.X < 0)
             {
-                if (loc.Y >= -loc.X)//X is negative; flip X
-                    return Dir4.Down;
-                else if (loc.Y <= loc.X)//X and Y both negative
-                    return Dir4.Up;
+                if (loc.Y >= -loc.X)
+                    return Dir4.Down; // X is negative; flip X
+                else if (loc.Y <= loc.X)
+                    return Dir4.Up; // X and Y both negative
                 else
                     return Dir4.Left;
             }
@@ -640,7 +648,6 @@ namespace RogueElements
             }
         }
 
-
         /// <summary>
         /// Cardinal directions take precedent over diagonal directions.
         /// </summary>
@@ -650,15 +657,16 @@ namespace RogueElements
         {
             if (loc.X > 0)
             {
-                //Compare dot products to find the vector this one is closest to.
+                // Compare dot products to find the vector this one is closest to.
                 Dir8 cardinal, diagonal;
                 if (loc.Y >= loc.X)
                 {
                     cardinal = Dir8.Down;
                     diagonal = Dir8.DownRight;
                 }
-                else if (loc.Y <= -loc.X)//Y is negative; flip X
+                else if (loc.Y <= -loc.X)
                 {
+                    // Y is negative; flip X
                     cardinal = Dir8.Up;
                     diagonal = Dir8.UpRight;
                 }
@@ -672,14 +680,18 @@ namespace RogueElements
                     cardinal = Dir8.Right;
                     diagonal = Dir8.UpRight;
                 }
-                else// == 0
+                else
+                {
+                    // == 0
                     return Dir8.Right;
+                }
 
                 int dot1 = Loc.Dot(cardinal.GetLoc(), loc);
                 int dot2 = Loc.Dot(diagonal.GetLoc(), loc);
-                //the length of the diagonal vector is 2
-                //to get a proper comparison:
-                //square both dot products, divide the diagonal by 2
+
+                // the length of the diagonal vector is 2
+                // to get a proper comparison:
+                // square both dot products, divide the diagonal by 2
                 if (dot1 * dot1 >= dot2 * dot2 / 2)
                     return cardinal;
                 else
@@ -687,44 +699,46 @@ namespace RogueElements
             }
             else if (loc.X < 0)
             {
-                //Compare dot products to find the vector this one is closest to.
+                // Compare dot products to find the vector this one is closest to.
                 Dir8 cardinal, diagonal;
-                if (loc.Y >= -loc.X)//X is negative; flip X
+                if (loc.Y >= -loc.X)
                 {
-                    //Down-DownLeft
+                    // X is negative; flip X
+                    // Down-DownLeft
                     cardinal = Dir8.Down;
                     diagonal = Dir8.DownLeft;
                 }
-                else if (loc.Y <= loc.X)//X and Y both negative
+                else if (loc.Y <= loc.X)
                 {
-                    //Up-UpLeft
+                    // X and Y both negative
+                    // Up-UpLeft
                     cardinal = Dir8.Up;
                     diagonal = Dir8.UpLeft;
                 }
                 else if (loc.Y > 0)
                 {
-                    //Left-DownLeft
+                    // Left-DownLeft
                     cardinal = Dir8.Left;
                     diagonal = Dir8.DownLeft;
                 }
                 else if (loc.Y < 0)
                 {
-                    //Left-UpLeft
+                    // Left-UpLeft
                     cardinal = Dir8.Left;
                     diagonal = Dir8.UpLeft;
                 }
                 else
+                {
                     return Dir8.Left;
+                }
 
                 int dot1 = Loc.Dot(cardinal.GetLoc(), loc);
                 int dot2 = Loc.Dot(diagonal.GetLoc(), loc);
-                //the length of the diagonal vector is 2
-                //to get a proper comparison:
-                //square both dot products, divide the diagonal by 2
-                if (dot1 * dot1 >= dot2 * dot2 / 2)
-                    return cardinal;
-                else
-                    return diagonal;
+
+                // the length of the diagonal vector is 2
+                // to get a proper comparison:
+                // square both dot products, divide the diagonal by 2
+                return dot1 * dot1 >= dot2 * dot2 / 2 ? cardinal : diagonal;
             }
             else
             {
@@ -793,7 +807,9 @@ namespace RogueElements
         public static Dir4 GetDir(this Axis4 axis, int scalar)
         {
             if (scalar == 0 & axis.Validate())
+            {
                 return Dir4.None;
+            }
             else
             {
                 switch (axis)
@@ -804,15 +820,18 @@ namespace RogueElements
                         return scalar < 0 ? Dir4.Left : Dir4.Right;
                     case Axis4.Vert:
                         return scalar < 0 ? Dir4.Up : Dir4.Down;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
                 }
             }
-            throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
         }
 
         public static Dir8 GetDir(this Axis8 axis, int scalar)
         {
             if (scalar == 0 & axis.Validate())
+            {
                 return Dir8.None;
+            }
             else
             {
                 switch (axis)
@@ -827,9 +846,10 @@ namespace RogueElements
                         return scalar < 0 ? Dir8.UpLeft : Dir8.DownRight;
                     case Axis8.DiagForth:
                         return scalar < 0 ? Dir8.DownLeft : Dir8.UpRight;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
                 }
             }
-            throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
         }
 
         public static int GetScalar(this Loc loc, Axis4 axis)

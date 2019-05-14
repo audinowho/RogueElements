@@ -15,34 +15,42 @@ namespace RogueElements
     [Serializable]
     public class LoopedRand<T> : IMultiRandPicker<T>
     {
-        public IRandPicker<T> Spawner;
-        public IRandPicker<int> AmountSpawner;
-        public bool ChangesState { get { return Spawner.ChangesState || AmountSpawner.ChangesState; } }
-        public bool CanPick { get { return AmountSpawner.CanPick; } }
+        private readonly IRandPicker<T> spawner;
+        private readonly IRandPicker<int> amountSpawner;
 
-        public LoopedRand() { }
+        public LoopedRand()
+        {
+        }
+
         public LoopedRand(IRandPicker<T> spawner, IRandPicker<int> amountSpawner)
         {
-            Spawner = spawner;
-            AmountSpawner = amountSpawner;
+            this.spawner = spawner;
+            this.amountSpawner = amountSpawner;
         }
+
         protected LoopedRand(LoopedRand<T> other)
         {
-            Spawner = other.Spawner.CopyState();
-            AmountSpawner = other.AmountSpawner.CopyState();
+            this.spawner = other.spawner.CopyState();
+            this.amountSpawner = other.amountSpawner.CopyState();
         }
-        public IMultiRandPicker<T> CopyState() { return new LoopedRand<T>(this); }
+
+        public bool ChangesState => this.spawner.ChangesState || this.amountSpawner.ChangesState;
+
+        public bool CanPick => this.amountSpawner.CanPick;
+
+        public IMultiRandPicker<T> CopyState() => new LoopedRand<T>(this);
 
         public List<T> Roll(IRandom rand)
         {
             List<T> result = new List<T>();
-            int amount = AmountSpawner.Pick(rand);
+            int amount = this.amountSpawner.Pick(rand);
             for (int ii = 0; ii < amount; ii++)
             {
-                if (!Spawner.CanPick)
+                if (!this.spawner.CanPick)
                     break;
-                result.Add(Spawner.Pick(rand));
+                result.Add(this.spawner.Pick(rand));
             }
+
             return result;
         }
     }

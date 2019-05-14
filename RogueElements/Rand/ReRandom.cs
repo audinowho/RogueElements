@@ -4,11 +4,10 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Runtime;
 using System.Runtime.CompilerServices;
-using System.Globalization;
-using System.Diagnostics.Contracts;
-
 
 namespace RogueElements
 {
@@ -20,35 +19,26 @@ namespace RogueElements
     {
         private readonly ulong[] s;
 
-        /// <summary>
-        /// The seed value that the class was initialized with.
-        /// </summary>
-        public ulong FirstSeed { get; private set; }
-
-
         public ReRandom()
             : this(unchecked((ulong)System.DateTime.Now.Ticks))
         {
         }
 
-        public ReRandom(ulong Seed)
+        public ReRandom(ulong seed)
         {
-            FirstSeed = Seed;
+            this.FirstSeed = seed;
 
-            s = new ulong[2];
-            s[0] = splitMix64(FirstSeed);
-            s[1] = splitMix64(s[1]);
+            this.s = new ulong[2];
+            this.s[0] = SplitMix64(this.FirstSeed);
+            this.s[1] = SplitMix64(this.s[1]);
         }
 
-        private static ulong splitMix64(ulong x)
-        {
-            ulong z = (x += 0x9E3779B97F4A7C15);
-            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
-            z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
-            return z ^ (z >> 31);
-        }
+        /// <summary>
+        /// The seed value that the class was initialized with.
+        /// </summary>
+        public ulong FirstSeed { get; private set; }
 
-        //xoroshiro128+
+        // xoroshiro128+
         /* This is the successor to xorshift128+. It is the fastest full-period
            generator passing BigCrush without systematic failures, but due to the
            relatively short period it is acceptable only for applications with a
@@ -68,83 +58,64 @@ namespace RogueElements
            a 64-bit seed, we suggest to seed a splitmix64 generator and use its
            output to fill s. */
 
-        private static ulong rotl(ulong x, int k)
+        public virtual ulong NextUInt64()
         {
-            return (x << k) | (x >> (64 - k));
-        }
-
-        public virtual ulong NextUInt64() {
-            ulong s0 = s[0];
-            ulong s1 = s[1];
+            ulong s0 = this.s[0];
+            ulong s1 = this.s[1];
             ulong result = s0 + s1;
 
             s1 ^= s0;
-            s[0] = rotl(s0, 55) ^ s1 ^ (s1 << 14); // a, b
-            s[1] = rotl(s1, 36); // c
+            this.s[0] = Rotl(s0, 55) ^ s1 ^ (s1 << 14); // a, b
+            this.s[1] = Rotl(s1, 36); // c
 
-            return (result >> 1 | result << 63);
+            return result >> 1 | result << 63;
         }
-
-
-        ///* This is the jump function for the generator. It is equivalent
-        //   to 2^64 calls to next(); it can be used to generate 2^64
-        //   non-overlapping subsequences for parallel computations. */
-
-        //void jump(void) {
-        //    static const uint64_t JUMP[] = { 0xbeac0467eba5facb, 0xd86b048b86aa9922 };
-
-        //    uint64_t s0 = 0;
-        //    uint64_t s1 = 0;
-        //    for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
-        //        for(int b = 0; b < 64; b++) {
-        //            if (JUMP[i] & 1ULL << b) {
-        //                s0 ^= s[0];
-        //                s1 ^= s[1];
-        //            }
-        //            next();
-        //        }
-
-        //    s[0] = s0;
-        //    s[1] = s1;
-        //}
 
         public virtual int Next()
         {
-            return (int)(NextUInt64() % Int32.MaxValue);
+            return (int)(this.NextUInt64() % int.MaxValue);
         }
 
         public virtual int Next(int minValue, int maxValue)
         {
             if (minValue > maxValue)
-            {
                 throw new ArgumentOutOfRangeException(nameof(minValue), $"{nameof(minValue)} must be lower than or equal to {nameof(maxValue)}");
-            }
+
             Contract.EndContractBlock();
 
             long range = (long)maxValue - minValue;
             if (range == 0)
                 return minValue;
-            return (int)((long)(NextUInt64() % (ulong)range) + minValue);
+            return (int)((long)(this.NextUInt64() % (ulong)range) + minValue);
         }
-
 
         public virtual int Next(int maxValue)
         {
             if (maxValue < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(maxValue), $"{nameof(maxValue)} must be equal to or greater than zero");
-            }
+
             Contract.EndContractBlock();
             if (maxValue == 0)
                 return 0;
-            return (int)(NextUInt64() % (ulong)maxValue);
+            return (int)(this.NextUInt64() % (ulong)maxValue);
         }
-
 
         public virtual double NextDouble()
         {
-            return ((double)NextUInt64() / ((double)UInt64.MaxValue + 1));
+            return (double)this.NextUInt64() / ((double)ulong.MaxValue + 1);
+        }
+
+        private static ulong SplitMix64(ulong x)
+        {
+            ulong z = x += 0x9E3779B97F4A7C15;
+            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
+            z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
+            return z ^ (z >> 31);
+        }
+
+        private static ulong Rotl(ulong x, int k)
+        {
+            return (x << k) | (x >> (64 - k));
         }
     }
-
 }

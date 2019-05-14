@@ -15,25 +15,39 @@ namespace RogueElements
     [Serializable]
     public class PresetMultiRand<T> : IMultiRandPicker<T>
     {
-        public List<T> ToSpawn;
-        public bool ChangesState { get { return false; } }
-        public bool CanPick { get { return ToSpawn != null; } }
-
-        public PresetMultiRand() { ToSpawn = new List<T>(); }
-        public PresetMultiRand(params T[] toSpawn) : this() { ToSpawn.AddRange(toSpawn); }
-        public PresetMultiRand(List<T> toSpawn) { ToSpawn = toSpawn; }
-        protected PresetMultiRand(PresetMultiRand<T> other) : this()
+        public PresetMultiRand()
         {
-            ToSpawn.AddRange(other.ToSpawn);
+            this.ToSpawn = new List<T>();
         }
-        public IMultiRandPicker<T> CopyState() { return new PresetMultiRand<T>(this); }
+
+        public PresetMultiRand(params T[] toSpawn)
+        {
+            this.ToSpawn = new List<T>(toSpawn);
+        }
+
+        public PresetMultiRand(List<T> toSpawn)
+        {
+            this.ToSpawn = toSpawn;
+        }
+
+        protected PresetMultiRand(PresetMultiRand<T> other)
+        {
+            this.ToSpawn = new List<T>(other.ToSpawn);
+        }
+
+        public List<T> ToSpawn { get; }
+
+        public bool ChangesState => false;
+
+        public bool CanPick => this.ToSpawn != null;
+
+        public IMultiRandPicker<T> CopyState() => new PresetMultiRand<T>(this);
 
         public List<T> Roll(IRandom rand)
         {
             List<T> result = new List<T>();
-            result.AddRange(ToSpawn);
+            result.AddRange(this.ToSpawn);
             return result;
         }
     }
-
 }
