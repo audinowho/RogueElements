@@ -12,11 +12,17 @@ using System.Diagnostics.Contracts;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A custom random class that holds on to its seed, for repeatability.
+    /// </summary>
     [Serializable]
     public class ReRandom : IRandom
     {
         private readonly ulong[] s;
 
+        /// <summary>
+        /// The seed value that the class was initialized with.
+        /// </summary>
         public ulong FirstSeed { get; private set; }
 
 

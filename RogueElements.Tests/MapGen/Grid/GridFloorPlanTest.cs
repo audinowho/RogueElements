@@ -292,61 +292,6 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        //valid adjacent rooms
-        [TestCase(1, 1, 2, 1, 0)]
-        [TestCase(1, 1, 1, 2, 1)]
-        [TestCase(2, 1, 1, 1, 0)]
-        [TestCase(1, 2, 1, 1, 1)]
-        //non-adjacent rooms
-        [TestCase(1, 1, 1, 1, -1)]
-        [TestCase(1, 1, 3, 1, -1)]
-        //diagonals
-        [TestCase(1, 1, 2, 2, -1)]
-        [TestCase(1, 1, 0, 2, -1)]
-        public void SetConnectingHall(int x1, int y1, int x2, int y2, int expected)
-        {
-            string[] inGrid = { "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0"};
-
-            string[] outGrid = null;
-            bool exception = false;
-            if (expected == 0)
-            {
-                outGrid = new string[]{ "0.0.0.0",
-                                        ". . . .",
-                                        "0.0#0.0",
-                                        ". . . .",
-                                        "0.0.0.0"};
-            }
-            else if (expected == 1)
-            {
-                outGrid = new string[]{ "0.0.0.0",
-                                        ". . . .",
-                                        "0.0.0.0",
-                                        ". # . .",
-                                        "0.0.0.0"};
-            }
-            else
-                exception = true;
-            
-            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            var gen = new TestGridRoomGen((char)0);
-            if (exception)
-            {
-                Assert.Throws<ArgumentException>(() => { floorPlan.SetConnectingHall(new Loc(x1, y1), new Loc(x2, y2), gen); });
-                return;
-            }
-            else
-                floorPlan.SetConnectingHall(new Loc(x1, y1), new Loc(x2, y2), gen);
-            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
-
-            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
-        }
-
-        [Test]
         //normal size
         [TestCase(8, 5, 6, 4, 6, 4, 3, 2, 0, 0)]
         //normal size offset

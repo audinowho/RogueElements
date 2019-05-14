@@ -20,10 +20,10 @@ namespace RogueElements
 
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
-            for (int ii = 0; ii < 4; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                for(int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
-                    fulfillableBorder[ii][jj] = true;
+                for(int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
+                    fulfillableBorder[dir][jj] = true;
             }
         }
 

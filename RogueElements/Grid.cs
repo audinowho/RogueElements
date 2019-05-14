@@ -57,11 +57,11 @@ namespace RogueElements
 
                 currentTile.Traversed = true;
 
-                for (int ii = 0; ii < 8; ii++)
+                foreach (Dir8 dir in DirExt.VALID_DIR8)
                 {
-                    if (!IsDirBlocked(currentTile.Location, ii.ToWrappedDir8(), checkBlock, checkDiagBlock))
+                    if (!IsDirBlocked(currentTile.Location, dir, checkBlock, checkDiagBlock))
                     {
-                        Loc newLoc = currentTile.Location - rectStart + ii.ToWrappedDir8().GetLoc();
+                        Loc newLoc = currentTile.Location - rectStart + dir.GetLoc();
                         if (Collision.InBounds(rectSize.X, rectSize.Y, newLoc))
                         {
                             PathTile tile = tiles[newLoc.X][newLoc.Y];
@@ -260,10 +260,10 @@ namespace RogueElements
                         yield break;
                 }
 
-                for (int ii = 0; ii < 8; ii++)
+                foreach (Dir8 dir in DirExt.VALID_DIR8)
                 {
-                    Loc movedLoc = candidate + ii.ToWrappedDir8().GetLoc();
-                    if (Collision.InBounds(rectSize.X, rectSize.Y, movedLoc) && !fillArray[movedLoc.X][movedLoc.Y] && !IsDirBlocked(candidate + rectStart, ii.ToWrappedDir8(), checkBlock, checkDiagBlock))
+                    Loc movedLoc = candidate + dir.GetLoc();
+                    if (Collision.InBounds(rectSize.X, rectSize.Y, movedLoc) && !fillArray[movedLoc.X][movedLoc.Y] && !IsDirBlocked(candidate + rectStart, dir, checkBlock, checkDiagBlock))
                     {
                         Loc diff = movedLoc - offset_loc;
                         locList.Enqueue(diff.DistSquared(), movedLoc);
@@ -349,19 +349,20 @@ namespace RogueElements
         {
             List<Dir8> forks = new List<Dir8>();
             bool prevBlocked = IsDirBlocked(point, Dir8.Down, checkBlock, checkDiagBlock);
-            int switches = 0;
-            for (int ii = 0; ii < 8; ii++)
+            Dir8 dir = Dir8.DownLeft;
+            do
             {
-                Dir8 dir = (Dir8)((ii + 1) % 8);
                 bool newBlock = IsDirBlocked(point, dir, checkBlock, checkDiagBlock);
                 if (newBlock != prevBlocked)
                 {
-                    switches++;
                     if (!newBlock)
                         forks.Add(dir);
                     prevBlocked = newBlock;
                 }
+
+                dir = dir.Rotate(1);
             }
+            while (dir != Dir8.DownLeft);
 
             return forks;
         }
@@ -378,7 +379,7 @@ namespace RogueElements
             if (checkDiagBlock == null)
                 throw new ArgumentNullException(nameof(checkDiagBlock));
 
-            if (dir < Dir8.None || (int)dir >= DirExt.DIR8_COUNT)
+            if (!dir.Validate())
                 throw new ArgumentException("Invalid value to check.");
             else if (dir == Dir8.None)
                 return false;

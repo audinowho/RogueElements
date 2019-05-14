@@ -18,22 +18,22 @@ namespace RogueElements
     {
         //Ranges that must have at least one of their permitted tiles touched
         [NonSerialized]
-        protected List<Range>[] roomSideReqs;
+        protected Dictionary<Dir4, List<Range>> roomSideReqs;
 
         //tiles that have been touched during room gen
-        public bool GetOpenedBorder(Dir4 dir, int index) { return openedBorder[(int)dir][index]; }
+        public bool GetOpenedBorder(Dir4 dir, int index) { return openedBorder[dir][index]; }
         [NonSerialized]
-        protected bool[][] openedBorder;
+        protected Dictionary<Dir4, bool[]> openedBorder;
 
         //tiles that this room can take as incoming paths
-        public bool GetFulfillableBorder(Dir4 dir, int index) { return fulfillableBorder[(int)dir][index]; }
+        public bool GetFulfillableBorder(Dir4 dir, int index) { return fulfillableBorder[dir][index]; }
         [NonSerialized]
-        protected bool[][] fulfillableBorder;
+        protected Dictionary<Dir4, bool[]> fulfillableBorder;
 
         //tiles that, if touched during this room's gen, signify that the req has been filled
         //"the req" refers to the side reqs for that side.
         [NonSerialized]
-        protected bool[][] borderToFulfill;
+        protected Dictionary<Dir4, bool[]> borderToFulfill;
 
         public int GetBorderLength(Dir4 dir) { return Draw.GetSide(dir.ToAxis()).Length; }
 
@@ -47,12 +47,12 @@ namespace RogueElements
         public RoomGen()
         {
 
-            roomSideReqs = new List<Range>[DirExt.DIR4_COUNT];
-            for (int ii = 0; ii < roomSideReqs.Length; ii++)
-                roomSideReqs[ii] = new List<Range>();
-            openedBorder = new bool[DirExt.DIR4_COUNT][];
-            fulfillableBorder = new bool[DirExt.DIR4_COUNT][];
-            borderToFulfill = new bool[DirExt.DIR4_COUNT][];
+            roomSideReqs = new Dictionary<Dir4, List<Range>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                roomSideReqs[dir] = new List<Range>();
+            openedBorder = new Dictionary<Dir4, bool[]>();
+            fulfillableBorder = new Dictionary<Dir4, bool[]>();
+            borderToFulfill = new Dictionary<Dir4, bool[]>();
 
             draw = new Rect(new Loc(-1), new Loc(-1));
         }
@@ -85,22 +85,22 @@ namespace RogueElements
 
             draw.Size = size;
             //set all border tile classes to the correct length
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                openedBorder[ii] = new bool[GetBorderLength((Dir4)ii)];
-                fulfillableBorder[ii] = new bool[GetBorderLength((Dir4)ii)];
-                borderToFulfill[ii] = new bool[GetBorderLength((Dir4)ii)];
+                openedBorder[dir] = new bool[GetBorderLength(dir)];
+                fulfillableBorder[dir] = new bool[GetBorderLength(dir)];
+                borderToFulfill[dir] = new bool[GetBorderLength(dir)];
             }
 
             PrepareFulfillableBorders(rand);
 
             //verify that possible borders has at least one TRUE in each array
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 bool hasRequestable = false;
-                for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
+                for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
                 {
-                    if (fulfillableBorder[ii][jj])
+                    if (fulfillableBorder[dir][jj])
                     {
                         hasRequestable = true;
                         break;
@@ -146,8 +146,7 @@ namespace RogueElements
             //compute the starting index in otherBorder to start transferring
             Range sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
             fillSideReq(sourceSide, dir);
-
-            bool[] destBorder = borderToFulfill[(int)dir];
+            bool[] destBorder = borderToFulfill[dir];
             Loc diff = sourceRoom.Draw.Start - Draw.Start;//how far ahead the start of source is to dest
             //compute the starting index in otherBorder to start transferring
             int offset = diff.GetScalar(dir.ToAxis().Orth());
@@ -173,8 +172,9 @@ namespace RogueElements
         public virtual void ReceiveBorderRange(Range range, Dir4 dir)
         {
             fillSideReq(range, dir);
+            
+            bool[] destBorder = borderToFulfill[dir];
 
-            bool[] destBorder = borderToFulfill[(int)dir];
             //compute the starting index in otherBorder to start transferring
             int offset = range.Min - Draw.Start.GetScalar(dir.ToAxis().Orth());
             //Traverse the region that both borders touch
@@ -187,7 +187,7 @@ namespace RogueElements
         {
             if (range.Length <= 0)
                 throw new ArgumentException("Range must have a positive length.");
-            if (dir <= Dir4.None || (int)dir >= DirExt.DIR4_COUNT)
+            if (dir == Dir4.None || !dir.Validate())
                 throw new ArgumentException("Invalid dir value.");
             //also throw exception if the range fails to
             //hit at least one open requestableBorderTile
@@ -196,7 +196,7 @@ namespace RogueElements
             bool fulfillable = false;
             for (int ii = trueRange.Min - side.Min; ii < trueRange.Max - side.Min; ii++)
             {
-                if (fulfillableBorder[(int)dir][ii])
+                if (fulfillableBorder[dir][ii])
                 {
                     fulfillable = true;
                     break;
@@ -204,7 +204,7 @@ namespace RogueElements
             }
             if (!fulfillable)
                 throw new ArgumentException("The given range does not include a fulfillable tile!");
-            roomSideReqs[(int)dir].Add(trueRange);
+            roomSideReqs[dir].Add(trueRange);
         }
 
         //needs to pass in cell size
@@ -231,14 +231,14 @@ namespace RogueElements
         {
             for (int ii = 0; ii < Draw.Width; ii++)
             {
-                openedBorder[(int)Dir4.Up][ii] = fulfillableBorder[(int)Dir4.Up][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y));
-                openedBorder[(int)Dir4.Down][ii] = fulfillableBorder[(int)Dir4.Down][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1));
+                openedBorder[Dir4.Up][ii] = fulfillableBorder[Dir4.Up][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y));
+                openedBorder[Dir4.Down][ii] = fulfillableBorder[Dir4.Down][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1));
             }
 
             for (int ii = 0; ii < Draw.Height; ii++)
             {
-                openedBorder[(int)Dir4.Left][ii] = fulfillableBorder[(int)Dir4.Left][ii] && !map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii));
-                openedBorder[(int)Dir4.Right][ii] = fulfillableBorder[(int)Dir4.Right][ii] && !map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii));
+                openedBorder[Dir4.Left][ii] = fulfillableBorder[Dir4.Left][ii] && !map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii));
+                openedBorder[Dir4.Right][ii] = fulfillableBorder[Dir4.Right][ii] && !map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii));
             }
         }
 
@@ -254,11 +254,11 @@ namespace RogueElements
             //for each side
 
             //get all unfulfilled borders
-            List<Range>[] unfulfilled = new List<Range>[roomSideReqs.Length];
-            for (int ii = 0; ii < roomSideReqs.Length; ii++)
+            var unfulfilled = new Dictionary<Dir4, List<Range>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                unfulfilled[ii] = new List<Range>();
-                unfulfilled[ii].AddRange(roomSideReqs[ii]);
+                unfulfilled[dir] = new List<Range>();
+                unfulfilled[dir].AddRange(roomSideReqs[dir]);
             }
 
             if (!openAll)
@@ -266,30 +266,29 @@ namespace RogueElements
                 for (int ii = 0; ii < Draw.Width; ii++)
                 {
                     if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y)))
-                        updateUnfulfilled(unfulfilled[(int)Dir4.Up], Draw.Start.X + ii);
+                        updateUnfulfilled(unfulfilled[Dir4.Up], Draw.Start.X + ii);
 
                     if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1)))
-                        updateUnfulfilled(unfulfilled[(int)Dir4.Down], Draw.Start.X + ii);
+                        updateUnfulfilled(unfulfilled[Dir4.Down], Draw.Start.X + ii);
                 }
 
                 for (int ii = 0; ii < Draw.Height; ii++)
                 {
                     if (!map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii)))
-                        updateUnfulfilled(unfulfilled[(int)Dir4.Left], Draw.Start.Y + ii);
+                        updateUnfulfilled(unfulfilled[Dir4.Left], Draw.Start.Y + ii);
                     if (!map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii)))
-                        updateUnfulfilled(unfulfilled[(int)Dir4.Right], Draw.Start.Y + ii);
+                        updateUnfulfilled(unfulfilled[Dir4.Right], Draw.Start.Y + ii);
                 }
             }
 
-            for (int ii = 0; ii < unfulfilled.Length; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Dir4 dir = (Dir4)ii;
                 //get the permitted tiles for each sidereq
                 Range side = Draw.GetSide(dir.ToAxis());
 
                 if (!openAll)
                 {
-                    List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, borderToFulfill[ii], unfulfilled[ii]);
+                    List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, borderToFulfill[dir], unfulfilled[dir]);
                     //randomly roll them
                     List<int> resultEntrances = new List<int>();
                     foreach (HashSet<int> candidateSet in candidateEntrances)
@@ -302,9 +301,9 @@ namespace RogueElements
                 {
                     for (int jj = 0; jj < side.Length; jj++)
                     {
-                        if (fulfillableBorder[ii][jj])
+                        if (fulfillableBorder[dir][jj])
                         {
-                            foreach (Range range in unfulfilled[ii])
+                            foreach (Range range in unfulfilled[dir])
                             {
                                 if (range.Contains(side.Min + jj))
                                 {

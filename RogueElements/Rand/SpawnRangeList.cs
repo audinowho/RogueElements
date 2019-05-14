@@ -8,7 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-
+    /// <summary>
+    /// A data structure representing spawn rates of items spread across a range of floors.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SpawnRangeList<T>
     {

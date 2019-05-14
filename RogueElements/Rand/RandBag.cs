@@ -9,11 +9,23 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Selects an item randomly from a list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RandBag<T> : IRandPicker<T>
     {
+        /// <summary>
+        /// The items to choose from.
+        /// </summary>
         public List<T> ToSpawn;
+
+        /// <summary>
+        /// False if this is a bag with replacement.  True if not.
+        /// </summary>
         public bool RemoveOnRoll;
+
         public bool ChangesState { get { return RemoveOnRoll; } }
         public bool CanPick { get { return ToSpawn.Count > 0; } }
 

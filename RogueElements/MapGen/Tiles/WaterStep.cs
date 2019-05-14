@@ -11,6 +11,9 @@ namespace RogueElements
     [Serializable]
     public abstract class WaterStep<T> : GenStep<T> where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Tile representing the water terrain to paint with.
+        /// </summary>
         public ITile Terrain;
 
         protected WaterStep() { }
@@ -20,10 +23,9 @@ namespace RogueElements
             Terrain = terrain;
         }
 
-
         protected void drawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
         {
-            MapBlob mapBlob = blobMap.Blobs[index];
+            BlobMap.Blob mapBlob = blobMap.Blobs[index];
             for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
             {
                 for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Height); yy++)

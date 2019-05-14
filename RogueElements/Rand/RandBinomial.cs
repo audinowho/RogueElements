@@ -9,12 +9,28 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a random number in a binomial distribution.
+    /// </summary>
     [Serializable]
     public class RandBinomial : IRandPicker<int>
     {
+        /// <summary>
+        /// Adds an amount to the result before returning.
+        /// </summary>
         public int Offset;
+
+        /// <summary>
+        /// The number of trials in the binomial distribution.
+        /// </summary>
         public int Trials;
+
+        /// <summary>
+        /// The chance of an individual event occurring in the binomial distribution.
+        /// </summary>
         public int Percent;
+
+
         public bool ChangesState { get { return false; } }
         public bool CanPick { get { return true; } }
 

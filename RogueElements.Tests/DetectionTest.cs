@@ -25,7 +25,7 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            List<MapBlob> compareBlobs = new List<MapBlob>();
+            List<BlobMap.Blob> compareBlobs = new List<BlobMap.Blob>();
 
             bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0,0, map.Length, map[0].Length),locTest);
@@ -52,7 +52,7 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            var compareBlobs = new List<MapBlob> { new MapBlob(new Rect(1, 1, 4, 3), 7) };
+            var compareBlobs = new List<BlobMap.Blob> { new BlobMap.Blob(new Rect(1, 1, 4, 3), 7) };
 
             bool locTest(Loc loc) => map[loc.X][loc.Y];
             BlobMap result = Detection.DetectBlobs(new Rect(0, 0, map.Length, map[0].Length), locTest);
@@ -82,10 +82,10 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            var compareBlobs = new List<MapBlob>
+            var compareBlobs = new List<BlobMap.Blob>
             {
-                new MapBlob(new Rect(1, 1, 2, 2), 4),
-                new MapBlob(new Rect(3, 3, 2, 2), 4)
+                new BlobMap.Blob(new Rect(1, 1, 2, 2), 4),
+                new BlobMap.Blob(new Rect(3, 3, 2, 2), 4)
             };
 
             bool locTest(Loc loc) => map[loc.X][loc.Y];
@@ -112,10 +112,10 @@ namespace RogueElements.Tests
             bool[][] map = GridTest.InitBoolGrid(inGrid);
             int[][] blob = GridTest.InitIntGrid(outGrid);
 
-            var compareBlobs = new List<MapBlob>
+            var compareBlobs = new List<BlobMap.Blob>
             {
-                new MapBlob(new Rect(0, 0, 2, 2), 4),
-                new MapBlob(new Rect(4, 0, 2, 2), 4)
+                new BlobMap.Blob(new Rect(0, 0, 2, 2), 4),
+                new BlobMap.Blob(new Rect(4, 0, 2, 2), 4)
             };
 
             bool locTest(Loc loc) => map[loc.X][loc.Y];

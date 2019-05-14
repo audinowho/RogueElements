@@ -15,28 +15,6 @@ namespace RogueElements.Tests
         /// <param name="exception"></param>
 
         [Test]
-        [TestCase(Dir8.None, -1)]
-        [TestCase(Dir8.Down, 0)]
-        [TestCase(Dir8.Left, 1)]
-        [TestCase(Dir8.Up, 2)]
-        [TestCase(Dir8.Right, 3)]
-        [TestCase(Dir8.DownLeft, 4)]
-        [TestCase(Dir8.UpLeft, 5)]
-        [TestCase(Dir8.UpRight, 6)]
-        [TestCase(Dir8.DownRight, 7)]
-        [TestCase((Dir8)(-2), 0, true)]
-        [TestCase((Dir8)(8), 0, true)]
-        public void ToWrappedInt(Dir8 dir, int expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToWrappedInt(); });
-            else
-                Assert.That(dir.ToWrappedInt(), Is.EqualTo(expected));
-        }
-
-
-
-        [Test]
         [TestCase(DirH.None, Dir4.None)]
         [TestCase(DirH.Left, Dir4.Left)]
         [TestCase(DirH.Right, Dir4.Right)]
@@ -45,7 +23,7 @@ namespace RogueElements.Tests
         public void ToDir4(DirH dir, Dir4 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir4(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir4(); });
             else
                 Assert.That(dir.ToDir4(), Is.EqualTo(expected));
         }
@@ -60,7 +38,7 @@ namespace RogueElements.Tests
         public void ToDir4(DirV dir, Dir4 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir8(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir8(); });
             else
                 Assert.That(dir.ToDir4(), Is.EqualTo(expected));
         }
@@ -75,7 +53,7 @@ namespace RogueElements.Tests
         public void ToDir8(DirH dir, Dir8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir8(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir8(); });
             else
                 Assert.That(dir.ToDir8(), Is.EqualTo(expected));
         }
@@ -90,7 +68,7 @@ namespace RogueElements.Tests
         public void ToDir8(DirV dir, Dir8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir8(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir8(); });
             else
                 Assert.That(dir.ToDir8(), Is.EqualTo(expected));
         }
@@ -106,7 +84,7 @@ namespace RogueElements.Tests
         public void ToDir8(Dir4 dir, Dir8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir8(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir8(); });
             else
                 Assert.That(dir.ToDir8(), Is.EqualTo(expected));
         }
@@ -126,57 +104,11 @@ namespace RogueElements.Tests
         public void ToDir4(Dir8 dir, Dir4 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.ToDir4(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.ToDir4(); });
             else
                 Assert.That(dir.ToDir4(), Is.EqualTo(expected));
         }
 
-        //526
-        //1X3
-        //407
-        [Test]
-        [TestCase(-1, Dir8.None)]
-        [TestCase(0, Dir8.Down)]
-        [TestCase(1, Dir8.Left)]
-        [TestCase(2, Dir8.Up)]
-        [TestCase(3, Dir8.Right)]
-        [TestCase(4, Dir8.DownLeft)]
-        [TestCase(5, Dir8.UpLeft)]
-        [TestCase(6, Dir8.UpRight)]
-        [TestCase(7, Dir8.DownRight)]
-        [TestCase(-2, 0, true)]
-        [TestCase(8, 0, true)]
-        public void ToWrappedDir8(int n, Dir8 expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { n.ToWrappedDir8(); });
-            else
-                Assert.That(n.ToWrappedDir8(), Is.EqualTo(expected));
-        }
-
-
-        //576
-        //3X4
-        //102
-        [Test]
-        [TestCase(-1, Dir8.None)]
-        [TestCase(0, Dir8.Down)]
-        [TestCase(1, Dir8.DownLeft)]
-        [TestCase(2, Dir8.DownRight)]
-        [TestCase(3, Dir8.Left)]
-        [TestCase(4, Dir8.Right)]
-        [TestCase(5, Dir8.UpLeft)]
-        [TestCase(6, Dir8.UpRight)]
-        [TestCase(7, Dir8.Up)]
-        [TestCase(-2, 0, true)]
-        [TestCase(8, 0, true)]
-        public void ToFocusedDir8(int n, Dir8 expected, bool exception = false)
-        {
-            if (exception)
-                Assert.Throws<ArgumentException>(() => { n.ToFocusedDir8(); });
-            else
-                Assert.That(n.ToFocusedDir8(), Is.EqualTo(expected));
-        }
 
         [Test]
         [TestCase(Axis4.None, Axis8.None)]
@@ -187,7 +119,7 @@ namespace RogueElements.Tests
         public void ToAxis8(Axis4 axis, Axis8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { axis.ToAxis8(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { axis.ToAxis8(); });
             else
                 Assert.That(axis.ToAxis8(), Is.EqualTo(expected));
         }
@@ -201,7 +133,7 @@ namespace RogueElements.Tests
         public void Reverse(DirH dir, DirH expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.Reverse(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.Reverse(); });
             else
             {
                 Assert.That(dir.Reverse(), Is.EqualTo(expected));
@@ -217,7 +149,7 @@ namespace RogueElements.Tests
         public void Reverse(DirV dir, DirV expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.Reverse(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.Reverse(); });
             else
             {
                 Assert.That(dir.Reverse(), Is.EqualTo(expected));
@@ -234,7 +166,7 @@ namespace RogueElements.Tests
         public void Reverse(Dir4 dir, Dir4 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.Reverse(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.Reverse(); });
             else
             {
                 Assert.That(dir.Reverse(), Is.EqualTo(expected));
@@ -254,7 +186,7 @@ namespace RogueElements.Tests
         public void Reverse(Dir8 dir, Dir8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { dir.Reverse(); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { dir.Reverse(); });
             else
             {
                 Assert.That(dir.Reverse(), Is.EqualTo(expected));
@@ -289,7 +221,7 @@ namespace RogueElements.Tests
         [TestCase((DirV)(2), DirV.None)]
         public void CombineEx(DirH horiz, DirV vert)
         {
-            Assert.Throws<ArgumentException>(() => { DirExt.Combine(horiz, vert); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.Combine(horiz, vert); });
         }
 
         [Test]
@@ -297,7 +229,7 @@ namespace RogueElements.Tests
         [TestCase((Dir8)(8))]
         public void SeparateEx(Dir8 dir)
         {
-            Assert.Throws<ArgumentException>(() => { dir.Separate(out DirH resH, out DirV resV); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { dir.Separate(out DirH resH, out DirV resV); });
         }
 
 
@@ -453,6 +385,51 @@ namespace RogueElements.Tests
         }
 
 
+        [Test]
+        [TestCase(Dir4.Down, 0, Dir4.Down)]
+        [TestCase(Dir4.Left, 0, Dir4.Left)]
+        [TestCase(Dir4.Left, -4, Dir4.Left)]
+        [TestCase(Dir4.Up, 4, Dir4.Up)]
+        [TestCase(Dir4.Down, 1, Dir4.Left)]
+        [TestCase(Dir4.Right, 1, Dir4.Down)]
+        [TestCase(Dir4.Left, 3, Dir4.Down)]
+        [TestCase(Dir4.Up, 10, Dir4.Down)]
+        [TestCase(Dir4.Right, -1, Dir4.Up)]
+        [TestCase(Dir4.Left, -7, Dir4.Up)]
+        [TestCase(Dir4.None, 1, Dir4.None)]
+        [TestCase(Dir4.None, -1, Dir4.None)]
+        [TestCase((Dir4)(-2), 0, Dir4.None, true)]
+        [TestCase((Dir4)(4), 0, Dir4.None, true)]
+        public void Rotate(Dir4 dir, int n, Dir4 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.Rotate(dir, n); });
+            else
+                Assert.That(DirExt.Rotate(dir, n), Is.EqualTo(expected));
+        }
+
+        [Test]
+        [TestCase(Dir8.Down, 0, Dir8.Down)]
+        [TestCase(Dir8.Left, 0, Dir8.Left)]
+        [TestCase(Dir8.Left, -8, Dir8.Left)]
+        [TestCase(Dir8.Up, 8, Dir8.Up)]
+        [TestCase(Dir8.Down, 1, Dir8.DownLeft)]
+        [TestCase(Dir8.Right, 1, Dir8.DownRight)]
+        [TestCase(Dir8.Left, 3, Dir8.UpRight)]
+        [TestCase(Dir8.Up, 10, Dir8.Right)]
+        [TestCase(Dir8.Right, -1, Dir8.UpRight)]
+        [TestCase(Dir8.Left, -13, Dir8.UpRight)]
+        [TestCase(Dir8.None, 1, Dir8.None)]
+        [TestCase(Dir8.None, -1, Dir8.None)]
+        [TestCase((Dir8)(-2), 0, Dir8.None, true)]
+        [TestCase((Dir8)(8), 0, Dir8.None, true)]
+        public void Rotate(Dir8 dir, int n, Dir8 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.Rotate(dir, n); });
+            else
+                Assert.That(DirExt.Rotate(dir, n), Is.EqualTo(expected));
+        }
 
         [Test]
         [TestCase(Dir4.Down, Dir4.Down, Dir4.Down)]
@@ -472,7 +449,7 @@ namespace RogueElements.Tests
         public void AddAngles(Dir4 dir1, Dir4 dir2, Dir4 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { DirExt.AddAngles(dir1, dir2); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.AddAngles(dir1, dir2); });
             else
                 Assert.That(DirExt.AddAngles(dir1, dir2), Is.EqualTo(expected));
         }
@@ -500,7 +477,7 @@ namespace RogueElements.Tests
         public void AddAngles(Dir8 dir1, Dir8 dir2, Dir8 expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { DirExt.AddAngles(dir1, dir2); });
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.AddAngles(dir1, dir2); });
             else
                 Assert.That(DirExt.AddAngles(dir1, dir2), Is.EqualTo(expected));
         }
@@ -519,9 +496,62 @@ namespace RogueElements.Tests
         public void FromAxisScalar(Axis4 axis, int scalar, int expectedX, int expectedY, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { DirExt.CreateLoc(axis, scalar, 0); });
+                if (axis == Axis4.None)
+                    Assert.Throws<ArgumentException>(() => { DirExt.CreateLoc(axis, scalar, 0); });
+                else
+                    Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.CreateLoc(axis, scalar, 0); });
             else
                 Assert.That(DirExt.CreateLoc(axis, scalar, 0), Is.EqualTo(new Loc(expectedX, expectedY)));
+        }
+
+        [Test]
+        [TestCase(Axis4.Horiz, 1, Dir4.Right)]
+        [TestCase(Axis4.Horiz, -1, Dir4.Left)]
+        [TestCase(Axis4.Vert, 1, Dir4.Down)]
+        [TestCase(Axis4.Vert, -1, Dir4.Up)]
+        [TestCase(Axis4.Horiz, Int32.MaxValue, Dir4.Right)]
+        [TestCase(Axis4.Vert, Int32.MinValue, Dir4.Up)]
+        [TestCase(Axis4.None, 0, Dir4.None)]
+        [TestCase(Axis4.None, 1, Dir4.None)]
+        [TestCase(Axis4.None, -1, Dir4.None)]
+        [TestCase(Axis4.Horiz, 0, Dir4.None)]
+        [TestCase(Axis4.Vert, 0, Dir4.None)]
+        [TestCase((Axis4)(-2), 0, Dir4.None, true)]
+        [TestCase((Axis4)(2), 0, Dir4.None, true)]
+        public void DirFromAxis(Axis4 axis, int scalar, Dir4 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.GetDir(axis, scalar); });
+            else
+                Assert.That(DirExt.GetDir(axis, scalar), Is.EqualTo(expected));
+        }
+
+        [Test]
+        [TestCase(Axis8.Horiz, 1, Dir8.Right)]
+        [TestCase(Axis8.Horiz, -1, Dir8.Left)]
+        [TestCase(Axis8.Vert, 1, Dir8.Down)]
+        [TestCase(Axis8.Vert, -1, Dir8.Up)]
+        [TestCase(Axis8.DiagBack, 1, Dir8.DownRight)]
+        [TestCase(Axis8.DiagBack, -1, Dir8.UpLeft)]
+        [TestCase(Axis8.DiagForth, 1, Dir8.UpRight)]
+        [TestCase(Axis8.DiagForth, -1, Dir8.DownLeft)]
+        [TestCase(Axis8.Horiz, Int32.MaxValue, Dir8.Right)]
+        [TestCase(Axis8.Vert, Int32.MinValue, Dir8.Up)]
+        [TestCase(Axis8.None, 0, Dir8.None)]
+        [TestCase(Axis8.None, 1, Dir8.None)]
+        [TestCase(Axis8.None, -1, Dir8.None)]
+        [TestCase(Axis8.Horiz, 0, Dir8.None)]
+        [TestCase(Axis8.Vert, 0, Dir8.None)]
+        [TestCase(Axis8.DiagBack, 0, Dir8.None)]
+        [TestCase(Axis8.DiagForth, 0, Dir8.None)]
+        [TestCase((Axis8)(-2), 0, Dir8.None, true)]
+        [TestCase((Axis8)(4), 0, Dir8.None, true)]
+        public void DirFromAxis(Axis8 axis, int scalar, Dir8 expected, bool exception = false)
+        {
+            if (exception)
+                Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.GetDir(axis, scalar); });
+            else
+                Assert.That(DirExt.GetDir(axis, scalar), Is.EqualTo(expected));
         }
 
         [Test]
@@ -537,7 +567,10 @@ namespace RogueElements.Tests
         public void ScalarFromAxis(int locX, int locY, Axis4 axis, int expected, bool exception = false)
         {
             if (exception)
-                Assert.Throws<ArgumentException>(() => { DirExt.GetScalar(new Loc(locX, locY), axis); });
+                if (axis == Axis4.None)
+                    Assert.Throws<ArgumentException>(() => { DirExt.GetScalar(new Loc(locX, locY), axis); });
+                else
+                    Assert.Throws<ArgumentOutOfRangeException>(() => { DirExt.GetScalar(new Loc(locX, locY), axis); });
             else
                 Assert.That(DirExt.GetScalar(new Loc(locX, locY), axis), Is.EqualTo(expected));
         }

@@ -11,6 +11,8 @@ namespace RogueElements
     [Serializable]
     public class FloorStairsStep<T, E, F> : GenStep<T>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IPlaceableGenContext<F>
+        where E : ISpawnable
+        where F : ISpawnable
     {
         public List<E> Entrance;
         public List<F> Exit;
@@ -85,6 +87,7 @@ namespace RogueElements
 
 
         private Loc getOutlet<N>(T map, int index)
+            where N : ISpawnable
         {
             List<Loc> tiles = ((IPlaceableGenContext<N>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
 

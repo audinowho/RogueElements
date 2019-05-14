@@ -78,8 +78,8 @@ namespace RogueElements
             if (chosenRay.Dir == Dir4.None)
                 return false;
             Loc endLoc = chosenRay.Traverse(1);
-            floorPlan.SetConnectingHall(chosenRay.Loc, endLoc, GenericHalls.Pick(rand));
-            floorPlan.AddRoom(endLoc, GenericRooms.Pick(rand));
+            floorPlan.SetHall(chosenRay, GenericHalls.Pick(rand));
+            floorPlan.AddRoom(chosenRay.Traverse(1), GenericRooms.Pick(rand));
 
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             return true;
@@ -120,12 +120,12 @@ namespace RogueElements
         /// <returns></returns>
         private IEnumerable<Dir4> getRoomExpandDirs(GridPlan floorPlan, Loc loc)
         {
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Loc endLoc = loc + ((Dir4)ii).GetLoc();
+                Loc endLoc = loc + dir.GetLoc();
                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, endLoc)
                     && floorPlan.GetRoomPlan(endLoc) == null)
-                    yield return (Dir4)ii;
+                    yield return dir;
             }
         }
 

@@ -44,22 +44,22 @@ namespace RogueElements
                     if (x > 0)
                     {
                         if (SpecificHHalls[x - 1][y] != null)
-                            UnsafeAddHall(new Loc(x - 1, y), new Loc(x, y), floorPlan, SpecificHHalls[x - 1][y]);
+                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Left), floorPlan, SpecificHHalls[x - 1][y]);
                     }
                     if (y > 0)
                     {
                         if (SpecificVHalls[x][y - 1] != null)
-                            UnsafeAddHall(new Loc(x, y - 1), new Loc(x, y), floorPlan, SpecificVHalls[x][y - 1]);
+                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Up), floorPlan, SpecificVHalls[x][y - 1]);
                     }
                 }
             }
         }
 
-        public void UnsafeAddHall(Loc room1, Loc room2, GridPlan floorPlan, IPermissiveRoomGen hallGen)
+        public void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen)
         {
-            floorPlan.SetConnectingHall(room1, room2, hallGen);
+            floorPlan.SetHall(locRay, hallGen);
             GenContextDebug.DebugProgress("Hall");
-            if (floorPlan.GetRoomPlan(room1) == null || floorPlan.GetRoomPlan(room2) == null)
+            if (floorPlan.GetRoomPlan(locRay.Loc) == null || floorPlan.GetRoomPlan(locRay.Traverse(1)) == null)
             {
                 floorPlan.Clear();
                 throw new InvalidOperationException("Can't create a hall without rooms to connect!");

@@ -48,18 +48,18 @@ namespace RogueElements
                 {
                     List<LocRay4> connectors = new List<LocRay4>();
                     List<LocRay4> candBonds = new List<LocRay4>();
-                    for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
                     {
-                        if ((Dir4)ii != chosenBranch.Dir)
+                        if (dir != chosenBranch.Dir)
                         {
-                            if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, (Dir4)ii)) != null)
-                                connectors.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
+                            if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, dir)) != null)
+                                connectors.Add(new LocRay4(chosenBranch.Loc, dir));
                             else
                             {
-                                Loc loc = chosenBranch.Loc + ((Dir4)ii).GetLoc();
+                                Loc loc = chosenBranch.Loc + dir.GetLoc();
                                 if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, loc)
                                     && floorPlan.GetRoomIndex(loc) > -1)
-                                    candBonds.Add(new LocRay4(chosenBranch.Loc, (Dir4)ii));
+                                    candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
                             }
                         }
                     }
@@ -91,8 +91,7 @@ namespace RogueElements
                 List<LocRay4> candBonds = candBranchPoints[randIndex];
                 LocRay4 chosenDir = candBonds[rand.Next(candBonds.Count)];
                 //connect
-                Loc chosenDest = chosenDir.Traverse(1);
-                floorPlan.SetConnectingHall(chosenDir.Loc, chosenDest, GenericHalls.Pick(rand));
+                floorPlan.SetHall(chosenDir, GenericHalls.Pick(rand));
                 candBranchPoints.RemoveAt(randIndex);
                 GenContextDebug.DebugProgress("Connected Branch");
                 connectionsLeft--;
@@ -100,7 +99,7 @@ namespace RogueElements
                 //counting this as a double if so
                 for (int ii = candBranchPoints.Count - 1; ii >= 0; ii--)
                 {
-                    if (candBranchPoints[ii][0].Loc == chosenDest)
+                    if (candBranchPoints[ii][0].Loc == chosenDir.Traverse(1))
                     {
                         candBranchPoints.RemoveAt(ii);
                         connectionsLeft--;

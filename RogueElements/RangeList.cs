@@ -93,7 +93,7 @@ namespace RogueElements
         }
 
         [Serializable]
-        private struct ItemRange
+        private class ItemRange
         {
             public T Element;
             public Range Range;

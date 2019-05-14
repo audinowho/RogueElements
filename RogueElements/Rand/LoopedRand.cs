@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a list of items by repeatedly calling an IRandPicker
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class LoopedRand<T> : IMultiRandPicker<T>
     {

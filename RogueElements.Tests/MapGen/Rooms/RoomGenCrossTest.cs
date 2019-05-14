@@ -86,21 +86,21 @@ namespace RogueElements.Tests
                 MinorHeight = new RandRange(1, 7)
             };
 
-            bool[][] expectedFulfillable = new bool[4][];
-            expectedFulfillable[0] = new bool[2];
-            expectedFulfillable[0][0] = false;
-            expectedFulfillable[0][1] = true;
-            expectedFulfillable[1] = new bool[3];
-            expectedFulfillable[1][0] = true;
-            expectedFulfillable[1][1] = true;
-            expectedFulfillable[1][2] = false;
-            expectedFulfillable[2] = new bool[2];
-            expectedFulfillable[2][0] = false;
-            expectedFulfillable[2][1] = true;
-            expectedFulfillable[3] = new bool[3];
-            expectedFulfillable[3][0] = true;
-            expectedFulfillable[3][1] = true;
-            expectedFulfillable[3][2] = false;
+            var expectedFulfillable = new Dictionary<Dir4, bool[]>();
+            expectedFulfillable[Dir4.Down] = new bool[2];
+            expectedFulfillable[Dir4.Down][0] = false;
+            expectedFulfillable[Dir4.Down][1] = true;
+            expectedFulfillable[Dir4.Left] = new bool[3];
+            expectedFulfillable[Dir4.Left][0] = true;
+            expectedFulfillable[Dir4.Left][1] = true;
+            expectedFulfillable[Dir4.Left][2] = false;
+            expectedFulfillable[Dir4.Up] = new bool[2];
+            expectedFulfillable[Dir4.Up][0] = false;
+            expectedFulfillable[Dir4.Up][1] = true;
+            expectedFulfillable[Dir4.Right] = new bool[3];
+            expectedFulfillable[Dir4.Right][0] = true;
+            expectedFulfillable[Dir4.Right][1] = true;
+            expectedFulfillable[Dir4.Right][2] = false;
 
 
             roomGen.PrepareSize(testRand.Object, new Loc(2,3));
@@ -115,6 +115,6 @@ namespace RogueElements.Tests
 
     public class TestRoomGenCross<T> : RoomGenCross<T> where T : ITiledGenContext
     {
-        public bool[][] PublicFulfillableBorder { get { return fulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
     }
 }

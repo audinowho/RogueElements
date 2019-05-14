@@ -8,7 +8,9 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-
+    /// <summary>
+    /// A dungeon layout that uses a rectangular array of rooms, connected to each other in cardinal directions.
+    /// </summary>
     public class GridPlan
     {
         public int CellWall;
@@ -97,7 +99,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Generates the position and location of each room and hall, and places it in the specified IFloorPlanGenContext.
+        /// Generates the position and size of each room and hall, and places it in the specified IFloorPlanGenContext.
         /// </summary>
         /// <param name="map"></param>
         public void PlaceRoomsOnFloor(IFloorPlanGenContext map)
@@ -206,6 +208,11 @@ namespace RogueElements
 
         }
 
+        /// <summary>
+        /// Returns the RoomGen found in the specified hall.
+        /// </summary>
+        /// <param name="locRay">The location of the room + the direction of the connecting hall relative to the room.</param>
+        /// <returns></returns>
         public IPermissiveRoomGen GetHall(LocRay4 locRay)
         {
             switch (locRay.Dir)
@@ -343,8 +350,19 @@ namespace RogueElements
             return true;
         }
 
+
+        /// <summary>
+        /// Sets the RoomGen found in the specified hall.
+        /// </summary>
+        /// <param name="locRay">The location of the room + the direction of the connecting hall relative to the room.</param>
+        /// <param name="hallGen"></param>
         public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen)
         {
+            if (locRay.Dir == Dir4.None)
+                throw new ArgumentException("Invalid direction.");
+            else if (!locRay.Dir.Validate())
+                throw new ArgumentOutOfRangeException("Invalid enum value.");
+
             IPermissiveRoomGen addHall = null;
             if (hallGen != null)
                 addHall = (IPermissiveRoomGen)hallGen.Copy();
@@ -371,16 +389,6 @@ namespace RogueElements
                 default:
                     throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
             }
-        }
-
-        public void SetConnectingHall(Loc room1, Loc room2, IPermissiveRoomGen hallGen)
-        {
-            Loc diff = room2 - room1;
-            Dir8 dir = diff.GetDir();
-            if (diff.Dist8() != 1)
-                throw new ArgumentException("Cannot add hall between " + room1.X + "," + room1.Y + " and " + room2.X + "," + room2.Y);
-            else
-                SetHall(new LocRay4(room1, dir.ToDir4()), hallGen);
         }
 
         /// <summary>

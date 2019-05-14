@@ -51,13 +51,13 @@ namespace RogueElements
             {
                 int ind = room_indices.PickIndex(rand);
                 RoomHallIndex oldRoomHall = room_indices.GetSpawn(ind);
-                List<RoomHallIndex>[] adjacentIndicesByDir = getDirectionAdjacents(floorPlan, oldRoomHall);
-                List<IRoomGen>[] adjacentsByDir = new List<IRoomGen>[DirExt.DIR4_COUNT];
-                for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+                Dictionary<Dir4, List<RoomHallIndex>> adjacentIndicesByDir = getDirectionAdjacents(floorPlan, oldRoomHall);
+                var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+                foreach(Dir4 dir in DirExt.VALID_DIR4)
                 {
-                    adjacentsByDir[ii] = new List<IRoomGen>();
-                    foreach (RoomHallIndex adj in adjacentIndicesByDir[ii])
-                        adjacentsByDir[ii].Add(floorPlan.GetRoomHall(adj).Gen);
+                    adjacentsByDir[dir] = new List<IRoomGen>();
+                    foreach (RoomHallIndex adj in adjacentIndicesByDir[dir])
+                        adjacentsByDir[dir].Add(floorPlan.GetRoomHall(adj).Gen);
                 }
                 Loc placement = FindPlacement(rand, adjacentsByDir, newGen, floorPlan.GetRoomHall(oldRoomHall).Gen);
                 if (placement != new Loc(-1))
@@ -74,47 +74,47 @@ namespace RogueElements
         public void PlaceRoom(IRandom rand, FloorPlan floorPlan, IRoomGen newGen, RoomHallIndex oldRoomHall)
         {
             //first get the adjacents of the removed room
-            List<RoomHallIndex>[] adjacentsByDir = getDirectionAdjacents(floorPlan, oldRoomHall);
+            Dictionary<Dir4, List<RoomHallIndex>> adjacentsByDir = getDirectionAdjacents(floorPlan, oldRoomHall);
             IRoomGen oldGen = floorPlan.GetRoomHall(oldRoomHall).Gen;
             //remove the room; update the adjacents too
             floorPlan.EraseRoomHall(oldRoomHall);
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                for (int jj = 0; jj < adjacentsByDir[ii].Count; jj++)
+                for (int jj = 0; jj < adjacentsByDir[dir].Count; jj++)
                 {
-                    RoomHallIndex adjRoomHall = adjacentsByDir[ii][jj];
+                    RoomHallIndex adjRoomHall = adjacentsByDir[dir][jj];
                     if (adjRoomHall.IsHall == oldRoomHall.IsHall &&
                         adjRoomHall.Index > oldRoomHall.Index)
-                        adjacentsByDir[ii][jj] = new RoomHallIndex(adjRoomHall.Index - 1, adjRoomHall.IsHall);
+                        adjacentsByDir[dir][jj] = new RoomHallIndex(adjRoomHall.Index - 1, adjRoomHall.IsHall);
                 }
             }
-            List<RoomHallIndex> newAdjacents = new List<RoomHallIndex>();
-            IPermissiveRoomGen[] supportHalls = new IPermissiveRoomGen[DirExt.DIR4_COUNT];
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            var newAdjacents = new List<RoomHallIndex>();
+            var supportHalls = new Dictionary<Dir4, IPermissiveRoomGen>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                if (newGen.Draw.GetScalar((Dir4)ii) == oldGen.Draw.GetScalar((Dir4)ii))
-                    newAdjacents.AddRange(adjacentsByDir[ii]);
-                else if (adjacentsByDir[ii].Count > 0)
+                if (newGen.Draw.GetScalar(dir) == oldGen.Draw.GetScalar(dir))
+                    newAdjacents.AddRange(adjacentsByDir[dir]);
+                else if (adjacentsByDir[dir].Count > 0)
                 {
-                    Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, (Dir4)ii, adjacentsByDir[ii]);
+                    Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, dir, adjacentsByDir[dir]);
                     var supportHall = (IPermissiveRoomGen)Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
-                    supportHalls[ii] = supportHall;
+                    supportHalls[dir] = supportHall;
                 }
             }
             //add the new room
             var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
             floorPlan.AddRoom(newGen, true, newAdjacents.ToArray());
             //add supporting halls
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                if (supportHalls[ii] != null)
+                if (supportHalls.ContainsKey(dir))
                 {
                     //include an attachment to the newly added room
                     List<RoomHallIndex> adjToAdd = new List<RoomHallIndex> { newRoomInd };
-                    adjToAdd.AddRange(adjacentsByDir[ii]);
-                    floorPlan.AddHall(supportHalls[ii], adjToAdd.ToArray());
+                    adjToAdd.AddRange(adjacentsByDir[dir]);
+                    floorPlan.AddHall(supportHalls[dir], adjToAdd.ToArray());
                 }
             }
         }
@@ -153,13 +153,13 @@ namespace RogueElements
             return supportRect;
         }
 
-        public Loc FindPlacement(IRandom rand, List<IRoomGen>[] adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
+        public Loc FindPlacement(IRandom rand, Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
         {
             SpawnList<Loc> possiblePlacements = GetPossiblePlacements(adjacentsByDir, newGen, oldGen);
             return possiblePlacements.SpawnTotal == 0 ? new Loc(-1) : possiblePlacements.Pick(rand);
         }
 
-        public SpawnList<Loc> GetPossiblePlacements(List<IRoomGen>[] adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
+        public SpawnList<Loc> GetPossiblePlacements(Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
         {
             //test all positions around perimeter
             Rect oldRect = oldGen.Draw;
@@ -214,7 +214,7 @@ namespace RogueElements
             return possiblePlacements;
         }
 
-        public virtual int GetAllBorderMatch(List<IRoomGen>[] adjacentsByDir, IRoomGen newGen, IRoomGen oldGen, Loc loc)
+        public virtual int GetAllBorderMatch(Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen, Loc loc)
         {
             //TODO: Currently fails the loc if a single adjacent in a given direction is not met.
             //Perhaps allow the halls to cover the un-met required adjacent
@@ -247,9 +247,9 @@ namespace RogueElements
             return matchValue;
         }
 
-        public virtual int GetSideBorderMatch(IRoomGen newGen, List<IRoomGen>[] adjacentsByDir, Loc loc, Dir4 dir, int matchValue)
+        public virtual int GetSideBorderMatch(IRoomGen newGen, Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, Loc loc, Dir4 dir, int matchValue)
         {
-            foreach (IRoomGen adj in adjacentsByDir[(int)dir])
+            foreach (IRoomGen adj in adjacentsByDir[dir])
                 matchValue = Math.Min(matchValue, FloorPlan.GetBorderMatch(adj, newGen, loc, dir.Reverse()));
             return matchValue;
         }
@@ -259,20 +259,20 @@ namespace RogueElements
             return Math.Max(1, oldRect.Area * factor / newRect.Area);
         }
 
-        private List<RoomHallIndex>[] getDirectionAdjacents(FloorPlan floorPlan, RoomHallIndex oldRoomHall)
+        private Dictionary<Dir4, List<RoomHallIndex>> getDirectionAdjacents(FloorPlan floorPlan, RoomHallIndex oldRoomHall)
         {
-            List<RoomHallIndex>[] adjacentsByDir = new List<RoomHallIndex>[DirExt.DIR4_COUNT];
+            var adjacentsByDir = new Dictionary<Dir4, List<RoomHallIndex>>();
             BaseFloorRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                adjacentsByDir[ii] = new List<RoomHallIndex>();
+                adjacentsByDir[dir] = new List<RoomHallIndex>();
                 foreach (RoomHallIndex adjacent in oldPlan.Adjacents)
                 {
                     BaseFloorRoomPlan adjPlan = floorPlan.GetRoomHall(adjacent);
-                    if (oldPlan.Gen.Draw.GetScalar((Dir4)ii) ==
-                        adjPlan.Gen.Draw.GetScalar(((Dir4)ii).Reverse()))
+                    if (oldPlan.Gen.Draw.GetScalar(dir) ==
+                        adjPlan.Gen.Draw.GetScalar(dir.Reverse()))
                     {
-                        adjacentsByDir[ii].Add(adjacent);
+                        adjacentsByDir[dir].Add(adjacent);
                     }
                 }
             }

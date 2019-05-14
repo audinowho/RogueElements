@@ -42,9 +42,9 @@ namespace RogueElements
                     floorPlan.AddRoom(new Loc(x, y), GetDefaultGen(), false, true);
 
                     if (x > 1)
-                        floorPlan.SetConnectingHall(new Loc(x - 1, y), new Loc(x, y), GenericHalls.Pick(rand));
+                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Left), GenericHalls.Pick(rand));
                     if (y > 1)
-                        floorPlan.SetConnectingHall(new Loc(x, y - 1), new Loc(x, y), GenericHalls.Pick(rand));
+                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Up), GenericHalls.Pick(rand));
 
                     GenContextDebug.DebugProgress("Room");
                 }
@@ -58,13 +58,13 @@ namespace RogueElements
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
                     floorPlan.AddRoom(new Loc(x, 0), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(x, 0), new Loc(x, 1), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(x, 0), Dir4.Down), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Room");
                 }
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
                     floorPlan.AddRoom(new Loc(x,floorPlan.GridHeight - 1), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(x, floorPlan.GridHeight - 1), new Loc(x, floorPlan.GridHeight - 2), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(x, floorPlan.GridHeight - 1), Dir4.Up), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Room");
                 }
             }
@@ -73,13 +73,13 @@ namespace RogueElements
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
                     floorPlan.AddRoom(new Loc(0, y), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(0, y), new Loc(1, y), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(0, y), Dir4.Right), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Room");
                 }
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
                     floorPlan.AddRoom(new Loc(floorPlan.GridWidth - 1, y), GenericRooms.Pick(rand));
-                    floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, y), new Loc(floorPlan.GridWidth - 2, y), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(floorPlan.GridWidth - 1, y), Dir4.Left), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Room");
                 }
             }
@@ -111,7 +111,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(hHallSites[ii], hHallSites[ii] - new Loc(1, 0), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
+                    SafeAddHall(new LocRay4(hHallSites[ii], Dir4.Right), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                     placedHalls--;
                 }
@@ -121,7 +121,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(vHallSites[ii], vHallSites[ii] - new Loc(0, 1), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
+                    SafeAddHall(new LocRay4(vHallSites[ii], Dir4.Down), floorPlan, GenericHalls.Pick(rand), GenericRooms.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                     placedHalls--;
                 }

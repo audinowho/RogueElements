@@ -13,7 +13,7 @@ namespace RogueElements
     {
         public ITile RoomTerrain;
         public ITile[][] Tiles;
-        public bool[][] Borders;
+        public Dictionary<Dir4, bool[]> Borders;
         public bool FulfillAll;
 
         public RoomGenSpecific() { }
@@ -22,11 +22,11 @@ namespace RogueElements
             Tiles = new ITile[width][];
             for (int xx = 0; xx < width; xx++)
                 Tiles[xx] = new ITile[height];
-            Borders = new bool[DirExt.DIR4_COUNT][];
-            Borders[(int)Dir4.Down] = new bool[width];
-            Borders[(int)Dir4.Up] = new bool[width];
-            Borders[(int)Dir4.Left] = new bool[height];
-            Borders[(int)Dir4.Right] = new bool[height];
+            Borders = new Dictionary<Dir4, bool[]>();
+            Borders[Dir4.Down] = new bool[width];
+            Borders[Dir4.Up] = new bool[width];
+            Borders[Dir4.Left] = new bool[height];
+            Borders[Dir4.Right] = new bool[height];
         }
         public RoomGenSpecific(int width, int height, ITile roomTerrain, bool fulfillAll) : this(width, height)
         {
@@ -43,12 +43,12 @@ namespace RogueElements
                 for (int yy = 0; yy < other.Tiles[0].Length; yy++)
                     Tiles[xx][yy] = other.Tiles[xx][yy].Copy();
             }
-            Borders = new bool[DirExt.DIR4_COUNT][];
-            for (int ii = 0; ii < DirExt.DIR4_COUNT; ii++)
+            Borders = new Dictionary<Dir4, bool[]>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                Borders[ii] = new bool[other.Borders[ii].Length];
-                for (int jj = 0; jj < other.Borders[ii].Length; jj++)
-                    Borders[ii][jj] = other.Borders[ii][jj];
+                Borders[dir] = new bool[other.Borders[dir].Length];
+                for (int jj = 0; jj < other.Borders[dir].Length; jj++)
+                    Borders[dir][jj] = other.Borders[dir][jj];
             }
             FulfillAll = other.FulfillAll;
         }
@@ -65,24 +65,24 @@ namespace RogueElements
             //the tile ID representing an opening must be specified on this class instead.
             if (Draw.Width != Tiles.Length || Draw.Height != Tiles[0].Length)
             {
-                for (int ii = 0; ii < 4; ii++)
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
                 {
-                    for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
-                        fulfillableBorder[ii][jj] = true;
+                    for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
+                        fulfillableBorder[dir][jj] = true;
                 }
             }
             else
             {
                 for (int ii = 0; ii < draw.Width; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Up][ii] = Tiles[ii][0].TileEquivalent(RoomTerrain) || Borders[(int)Dir4.Up][ii];
-                    fulfillableBorder[(int)Dir4.Down][ii] = Tiles[ii][draw.Height - 1].TileEquivalent(RoomTerrain) || Borders[(int)Dir4.Down][ii];
+                    fulfillableBorder[Dir4.Up][ii] = Tiles[ii][0].TileEquivalent(RoomTerrain) || Borders[Dir4.Up][ii];
+                    fulfillableBorder[Dir4.Down][ii] = Tiles[ii][draw.Height - 1].TileEquivalent(RoomTerrain) || Borders[Dir4.Down][ii];
                 }
 
                 for (int ii = 0; ii < draw.Height; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Left][ii] = Tiles[0][ii].TileEquivalent(RoomTerrain) || Borders[(int)Dir4.Left][ii];
-                    fulfillableBorder[(int)Dir4.Right][ii] = Tiles[Draw.Width - 1][ii].TileEquivalent(RoomTerrain) || Borders[(int)Dir4.Right][ii];
+                    fulfillableBorder[Dir4.Left][ii] = Tiles[0][ii].TileEquivalent(RoomTerrain) || Borders[Dir4.Left][ii];
+                    fulfillableBorder[Dir4.Right][ii] = Tiles[Draw.Width - 1][ii].TileEquivalent(RoomTerrain) || Borders[Dir4.Right][ii];
                 }
             }
         }

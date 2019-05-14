@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a list of items predefined by the user.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class PresetMultiRand<T> : IMultiRandPicker<T>
     {

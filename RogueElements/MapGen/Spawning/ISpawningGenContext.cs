@@ -10,6 +10,7 @@ namespace RogueElements
 {
 
     public interface ISpawningGenContext<T> : IGenContext
+        where T : ISpawnable
     {
         IRandPicker<T> Spawner { get; }
     }

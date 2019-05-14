@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RogueElements
 {
@@ -45,9 +46,9 @@ namespace RogueElements
                 GenContextDebug.DebugProgress("Room");
                 if (xx > 0)
                 {
-                    floorPlan.SetConnectingHall(new Loc(xx - 1, 0), new Loc(xx, 0), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(xx, 0), Dir4.Left), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
-                    floorPlan.SetConnectingHall(new Loc(xx - 1, floorPlan.GridHeight - 1), new Loc(xx, floorPlan.GridHeight - 1), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(xx, floorPlan.GridHeight - 1), Dir4.Left), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                 }
             }
@@ -65,9 +66,9 @@ namespace RogueElements
                 }
                 if (yy > 0)
                 {
-                    floorPlan.SetConnectingHall(new Loc(0, yy - 1), new Loc(0, yy), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(0, yy), Dir4.Up), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
-                    floorPlan.SetConnectingHall(new Loc(floorPlan.GridWidth - 1, yy - 1), new Loc(floorPlan.GridWidth - 1, yy), GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(new Loc(floorPlan.GridWidth - 1, yy), Dir4.Up), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                 }
             }
@@ -82,7 +83,7 @@ namespace RogueElements
             {
                 GenContextDebug.StepIn($"Path {pathsMade}");
 
-                Dir4 startDir = (Dir4)rand.Next(4);
+                Dir4 startDir = DirExt.VALID_DIR4.ElementAt(rand.Next(DirExt.DIR4_COUNT));
                 int x = rand.Next(innerRect.Start.X, innerRect.End.X);
                 int y = rand.Next(innerRect.Start.Y, innerRect.End.Y);
                 switch (startDir)
@@ -114,9 +115,8 @@ namespace RogueElements
                     if (currentLength > 0)
                     {
                         List<Dir4> dirs = new List<Dir4>();
-                        for (int dd = 0; dd < DirExt.DIR4_COUNT; dd++)
+                        foreach (Dir4 dir in DirExt.VALID_DIR4)
                         {
-                            Dir4 dir = (Dir4)dd;
                             //do not backtrack
                             if (dir == prevDir)
                                 continue;
@@ -146,7 +146,7 @@ namespace RogueElements
                             existingRoom.PreferHall = false;
                         }
                     }
-                    floorPlan.SetConnectingHall(wanderer, dest, GenericHalls.Pick(rand));
+                    floorPlan.SetHall(new LocRay4(wanderer, chosenDir), GenericHalls.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
 
                     wanderer = dest;

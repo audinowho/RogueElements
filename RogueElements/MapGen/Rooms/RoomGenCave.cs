@@ -92,24 +92,24 @@ namespace RogueElements
             //accept nothing but the randomly chosen size
             if (Draw.Width != tiles.Length || Draw.Height != tiles[0].Length)
             {
-                for (int ii = 0; ii < 4; ii++)
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
                 {
-                    for (int jj = 0; jj < fulfillableBorder[ii].Length; jj++)
-                        fulfillableBorder[ii][jj] = true;
+                    for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
+                        fulfillableBorder[dir][jj] = true;
                 }
             }
             else
             {
                 for (int ii = 0; ii < draw.Width; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Up][ii] = tiles[ii][0];
-                    fulfillableBorder[(int)Dir4.Down][ii] = tiles[ii][draw.Height - 1];
+                    fulfillableBorder[Dir4.Up][ii] = tiles[ii][0];
+                    fulfillableBorder[Dir4.Down][ii] = tiles[ii][draw.Height - 1];
                 }
 
                 for (int ii = 0; ii < draw.Height; ii++)
                 {
-                    fulfillableBorder[(int)Dir4.Left][ii] = tiles[0][ii];
-                    fulfillableBorder[(int)Dir4.Right][ii] = tiles[Draw.Width - 1][ii];
+                    fulfillableBorder[Dir4.Left][ii] = tiles[0][ii];
+                    fulfillableBorder[Dir4.Right][ii] = tiles[Draw.Width - 1][ii];
                 }
             }
         }

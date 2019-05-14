@@ -11,6 +11,7 @@ namespace RogueElements
     [Serializable]
     public class RandomRoomSpawnStep<T, E> : RoomSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
+        where E : ISpawnable
     {
         public bool IncludeHalls;
         public RandomRoomSpawnStep() { }
