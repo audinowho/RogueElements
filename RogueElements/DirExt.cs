@@ -8,12 +8,107 @@ namespace RogueElements
     
     public static class DirExt
     {
-        public static readonly DirH[] VALID_DIRH = { DirH.Left, DirH.Right };
-        public static readonly DirV[] VALID_DIRV = { DirV.Down, DirV.Up };
-        public static readonly Dir4[] VALID_DIR4 = { Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
-        public static readonly Dir8[] VALID_DIR8 = { Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
-        public static readonly Axis4[] VALID_AXIS4 = { Axis4.Vert, Axis4.Horiz };
-        public static readonly Axis8[] VALID_AXIS8 = { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
+        public const int DIRH_COUNT = 2;
+        public const int DIRV_COUNT = 2;
+        public const int DIR4_COUNT = 4;
+        public const int DIR8_COUNT = 8;
+        public const int AXIS4_COUNT = 2;
+        public const int AXIS8_COUNT = 4;
+
+        public static readonly IEnumerable<DirH> VALID_DIRH = new DirH[]{ DirH.Left, DirH.Right };
+        public static readonly IEnumerable<DirV> VALID_DIRV = new DirV[]{ DirV.Up, DirV.Down };
+        public static readonly IEnumerable<Dir4> VALID_DIR4 = new Dir4[]{ Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
+        public static readonly IEnumerable<Dir8> VALID_DIR8 = new Dir8[]{ Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
+        public static readonly IEnumerable<Axis4> VALID_AXIS4 = new Axis4[]{ Axis4.Vert, Axis4.Horiz };
+        public static readonly IEnumerable<Axis8> VALID_AXIS8 = new Axis8[]{ Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
+
+        public static bool Validate(this DirV dir)
+        {
+            switch (dir)
+            {
+                case DirV.None:
+                case DirV.Down:
+                case DirV.Up:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool Validate(this DirH dir)
+        {
+            switch (dir)
+            {
+                case DirH.None:
+                case DirH.Left:
+                case DirH.Right:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool Validate(this Dir4 dir)
+        {
+            switch (dir)
+            {
+                case Dir4.None:
+                case Dir4.Down:
+                case Dir4.Left:
+                case Dir4.Up:
+                case Dir4.Right:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool Validate(this Dir8 dir)
+        {
+            switch (dir)
+            {
+                case Dir8.None:
+                case Dir8.Down:
+                case Dir8.DownLeft:
+                case Dir8.Left:
+                case Dir8.UpLeft:
+                case Dir8.Up:
+                case Dir8.UpRight:
+                case Dir8.Right:
+                case Dir8.DownRight:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool Validate(this Axis4 axis)
+        {
+            switch (axis)
+            {
+                case Axis4.None:
+                case Axis4.Horiz:
+                case Axis4.Vert:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool Validate(this Axis8 axis)
+        {
+            switch (axis)
+            {
+                case Axis8.None:
+                case Axis8.Horiz:
+                case Axis8.Vert:
+                case Axis8.DiagBack:
+                case Axis8.DiagForth:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         public static Dir4 ToDir4(this DirH dir)
         {
@@ -23,7 +118,7 @@ namespace RogueElements
                 case DirH.Left: return Dir4.Left;
                 case DirH.Right: return Dir4.Right;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir4 ToDir4(this DirV dir)
@@ -34,7 +129,7 @@ namespace RogueElements
                 case DirV.Down: return Dir4.Down;
                 case DirV.Up: return Dir4.Up;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir8 ToDir8(this DirH dir)
@@ -45,7 +140,7 @@ namespace RogueElements
                 case DirH.Left: return Dir8.Left;
                 case DirH.Right: return Dir8.Right;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir8 ToDir8(this DirV dir)
@@ -56,7 +151,7 @@ namespace RogueElements
                 case DirV.Down: return Dir8.Down;
                 case DirV.Up: return Dir8.Up;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir8 ToDir8(this Dir4 dir)
@@ -69,7 +164,7 @@ namespace RogueElements
                 case Dir4.Up: return Dir8.Up;
                 case Dir4.Right: return Dir8.Right;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir4 ToDir4(this Dir8 dir)
@@ -82,7 +177,7 @@ namespace RogueElements
                 case Dir8.Up: return Dir4.Up;
                 case Dir8.Right: return Dir4.Right;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
@@ -97,7 +192,7 @@ namespace RogueElements
                 case Axis4.Vert:
                     return Axis8.Vert;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
             }
         }
 
@@ -112,7 +207,7 @@ namespace RogueElements
                 case Axis8.Vert:
                     return Axis4.Vert;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
             }
         }
 
@@ -129,7 +224,7 @@ namespace RogueElements
                 case Dir4.Right:
                     return Axis4.Horiz;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
@@ -149,7 +244,7 @@ namespace RogueElements
                 case Axis4.Horiz:
                     return Axis4.Vert;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
             }
         }
 
@@ -172,14 +267,27 @@ namespace RogueElements
                 case Dir8.DownRight:
                     return Axis8.DiagBack;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
         public static bool IsDiagonal(this Dir8 dir)
         {
-            Axis8 axis = dir.ToAxis();
-            return (axis == Axis8.DiagBack || axis == Axis8.DiagForth);
+            switch (dir)
+            {
+                case Dir8.DownLeft:
+                case Dir8.UpLeft:
+                case Dir8.UpRight:
+                case Dir8.DownRight:
+                    return true;
+                case Dir8.Down:
+                case Dir8.Left:
+                case Dir8.Up:
+                case Dir8.Right:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
+            }
         }
 
         public static Loc GetLoc(this DirH dir)
@@ -189,11 +297,11 @@ namespace RogueElements
                 case DirH.None:
                     return Loc.Zero;
                 case DirH.Left:
-                    return new Loc(-1, 0);
+                    return -Loc.UnitX;
                 case DirH.Right:
-                    return new Loc(1, 0);
+                    return Loc.UnitX;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Loc GetLoc(this DirV dir)
@@ -203,11 +311,11 @@ namespace RogueElements
                 case DirV.None:
                     return Loc.Zero;
                 case DirV.Down:
-                    return new Loc(0, 1);
+                    return Loc.UnitY;
                 case DirV.Up:
-                    return new Loc(0, -1);
+                    return -Loc.UnitY;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
@@ -218,15 +326,15 @@ namespace RogueElements
                 case Dir4.None:
                     return Loc.Zero;
                 case Dir4.Down:
-                    return new Loc(0, 1);
+                    return Loc.UnitY;
                 case Dir4.Left:
-                    return new Loc(-1, 0);
+                    return -Loc.UnitX;
                 case Dir4.Up:
-                    return new Loc(0, -1);
+                    return -Loc.UnitY;
                 case Dir4.Right:
-                    return new Loc(1, 0);
+                    return Loc.UnitX;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
@@ -237,23 +345,23 @@ namespace RogueElements
                 case Dir8.None:
                     return Loc.Zero;
                 case Dir8.Down:
-                    return new Loc(0, 1);
+                    return Loc.UnitY;
                 case Dir8.DownLeft:
-                    return new Loc(-1, 1);
+                    return Loc.UnitY - Loc.UnitX;
                 case Dir8.Left:
-                    return new Loc(-1, 0);
+                    return -Loc.UnitX;
                 case Dir8.UpLeft:
-                    return new Loc(-1, -1);
+                    return -Loc.One;
                 case Dir8.Up:
-                    return new Loc(0, -1);
+                    return -Loc.UnitY;
                 case Dir8.UpRight:
-                    return new Loc(1, -1);
+                    return Loc.UnitX - Loc.UnitY;
                 case Dir8.Right:
-                    return new Loc(1, 0);
+                    return Loc.UnitX;
                 case Dir8.DownRight:
-                    return new Loc(1, 1);
+                    return Loc.One;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
 
@@ -262,34 +370,36 @@ namespace RogueElements
         {
             switch (dir)
             {
+                case DirH.None:
+                    return DirH.None;
                 case DirH.Left:
                     return DirH.Right;
                 case DirH.Right:
                     return DirH.Left;
-                case DirH.None:
-                    return DirH.None;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static DirV Reverse(this DirV dir)
         {
             switch (dir)
             {
+                case DirV.None:
+                    return DirV.None;
                 case DirV.Down:
                     return DirV.Up;
                 case DirV.Up:
                     return DirV.Down;
-                case DirV.None:
-                    return DirV.None;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir4 Reverse(this Dir4 dir)
         {
             switch (dir)
             {
+                case Dir4.None:
+                    return Dir4.None;
                 case Dir4.Down:
                     return Dir4.Up;
                 case Dir4.Left:
@@ -298,16 +408,16 @@ namespace RogueElements
                     return Dir4.Down;
                 case Dir4.Right:
                     return Dir4.Left;
-                case Dir4.None:
-                    return Dir4.None;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
         public static Dir8 Reverse(this Dir8 dir)
         {
             switch (dir)
             {
+                case Dir8.None:
+                    return Dir8.None;
                 case Dir8.Down:
                     return Dir8.Up;
                 case Dir8.DownLeft:
@@ -324,13 +434,10 @@ namespace RogueElements
                     return Dir8.Left;
                 case Dir8.DownRight:
                     return Dir8.UpLeft;
-                case Dir8.None:
-                    return Dir8.None;
                 default:
-                    throw new ArgumentException("Invalid value to convert.");
+                    throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             }
         }
-
 
         public static Dir8 Combine(DirH horiz, DirV vert)
         {
@@ -361,13 +468,16 @@ namespace RogueElements
                 else if (horiz == DirH.None)
                     return Dir8.None;
             }
-            throw new ArgumentException("Invalid value to combine.");
+            if (!horiz.Validate())
+                throw new ArgumentOutOfRangeException(nameof(horiz), horiz, "Invalid enum value.");
+            else
+                throw new ArgumentOutOfRangeException(nameof(vert), vert, "Invalid enum value.");
         }
 
         public static void Separate(this Dir8 dir, out DirH horiz, out DirV vert)
         {
-            if (!Enum.IsDefined(typeof(Dir8), dir))
-                throw new ArgumentException("Invalid value to separate.");
+            if (!dir.Validate())
+                throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             switch (dir)
             {
                 case Dir8.Down:
@@ -623,34 +733,27 @@ namespace RogueElements
 
         public static Dir4 Rotate(this Dir4 dir, int n)
         {
-            if (!Enum.IsDefined(typeof(Dir4), dir))
-                throw new ArgumentException("Invalid value to rotate.");
+            if (!dir.Validate())
+                throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             if (dir == Dir4.None)
                 return Dir4.None;
-            int newDir = ((int)dir + n) % VALID_DIR4.Length;
-            // int.Mod can return negative; ensure it is positive
-            if (newDir < 0)
-                newDir += VALID_DIR4.Length;
-            return (Dir4)newDir;
+            return (Dir4)(((int)dir + n) & (DIR4_COUNT - 1));
         }
 
         public static Dir8 Rotate(this Dir8 dir, int n)
         {
-            if (!Enum.IsDefined(typeof(Dir8), dir))
-                throw new ArgumentException("Invalid value to rotate.");
+            if (!dir.Validate())
+                throw new ArgumentOutOfRangeException(nameof(dir), dir, "Invalid enum value.");
             if (dir == Dir8.None)
                 return Dir8.None;
-            int newDir = ((int)dir + n) % VALID_DIR8.Length;
-            // int.Mod can return negative; ensure it is positive
-            if (newDir < 0)
-                newDir += VALID_DIR8.Length;
-            return (Dir8)newDir;
+            return (Dir8)(((int)dir + n) & (DIR8_COUNT - 1));
         }
 
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
-            if (!Enum.IsDefined(typeof(Dir4), dir1) || !Enum.IsDefined(typeof(Dir4), dir2))
-                throw new ArgumentException("Invalid value to add.");
+            // dir1 is validated by Dir4.Rotate
+            if (!dir2.Validate())
+                throw new ArgumentOutOfRangeException(nameof(dir2), dir2, "Invalid enum value.");
             if (dir1 == Dir4.None || dir2 == Dir4.None)
                 return Dir4.None;
             return dir1.Rotate((int)dir2);
@@ -658,8 +761,9 @@ namespace RogueElements
 
         public static Dir8 AddAngles(Dir8 dir1, Dir8 dir2)
         {
-            if (!Enum.IsDefined(typeof(Dir8), dir1) || !Enum.IsDefined(typeof(Dir8), dir2))
-                throw new ArgumentException("Invalid value to add.");
+            // dir1 is validated by Dir8.Rotate
+            if (!dir2.Validate())
+                throw new ArgumentOutOfRangeException(nameof(dir2), dir2, "Invalid enum value.");
             if (dir1 == Dir8.None || dir2 == Dir8.None)
                 return Dir8.None;
             return dir1.Rotate((int)dir2);
@@ -667,64 +771,74 @@ namespace RogueElements
         
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
-            if (axis == Axis4.None || !Enum.IsDefined(typeof(Axis4), axis))
-                throw new ArgumentException("Invalid value to convert.");
-            if (axis == Axis4.Horiz)
-                return new Loc(scalar, orth);
-            else
-                return new Loc(orth, scalar);
+            switch (axis)
+            {
+                case Axis4.Vert:
+                    return new Loc(orth, scalar);
+                case Axis4.Horiz:
+                    return new Loc(scalar, orth);
+                case Axis4.None:
+                    throw new ArgumentException($"Cannot create {nameof(Loc)} from axis {nameof(Axis4.None)}.", nameof(axis));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
+            }
         }
 
         public static Dir4 GetDir(this Axis4 axis, int scalar)
         {
-            if (!Enum.IsDefined(typeof(Axis4), axis))
-                throw new ArgumentException("Invalid value to convert.");
-            if (scalar == 0)
+            if (scalar == 0 & axis.Validate())
                 return Dir4.None;
-            switch (axis)
+            else
             {
-                case Axis4.None:
-                    return Dir4.None;
-                case Axis4.Horiz:
-                    return scalar < 0 ? Dir4.Left : Dir4.Right;
-                case Axis4.Vert:
-                    return scalar < 0 ? Dir4.Up : Dir4.Down;
-                default:
-                    throw new ArgumentException("Invalid value to convert.");
+                switch (axis)
+                {
+                    case Axis4.None:
+                        return Dir4.None;
+                    case Axis4.Horiz:
+                        return scalar < 0 ? Dir4.Left : Dir4.Right;
+                    case Axis4.Vert:
+                        return scalar < 0 ? Dir4.Up : Dir4.Down;
+                }
             }
+            throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
         }
 
         public static Dir8 GetDir(this Axis8 axis, int scalar)
         {
-            if (!Enum.IsDefined(typeof(Axis8), axis))
-                throw new ArgumentException("Invalid value to convert.");
-            if (scalar == 0)
+            if (scalar == 0 & axis.Validate())
                 return Dir8.None;
-            switch (axis)
+            else
             {
-                case Axis8.None:
-                    return Dir8.None;
-                case Axis8.Horiz:
-                    return scalar < 0 ? Dir8.Left : Dir8.Right;
-                case Axis8.Vert:
-                    return scalar < 0 ? Dir8.Up : Dir8.Down;
-                case Axis8.DiagBack:
-                    return scalar < 0 ? Dir8.UpLeft : Dir8.DownRight;
-                case Axis8.DiagForth:
-                    return scalar < 0 ? Dir8.DownLeft : Dir8.UpRight;
-                default:
-                    throw new ArgumentException("Invalid value to convert.");
+                switch (axis)
+                {
+                    case Axis8.None:
+                        return Dir8.None;
+                    case Axis8.Horiz:
+                        return scalar < 0 ? Dir8.Left : Dir8.Right;
+                    case Axis8.Vert:
+                        return scalar < 0 ? Dir8.Up : Dir8.Down;
+                    case Axis8.DiagBack:
+                        return scalar < 0 ? Dir8.UpLeft : Dir8.DownRight;
+                    case Axis8.DiagForth:
+                        return scalar < 0 ? Dir8.DownLeft : Dir8.UpRight;
+                }
             }
+            throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
         }
 
         public static int GetScalar(this Loc loc, Axis4 axis)
         {
-            if (axis == Axis4.None || !Enum.IsDefined(typeof(Axis4), axis))
-                throw new ArgumentException("Invalid value to convert.");
-            if (axis == Axis4.Horiz)
-                return loc.X;
-            else
-                return loc.Y;
+            switch (axis)
+            {
+                case Axis4.Vert:
+                    return loc.Y;
+                case Axis4.Horiz:
+                    return loc.X;
+                case Axis4.None:
+                    throw new ArgumentException($"Cannot get scalar on axis {nameof(Axis4.None)}.", nameof(axis));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
+            }
         }
     }
 }
