@@ -13,14 +13,18 @@ namespace RogueElements
     public static class GenContextDebug
     {
         public delegate void InitTrack(IGenContext map);
+
         public delegate void ProgressTrack(string msg);
+
         public delegate void DebugStepIn(string msg);
 
         public static event InitTrack OnInit;
-        public static event ProgressTrack OnStep;
-        public static event DebugStepIn OnStepIn;
-        public static event Action OnStepOut;
 
+        public static event ProgressTrack OnStep;
+
+        public static event DebugStepIn OnStepIn;
+
+        public static event Action OnStepOut;
 
         [Conditional("DEBUG")]
         public static void StepIn(string msg) => OnStepIn?.Invoke(msg);
@@ -33,6 +37,5 @@ namespace RogueElements
 
         [Conditional("DEBUG")]
         public static void DebugProgress(string msg) => OnStep?.Invoke(msg);
-
     }
 }

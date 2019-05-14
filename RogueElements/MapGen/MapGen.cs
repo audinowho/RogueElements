@@ -13,28 +13,27 @@ namespace RogueElements
     public class MapGen<T>
         where T : class, IGenContext
     {
-        public PriorityList<GenStep<T>> GenSteps { get; set; }
-
         public MapGen()
         {
-            GenSteps = new PriorityList<GenStep<T>>();
+            this.GenSteps = new PriorityList<GenStep<T>>();
         }
 
+        public PriorityList<GenStep<T>> GenSteps { get; }
 
-        //an initial create-map method
+        // an initial create-map method
         public T GenMap(ulong seed)
         {
-            //may not need floor ID
+            // may not need floor ID
             T map = (T)Activator.CreateInstance(typeof(T));
             map.InitSeed(seed);
 
             GenContextDebug.DebugInit(map);
 
-            //postprocessing steps:
+            // postprocessing steps:
             StablePriorityQueue<int, IGenStep> queue = new StablePriorityQueue<int, IGenStep>();
-            foreach (int priority in GenSteps.GetPriorities())
+            foreach (int priority in this.GenSteps.GetPriorities())
             {
-                foreach (IGenStep genStep in GenSteps.GetItems(priority))
+                foreach (IGenStep genStep in this.GenSteps.GetItems(priority))
                     queue.Enqueue(priority, genStep);
             }
 
@@ -45,10 +44,8 @@ namespace RogueElements
             return map;
         }
 
-
-        protected void ApplyGenSteps(T map, StablePriorityQueue<int, IGenStep> queue)
+        protected static void ApplyGenSteps(T map, StablePriorityQueue<int, IGenStep> queue)
         {
-
             while (queue.Count > 0)
             {
                 IGenStep postProc = queue.Dequeue();
@@ -57,6 +54,5 @@ namespace RogueElements
                 GenContextDebug.StepOut();
             }
         }
-
     }
 }

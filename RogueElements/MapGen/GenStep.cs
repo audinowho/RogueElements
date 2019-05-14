@@ -12,27 +12,18 @@ namespace RogueElements
     public abstract class GenStep<T> : IGenStep
         where T : class, IGenContext
     {
-        //change activemap into an interface that supports tile, mob, and item modification
+        // change activemap into an interface that supports tile, mob, and item modification
         public abstract void Apply(T map);
 
         public bool CanApply(IGenContext context)
         {
-            if (!(context is T))
-                return false;
-            return true;
+            return context is T;
         }
 
         public void Apply(IGenContext context)
         {
-            if (!(context is T map))
-                return;
-            Apply(map);
+            if (context is T map)
+                this.Apply(map);
         }
-    }
-
-    public interface IGenStep
-    {
-        bool CanApply(IGenContext context);
-        void Apply(IGenContext context);
     }
 }
