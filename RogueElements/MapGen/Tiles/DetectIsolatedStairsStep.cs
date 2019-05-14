@@ -8,14 +8,16 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class DetectIsolatedStairsStep<T, E, F> : GenStep<T>
-        where T : class, ITiledGenContext, IViewPlaceableGenContext<E>, IViewPlaceableGenContext<F>
-        where E : ISpawnable
-        where F : ISpawnable
+    public class DetectIsolatedStairsStep<TMap, TEntrance, TExit> : GenStep<TMap>
+        where TMap : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>
+        where TEntrance : ISpawnable
+        where TExit : ISpawnable
     {
-        public DetectIsolatedStairsStep() { }
+        public DetectIsolatedStairsStep()
+        {
+        }
 
-        public override void Apply(T map)
+        public override void Apply(TMap map)
         {
             const int offX = 0;
             const int offY = 0;
@@ -29,34 +31,31 @@ namespace RogueElements
                     connectionGrid[xx][yy] = false;
             }
 
-            //find out if the every entrance can access at least one exit
-            for (int ii = 0; ii < ((IViewPlaceableGenContext<E>)map).Count; ii++)
+            // find out if the every entrance can access at least one exit
+            for (int ii = 0; ii < ((IViewPlaceableGenContext<TEntrance>)map).Count; ii++)
             {
                 bool foundExit = false;
-                Loc stairLoc = ((IViewPlaceableGenContext<E>)map).GetLoc(ii);
-                Grid.FloodFill(new Rect(offX, offY, lX, lY),
-                (Loc testLoc) =>
-                {
-                    return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain));
-                },
-                (Loc testLoc) =>
-                {
-                    return true;
-                },
-                (Loc fillLoc) =>
-                {
-                    for (int nn = 0; nn < ((IViewPlaceableGenContext<F>)map).Count; nn++)
+                Loc stairLoc = ((IViewPlaceableGenContext<TEntrance>)map).GetLoc(ii);
+                Grid.FloodFill(
+                    new Rect(offX, offY, lX, lY),
+                    (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain)),
+                    (Loc testLoc) => true,
+                    (Loc fillLoc) =>
                     {
-                        if (((IViewPlaceableGenContext<F>)map).GetLoc(nn) == fillLoc)
-                            foundExit = true;
-                    }
-                    connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true;
-                },
-                stairLoc);
+                        for (int nn = 0; nn < ((IViewPlaceableGenContext<TExit>)map).Count; nn++)
+                        {
+                            if (((IViewPlaceableGenContext<TExit>)map).GetLoc(nn) == fillLoc)
+                                foundExit = true;
+                        }
+
+                        connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true;
+                    },
+                    stairLoc);
+
                 if (!foundExit)
                 {
 #if DEBUG
-                    printGrid(connectionGrid);
+                    PrintGrid(connectionGrid);
                     throw new Exception("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
 #else
                         Console.WriteLine("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
@@ -66,8 +65,7 @@ namespace RogueElements
             }
         }
 
-
-        private void printGrid(bool[][] connectionGrid)
+        private static void PrintGrid(bool[][] connectionGrid)
         {
             for (int yy = 0; yy < connectionGrid[0].Length; yy++)
             {
@@ -75,6 +73,7 @@ namespace RogueElements
                 {
                     System.Diagnostics.Debug.Write(connectionGrid[xx][yy] ? '.' : 'X');
                 }
+
                 System.Diagnostics.Debug.Write('\n');
             }
         }

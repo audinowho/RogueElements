@@ -8,13 +8,15 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class DetectIsolatedStep<T, E> : GenStep<T>
-        where T : class, ITiledGenContext, IViewPlaceableGenContext<E>
-        where E : ISpawnable
+    public class DetectIsolatedStep<TMap, TSpawnable> : GenStep<TMap>
+        where TMap : class, ITiledGenContext, IViewPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public DetectIsolatedStep() { }
+        public DetectIsolatedStep()
+        {
+        }
 
-        public override void Apply(T map)
+        public override void Apply(TMap map)
         {
             const int offX = 0;
             const int offY = 0;
@@ -28,30 +30,21 @@ namespace RogueElements
                     connectionGrid[xx][yy] = false;
             }
 
-
-            Grid.FloodFill(new Rect(offX, offY, lX, lY),
-            (Loc testLoc) =>
-            {
-                return (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain));
-            },
-            (Loc testLoc) =>
-            {
-                return true;
-            },
-            (Loc fillLoc) =>
-            {
-                connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true;
-            },
-            map.GetLoc(0));
+            Grid.FloodFill(
+                new Rect(offX, offY, lX, lY),
+                (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain)),
+                (Loc testLoc) => true,
+                (Loc fillLoc) => connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true,
+                map.GetLoc(0));
 
             for (int xx = offX; xx < offX + lX; xx++)
             {
-                for (int yy = offY; yy < offY+lY; yy++)
+                for (int yy = offY; yy < offY + lY; yy++)
                 {
-                    if (map.GetTile(new Loc(xx,yy)).TileEquivalent(map.RoomTerrain) && !connectionGrid[xx-offX][yy-offY])
+                    if (map.GetTile(new Loc(xx, yy)).TileEquivalent(map.RoomTerrain) && !connectionGrid[xx - offX][yy - offY])
                     {
 #if DEBUG
-                        printGrid(connectionGrid);
+                        PrintGrid(connectionGrid);
                         throw new Exception("Detected orphaned tile at X" + xx + " Y" + yy + "!  Seed: " + map.Rand.FirstSeed);
 #else
                         Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
@@ -62,8 +55,7 @@ namespace RogueElements
             }
         }
 
-
-        private void printGrid(bool[][] connectionGrid)
+        private static void PrintGrid(bool[][] connectionGrid)
         {
             for (int yy = 0; yy < connectionGrid[0].Length; yy++)
             {
@@ -71,6 +63,7 @@ namespace RogueElements
                 {
                     System.Diagnostics.Debug.Write(connectionGrid[xx][yy] ? '.' : 'X');
                 }
+
                 System.Diagnostics.Debug.Write('\n');
             }
         }

@@ -9,24 +9,28 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class InitTilesStep<T> : GenStep<T> where T : class, ITiledGenContext
+    public class InitTilesStep<T> : GenStep<T>
+        where T : class, ITiledGenContext
     {
-        public int Width;
-        public int Height;
+        private readonly int width;
+        private readonly int height;
 
-        public InitTilesStep() { }
+        public InitTilesStep(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
 
         public override void Apply(T map)
         {
-            //initialize map array to empty
-            //set default map values
-            map.CreateNew(Width, Height);
-            for (int xx = 0; xx < Width; xx++)
+            // initialize map array to empty
+            // set default map values
+            map.CreateNew(this.width, this.height);
+            for (int xx = 0; xx < this.width; xx++)
             {
-                for (int yy = 0; yy < Height; yy++)
+                for (int yy = 0; yy < this.height; yy++)
                     map.SetTile(new Loc(xx, yy), map.WallTerrain.Copy());
             }
         }
-
     }
 }
