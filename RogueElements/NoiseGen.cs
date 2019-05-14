@@ -5,13 +5,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 
 namespace RogueElements
 {
-
     [Flags]
     public enum CellRule
     {
@@ -43,12 +42,11 @@ namespace RogueElements
         Lt6 = 63,
         Lt7 = 127,
         Lt8 = 255,
-        All = 511
+        All = 511,
     }
 
     public static class NoiseGen
     {
-
         /// <summary>
         /// Generates Nth degree perlin noise.
         /// </summary>
@@ -65,10 +63,10 @@ namespace RogueElements
 
             int[][] prev_noise = null;
             int[][] noise = null;
-            for (int ii = degrees+expandDegrees-1; ii >= 0; ii--)
+            for (int ii = degrees + expandDegrees - 1; ii >= 0; ii--)
             {
-                int gridWidth = (width - 1) / (int)Math.Pow(2, ii) + 1;
-                int gridHeight = (height - 1) / (int)Math.Pow(2, ii) + 1;
+                int gridWidth = ((width - 1) / (int)Math.Pow(2, ii)) + 1;
+                int gridHeight = ((height - 1) / (int)Math.Pow(2, ii)) + 1;
 
                 noise = new int[gridWidth][];
                 for (int xx = 0; xx < gridWidth; xx++)
@@ -76,7 +74,7 @@ namespace RogueElements
                     noise[xx] = new int[gridHeight];
                     for (int yy = 0; yy < gridHeight; yy++)
                     {
-                        //Interpolate from the lower resolution iteration, if it exists
+                        // Interpolate from the lower resolution iteration, if it exists
                         if (prev_noise != null)
                         {
                             int oldX = xx / 2;
@@ -91,13 +89,17 @@ namespace RogueElements
                             int bottomright = prev_noise[newX][newY];
                             noise[xx][yy] = BiInterpolate(topleft, topright, bottomleft, bottomright, (xx % 2) * 100 / 2, (yy % 2) * 100 / 2);
                         }
-                        //add the new noise (if not merely expanding)
+
+                        // add the new noise (if not merely expanding)
                         if (ii >= expandDegrees)
-                            noise[xx][yy] += rand.Next(2) << ii;//aka, ^ ii
+                        {
+                            // aka, ^ ii
+                            noise[xx][yy] += rand.Next(2) << ii;
+                        }
                     }
                 }
-                prev_noise = noise;
 
+                prev_noise = noise;
             }
 
             return noise;
@@ -105,12 +107,14 @@ namespace RogueElements
 
         public static int BiInterpolate(int topleft, int topright, int bottomleft, int bottomright, int degreeX, int degreeY)
         {
-            return (int)(((topleft * (100 - degreeX) + topright * degreeX) * (100 - degreeY) / 100 + (bottomleft * (100 - degreeX) + bottomright * degreeX) * degreeY / 100) / 100);
+            int bottom = ((topleft * (100 - degreeX)) + (topright * degreeX)) * (100 - degreeY) / 100;
+            int top = ((bottomleft * (100 - degreeX)) + (bottomright * degreeX)) * degreeY / 100;
+            return (bottom + top) / 100;
         }
 
         public static int Interpolate(int a, int b, int degree)
         {
-            return (int)((a * (100 - degree) + b * degree) / 100);
+            return ((a * (100 - degree)) + (b * degree)) / 100;
         }
 
         public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations)
@@ -129,35 +133,35 @@ namespace RogueElements
                     for (int yy = 0; yy < height; yy++)
                     {
                         int rating = 0;
-                        if (checkGrid(xx - 1, yy - 1, startGrid))
+                        if (CheckGrid(xx - 1, yy - 1, startGrid))
                             rating++;
-                        if (checkGrid(xx + 1, yy - 1, startGrid))
+                        if (CheckGrid(xx + 1, yy - 1, startGrid))
                             rating++;
-                        if (checkGrid(xx - 1, yy + 1, startGrid))
+                        if (CheckGrid(xx - 1, yy + 1, startGrid))
                             rating++;
-                        if (checkGrid(xx + 1, yy + 1, startGrid))
+                        if (CheckGrid(xx + 1, yy + 1, startGrid))
                             rating++;
-                        if (checkGrid(xx - 1, yy, startGrid))
+                        if (CheckGrid(xx - 1, yy, startGrid))
                             rating++;
-                        if (checkGrid(xx + 1, yy, startGrid))
+                        if (CheckGrid(xx + 1, yy, startGrid))
                             rating++;
-                        if (checkGrid(xx, yy - 1, startGrid))
+                        if (CheckGrid(xx, yy - 1, startGrid))
                             rating++;
-                        if (checkGrid(xx, yy + 1, startGrid))
+                        if (CheckGrid(xx, yy + 1, startGrid))
                             rating++;
 
-                        rating = (0x1 << rating);
+                        rating = 0x1 << rating;
 
                         bool live = startGrid[xx][yy];
                         if (live)
                         {
-                            //this is a live cell, use survival rules
+                            // this is a live cell, use survival rules
                             if ((rating & (int)survive) > 0)
                                 endGrid[xx][yy] = true;
                         }
                         else
                         {
-                            //this is a dead cell, use birth rules
+                            // this is a dead cell, use birth rules
                             if ((rating & (int)birth) > 0)
                                 endGrid[xx][yy] = true;
                         }
@@ -168,7 +172,6 @@ namespace RogueElements
                 startGrid = endGrid;
                 endGrid = midGrid;
 
-
                 for (int xx = 0; xx < width; xx++)
                 {
                     for (int yy = 0; yy < height; yy++)
@@ -178,15 +181,6 @@ namespace RogueElements
 
             return startGrid;
         }
-
-        private static bool checkGrid(int x, int y, bool[][] grid)
-        {
-            if (!Collision.InBounds(grid.Length, grid[0].Length, new Loc(x, y)))
-                return false;
-            return grid[x][y];
-        }
-
-
 
         /// <summary>
         /// Divides a range [min,max] into subdivisions specified by pieces.
@@ -199,7 +193,7 @@ namespace RogueElements
         /// <returns></returns>
         public static int[] RandomDivide(IRandom rand, int min, int max, int pieces)
         {
-            int minSpace = pieces * 2 - 1;
+            int minSpace = (pieces * 2) - 1;
             int maxSpace = max - min + 1;
             if (minSpace > maxSpace)
                 throw new ArgumentException("Not enough space to divide!");
@@ -213,6 +207,7 @@ namespace RogueElements
                 int chosenGap = rand.Next(pieces);
                 divides[chosenGap]++;
             }
+
             int curTile = min;
             for (int ii = 0; ii < divides.Length; ii++)
             {
@@ -224,5 +219,11 @@ namespace RogueElements
             return divides;
         }
 
+        private static bool CheckGrid(int x, int y, bool[][] grid)
+        {
+            if (!Collision.InBounds(grid.Length, grid[0].Length, new Loc(x, y)))
+                return false;
+            return grid[x][y];
+        }
     }
 }

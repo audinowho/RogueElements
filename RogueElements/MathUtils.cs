@@ -12,6 +12,9 @@ namespace RogueElements
     public static class MathUtils
     {
         private static ReRandom rand = new ReRandom();
+
+        public delegate int CompareFunction<T>(T a, T b);
+
         public static ReRandom Rand
         {
             get
@@ -19,6 +22,7 @@ namespace RogueElements
                 return rand;
             }
         }
+
         public static void ReSeedRand(ulong seed)
         {
             rand = new ReRandom(seed);
@@ -27,8 +31,10 @@ namespace RogueElements
         /// <summary>
         /// Choose a random member from a set.
         /// </summary>
+        /// <typeparam name="T">Type of the input <cref="HashSet"/></typeparam>
         /// <param name="hash"></param>
         /// <param name="rand"></param>
+        /// <returns></returns>
         public static T ChooseFromHash<T>(HashSet<T> hash, IRandom rand)
         {
             T[] crossArray = new T[hash.Count];
@@ -48,31 +54,37 @@ namespace RogueElements
                 AddToDictionary<T>(dict1, key, dict2[key]);
         }
 
-        public delegate int CompareFunction<T>(T a, T b);
         public static void AddToSortedList<T>(List<T> list, T element, CompareFunction<T> compareFunc)
         {
             if (compareFunc == null)
                 throw new ArgumentNullException(nameof(compareFunc));
 
-            //stable
+            // stable
             int min = 0;
             int max = list.Count - 1;
             int point = max;
             int compare = -1;
-            //binary search
+
+            // binary search
             while (min <= max)
             {
                 point = (min + max) / 2;
 
                 compare = compareFunc(list[point], element);
 
-                if (compare > 0) //go down
+                if (compare > 0)
+                {
+                    // go down
                     max = point - 1;
-                else if (compare < 0) //go up
+                }
+                else if (compare < 0)
+                {
+                    // go up
                     min = point + 1;
+                }
                 else
                 {
-                    //go past the last index of equal comparison
+                    // go past the last index of equal comparison
                     point++;
                     while (point < list.Count && compareFunc(list[point], element) == 0)
                         point++;
@@ -80,11 +92,9 @@ namespace RogueElements
                     return;
                 }
             }
-            //no place found
-            if (compare > 0) //put this one under the current point
-                list.Insert(point, element);
-            else //put this one above the current point
-                list.Insert(point + 1, element);
+
+            // no place found
+            list.Insert(point + compare > 0 ? 0 : 1, element);
         }
     }
 }

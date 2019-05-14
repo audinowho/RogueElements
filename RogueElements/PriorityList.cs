@@ -10,105 +10,109 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class PriorityList<T> : IEnumerable<T>, IPriorityList<T>
+    public class PriorityList<T> : IPriorityList<T>
     {
         private readonly Dictionary<int, List<T>> data;
 
         public PriorityList()
         {
-            data = new Dictionary<int, List<T>>();
+            this.data = new Dictionary<int, List<T>>();
         }
 
-        public void Add(int priority, T item)
-        {
-            if (!data.ContainsKey(priority))
-                data[priority] = new List<T>();
-            data[priority].Add(item);
-        }
-        void IPriorityList.Add(int priority, object item) { Add(priority, (T)item); }
-
-        public void Insert(int priority, int index, T item)
-        {
-            if (!data.ContainsKey(priority))
-            {
-                if (index != 0)
-                    throw new ArgumentOutOfRangeException(nameof(index), "Index was out of bounds of the list.");
-                data[priority] = new List<T>();
-            }
-            data[priority].Insert(index, item);
-        }
-        void IPriorityList.Insert(int priority, int index, object item) { Insert(priority, index, (T)item); }
-
-        public void RemoveAt(int priority, int index)
-        {
-            data[priority].RemoveAt(index);
-            if (data[priority].Count == 0)
-                data.Remove(priority);
-        }
-
-        public T Get(int priority, int index)
-        {
-            return data[priority][index];
-        }
-        object IPriorityList.Get(int priority, int index) { return Get(priority, index); }
-
-        public void Set(int priority, int index, T item)
-        {
-            data[priority][index] = item;
-        }
-        void IPriorityList.Set(int priority, int index, object item) { Set(priority, index, (T)item); }
-
-        public void Clear()
-        {
-            data.Clear();
-        }
-
-
-        public IEnumerable<int> GetPriorities()
-        {
-            foreach(int key in data.Keys)
-                yield return key;
-        }
-
-        public IEnumerable<T> GetItems(int priority)
-        {
-            foreach (T item in data[priority])
-                yield return item;
-        }
-        IEnumerable IPriorityList.GetItems(int priority) { return GetItems(priority); }
-
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            foreach (int key in data.Keys)
-            {
-                foreach (T item in data[key])
-                    yield return item;
-            }
-        }
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
-
-        public int GetCountAtPriority(int priority)
-        {
-            if (data.TryGetValue(priority, out List<T> items))
-                return items.Count;
-            return 0;
-        }
-        int IPriorityList.GetCountAtPriority(int priority) { return GetCountAtPriority(priority); }
-
-        public int PriorityCount { get { return data.Count; } }
+        public int PriorityCount => this.data.Count;
 
         public int Count
         {
             get
             {
                 int count = 0;
-                foreach (int priority in data.Keys)
-                    count += data[priority].Count;
+                foreach (int priority in this.data.Keys)
+                    count += this.data[priority].Count;
                 return count;
             }
         }
+
+        public void Add(int priority, T item)
+        {
+            if (!this.data.ContainsKey(priority))
+                this.data[priority] = new List<T>();
+            this.data[priority].Add(item);
+        }
+
+        void IPriorityList.Add(int priority, object item) => this.Add(priority, (T)item);
+
+        public void Insert(int priority, int index, T item)
+        {
+            if (!this.data.ContainsKey(priority))
+            {
+                if (index != 0)
+                    throw new ArgumentOutOfRangeException(nameof(index), "Index was out of bounds of the list.");
+                this.data[priority] = new List<T>();
+            }
+
+            this.data[priority].Insert(index, item);
+        }
+
+        void IPriorityList.Insert(int priority, int index, object item) => this.Insert(priority, index, (T)item);
+
+        public void RemoveAt(int priority, int index)
+        {
+            this.data[priority].RemoveAt(index);
+            if (this.data[priority].Count == 0)
+                this.data.Remove(priority);
+        }
+
+        public T Get(int priority, int index)
+        {
+            return this.data[priority][index];
+        }
+
+        object IPriorityList.Get(int priority, int index) => this.Get(priority, index);
+
+        public void Set(int priority, int index, T item)
+        {
+            this.data[priority][index] = item;
+        }
+
+        void IPriorityList.Set(int priority, int index, object item) => this.Set(priority, index, (T)item);
+
+        public void Clear()
+        {
+            this.data.Clear();
+        }
+
+        public IEnumerable<int> GetPriorities()
+        {
+            foreach (int key in this.data.Keys)
+                yield return key;
+        }
+
+        public IEnumerable<T> GetItems(int priority)
+        {
+            foreach (T item in this.data[priority])
+                yield return item;
+        }
+
+        IEnumerable IPriorityList.GetItems(int priority) => this.GetItems(priority);
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (int key in this.data.Keys)
+            {
+                foreach (T item in this.data[key])
+                    yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        public int GetCountAtPriority(int priority)
+        {
+            if (this.data.TryGetValue(priority, out List<T> items))
+                return items.Count;
+            return 0;
+        }
+
+        int IPriorityList.GetCountAtPriority(int priority) => this.GetCountAtPriority(priority);
     }
-
 }
-

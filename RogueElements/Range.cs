@@ -17,6 +17,7 @@ namespace RogueElements
         /// Start of the range (inclusive)
         /// </summary>
         public int Min;
+
         /// <summary>
         /// End of the range (exclusive)
         /// </summary>
@@ -24,36 +25,29 @@ namespace RogueElements
 
         public Range(int num)
         {
-            Min = num;
-            Max = num + 1;
+            this.Min = num;
+            this.Max = num + 1;
         }
 
         public Range(int min, int max)
         {
-            Min = min;
-            Max = max;
+            this.Min = min;
+            this.Max = max;
         }
 
         public Range(Range other)
         {
-            Min = other.Min;
-            Max = other.Max;
+            this.Min = other.Min;
+            this.Max = other.Max;
         }
 
-        public bool Contains(int mid)
-        {
-            return (Min <= mid && mid < Max);
-        }
+        public int Length => this.Max - this.Min;
 
-        public bool Contains(Range value)
-        {
-            return (Min <= value.Min) && (value.Max <= Max);
-        }
+        public static bool operator ==(Range lhs, Range rhs) => lhs.Equals(rhs);
 
-        public int Length
-        {
-            get { return Max - Min; }
-        }
+        public static bool operator !=(Range lhs, Range rhs) => !lhs.Equals(rhs);
+
+        public static Range operator +(Range lhs, int rhs) => lhs.Add(rhs);
 
         public static Range Intersect(Range range1, Range range2)
         {
@@ -67,34 +61,39 @@ namespace RogueElements
             return new Range(min, max);
         }
 
+        public bool Contains(int mid)
+        {
+            return this.Min <= mid && mid < this.Max;
+        }
+
+        public bool Contains(Range value)
+        {
+            return (this.Min <= value.Min) && (value.Max <= this.Max);
+        }
+
         public override string ToString()
         {
-            return $"({Min}, {Max}]";
+            return $"({this.Min}, {this.Max}]";
         }
 
         public override bool Equals(object obj)
         {
-            return (obj is Range) && Equals((Range)obj);
+            return (obj is Range) && this.Equals((Range)obj);
         }
 
         public bool Equals(Range other)
         {
-            return (Min == other.Min && Max == other.Max);
+            return this.Min == other.Min && this.Max == other.Max;
         }
 
         public override int GetHashCode()
         {
-            return Min.GetHashCode() ^ Max.GetHashCode();
+            return this.Min.GetHashCode() ^ this.Max.GetHashCode();
         }
-
 
         public Range Add(int value)
         {
-            return new Range(Min + value, Max + value);
+            return new Range(this.Min + value, this.Max + value);
         }
-
-        public static bool operator ==(Range lhs, Range rhs) => lhs.Equals(rhs);
-        public static bool operator !=(Range lhs, Range rhs) => !lhs.Equals(rhs);
-        public static Range operator +(Range lhs, int rhs) => lhs.Add(rhs);
     }
 }
