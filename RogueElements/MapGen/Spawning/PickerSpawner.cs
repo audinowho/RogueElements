@@ -11,31 +11,29 @@ namespace RogueElements
     /// <summary>
     /// Geenrates spawnables from a specifically defined IMultiRandPicker.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class PickerSpawner<T, E> : IStepSpawner<T, E>
-        where T : IGenContext
-        where E : ISpawnable
+    public class PickerSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+        where TGenContext : IGenContext
+        where TSpawnable : ISpawnable
     {
-        public IMultiRandPicker<E> Picker;
+        private readonly IMultiRandPicker<TSpawnable> picker;
 
-        public PickerSpawner() { }
-
-        public PickerSpawner(IMultiRandPicker<E> picker)
+        public PickerSpawner(IMultiRandPicker<TSpawnable> picker)
         {
-            Picker = picker;
+            this.picker = picker;
         }
 
-        public List<E> GetSpawns(T map)
+        public List<TSpawnable> GetSpawns(TGenContext map)
         {
-            IMultiRandPicker<E> picker = Picker;
+            IMultiRandPicker<TSpawnable> picker = this.picker;
             if (picker.ChangesState)
                 picker = picker.CopyState();
-            List<E> results = picker.Roll(map.Rand);
-            List<E> copyResults = new List<E>();
-            foreach (E result in results)
-                copyResults.Add((E)result.Copy());
+            List<TSpawnable> results = picker.Roll(map.Rand);
+            var copyResults = new List<TSpawnable>();
+            foreach (TSpawnable result in results)
+                copyResults.Add((TSpawnable)result.Copy());
             return copyResults;
         }
     }

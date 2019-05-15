@@ -8,15 +8,15 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class DetectIsolatedStep<TMap, TSpawnable> : GenStep<TMap>
-        where TMap : class, ITiledGenContext, IViewPlaceableGenContext<TSpawnable>
+    public class DetectIsolatedStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
         public DetectIsolatedStep()
         {
         }
 
-        public override void Apply(TMap map)
+        public override void Apply(TGenContext map)
         {
             const int offX = 0;
             const int offY = 0;

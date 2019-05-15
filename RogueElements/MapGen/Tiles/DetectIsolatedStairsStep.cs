@@ -8,8 +8,8 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class DetectIsolatedStairsStep<TMap, TEntrance, TExit> : GenStep<TMap>
-        where TMap : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>
+    public class DetectIsolatedStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>
         where TEntrance : ISpawnable
         where TExit : ISpawnable
     {
@@ -17,7 +17,7 @@ namespace RogueElements
         {
         }
 
-        public override void Apply(TMap map)
+        public override void Apply(TGenContext map)
         {
             const int offX = 0;
             const int offY = 0;

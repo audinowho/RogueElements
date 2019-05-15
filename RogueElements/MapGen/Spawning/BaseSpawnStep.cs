@@ -12,29 +12,28 @@ namespace RogueElements
     /// Spawns objects of type E to IPlaceableGenContext T.
     /// Child classes offer a different way to place the list of spawns provided by Spawn.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public abstract class BaseSpawnStep<T, E> : GenStep<T>
-        where T : class, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public abstract class BaseSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public IStepSpawner<T, E> Spawn;
+        private readonly IStepSpawner<TGenContext, TSpawnable> spawn;
 
-        protected BaseSpawnStep() { }
-        protected BaseSpawnStep(IStepSpawner<T, E> spawn)
+        protected BaseSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
         {
-            Spawn = spawn;
+            this.spawn = spawn;
         }
 
-        public abstract void DistributeSpawns(T map, List<E> spawns);
+        public abstract void DistributeSpawns(TGenContext map, List<TSpawnable> spawns);
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
-            List<E> spawns = Spawn.GetSpawns(map);
+            List<TSpawnable> spawns = this.spawn.GetSpawns(map);
 
             if (spawns.Count > 0)
-                DistributeSpawns(map, spawns);
+                this.DistributeSpawns(map, spawns);
         }
     }
 }

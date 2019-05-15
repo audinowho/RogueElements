@@ -9,29 +9,28 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class ContextSpawner<T, E> : IStepSpawner<T, E>
-        where T : ISpawningGenContext<E>
-        where E : ISpawnable
+    public class ContextSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+        where TGenContext : ISpawningGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public RandRange Amount;
-
-        public ContextSpawner() { }
+        private RandRange amount;
 
         public ContextSpawner(RandRange amount)
         {
-            Amount = amount;
+            this.amount = amount;
         }
 
-        public List<E> GetSpawns(T map)
+        public List<TSpawnable> GetSpawns(TGenContext map)
         {
-            int chosenAmount = Amount.Pick(map.Rand);
-            List<E> results = new List<E>();
+            int chosenAmount = this.amount.Pick(map.Rand);
+            var results = new List<TSpawnable>();
             for (int ii = 0; ii < chosenAmount; ii++)
             {
                 if (!map.Spawner.CanPick)
                     break;
                 results.Add(map.Spawner.Pick(map.Rand));
             }
+
             return results;
         }
     }

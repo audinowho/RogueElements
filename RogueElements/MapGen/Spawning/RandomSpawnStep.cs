@@ -9,21 +9,22 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class RandomSpawnStep<T, E> : BaseSpawnStep<T, E>
-        where T : class, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public class RandomSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public RandomSpawnStep() { }
+        public RandomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
+            : base(spawn)
+        {
+        }
 
-        public RandomSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
-
-        public override void DistributeSpawns(T map, List<E> spawns)
+        public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
             List<Loc> freeTiles = map.GetAllFreeTiles();
 
             for (int ii = 0; ii < spawns.Count && freeTiles.Count > 0; ii++)
             {
-                E item = spawns[ii];
+                TSpawnable item = spawns[ii];
 
                 int randIndex = map.Rand.Next(freeTiles.Count);
                 map.PlaceItem(freeTiles[randIndex], item);

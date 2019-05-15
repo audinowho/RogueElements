@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Generates a random spread of water on the map. This is achieved by generating a heightmap using Perlin Noise,
+    /// Generates a random spread of water on the map. This is achieved by generating a heighTContext using Perlin Noise,
     /// then converting all tiles with a height value below a certain threshold to water.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -20,7 +20,7 @@ namespace RogueElements
         private const int BUFFER_SIZE = 5;
 
         /// <summary>
-        /// Determines how many iterations of Perlin noise to generate the heightmap with. Higher complexity = higher variation of heights and more natural looking terrain.
+        /// Determines how many iterations of Perlin noise to generate the heighTContext with. Higher complexity = higher variation of heights and more natural looking terrain.
         /// </summary>
         private readonly int orderComplexity;
 

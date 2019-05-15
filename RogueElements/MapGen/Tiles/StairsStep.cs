@@ -9,8 +9,8 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class StairsStep<TMap, TEntrance, TExit> : GenStep<TMap>
-        where TMap : class, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+    public class StairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
         where TEntrance : ISpawnable
         where TExit : ISpawnable
     {
@@ -30,7 +30,7 @@ namespace RogueElements
 
         public List<TExit> Exit { get; }
 
-        public override void Apply(TMap map)
+        public override void Apply(TGenContext map)
         {
             Loc defaultLoc = Loc.Zero;
 
@@ -55,7 +55,7 @@ namespace RogueElements
             }
         }
 
-        private static Loc GetOutlet<T>(TMap map)
+        private static Loc GetOutlet<T>(TGenContext map)
             where T : ISpawnable
         {
             List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetAllFreeTiles();

@@ -9,23 +9,25 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class TerminalSpawnStep<T, E> : RoomSpawnStep<T, E>
-        where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public class TerminalSpawnStep<TGenContext, TSpawnable> : RoomSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public bool IncludeHalls;
-        public TerminalSpawnStep() { }
-        public TerminalSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
-        public TerminalSpawnStep(IStepSpawner<T, E> spawn, bool includeHalls) : base(spawn) { IncludeHalls = includeHalls; }
+        private readonly bool includeHalls;
 
-        public override void DistributeSpawns(T map, List<E> spawns)
+        public TerminalSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, bool includeHalls = false)
+            : base(spawn)
         {
-            //random per room, not per-tile
+            this.includeHalls = includeHalls;
+        }
 
+        public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
+        {
+            // random per room, not per-tile
             var spawningRooms = new SpawnList<RoomHallIndex>();
             var terminalRooms = new SpawnList<RoomHallIndex>();
 
-            //TODO: higher likelihoods for terminals at the ends of longer paths
+            // TODO: higher likelihoods for terminals at the ends of longer paths
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 spawningRooms.Add(new RoomHallIndex(ii, false));
@@ -33,7 +35,8 @@ namespace RogueElements
                 if (adjacent.Count == 1)
                     terminalRooms.Add(new RoomHallIndex(ii, false));
             }
-            if (IncludeHalls)
+
+            if (this.includeHalls)
             {
                 for (int ii = 0; ii < map.RoomPlan.HallCount; ii++)
                 {
@@ -44,10 +47,10 @@ namespace RogueElements
                 }
             }
 
-            //first attempt to spawn in the terminals; remove from terminal list if successful
-            SpawnRandInCandRooms(map, terminalRooms, spawns, 0);
+            // first attempt to spawn in the terminals; remove from terminal list if successful
+            this.SpawnRandInCandRooms(map, terminalRooms, spawns, 0);
 
-            SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
+            this.SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
         }
     }
 }

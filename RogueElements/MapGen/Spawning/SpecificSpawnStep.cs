@@ -9,25 +9,21 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class SpecificSpawnStep<T, E> : GenStep<T>
-        where T : class, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public class SpecificSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public List<Tuple<E, Loc>> Spawns;
-
-        public SpecificSpawnStep() { }
-        public SpecificSpawnStep(List<Tuple<E, Loc>> spawns)
+        public SpecificSpawnStep(List<(TSpawnable Item, Loc Loc)> spawns)
         {
-            Spawns = spawns;
+            this.Spawns = spawns;
         }
 
-        public override void Apply(T map)
-        {
-            for (int ii = 0; ii < Spawns.Count; ii++)
-            {
-                E item = Spawns[ii].Item1;
-                Loc loc = Spawns[ii].Item2;
+        public List<(TSpawnable Item, Loc Loc)> Spawns { get; }
 
+        public override void Apply(TGenContext map)
+        {
+            foreach ((TSpawnable item, Loc loc) in this.Spawns)
+            {
                 map.PlaceItem(loc, item);
                 GenContextDebug.DebugProgress("Placed Object");
             }
