@@ -9,57 +9,58 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class FloorStairsStep<T, E, F> : GenStep<T>
-        where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IPlaceableGenContext<F>
-        where E : ISpawnable
-        where F : ISpawnable
+    public class FloorStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+        where TEntrance : ISpawnable
+        where TExit : ISpawnable
     {
-        public List<E> Entrance;
-        public List<F> Exit;
+        private readonly List<TEntrance> entrances;
+        private readonly List<TExit> exits;
 
-        public FloorStairsStep()
+        public FloorStairsStep(TEntrance entrance, TExit exit)
         {
-            Entrance = new List<E>();
-            Exit = new List<F>();
+            this.entrances = new List<TEntrance> { entrance };
+            this.exits = new List<TExit> { exit };
         }
 
-        public FloorStairsStep(E entrance, F exit) : this()
+        public FloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
         {
-            Entrance.Add(entrance);
-            Exit.Add(exit);
+            this.entrances = entrances;
+            this.exits = exits;
         }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             List<int> room_indices = new List<int>();
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 room_indices.Add(ii);
             }
+
             List<int> used_indices = new List<int>();
 
-            Loc defaultLoc = new Loc();
+            Loc defaultLoc = Loc.Zero;
 
-            for (int ii = 0; ii < Entrance.Count; ii++)
+            for (int ii = 0; ii < this.entrances.Count; ii++)
             {
                 int startRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc start = getOutlet<E>(map, startRoom);
+                Loc start = GetOutlet<TEntrance>(map, startRoom);
                 if (start == new Loc(-1))
                     start = defaultLoc;
                 else
                     defaultLoc = start;
-                ((IPlaceableGenContext<E>)map).PlaceItem(start, Entrance[ii]);
-                GenContextDebug.DebugProgress(nameof(Entrance));
+                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.entrances[ii]);
+                GenContextDebug.DebugProgress(nameof(this.entrances));
             }
 
-            for (int ii = 0; ii < Exit.Count; ii++)
+            for (int ii = 0; ii < this.exits.Count; ii++)
             {
                 int endRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc end = getOutlet<F>(map, endRoom);
+                Loc end = GetOutlet<TExit>(map, endRoom);
                 if (end == new Loc(-1))
                     end = defaultLoc;
-                ((IPlaceableGenContext<F>)map).PlaceItem(end, Exit[ii]);
-                GenContextDebug.DebugProgress(nameof(Exit));
+                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.exits[ii]);
+                GenContextDebug.DebugProgress(nameof(this.exits));
             }
         }
 
@@ -70,7 +71,7 @@ namespace RogueElements
         /// <param name="room_indices">todo: describe room_indices parameter on NextRoom</param>
         /// <param name="used_indices">todo: describe used_indices parameter on NextRoom</param>
         /// <returns></returns>
-        private int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
+        private static int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
         {
             if (room_indices.Count > 0)
             {
@@ -85,17 +86,15 @@ namespace RogueElements
             return used_indices[altIndex];
         }
 
-
-        private Loc getOutlet<N>(T map, int index)
-            where N : ISpawnable
+        private static Loc GetOutlet<T>(TGenContext map, int index)
+            where T : ISpawnable
         {
-            List<Loc> tiles = ((IPlaceableGenContext<N>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
+            List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
 
             if (tiles.Count > 0)
                 return tiles[map.Rand.Next(tiles.Count)];
 
-            return new Loc(-1);
+            return -Loc.One;
         }
-
     }
 }

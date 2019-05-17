@@ -9,37 +9,35 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class ConnectBranchStep<T> : ConnectStep<T> where T : class, IFloorPlanGenContext
+    public class ConnectBranchStep<T> : ConnectStep<T>
+        where T : class, IFloorPlanGenContext
     {
-        public int ConnectPercent;
-
-        public ConnectBranchStep() : base() { }
-
-        public ConnectBranchStep(int connectPercent)
-            : this()
+        public ConnectBranchStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
+            : base(genericHalls)
         {
-            ConnectPercent = connectPercent;
         }
+
+        public int ConnectPercent { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
             List<List<RoomHallIndex>> candBranchPoints = GetBranchArms(floorPlan);
 
-            //compute a goal amount of branches to connect
-            //this computation ignores the fact that some terminals may be impossible
-            var randBin = new RandBinomial(candBranchPoints.Count, ConnectPercent);
+            // compute a goal amount of branches to connect
+            // this computation ignores the fact that some terminals may be impossible
+            var randBin = new RandBinomial(candBranchPoints.Count, this.ConnectPercent);
             int connectionsLeft = randBin.Pick(rand);
 
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)
             {
-                //choose random point to connect from
+                // choose random point to connect from
                 int randIndex = rand.Next(candBranchPoints.Count);
-                ListPathTraversalNode chosenDest = chooseConnection(rand, floorPlan, candBranchPoints[randIndex]);
+                var chosenDestResult = ChooseConnection(rand, floorPlan, candBranchPoints[randIndex]);
 
-                if (chosenDest != null)
+                if (chosenDestResult is ListPathTraversalNode chosenDest)
                 {
-                    //connect
-                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)GenericHalls.Pick(rand).Copy();
+                    // connect
+                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)this.GenericHalls.Pick(rand).Copy();
                     hall.PrepareSize(rand, chosenDest.Connector.Size);
                     hall.SetLoc(chosenDest.Connector.Start);
                     floorPlan.AddHall(hall, chosenDest.From, chosenDest.To);
@@ -47,8 +45,8 @@ namespace RogueElements
                     connectionsLeft--;
                     GenContextDebug.DebugProgress("Added Connection");
 
-                    //check to see if connection destination was also a candidate,
-                    //counting this as a double if so
+                    // check to see if connection destination was also a candidate,
+                    // counting this as a double if so
                     for (int ii = candBranchPoints.Count - 1; ii >= 0; ii--)
                     {
                         for (int jj = 0; jj < candBranchPoints[ii].Count; jj++)
@@ -62,13 +60,15 @@ namespace RogueElements
                         }
                     }
                 }
-                else //remove the list anyway, but don't call it a success
+                else
+                {
+                    // remove the list anyway, but don't call it a success
                     candBranchPoints.RemoveAt(randIndex);
+                }
             }
-
         }
 
-        public List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
+        private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
         {
             List<ListPathTraversalNode> endBranches = new List<ListPathTraversalNode>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
@@ -84,7 +84,7 @@ namespace RogueElements
                 ListPathTraversalNode chosenBranch = endBranches[nn];
                 List<RoomHallIndex> arm = new List<RoomHallIndex>();
 
-                while (chosenBranch != null)
+                while (true)
                 {
                     List<RoomHallIndex> connectors = new List<RoomHallIndex>();
                     List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(chosenBranch.To).Adjacents;
@@ -101,28 +101,30 @@ namespace RogueElements
                     }
                     else if (connectors.Count == 0)
                     {
-                        //we've reached the other side of a single line; add
+                        // we've reached the other side of a single line; add
                         arm.Add(chosenBranch.To);
-                        //but also find the other pending arm and remove it
+
+                        // but also find the other pending arm and remove it
                         for (int ii = endBranches.Count - 1; ii > nn; ii--)
                         {
                             ListPathTraversalNode otherBranch = endBranches[ii];
                             if (chosenBranch.To == otherBranch.To)
                                 endBranches.RemoveAt(ii);
                         }
-                        //end the loop
-                        chosenBranch = null;
+
+                        // end the loop
+                        break;
                     }
                     else
-                        chosenBranch = null;
+                    {
+                        break;
+                    }
                 }
+
                 branchArms.Add(arm);
             }
+
             return branchArms;
         }
-
-
     }
-
-
 }

@@ -9,20 +9,20 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class DueSpawnStep<TGenContext, E, F> : RoomSpawnStep<TGenContext, E>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IViewPlaceableGenContext<F>
-        where E : ISpawnable
-        where F : ISpawnable
+    public class DueSpawnStep<TGenContext, TSpawnable, TEntrance> : RoomSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>, IViewPlaceableGenContext<TEntrance>
+        where TSpawnable : ISpawnable
+        where TEntrance : ISpawnable
     {
         private readonly int successPercent;
 
-        public DueSpawnStep(IStepSpawner<TGenContext, E> spawn, int successPercent)
+        public DueSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent)
             : base(spawn)
         {
             this.successPercent = successPercent;
         }
 
-        public override void DistributeSpawns(TGenContext map, List<E> spawns)
+        public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
             // gather up all rooms and put in a spawn list
             // rooms that are farther from the start are more likely to have items

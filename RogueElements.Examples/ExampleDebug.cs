@@ -328,32 +328,32 @@ namespace RogueElements.Examples
                     for (int ii = 0; ii < plan.RoomCount; ii++)
                     {
                         FloorRoomPlan roomPlan = plan.GetRoomPlan(ii);
-                        if (roomPlan.Gen.Draw.Contains(mapLoc))
+                        if (roomPlan.RoomGen.Draw.Contains(mapLoc))
                         {
                             //stats
-                            string roomString = $"Room #{ii}: {roomPlan.Gen.Draw.X}x{roomPlan.Gen.Draw.Y} {roomPlan.RoomGen}";
+                            string roomString = $"Room #{ii}: {roomPlan.RoomGen.Draw.X}x{roomPlan.RoomGen.Draw.Y} {roomPlan.RoomGen}";
                             if (roomPlan.Immutable)
                                 roomString += " [Immutable]";
                             rewriteLine(farthestPrint, roomString);
                             farthestPrint++;
                             //borders
                             var lineString = new StringBuilder(" ");
-                            for (int xx = 0; xx < roomPlan.Gen.Draw.Width; xx++)
-                                lineString.Append(roomPlan.Gen.GetFulfillableBorder(Dir4.Up, xx) ? "^" : " ");
+                            for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
+                                lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Up, xx) ? "^" : " ");
                             rewriteLine(farthestPrint, lineString.ToString());
                             farthestPrint++;
-                            for (int yy = 0; yy < roomPlan.Gen.Draw.Height; yy++)
+                            for (int yy = 0; yy < roomPlan.RoomGen.Draw.Height; yy++)
                             {
-                                lineString = new StringBuilder(roomPlan.Gen.GetFulfillableBorder(Dir4.Left, yy) ? "<" : " ");
-                                for (int xx = 0; xx < roomPlan.Gen.Draw.Width; xx++)
+                                lineString = new StringBuilder(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Left, yy) ? "<" : " ");
+                                for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
                                     lineString.Append("#");
-                                lineString.Append(roomPlan.Gen.GetFulfillableBorder(Dir4.Right, yy) ? ">" : " ");
+                                lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Right, yy) ? ">" : " ");
                                 rewriteLine(farthestPrint, lineString.ToString());
                                 farthestPrint++;
                             }
                             lineString = new StringBuilder(" ");
-                            for (int xx = 0; xx < roomPlan.Gen.Draw.Width; xx++)
-                                lineString.Append(roomPlan.Gen.GetFulfillableBorder(Dir4.Down, xx) ? "V" : " ");
+                            for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
+                                lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Down, xx) ? "V" : " ");
                             rewriteLine(farthestPrint, lineString.ToString());
                             farthestPrint++;
                         }

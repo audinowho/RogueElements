@@ -520,7 +520,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(0, 0, 2, 2), new Rect(9, 15, 2, 2) },
                 new Rect[] { new Rect(2, 1, 4, 10), new Rect(6, 6, 3, 10) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
-            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
+            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].RoomGen).Identifier = 'a';
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));
@@ -567,7 +567,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(0, 0, 2, 2), new Rect(9, 6, 2, 2) },
                 new Rect[] { new Rect(2, 1, 4, 7), new Rect(6, 6, 3, 2) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
-            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
+            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].RoomGen).Identifier = 'a';
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));
@@ -614,7 +614,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(0, 0, 2, 2), new Rect(6, 15, 2, 2) },
                 new Rect[] { new Rect(2, 1, 3, 10), new Rect(5, 6, 1, 10) },
                 new Tuple<char, char>[] { new Tuple<char, char>('A', 'a'), new Tuple<char, char>('a', 'b'), new Tuple<char, char>('b', 'B') });
-            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].Gen).Identifier = 'a';
+            ((TestFloorPlanGen)compareFloorPlan.PublicHalls[1].RoomGen).Identifier = 'a';
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));

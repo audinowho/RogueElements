@@ -9,17 +9,15 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class ConnectRoomStep<T> : ConnectStep<T> where T : class, IFloorPlanGenContext
+    public class ConnectRoomStep<T> : ConnectStep<T>
+        where T : class, IFloorPlanGenContext
     {
-        public RandRange ConnectFactor;
-
-        public ConnectRoomStep() : base() { }
-
-        public ConnectRoomStep(RandRange connectFactor)
-            : this()
+        public ConnectRoomStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
+            : base(genericHalls)
         {
-            ConnectFactor = connectFactor;
         }
+
+        public RandRange ConnectFactor { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
@@ -27,20 +25,20 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
                 candBranchPoints.Add(new RoomHallIndex(ii, false));
 
-            //compute a goal amount of terminals to connect
-            //this computation ignores the fact that some terminals may be impossible
-            int connectionsLeft = ConnectFactor.Pick(rand) * candBranchPoints.Count / 2 / 100;
+            // compute a goal amount of terminals to connect
+            // this computation ignores the fact that some terminals may be impossible
+            int connectionsLeft = this.ConnectFactor.Pick(rand) * candBranchPoints.Count / 2 / 100;
 
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)
             {
-                //choose random point to connect from
+                // choose random point to connect from
                 int randIndex = rand.Next(candBranchPoints.Count);
-                ListPathTraversalNode chosenDest = chooseConnection(rand, floorPlan, candBranchPoints);
+                var chosenDestResult = ChooseConnection(rand, floorPlan, candBranchPoints);
 
-                if (chosenDest != null)
+                if (chosenDestResult is ListPathTraversalNode chosenDest)
                 {
-                    //connect
-                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)GenericHalls.Pick(rand).Copy();
+                    // connect
+                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)this.GenericHalls.Pick(rand).Copy();
                     hall.PrepareSize(rand, chosenDest.Connector.Size);
                     hall.SetLoc(chosenDest.Connector.Start);
                     floorPlan.AddHall(hall, chosenDest.From, chosenDest.To);
@@ -48,8 +46,8 @@ namespace RogueElements
                     connectionsLeft--;
                     GenContextDebug.DebugProgress("Added Connection");
 
-                    //check to see if connection destination was also a candidate,
-                    //counting this as a double if so
+                    // check to see if connection destination was also a candidate,
+                    // counting this as a double if so
                     for (int jj = 0; jj < candBranchPoints.Count; jj++)
                     {
                         if (candBranchPoints[jj] == chosenDest.To)
@@ -60,13 +58,12 @@ namespace RogueElements
                         }
                     }
                 }
-                else //remove the list anyway, but don't call it a success
+                else
+                {
+                    // remove the list anyway, but don't call it a success
                     candBranchPoints.RemoveAt(randIndex);
+                }
             }
-
         }
-
     }
-
-
 }

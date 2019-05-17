@@ -13,13 +13,12 @@ namespace RogueElements
     public abstract class FloorPathStartStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
-
         public void CreateErrorPath(IRandom rand, FloorPlan floorPlan)
         {
             floorPlan.Clear();
-            RoomGen<T> room = GetDefaultGen();
+            RoomGen<T> room = this.GetDefaultGen();
             room.PrepareSize(rand, new Loc(1));
-            room.SetLoc(new Loc());
+            room.SetLoc(Loc.Zero);
             floorPlan.AddRoom(room, false);
         }
 

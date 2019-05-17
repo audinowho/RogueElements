@@ -14,23 +14,10 @@ namespace RogueElements.Examples.Ex2_Rooms
             var layout = new MapGen<MapGenContext>();
 
             //Initialize a 54x40 floorplan with which to populate with rectangular floor and halls.
-            InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>
-            {
-                Width = 54,
-                Height = 40
-            };
+            InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>(54, 40);
             layout.GenSteps.Add(-2, startGen);
 
-
-            //Create a path that is composed of a branching tree
-            FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>
-            {
-                HallPercent = 50,
-                FillPercent = new RandRange(45),
-                BranchRatio = new RandRange(0, 25)
-            };
-
-            //Give it some room types to place
+            //Create some room types to place
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>
             {
                 //square
@@ -38,15 +25,21 @@ namespace RogueElements.Examples.Ex2_Rooms
                 //round
                 new RoomGenRound<MapGenContext>(new RandRange(5, 9), new RandRange(5, 9))
             };
-            path.GenericRooms = genericRooms;
 
-            //Give it some hall types to place
+            //Create some hall types to place
             var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>
             {
                 { new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)), 10 },
                 { new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20 }
             };
-            path.GenericHalls = genericHalls;
+
+            //Feed the room and hall types to a path that is composed of a branching tree
+            FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>(genericRooms, genericHalls)
+            {
+                HallPercent = 50,
+                FillPercent = new RandRange(45),
+                BranchRatio = new RandRange(0, 25)
+            };
 
             layout.GenSteps.Add(-1, path);
 

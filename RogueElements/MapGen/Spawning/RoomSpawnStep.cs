@@ -52,7 +52,7 @@ namespace RogueElements
 
         public virtual bool SpawnInRoom(TGenContext map, RoomHallIndex roomIndex, TSpawnable spawn)
         {
-            IRoomGen room = map.RoomPlan.GetRoomHall(roomIndex).Gen;
+            IRoomGen room = map.RoomPlan.GetRoomHall(roomIndex).RoomGen;
             List<Loc> freeTiles = map.GetFreeTiles(room.Draw);
 
             if (freeTiles.Count > 0)

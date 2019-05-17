@@ -3,49 +3,27 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
     /// <summary>
     /// Contains data about which cells a room occupies in a GridFloorPlan.
     /// </summary>
-    public class FloorRoomPlan : BaseFloorRoomPlan
+    public class FloorRoomPlan : IFloorRoomPlan
     {
-        public bool Immutable;
-        public IRoomGen RoomGen;
-        public override IRoomGen Gen { get { return RoomGen; } }
-
-        public FloorRoomPlan(IRoomGen roomGen)
+        public FloorRoomPlan(IRoomGen roomGen, bool immutable = false)
         {
-            RoomGen = roomGen;
+            this.RoomGen = roomGen;
+            this.Adjacents = new List<RoomHallIndex>();
+            this.Immutable = immutable;
         }
 
+        public IRoomGen RoomGen { get; }
 
+        public List<RoomHallIndex> Adjacents { get; }
+
+        public bool Immutable { get; }
     }
-
-    public class FloorHallPlan : BaseFloorRoomPlan
-    {
-        public IPermissiveRoomGen RoomGen;
-        public override IRoomGen Gen { get { return RoomGen; } }
-
-        public FloorHallPlan(IPermissiveRoomGen roomGen)
-        {
-            RoomGen = roomGen;
-        }
-    }
-
-
-    public abstract class BaseFloorRoomPlan
-    {
-        public abstract IRoomGen Gen { get; }
-        public List<RoomHallIndex> Adjacents;
-
-        protected BaseFloorRoomPlan()
-        {
-            Adjacents = new List<RoomHallIndex>();
-        }
-    }
-
 }

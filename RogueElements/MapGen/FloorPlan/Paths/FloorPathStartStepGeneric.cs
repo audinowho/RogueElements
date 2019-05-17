@@ -13,15 +13,21 @@ namespace RogueElements
     public abstract class FloorPathStartStepGeneric<T> : FloorPathStartStep<T>
         where T : class, IFloorPlanGenContext
     {
-        //generic rooms that can be placed in any frequency, anywhere as the ultimate fallback
-        //each path layout might have other room lists, but they will always have a generic room list?
-        public IRandPicker<RoomGen<T>> GenericRooms;
+        protected FloorPathStartStepGeneric(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        {
+            this.GenericRooms = genericRooms;
+            this.GenericHalls = genericHalls;
+        }
 
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls;
+        // generic rooms that can be placed in any frequency, anywhere as the ultimate fallback
+        // each path layout might have other room lists, but they will always have a generic room list?
+        protected IRandPicker<RoomGen<T>> GenericRooms { get; }
+
+        protected IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; }
 
         public override void Apply(T map)
         {
-            if (!GenericRooms.CanPick || !GenericHalls.CanPick)
+            if (!this.GenericRooms.CanPick || !this.GenericHalls.CanPick)
                 throw new InvalidOperationException("Can't create a path without rooms or halls.");
 
             base.Apply(map);

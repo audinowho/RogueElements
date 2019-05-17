@@ -71,7 +71,7 @@ namespace RogueElements.Tests
                 new Rect[] { new Rect(), new Rect() },
                 new Tuple<char, char>[] { new Tuple<char, char>('b', 'a'),
                                         new Tuple<char, char>('A', 'a'), new Tuple<char, char>('C', 'b') });
-            ((TestFloorPlanGen)compareFloorPlan.GetRoomHall(new RoomHallIndex(1, true)).Gen).Identifier = 'c';
+            ((TestFloorPlanGen)compareFloorPlan.GetRoomHall(new RoomHallIndex(1, true)).RoomGen).Identifier = 'c';
 
             floorPlan.EraseRoomHall(new RoomHallIndex(1, true));
 
@@ -495,7 +495,7 @@ namespace RogueElements.Tests
                 roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
                 floorPlan.PublicHalls.Add(roomPlan);
             }
-            IRoomGen from = floorPlan.GetRoomHall(new RoomHallIndex(index, isHall)).Gen;
+            IRoomGen from = floorPlan.GetRoomHall(new RoomHallIndex(index, isHall)).RoomGen;
 
             floorPlan.TransferBorderToAdjacents(new RoomHallIndex(index, isHall));
 
@@ -683,8 +683,8 @@ namespace RogueElements.Tests
 
     public class TestFloorPlan : FloorPlan
     {
-        public List<FloorRoomPlan> PublicRooms { get { return rooms; } }
-        public List<FloorHallPlan> PublicHalls { get { return halls; } }
+        public List<FloorRoomPlan> PublicRooms { get { return Rooms; } }
+        public List<FloorHallPlan> PublicHalls { get { return Halls; } }
 
 
         public static void CompareFloorPlans(TestFloorPlan floorPlan, TestFloorPlan compareFloorPlan)
@@ -747,8 +747,8 @@ namespace RogueElements.Tests
                 int index2 = hall2 ? links[ii].Item2 - 'a' : links[ii].Item2 - 'A';
                 var link1 = new RoomHallIndex(index1, hall1);
                 var link2 = new RoomHallIndex(index2, hall2);
-                BaseFloorRoomPlan from1 = floorPlan.GetRoomHall(link1);
-                BaseFloorRoomPlan from2 = floorPlan.GetRoomHall(link2);
+                IFloorRoomPlan from1 = floorPlan.GetRoomHall(link1);
+                IFloorRoomPlan from2 = floorPlan.GetRoomHall(link2);
                 from1.Adjacents.Add(link2);
                 from2.Adjacents.Add(link1);
             }

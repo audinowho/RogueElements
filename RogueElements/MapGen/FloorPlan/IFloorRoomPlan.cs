@@ -1,17 +1,16 @@
-﻿// <copyright file="IFloorPlanGenContext.cs" company="Audino">
+// <copyright file="IFloorRoomPlan.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IFloorPlanGenContext : ITiledGenContext
+    public interface IFloorRoomPlan
     {
-        FloorPlan RoomPlan { get; }
+        IRoomGen RoomGen { get; }
 
-        void InitPlan(FloorPlan plan);
+        List<RoomHallIndex> Adjacents { get; }
     }
 }

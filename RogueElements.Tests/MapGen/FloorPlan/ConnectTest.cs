@@ -20,8 +20,10 @@ namespace RogueElements.Tests
 
             var candList = new List<RoomHallIndex> { new RoomHallIndex(0, false) };
 
-            ConnectBranchStep <IFloorPlanTestContext> pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodes = ConnectTestStep.GetPossibleExpansions(floorPlan, candList);
             
             Assert.That(nodes.Count, Is.EqualTo(1));
             Assert.That(nodes.GetSpawn(0).From, Is.EqualTo(new RoomHallIndex(0, false)));
@@ -54,8 +56,10 @@ namespace RogueElements.Tests
                 new RoomHallIndex(2, false)
             };
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodes = ConnectTestStep.GetPossibleExpansions(floorPlan, candList);
             
             Assert.That(nodes.Count, Is.EqualTo(2));
             Assert.That(nodes.GetSpawnRate(0), Is.EqualTo(6));
@@ -98,8 +102,10 @@ namespace RogueElements.Tests
                 new RoomHallIndex(6, false)
             };
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            SpawnList<ListPathTraversalNode> nodes = pathGen.GetPossibleExpansions(floorPlan, candList);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodes = ConnectTestStep.GetPossibleExpansions(floorPlan, candList);
 
             Assert.That(nodes.Count, Is.EqualTo(8));
         }
@@ -112,10 +118,12 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
 
-            Assert.That(node, Is.EqualTo(null));
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var node = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(node.HasValue, Is.False);
         }
 
         [Test]
@@ -131,8 +139,13 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), dir);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), dir);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
             Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
@@ -159,8 +172,13 @@ namespace RogueElements.Tests
                 halls.ToArray(),
                 Array.Empty<Tuple<char, char>>());
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
             if (!hall)
@@ -191,8 +209,13 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
 
             Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
             Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
@@ -207,10 +230,12 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 Array.Empty<Tuple<char, char>>());
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            ListPathTraversalNode node = pathGen.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
 
-            Assert.That(node, Is.EqualTo(null));
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.False);
         }
 
 
@@ -235,10 +260,30 @@ namespace RogueElements.Tests
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(2, 3, 5))).Returns(false);
             Rect rectTo = new Rect(x, 0, 2, 2);
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>();
-            bool hasOpening = pathGen.HasBorderOpening(mockFrom.Object, rectTo, expandTo);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            bool hasOpening = ConnectTestStep.HasBorderOpening(mockFrom.Object, rectTo, expandTo);
 
             Assert.That(hasOpening, Is.EqualTo(expected));
+        }
+
+        private class ConnectTestStep : ConnectStep<IFloorPlanTestContext>
+        {
+            public ConnectTestStep(IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>> genericHalls)
+                : base(genericHalls)
+            {
+            }
+
+            new public static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo) => ConnectStep<IFloorPlanTestContext>.HasBorderOpening(roomFrom, rectTo, expandTo);
+
+            new public static ListPathTraversalNode? GetRoomToConnect(FloorPlan floorPlan, RoomHallIndex chosenFrom, Dir4 dir) => ConnectStep<IFloorPlanTestContext>.GetRoomToConnect(floorPlan, chosenFrom, dir);
+
+            new public static SpawnList<ListPathTraversalNode> GetPossibleExpansions(FloorPlan floorPlan, List<RoomHallIndex> candList) => ConnectStep<IFloorPlanTestContext>.GetPossibleExpansions(floorPlan, candList);
+
+            public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+            {
+            }
         }
     }
 }

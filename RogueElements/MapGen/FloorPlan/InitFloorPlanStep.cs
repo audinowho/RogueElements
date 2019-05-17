@@ -9,20 +9,24 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class InitFloorPlanStep<T> : GenStep<T> where T : class, IFloorPlanGenContext
+    public class InitFloorPlanStep<T> : GenStep<T>
+        where T : class, IFloorPlanGenContext
     {
-        public int Width;
-        public int Height;
+        private readonly int width;
+        private readonly int height;
 
-        public InitFloorPlanStep() { }
+        public InitFloorPlanStep(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
 
         public override void Apply(T map)
         {
             var floorPlan = new FloorPlan();
-            floorPlan.InitSize(new Loc(Width, Height));
+            floorPlan.InitSize(new Loc(this.width, this.height));
 
             map.InitPlan(floorPlan);
         }
-
     }
 }
