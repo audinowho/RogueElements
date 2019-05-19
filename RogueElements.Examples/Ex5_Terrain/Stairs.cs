@@ -4,13 +4,13 @@ using RogueElements;
 
 namespace RogueElements.Examples.Ex5_Terrain
 {
-    public class StairsUp : Stairs
+    public class StairsUp : Stairs, IEntrance
     {
         public StairsUp() { }
         protected StairsUp(StairsUp other) : base(other) { }
         public override ISpawnable Copy() { return new StairsUp(this); }
     }
-    public class StairsDown : Stairs
+    public class StairsDown : Stairs, IExit
     {
         public StairsDown() { }
         protected StairsDown(StairsDown other) : base(other) { }

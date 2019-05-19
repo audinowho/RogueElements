@@ -344,7 +344,7 @@ namespace RogueElements.Tests
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>();
+            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>();
             roomSpawner.CallBase = true;
             roomSpawner.Object.SuccessPercent = 100;
 
@@ -396,7 +396,7 @@ namespace RogueElements.Tests
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>();
+            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>();
             roomSpawner.CallBase = true;
             roomSpawner.Object.SuccessPercent = 100;
 
@@ -457,7 +457,7 @@ namespace RogueElements.Tests
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
 
-            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>();
+            Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>> roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>();
             roomSpawner.CallBase = true;
             roomSpawner.Object.SuccessPercent = 100;
 
@@ -481,7 +481,7 @@ namespace RogueElements.Tests
     public interface IPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>
     { }
     
-    public interface IViewPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<SpawnableInt>
+    public interface IViewPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<TestEntryPoint>
     { }
 
     public struct SpawnableChar : ISpawnable
@@ -502,20 +502,20 @@ namespace RogueElements.Tests
 
     }
 
-    public struct SpawnableInt : ISpawnable
+    public struct TestEntryPoint : IEntrance, IExit
     {
         public int ID;
 
-        public SpawnableInt(int value)
+        public TestEntryPoint(int value)
         {
             ID = value;
         }
 
-        public SpawnableInt(SpawnableInt other)
+        public TestEntryPoint(TestEntryPoint other)
         {
             ID = other.ID;
         }
 
-        public ISpawnable Copy() { return new SpawnableInt(this); }
+        public ISpawnable Copy() { return new TestEntryPoint(this); }
     }
 }

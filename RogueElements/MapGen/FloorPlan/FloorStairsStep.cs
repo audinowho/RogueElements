@@ -6,8 +6,8 @@ namespace RogueElements
     [Serializable]
     public class FloorStairsStep<T, E, F> : GenStep<T>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IPlaceableGenContext<F>
-        where E : ISpawnable
-        where F : ISpawnable
+        where E : IEntrance
+        where F : IExit
     {
         public List<E> Entrance;
         public List<F> Exit;
