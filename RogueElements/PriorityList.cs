@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+
+    /// <summary>
+    /// Stores and retrieves values with an associated priority, abstracting out the list-of-lists logic behind them.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class PriorityList<T> : IEnumerable<T>, IPriorityList
     {
@@ -59,6 +64,10 @@ namespace RogueElements
         }
 
 
+        /// <summary>
+        /// Enumerates all priorities. Does not have to be in order.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<int> GetPriorities()
         {
             foreach(int key in data.Keys)
@@ -72,7 +81,10 @@ namespace RogueElements
         }
         IEnumerable IPriorityList.GetItems(int priority) { return GetItems(priority); }
 
-
+        /// <summary>
+        /// Enumerates all items. Does not have to be in priority order.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             foreach (int key in data.Keys)
@@ -92,8 +104,14 @@ namespace RogueElements
         }
         int IPriorityList.GetCountAtPriority(int priority) { return GetCountAtPriority(priority); }
 
+        /// <summary>
+        /// Retrieves the total amount of priorities being occupied with items.
+        /// </summary>
         public int PriorityCount { get { return data.Count; } }
 
+        /// <summary>
+        /// Retrieves the total number of items in the PriorityList
+        /// </summary>
         public int Count
         {
             get

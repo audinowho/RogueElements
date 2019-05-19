@@ -3,12 +3,23 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Places items on the map based on how far they are from the entrance of the map.
+    /// Distance is measured in the amount of rooms one must travel to reach the room in question.
+    /// </summary>
+    /// <typeparam name="T">Type of the MapGenContext.</typeparam>
+    /// <typeparam name="E">Type of the item to spawn.</typeparam>
+    /// <typeparam name="F">Type of the Map Entrance.</typeparam>
     [Serializable]
     public class DueSpawnStep<T, E, F> : RoomSpawnStep<T, E>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IViewPlaceableGenContext<F>
         where E : ISpawnable
         where F : ISpawnable
     {
+
+        /// <summary>
+        /// The percentage chance to multiply a room's spawning chance when it successfully spawns an item.
+        /// </summary>
         public int SuccessPercent;
 
         public DueSpawnStep() { }

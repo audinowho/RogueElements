@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Subclass of RoomGen that can deal with any combination of paths leading into it.  Its RequestedBorder can be disobeyed.
+    /// Subclass of RoomGen that can fulfill any combination of paths leading into it.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]

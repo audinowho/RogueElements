@@ -4,10 +4,21 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Subclass of RoomGen that cannot deal with every combination of paths leading into it.  Its RequestedBorder must be obeyed under all circumstances.
-    /// It always has at least one open RequestedBorder tile open for each side.
+    /// A class representing a room-generating algorithm. It supports connections to other rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <remarks>
+    /// RoomGens obey the following rules:
+    /// 1. All RoomGens must generate a solvable room.  Aka, one where it is possible to get to any opening in its 4 sides, to any other opening in its 4 sides.
+    /// * This means, it is okay if some generated rooms can be “cheesed” out of any self-contained puzzle they’re trying to make.A cheesable room is better than a wholly unsolvable.
+    /// 2. All RoomGens must be capable of taking any Size, and generate without throwing an exception.
+    /// * So if you have a RoomGen that is meant to make a complicated self contained maze, and the calling code says "No, you only get 2x2 tiles of space to work with, deal with it", it will have to comply. (Usually by just making a blank square)
+    /// * But, you can ask a RoomGen what dimensions it would like to be, and then pass it those dimensions to play nice with it.This is the usual case.
+    /// 3. A RoomGen must be able to produce at least one opening for each of the four cardinal directions, if asked.
+    /// * For example, a simple square room has openings on all four sides regardless of how it’s generated.Certain styles of rooms do not want to have any walkable tiles on the North border unless mandated.
+    /// * Another example would be if the algorithm from above placed this RoomGen between two rooms: one above and one below.It wants to connect them from above and below.The RoomGen must provide an opening somewhere for its north and south borders.
+    /// * The keyword is somewhere.Somewhere that the RoomGen gets to pick and the calling code cannot.
+    /// </remarks>
+    /// <typeparam name="T">The MapGenContext to apply the room to.</typeparam>
     [Serializable]
     public abstract class RoomGen<T> : IRoomGen where T : ITiledGenContext
     {

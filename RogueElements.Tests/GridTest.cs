@@ -333,9 +333,9 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        [TestCase(false, true)]
-        [TestCase(true, false)]
-        public void IsChokePointSubRect(bool diagonal, bool result)
+        [TestCase(false)]
+        [TestCase(true)]
+        public void IsChokePointSubRect(bool diagonal)
         {
             string[] inGrid = { ".....",
                                 ".X.X.",
@@ -352,6 +352,7 @@ namespace RogueElements.Tests
             else
                 checkDiag = (Loc testLoc) => { return map[testLoc.X][testLoc.Y] == 'X'; };
 
+            //The blocked tile counts as blocking all, even diagonals.
             bool isChoke = Grid.IsChokePoint(new Loc(1), new Loc(map[0].Length, map.Length) - new Loc(2), new Loc(2), checkBlock, checkDiag);
             Assert.That(isChoke, Is.EqualTo(true));
         }
