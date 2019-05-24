@@ -12,6 +12,10 @@ namespace RogueElements
     public class DrawFloorToTileStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
     {
+        public DrawFloorToTileStep()
+        {
+        }
+
         public DrawFloorToTileStep(int padding = 0)
         {
             this.Padding = padding;

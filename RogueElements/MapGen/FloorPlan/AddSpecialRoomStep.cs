@@ -12,15 +12,21 @@ namespace RogueElements
     public class AddSpecialRoomStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
-        private readonly IRandPicker<RoomGen<T>> rooms;
-        private readonly IRandPicker<PermissiveRoomGen<T>> halls;
+        public AddSpecialRoomStep()
+        {
+            this.Rooms = null;
+            this.Halls = null;
+        }
 
         public AddSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
-            : base()
         {
-            this.rooms = rooms;
-            this.halls = halls;
+            this.Rooms = rooms;
+            this.Halls = halls;
         }
+
+        public IRandPicker<RoomGen<T>> Rooms { get; set; }
+
+        public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
 
         public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
@@ -59,7 +65,7 @@ namespace RogueElements
         {
             // choose certain rooms in the list to be special rooms
             // special rooms are required; so make sure they don't overlap
-            IRoomGen newGen = this.rooms.Pick(rand).Copy();
+            IRoomGen newGen = this.Rooms.Pick(rand).Copy();
             Loc size = newGen.ProposeSize(rand);
             newGen.PrepareSize(rand, size);
             int factor = floorPlan.DrawRect.Area / newGen.Draw.Area;
@@ -141,7 +147,7 @@ namespace RogueElements
                 else if (adjacentsByDir[dir].Count > 0)
                 {
                     Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, dir, adjacentsByDir[dir]);
-                    var supportHall = (IPermissiveRoomGen)this.halls.Pick(rand).Copy();
+                    var supportHall = (IPermissiveRoomGen)this.Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
                     supportHalls[dir] = supportHall;

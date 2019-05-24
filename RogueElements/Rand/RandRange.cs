@@ -36,6 +36,8 @@ namespace RogueElements
             this.Max = other.Max;
         }
 
+        public static RandRange Empty => new RandRange(0);
+
         public bool ChangesState => false;
 
         public bool CanPick => this.Min <= this.Max;

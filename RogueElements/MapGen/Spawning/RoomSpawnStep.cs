@@ -13,6 +13,11 @@ namespace RogueElements
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
+        protected RoomSpawnStep()
+            : base()
+        {
+        }
+
         protected RoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
             : base(spawn)
         {

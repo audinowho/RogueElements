@@ -13,6 +13,11 @@ namespace RogueElements
         where TGenContext : class, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
+        public SpecificSpawnStep()
+        {
+            this.Spawns = new List<(TSpawnable Item, Loc loc)>();
+        }
+
         public SpecificSpawnStep(List<(TSpawnable Item, Loc Loc)> spawns)
         {
             this.Spawns = spawns;

@@ -20,7 +20,7 @@ namespace RogueElements
             this.Immutable = immutable;
         }
 
-        public IRoomGen RoomGen { get; }
+        public IRoomGen RoomGen { get; set; }
 
         public List<RoomHallIndex> Adjacents { get; }
 

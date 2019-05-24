@@ -12,6 +12,11 @@ namespace RogueElements
     public class ConnectRoomStep<T> : ConnectStep<T>
         where T : class, IFloorPlanGenContext
     {
+        public ConnectRoomStep()
+            : base()
+        {
+        }
+
         public ConnectRoomStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base(genericHalls)
         {

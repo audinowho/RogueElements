@@ -19,44 +19,49 @@ namespace RogueElements
     {
         private const int BUFFER_SIZE = 5;
 
-        /// <summary>
-        /// Determines how many iterations of Perlin noise to generate the heighTContext with. Higher complexity = higher variation of heights and more natural looking terrain.
-        /// </summary>
-        private readonly int orderComplexity;
-
-        /// <summary>
-        /// Determines the smallest uit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
-        /// </summary>
-        private readonly int orderSoftness;
-
-        /// <summary>
-        /// Decides if the water can paint over floor tiles if the blob itself does not break connectivity
-        /// </summary>
-        private readonly bool respectFloor;
-
-        /// <summary>
-        /// The percent chance of water occurring.
-        /// </summary>
-        private RandRange waterPercent;
+        public PerlinWaterStep()
+            : base()
+        {
+        }
 
         public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, int softness = default, bool respectFloor = default)
             : base(terrain)
         {
-            this.waterPercent = waterPercent;
-            this.orderComplexity = complexity;
-            this.orderSoftness = softness;
-            this.respectFloor = respectFloor;
+            this.WaterPercent = waterPercent;
+            this.OrderComplexity = complexity;
+            this.OrderSoftness = softness;
+            this.RespectFloor = respectFloor;
         }
+
+        /// <summary>
+        /// Determines how many iterations of Perlin noise to generate the heighTContext with. Higher complexity = higher variation of heights and more natural looking terrain.
+        /// </summary>
+        public int OrderComplexity { get; set; }
+
+        /// <summary>
+        /// Determines the smallest uit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
+        /// </summary>
+        public int OrderSoftness { get; set; }
+
+        /// <summary>
+        /// Decides if the water can paint over floor tiles if the blob itself does not break connectivity
+        /// </summary>
+        public bool RespectFloor { get; set; }
+
+        /// <summary>
+        /// The percent chance of water occurring.
+        /// </summary>
+        public RandRange WaterPercent { get; set; }
 
         public override void Apply(T map)
         {
-            int waterPercent = this.waterPercent.Pick(map.Rand);
+            int waterPercent = this.WaterPercent.Pick(map.Rand);
             if (waterPercent == 0)
                 return;
 
-            int depthRange = 0x1 << (this.orderComplexity + this.orderSoftness); // aka, 2 ^ degree
+            int depthRange = 0x1 << (this.OrderComplexity + this.OrderSoftness); // aka, 2 ^ degree
             int minWater = waterPercent * map.Width * map.Height / 100;
-            int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, this.orderComplexity, this.orderSoftness);
+            int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, this.OrderComplexity, this.OrderSoftness);
             int[] depthCount = new int[depthRange];
             for (int xx = 0; xx < map.Width; xx++)
             {
@@ -79,7 +84,7 @@ namespace RogueElements
                 waterMark++;
             }
 
-            if (this.respectFloor)
+            if (this.RespectFloor)
             {
                 this.DrawWhole(map, noise, depthRange, waterMark);
                 return;

@@ -12,19 +12,24 @@ namespace RogueElements
     public class InitFloorPlanStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
     {
-        private readonly int width;
-        private readonly int height;
+        public InitFloorPlanStep()
+        {
+        }
 
         public InitFloorPlanStep(int width, int height)
         {
-            this.width = width;
-            this.height = height;
+            this.Width = width;
+            this.Height = height;
         }
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
 
         public override void Apply(T map)
         {
             var floorPlan = new FloorPlan();
-            floorPlan.InitSize(new Loc(this.width, this.height));
+            floorPlan.InitSize(new Loc(this.Width, this.Height));
 
             map.InitPlan(floorPlan);
         }

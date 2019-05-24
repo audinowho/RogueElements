@@ -12,23 +12,28 @@ namespace RogueElements
     public class InitTilesStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
-        private readonly int width;
-        private readonly int height;
+        public InitTilesStep()
+        {
+        }
 
         public InitTilesStep(int width, int height)
         {
-            this.width = width;
-            this.height = height;
+            this.Width = width;
+            this.Height = height;
         }
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
 
         public override void Apply(T map)
         {
             // initialize map array to empty
             // set default map values
-            map.CreateNew(this.width, this.height);
-            for (int xx = 0; xx < this.width; xx++)
+            map.CreateNew(this.Width, this.Height);
+            for (int xx = 0; xx < this.Width; xx++)
             {
-                for (int yy = 0; yy < this.height; yy++)
+                for (int yy = 0; yy < this.Height; yy++)
                     map.SetTile(new Loc(xx, yy), map.WallTerrain.Copy());
             }
         }

@@ -12,6 +12,11 @@ namespace RogueElements
     public class IntrudingBlobWaterStep<T> : BlobWaterStep<T>
         where T : class, ITiledGenContext
     {
+        public IntrudingBlobWaterStep()
+            : base()
+        {
+        }
+
         public IntrudingBlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale)
             : base(blobs, terrain, minScale, startScale)
         {

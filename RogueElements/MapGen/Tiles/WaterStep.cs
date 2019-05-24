@@ -12,6 +12,10 @@ namespace RogueElements
     public abstract class WaterStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        protected WaterStep()
+        {
+        }
+
         protected WaterStep(ITile terrain)
         {
             this.Terrain = terrain;
@@ -20,7 +24,7 @@ namespace RogueElements
         /// <summary>
         /// Tile representing the water terrain to paint with.
         /// </summary>
-        protected ITile Terrain { get; }
+        public ITile Terrain { get; set; }
 
         protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
         {

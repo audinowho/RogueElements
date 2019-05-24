@@ -13,16 +13,21 @@ namespace RogueElements
         where TGenContext : ISpawningGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
-        private RandRange amount;
+        public ContextSpawner()
+        {
+            this.Amount = RandRange.Empty;
+        }
 
         public ContextSpawner(RandRange amount)
         {
-            this.amount = amount;
+            this.Amount = amount;
         }
+
+        public RandRange Amount { get; set; }
 
         public List<TSpawnable> GetSpawns(TGenContext map)
         {
-            int chosenAmount = this.amount.Pick(map.Rand);
+            int chosenAmount = this.Amount.Pick(map.Rand);
             var results = new List<TSpawnable>();
             for (int ii = 0; ii < chosenAmount; ii++)
             {

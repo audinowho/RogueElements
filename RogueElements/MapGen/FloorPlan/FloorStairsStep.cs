@@ -14,20 +14,27 @@ namespace RogueElements
         where TEntrance : ISpawnable
         where TExit : ISpawnable
     {
-        private readonly List<TEntrance> entrances;
-        private readonly List<TExit> exits;
+        public FloorStairsStep()
+        {
+            this.Entrances = new List<TEntrance>();
+            this.Exits = new List<TExit>();
+        }
 
         public FloorStairsStep(TEntrance entrance, TExit exit)
         {
-            this.entrances = new List<TEntrance> { entrance };
-            this.exits = new List<TExit> { exit };
+            this.Entrances = new List<TEntrance> { entrance };
+            this.Exits = new List<TExit> { exit };
         }
 
         public FloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
         {
-            this.entrances = entrances;
-            this.exits = exits;
+            this.Entrances = entrances;
+            this.Exits = exits;
         }
+
+        public List<TEntrance> Entrances { get; }
+
+        public List<TExit> Exits { get; }
 
         public override void Apply(TGenContext map)
         {
@@ -41,7 +48,7 @@ namespace RogueElements
 
             Loc defaultLoc = Loc.Zero;
 
-            for (int ii = 0; ii < this.entrances.Count; ii++)
+            for (int ii = 0; ii < this.Entrances.Count; ii++)
             {
                 int startRoom = NextRoom(map.Rand, room_indices, used_indices);
                 Loc start = GetOutlet<TEntrance>(map, startRoom);
@@ -49,18 +56,18 @@ namespace RogueElements
                     start = defaultLoc;
                 else
                     defaultLoc = start;
-                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.entrances[ii]);
-                GenContextDebug.DebugProgress(nameof(this.entrances));
+                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.Entrances[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Entrances));
             }
 
-            for (int ii = 0; ii < this.exits.Count; ii++)
+            for (int ii = 0; ii < this.Exits.Count; ii++)
             {
                 int endRoom = NextRoom(map.Rand, room_indices, used_indices);
                 Loc end = GetOutlet<TExit>(map, endRoom);
                 if (end == new Loc(-1))
                     end = defaultLoc;
-                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.exits[ii]);
-                GenContextDebug.DebugProgress(nameof(this.exits));
+                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.Exits[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Exits));
             }
         }
 

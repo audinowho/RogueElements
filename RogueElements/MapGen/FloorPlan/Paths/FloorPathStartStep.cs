@@ -17,7 +17,7 @@ namespace RogueElements
         {
             floorPlan.Clear();
             RoomGen<T> room = this.GetDefaultGen();
-            room.PrepareSize(rand, new Loc(1));
+            room.PrepareSize(rand, Loc.One);
             room.SetLoc(Loc.Zero);
             floorPlan.AddRoom(room, false);
         }

@@ -12,12 +12,16 @@ namespace RogueElements
     public abstract class ConnectStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
+        protected ConnectStep()
+        {
+        }
+
         protected ConnectStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
         {
             this.GenericHalls = genericHalls;
         }
 
-        protected IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; }
+        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
         protected static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo)
         {

@@ -13,6 +13,11 @@ namespace RogueElements
         where TGenContext : class, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
+        public RandomSpawnStep()
+            : base()
+        {
+        }
+
         public RandomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
             : base(spawn)
         {

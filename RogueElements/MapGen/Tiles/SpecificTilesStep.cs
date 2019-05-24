@@ -12,29 +12,35 @@ namespace RogueElements
     public class SpecificTilesStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
-        private readonly ITile[][] tiles;
-        private Loc offset;
+        public SpecificTilesStep()
+        {
+            this.Tiles = Array.Empty<ITile[]>();
+        }
 
         public SpecificTilesStep(ITile[][] tiles)
         {
-            this.tiles = tiles;
-            this.offset = Loc.Zero;
+            this.Tiles = tiles;
+            this.Offset = Loc.Zero;
         }
 
         public SpecificTilesStep(ITile[][] tiles, Loc offset)
         {
-            this.tiles = tiles;
-            this.offset = offset;
+            this.Tiles = tiles;
+            this.Offset = offset;
         }
+
+        public ITile[][] Tiles { get; set; }
+
+        public Loc Offset { get; set; }
 
         public override void Apply(T map)
         {
             // initialize map array to empty
             // set default map values
-            for (int xx = 0; xx < this.tiles.Length; xx++)
+            for (int xx = 0; xx < this.Tiles.Length; xx++)
             {
-                for (int yy = 0; yy < this.tiles[0].Length; yy++)
-                    map.SetTile(new Loc(this.offset.X + xx, this.offset.Y + yy), this.tiles[xx][yy].Copy());
+                for (int yy = 0; yy < this.Tiles[0].Length; yy++)
+                    map.SetTile(new Loc(this.Offset.X + xx, this.Offset.Y + yy), this.Tiles[xx][yy].Copy());
             }
         }
     }

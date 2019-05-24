@@ -14,6 +14,11 @@ namespace RogueElements
     {
         // maintains a separate grid based on markovs
         // anything in the actual chain can link to the generic rooms/halls as a last resort
+        public FloorPathBranch()
+            : base()
+        {
+        }
+
         public FloorPathBranch(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base(genericRooms, genericHalls)
         {

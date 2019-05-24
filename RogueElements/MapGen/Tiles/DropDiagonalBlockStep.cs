@@ -11,12 +11,16 @@ namespace RogueElements
     public class DropDiagonalBlockStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
-        private readonly ITile terrain;
+        public DropDiagonalBlockStep()
+        {
+        }
 
         public DropDiagonalBlockStep(ITile terrain)
         {
-            this.terrain = terrain;
+            this.Terrain = terrain;
         }
+
+        public ITile Terrain { get; set; }
 
         public override void Apply(T map)
         {
@@ -30,19 +34,19 @@ namespace RogueElements
                     ITile b2 = map.GetTile(new Loc(xx + 1, yy + 1));
 
                     int dropType = map.Rand.Next(3);
-                    if (a1.TileEquivalent(this.terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(this.terrain))
+                    if (a1.TileEquivalent(this.Terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(this.Terrain))
                     {
                         if (dropType % 2 == 0)
-                            map.TrySetTile(new Loc(xx + 1, yy), this.terrain.Copy());
+                            map.TrySetTile(new Loc(xx + 1, yy), this.Terrain.Copy());
                         if (dropType < 2)
-                            map.TrySetTile(new Loc(xx, yy + 1), this.terrain.Copy());
+                            map.TrySetTile(new Loc(xx, yy + 1), this.Terrain.Copy());
                     }
-                    else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(this.terrain) && a2.TileEquivalent(this.terrain) && b2.TileEquivalent(map.WallTerrain))
+                    else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(this.Terrain) && a2.TileEquivalent(this.Terrain) && b2.TileEquivalent(map.WallTerrain))
                     {
                         if (dropType % 2 == 0)
-                            map.TrySetTile(new Loc(xx, yy), this.terrain.Copy());
+                            map.TrySetTile(new Loc(xx, yy), this.Terrain.Copy());
                         if (dropType < 2)
-                            map.TrySetTile(new Loc(xx + 1, yy + 1), this.terrain.Copy());
+                            map.TrySetTile(new Loc(xx + 1, yy + 1), this.Terrain.Copy());
                     }
                 }
             }

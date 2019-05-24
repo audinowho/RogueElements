@@ -13,6 +13,10 @@ namespace RogueElements
     public abstract class FloorPathStartStepGeneric<T> : FloorPathStartStep<T>
         where T : class, IFloorPlanGenContext
     {
+        protected FloorPathStartStepGeneric()
+        {
+        }
+
         protected FloorPathStartStepGeneric(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
         {
             this.GenericRooms = genericRooms;
@@ -21,9 +25,9 @@ namespace RogueElements
 
         // generic rooms that can be placed in any frequency, anywhere as the ultimate fallback
         // each path layout might have other room lists, but they will always have a generic room list?
-        protected IRandPicker<RoomGen<T>> GenericRooms { get; }
+        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
 
-        protected IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; }
+        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
         public override void Apply(T map)
         {

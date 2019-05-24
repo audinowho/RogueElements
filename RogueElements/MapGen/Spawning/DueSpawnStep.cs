@@ -14,13 +14,18 @@ namespace RogueElements
         where TSpawnable : ISpawnable
         where TEntrance : ISpawnable
     {
-        private readonly int successPercent;
+        public DueSpawnStep()
+            : base()
+        {
+        }
 
         public DueSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent)
             : base(spawn)
         {
-            this.successPercent = successPercent;
+            this.SuccessPercent = successPercent;
         }
+
+        public int SuccessPercent { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
@@ -58,7 +63,7 @@ namespace RogueElements
                 spawningRooms.Add(new RoomHallIndex(ii, false), roomWeights[ii] * multFactor);
             }
 
-            this.SpawnRandInCandRooms(map, spawningRooms, spawns, this.successPercent);
+            this.SpawnRandInCandRooms(map, spawningRooms, spawns, this.SuccessPercent);
         }
     }
 }

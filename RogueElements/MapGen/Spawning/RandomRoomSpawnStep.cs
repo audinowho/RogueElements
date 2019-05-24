@@ -13,13 +13,18 @@ namespace RogueElements
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
-        private readonly bool includeHalls;
+        public RandomRoomSpawnStep()
+            : base()
+        {
+        }
 
         public RandomRoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, bool includeHalls = false)
             : base(spawn)
         {
-            this.includeHalls = includeHalls;
+            this.IncludeHalls = includeHalls;
         }
+
+        public bool IncludeHalls { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
@@ -31,7 +36,7 @@ namespace RogueElements
                 spawningRooms.Add(new RoomHallIndex(ii, false));
             }
 
-            if (this.includeHalls)
+            if (this.IncludeHalls)
             {
                 for (int ii = 0; ii < map.RoomPlan.HallCount; ii++)
                 {

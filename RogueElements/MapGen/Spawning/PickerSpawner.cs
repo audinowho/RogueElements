@@ -18,16 +18,22 @@ namespace RogueElements
         where TGenContext : IGenContext
         where TSpawnable : ISpawnable
     {
-        private readonly IMultiRandPicker<TSpawnable> picker;
+        public PickerSpawner()
+        {
+        }
 
         public PickerSpawner(IMultiRandPicker<TSpawnable> picker)
         {
-            this.picker = picker;
+            this.Picker = picker;
         }
+
+        public IMultiRandPicker<TSpawnable> Picker { get; set; }
 
         public List<TSpawnable> GetSpawns(TGenContext map)
         {
-            IMultiRandPicker<TSpawnable> picker = this.picker;
+            if (this.Picker is null)
+                return new List<TSpawnable>();
+            IMultiRandPicker<TSpawnable> picker = this.Picker;
             if (picker.ChangesState)
                 picker = picker.CopyState();
             List<TSpawnable> results = picker.Roll(map.Rand);

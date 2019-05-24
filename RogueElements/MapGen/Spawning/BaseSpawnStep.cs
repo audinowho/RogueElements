@@ -19,18 +19,25 @@ namespace RogueElements
         where TGenContext : class, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
-        private readonly IStepSpawner<TGenContext, TSpawnable> spawn;
+        protected BaseSpawnStep()
+        {
+        }
 
         protected BaseSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
         {
-            this.spawn = spawn;
+            this.Spawn = spawn;
         }
+
+        public IStepSpawner<TGenContext, TSpawnable> Spawn { get; set; }
 
         public abstract void DistributeSpawns(TGenContext map, List<TSpawnable> spawns);
 
         public override void Apply(TGenContext map)
         {
-            List<TSpawnable> spawns = this.spawn.GetSpawns(map);
+            if (this.Spawn is null)
+                return;
+
+            List<TSpawnable> spawns = this.Spawn.GetSpawns(map);
 
             if (spawns.Count > 0)
                 this.DistributeSpawns(map, spawns);

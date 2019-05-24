@@ -13,10 +13,6 @@ namespace RogueElements
     public abstract class FloorPlanStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
     {
-        protected FloorPlanStep()
-        {
-        }
-
         public abstract void ApplyToPath(IRandom rand, FloorPlan floorPlan);
 
         public override void Apply(T map)
