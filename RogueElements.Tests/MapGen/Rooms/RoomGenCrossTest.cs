@@ -115,6 +115,6 @@ namespace RogueElements.Tests
 
     public class TestRoomGenCross<T> : RoomGenCross<T> where T : ITiledGenContext
     {
-        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return FulfillableBorder; } }
     }
 }

@@ -31,6 +31,6 @@ namespace RogueElements.Tests
 
     public class TestRoomGenCave<T> : RoomGenCave<T> where T : ITiledGenContext
     {
-        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return FulfillableBorder; } }
     }
 }

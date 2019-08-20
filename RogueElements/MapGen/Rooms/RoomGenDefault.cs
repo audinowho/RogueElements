@@ -9,21 +9,23 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomGenDefault<T> : PermissiveRoomGen<T> where T : ITiledGenContext
+    public class RoomGenDefault<T> : PermissiveRoomGen<T>
+        where T : ITiledGenContext
     {
-        public RoomGenDefault() { }
-        public override RoomGen<T> Copy() { return new RoomGenDefault<T>(); }
+        public RoomGenDefault()
+        {
+        }
 
+        public override RoomGen<T> Copy() => new RoomGenDefault<T>();
 
         public override Loc ProposeSize(IRandom rand)
         {
-            return new Loc(1);
+            return Loc.One;
         }
 
         public override void DrawOnMap(T map)
         {
-            DrawMapDefault(map);
+            this.DrawMapDefault(map);
         }
     }
-
 }

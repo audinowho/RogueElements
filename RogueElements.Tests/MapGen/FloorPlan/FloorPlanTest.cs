@@ -662,13 +662,13 @@ namespace RogueElements.Tests
 
         public void PrepareDraw(Rect rect)
         {
-            draw = rect;
+            Draw1 = rect;
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                openedBorder[dir] = new bool[GetBorderLength(dir)];
-                fulfillableBorder[dir] = new bool[GetBorderLength(dir)];
-                for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
-                    fulfillableBorder[dir][jj] = true;
+                OpenedBorder[dir] = new bool[GetBorderLength(dir)];
+                FulfillableBorder[dir] = new bool[GetBorderLength(dir)];
+                for (int jj = 0; jj < FulfillableBorder[dir].Length; jj++)
+                    FulfillableBorder[dir][jj] = true;
             }
         }
 

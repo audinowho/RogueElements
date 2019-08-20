@@ -1000,19 +1000,19 @@ namespace RogueElements.Tests
         
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
-            fulfillableBorder[Dir4.Down][fulfillableBorder[Dir4.Down].Length/2] = openDown;
-            fulfillableBorder[Dir4.Left][fulfillableBorder[Dir4.Left].Length/2] = openLeft;
-            fulfillableBorder[Dir4.Up][fulfillableBorder[Dir4.Up].Length/2] = openUp;
-            fulfillableBorder[Dir4.Right][fulfillableBorder[Dir4.Right].Length/2] = openRight;
+            FulfillableBorder[Dir4.Down][FulfillableBorder[Dir4.Down].Length/2] = openDown;
+            FulfillableBorder[Dir4.Left][FulfillableBorder[Dir4.Left].Length/2] = openLeft;
+            FulfillableBorder[Dir4.Up][FulfillableBorder[Dir4.Up].Length/2] = openUp;
+            FulfillableBorder[Dir4.Right][FulfillableBorder[Dir4.Right].Length/2] = openRight;
         }
     }
 
     public class TestRoomGen<T> : RoomGen<T> where T : ITiledGenContext
     {
-        public Dictionary<Dir4, List<Range>> RoomSideReqs { get { return roomSideReqs; } }
-        public Dictionary<Dir4, bool[]> PublicOpenedBorder { get { return openedBorder; } }
-        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
-        public Dictionary<Dir4, bool[]> PublicBorderToFulfill { get { return borderToFulfill; } }
+        public Dictionary<Dir4, List<Range>> RoomSideReqs { get { return base.RoomSideReqs; } }
+        public Dictionary<Dir4, bool[]> PublicOpenedBorder { get { return OpenedBorder; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return FulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicBorderToFulfill { get { return BorderToFulfill; } }
 
         public override RoomGen<T> Copy() { return new TestRoomGen<T>(); }
 
@@ -1021,8 +1021,8 @@ namespace RogueElements.Tests
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
-                    fulfillableBorder[dir][jj] = true;
+                for (int jj = 0; jj < FulfillableBorder[dir].Length; jj++)
+                    FulfillableBorder[dir][jj] = true;
         }
         
         public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)

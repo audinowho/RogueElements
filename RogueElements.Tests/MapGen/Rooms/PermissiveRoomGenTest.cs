@@ -52,9 +52,9 @@ namespace RogueElements.Tests
 
     public class TestPermissiveRoomGen<T> : PermissiveRoomGen<T> where T : ITiledGenContext
     {
-        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return fulfillableBorder; } }
-        public Dictionary<Dir4, bool[]> PublicOpenedBorder { get { return openedBorder; } }
-        public Dictionary<Dir4, bool[]> PublicBorderToFulfill { get { return borderToFulfill; } }
+        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return FulfillableBorder; } }
+        public Dictionary<Dir4, bool[]> PublicOpenedBorder { get { return OpenedBorder; } }
+        public Dictionary<Dir4, bool[]> PublicBorderToFulfill { get { return BorderToFulfill; } }
 
         public override RoomGen<T> Copy() { return new TestPermissiveRoomGen<T>(); }
 

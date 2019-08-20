@@ -8,34 +8,39 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomGenSquare<T> : PermissiveRoomGen<T> where T : ITiledGenContext
+    public class RoomGenSquare<T> : PermissiveRoomGen<T>
+        where T : ITiledGenContext
     {
-
-        public RandRange Width;
-        public RandRange Height;
-
-        public RoomGenSquare() { }
+        public RoomGenSquare()
+        {
+        }
 
         public RoomGenSquare(RandRange width, RandRange height)
         {
-            Width = width;
-            Height = height;
+            this.Width = width;
+            this.Height = height;
         }
+
         protected RoomGenSquare(RoomGenSquare<T> other)
         {
-            Width = other.Width;
-            Height = other.Height;
+            this.Width = other.Width;
+            this.Height = other.Height;
         }
-        public override RoomGen<T> Copy() { return new RoomGenSquare<T>(this); }
+
+        public RandRange Width { get; set; }
+
+        public RandRange Height { get; set; }
+
+        public override RoomGen<T> Copy() => new RoomGenSquare<T>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
-            return new Loc(Width.Pick(rand), Height.Pick(rand));
+            return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
         public override void DrawOnMap(T map)
         {
-            DrawMapDefault(map);
+            this.DrawMapDefault(map);
         }
     }
 }

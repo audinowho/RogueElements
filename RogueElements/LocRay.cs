@@ -56,7 +56,7 @@ namespace RogueElements
 
         public bool Equals(LocRay8 other) => this.Loc == other.Loc && this.Dir == other.Dir;
 
-        public override bool Equals(object obj) => (obj is LocRay8) && this.Equals((LocRay8)obj);
+        public override bool Equals(object obj) => (obj is LocRay8 ray) && this.Equals(ray);
 
         public override int GetHashCode() => unchecked(971 + (this.Loc.GetHashCode() * 619) ^ (this.Dir.GetHashCode() * 491));
     }

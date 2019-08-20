@@ -14,57 +14,69 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public abstract class RoomGen<T> : IRoomGen where T : ITiledGenContext
+    public abstract class RoomGen<T> : IRoomGen
+        where T : ITiledGenContext
     {
-        //Ranges that must have at least one of their permitted tiles touched
+        // Ranges that must have at least one of their permitted tiles touched
         [NonSerialized]
-        protected Dictionary<Dir4, List<Range>> roomSideReqs;
-
-        //tiles that have been touched during room gen
-        public bool GetOpenedBorder(Dir4 dir, int index) { return openedBorder[dir][index]; }
-        [NonSerialized]
-        protected Dictionary<Dir4, bool[]> openedBorder;
-
-        //tiles that this room can take as incoming paths
-        public bool GetFulfillableBorder(Dir4 dir, int index) { return fulfillableBorder[dir][index]; }
-        [NonSerialized]
-        protected Dictionary<Dir4, bool[]> fulfillableBorder;
-
-        //tiles that, if touched during this room's gen, signify that the req has been filled
-        //"the req" refers to the side reqs for that side.
-        [NonSerialized]
-        protected Dictionary<Dir4, bool[]> borderToFulfill;
-
-        public int GetBorderLength(Dir4 dir) { return Draw.GetSide(dir.ToAxis()).Length; }
+        private Dictionary<Dir4, List<Range>> roomSideReqs;
 
         [NonSerialized]
-        protected Rect draw;
+        private Dictionary<Dir4, bool[]> openedBorder;
+
+        [NonSerialized]
+        private Dictionary<Dir4, bool[]> fulfillableBorder;
+
+        // tiles that, if touched during this room's gen, signify that the req has been filled
+        // "the req" refers to the side reqs for that side.
+        [NonSerialized]
+        private Dictionary<Dir4, bool[]> borderToFulfill;
+
+        [NonSerialized]
+        private Rect draw;
+
+        protected RoomGen()
+        {
+            this.RoomSideReqs = new Dictionary<Dir4, List<Range>>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                this.RoomSideReqs[dir] = new List<Range>();
+            this.OpenedBorder = new Dictionary<Dir4, bool[]>();
+            this.FulfillableBorder = new Dictionary<Dir4, bool[]>();
+            this.BorderToFulfill = new Dictionary<Dir4, bool[]>();
+
+            this.draw = new Rect(new Loc(-1), new Loc(-1));
+        }
+
         /// <summary>
         /// The rectangle that the room is drawn in.
         /// </summary>
-        public virtual Rect Draw { get { return draw; } }
+        public virtual Rect Draw => this.draw;
 
-        public RoomGen()
-        {
+        protected Dictionary<Dir4, List<Range>> RoomSideReqs { get => this.roomSideReqs; set => this.roomSideReqs = value; }
 
-            roomSideReqs = new Dictionary<Dir4, List<Range>>();
-            foreach (Dir4 dir in DirExt.VALID_DIR4)
-                roomSideReqs[dir] = new List<Range>();
-            openedBorder = new Dictionary<Dir4, bool[]>();
-            fulfillableBorder = new Dictionary<Dir4, bool[]>();
-            borderToFulfill = new Dictionary<Dir4, bool[]>();
+        protected Dictionary<Dir4, bool[]> OpenedBorder { get => this.openedBorder; set => this.openedBorder = value; }
 
-            draw = new Rect(new Loc(-1), new Loc(-1));
-        }
+        protected Dictionary<Dir4, bool[]> FulfillableBorder { get => this.fulfillableBorder; set => this.fulfillableBorder = value; }
+
+        protected Dictionary<Dir4, bool[]> BorderToFulfill { get => this.borderToFulfill; set => this.borderToFulfill = value; }
+
+        // tiles that have been touched during room gen
+        public bool GetOpenedBorder(Dir4 dir, int index) => this.OpenedBorder[dir][index];
+
+        // tiles that this room can take as incoming paths
+        public bool GetFulfillableBorder(Dir4 dir, int index) => this.FulfillableBorder[dir][index];
+
+        public int GetBorderLength(Dir4 dir) => this.Draw.GetSide(dir.ToAxis()).Length;
 
         /// <summary>
         /// Creates a copy of the object, to be placed in the generated layout.
         /// </summary>
         /// <returns></returns>
         public abstract RoomGen<T> Copy();
-        IRoomGen IRoomGen.Copy() { return Copy(); }
 
-        //this structure is serialized, so make sure runtime state variables are clean at start
+        IRoomGen IRoomGen.Copy() => this.Copy();
+
+        // this structure is serialized, so make sure runtime state variables are clean at start
 
         /// <summary>
         /// Returns a Loc that represents the dimensions that this RoomGen prefers to be.
@@ -83,47 +95,46 @@ namespace RogueElements
             if (size.X <= 0 || size.Y <= 0)
                 throw new ArgumentException("Rooms must be of a positive size.");
 
-            draw.Size = size;
-            //set all border tile classes to the correct length
+            this.draw.Size = size;
+
+            // set all border tile classes to the correct length
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                openedBorder[dir] = new bool[GetBorderLength(dir)];
-                fulfillableBorder[dir] = new bool[GetBorderLength(dir)];
-                borderToFulfill[dir] = new bool[GetBorderLength(dir)];
+                this.OpenedBorder[dir] = new bool[this.GetBorderLength(dir)];
+                this.FulfillableBorder[dir] = new bool[this.GetBorderLength(dir)];
+                this.BorderToFulfill[dir] = new bool[this.GetBorderLength(dir)];
             }
 
-            PrepareFulfillableBorders(rand);
+            this.PrepareFulfillableBorders(rand);
 
-            //verify that possible borders has at least one TRUE in each array
+            // verify that possible borders has at least one TRUE in each array
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 bool hasRequestable = false;
-                for (int jj = 0; jj < fulfillableBorder[dir].Length; jj++)
+                for (int jj = 0; jj < this.FulfillableBorder[dir].Length; jj++)
                 {
-                    if (fulfillableBorder[dir][jj])
+                    if (this.FulfillableBorder[dir][jj])
                     {
                         hasRequestable = true;
                         break;
                     }
                 }
+
                 if (!hasRequestable)
                     throw new ArgumentException("PrepareFulfillableBorders did not open at least one open tile for each direction!");
             }
         }
 
-        public void SetLoc(Loc loc) { draw.Start = loc; }
+        public void SetLoc(Loc loc) => this.draw.Start = loc;
 
-        protected abstract void PrepareFulfillableBorders(IRandom rand);
-
-
-        /// <summary>
+       /// <summary>
         /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder
         /// </summary>
         /// <param name="sourceRoom">The target room</param>
         /// <param name="dir">The direction that the target room lies, relative to this room.</param>
         public virtual void ReceiveOpenedBorder(IRoomGen sourceRoom, Dir4 dir)
         {
-            ReceiveBorder(sourceRoom, dir, false);
+            this.ReceiveBorder(sourceRoom, dir, false);
         }
 
         /// <summary>
@@ -133,112 +144,45 @@ namespace RogueElements
         /// <param name="dir">The direction that the target room lies, relative to this room.</param>
         public virtual void ReceiveFulfillableBorder(IRoomGen sourceRoom, Dir4 dir)
         {
-            ReceiveBorder(sourceRoom, dir, true);
+            this.ReceiveBorder(sourceRoom, dir, true);
         }
 
-        protected void ReceiveBorder(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
-        {
-            Loc startLoc = GetEdgeLoc(dir, 0);
-            Loc endLoc = sourceRoom.GetEdgeLoc(dir.Reverse(), 0);
-            if (startLoc + dir.GetLoc() != endLoc)
-                throw new ArgumentException("Rooms must touch each other in the specified direction.");
-
-            //compute the starting index in otherBorder to start transferring
-            Range sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
-            fillSideReq(sourceSide, dir);
-            bool[] destBorder = borderToFulfill[dir];
-            Loc diff = sourceRoom.Draw.Start - Draw.Start;//how far ahead the start of source is to dest
-            //compute the starting index in otherBorder to start transferring
-            int offset = diff.GetScalar(dir.ToAxis().Orth());
-            //Traverse the region that both borders touch
-            //make this room's opened borders into the other room's permitted borders
-            bool hasOpening = false;
-            int sourceLength = sourceRoom.GetBorderLength(dir.Reverse());
-            for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
-            {
-                bool sourceOpened;
-                if (fulfillable)
-                    sourceOpened = sourceRoom.GetFulfillableBorder(dir.Reverse(), ii - offset);
-                else
-                    sourceOpened = sourceRoom.GetOpenedBorder(dir.Reverse(), ii - offset);
-                destBorder[ii] = sourceOpened || destBorder[ii];
-                hasOpening |= sourceOpened;
-            }
-            if (!hasOpening)
-                throw new ArgumentException("Permitted borders needs at least one open tile for each sideReq!");
-        }
-
-        //assumes that the borders are touching.
+        // assumes that the borders are touching.
         public virtual void ReceiveBorderRange(Range range, Dir4 dir)
         {
-            fillSideReq(range, dir);
-            
-            bool[] destBorder = borderToFulfill[dir];
+            this.FillSideReq(range, dir);
 
-            //compute the starting index in otherBorder to start transferring
-            int offset = range.Min - Draw.Start.GetScalar(dir.ToAxis().Orth());
-            //Traverse the region that both borders touch
-            //make this room's opened borders into the other room's permitted borders
+            bool[] destBorder = this.BorderToFulfill[dir];
+
+            // compute the starting index in otherBorder to start transferring
+            int offset = range.Min - this.Draw.Start.GetScalar(dir.ToAxis().Orth());
+
+            // Traverse the region that both borders touch
+            // make this room's opened borders into the other room's permitted borders
             for (int ii = Math.Max(0, -offset); ii < range.Length && ii + offset < destBorder.Length; ii++)
                 destBorder[ii + offset] = true;
         }
 
-        private void fillSideReq(Range range, Dir4 dir)
-        {
-            if (range.Length <= 0)
-                throw new ArgumentException("Range must have a positive length.");
-            if (dir == Dir4.None || !dir.Validate())
-                throw new ArgumentException("Invalid dir value.");
-            //also throw exception if the range fails to
-            //hit at least one open requestableBorderTile
-            Range side = Draw.GetSide(dir.ToAxis());
-            Range trueRange = new Range(Math.Max(range.Min, side.Min), Math.Min(range.Max, side.Max));
-            bool fulfillable = false;
-            for (int ii = trueRange.Min - side.Min; ii < trueRange.Max - side.Min; ii++)
-            {
-                if (fulfillableBorder[dir][ii])
-                {
-                    fulfillable = true;
-                    break;
-                }
-            }
-            if (!fulfillable)
-                throw new ArgumentException("The given range does not include a fulfillable tile!");
-            roomSideReqs[dir].Add(trueRange);
-        }
-
-        //needs to pass in cell size
-        //just return the map itself?
-        //also needs to return offset
-        //can pass in item/mob lists via map
+        // needs to pass in cell size
+        // just return the map itself?
+        // also needs to return offset
+        // can pass in item/mob lists via map
         public abstract void DrawOnMap(T map);
 
-        void IRoomGen.DrawOnMap(ITiledGenContext map) { DrawOnMap((T)map); }
-
-        protected void DrawMapDefault(T map)
-        {
-            //draw on all
-            for (int x = 0; x < Draw.Size.X; x++)
-            {
-                for (int y = 0; y < Draw.Size.Y; y++)
-                    map.SetTile(new Loc(Draw.X + x, Draw.Y + y), map.RoomTerrain.Copy());
-            }
-
-            SetRoomBorders(map);
-        }
+        void IRoomGen.DrawOnMap(ITiledGenContext map) => this.DrawOnMap((T)map);
 
         public virtual void SetRoomBorders(T map)
         {
-            for (int ii = 0; ii < Draw.Width; ii++)
+            for (int ii = 0; ii < this.Draw.Width; ii++)
             {
-                openedBorder[Dir4.Up][ii] = fulfillableBorder[Dir4.Up][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y));
-                openedBorder[Dir4.Down][ii] = fulfillableBorder[Dir4.Down][ii] && !map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1));
+                this.OpenedBorder[Dir4.Up][ii] = this.FulfillableBorder[Dir4.Up][ii] && !map.TileBlocked(new Loc(this.Draw.Start.X + ii, this.Draw.Start.Y));
+                this.OpenedBorder[Dir4.Down][ii] = this.FulfillableBorder[Dir4.Down][ii] && !map.TileBlocked(new Loc(this.Draw.Start.X + ii, this.Draw.End.Y - 1));
             }
 
-            for (int ii = 0; ii < Draw.Height; ii++)
+            for (int ii = 0; ii < this.Draw.Height; ii++)
             {
-                openedBorder[Dir4.Left][ii] = fulfillableBorder[Dir4.Left][ii] && !map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii));
-                openedBorder[Dir4.Right][ii] = fulfillableBorder[Dir4.Right][ii] && !map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii));
+                this.OpenedBorder[Dir4.Left][ii] = this.FulfillableBorder[Dir4.Left][ii] && !map.TileBlocked(new Loc(this.Draw.Start.X, this.Draw.Start.Y + ii));
+                this.OpenedBorder[Dir4.Right][ii] = this.FulfillableBorder[Dir4.Right][ii] && !map.TileBlocked(new Loc(this.Draw.End.X - 1, this.Draw.Start.Y + ii));
             }
         }
 
@@ -249,65 +193,67 @@ namespace RogueElements
         /// <param name="openAll">Chooses all borders instead of just one.</param>
         public virtual void FulfillRoomBorders(T map, bool openAll)
         {
-            //NOTE: This assumes that reaching any open tile results in reaching the room as a whole.
-            //It also assumes that an open tile would eventually be reached if dug far enough.
-            //for each side
+            // NOTE: This assumes that reaching any open tile results in reaching the room as a whole.
+            // It also assumes that an open tile would eventually be reached if dug far enough.
+            // for each side
 
-            //get all unfulfilled borders
+            // get all unfulfilled borders
             var unfulfilled = new Dictionary<Dir4, List<Range>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 unfulfilled[dir] = new List<Range>();
-                unfulfilled[dir].AddRange(roomSideReqs[dir]);
+                unfulfilled[dir].AddRange(this.RoomSideReqs[dir]);
             }
 
             if (!openAll)
             {
-                for (int ii = 0; ii < Draw.Width; ii++)
+                for (int ii = 0; ii < this.Draw.Width; ii++)
                 {
-                    if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.Start.Y)))
-                        updateUnfulfilled(unfulfilled[Dir4.Up], Draw.Start.X + ii);
+                    if (!map.TileBlocked(new Loc(this.Draw.Start.X + ii, this.Draw.Start.Y)))
+                        UpdateUnfulfilled(unfulfilled[Dir4.Up], this.Draw.Start.X + ii);
 
-                    if (!map.TileBlocked(new Loc(Draw.Start.X + ii, Draw.End.Y - 1)))
-                        updateUnfulfilled(unfulfilled[Dir4.Down], Draw.Start.X + ii);
+                    if (!map.TileBlocked(new Loc(this.Draw.Start.X + ii, this.Draw.End.Y - 1)))
+                        UpdateUnfulfilled(unfulfilled[Dir4.Down], this.Draw.Start.X + ii);
                 }
 
-                for (int ii = 0; ii < Draw.Height; ii++)
+                for (int ii = 0; ii < this.Draw.Height; ii++)
                 {
-                    if (!map.TileBlocked(new Loc(Draw.Start.X, Draw.Start.Y + ii)))
-                        updateUnfulfilled(unfulfilled[Dir4.Left], Draw.Start.Y + ii);
-                    if (!map.TileBlocked(new Loc(Draw.End.X - 1, Draw.Start.Y + ii)))
-                        updateUnfulfilled(unfulfilled[Dir4.Right], Draw.Start.Y + ii);
+                    if (!map.TileBlocked(new Loc(this.Draw.Start.X, this.Draw.Start.Y + ii)))
+                        UpdateUnfulfilled(unfulfilled[Dir4.Left], this.Draw.Start.Y + ii);
+                    if (!map.TileBlocked(new Loc(this.Draw.End.X - 1, this.Draw.Start.Y + ii)))
+                        UpdateUnfulfilled(unfulfilled[Dir4.Right], this.Draw.Start.Y + ii);
                 }
             }
 
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                //get the permitted tiles for each sidereq
-                Range side = Draw.GetSide(dir.ToAxis());
+                // get the permitted tiles for each sidereq
+                Range side = this.Draw.GetSide(dir.ToAxis());
 
                 if (!openAll)
                 {
-                    List<HashSet<int>> candidateEntrances = ChoosePossibleStartRanges(map.Rand, side.Min, borderToFulfill[dir], unfulfilled[dir]);
-                    //randomly roll them
+                    List<HashSet<int>> candidateEntrances = this.ChoosePossibleStartRanges(map.Rand, side.Min, this.BorderToFulfill[dir], unfulfilled[dir]);
+
+                    // randomly roll them
                     List<int> resultEntrances = new List<int>();
                     foreach (HashSet<int> candidateSet in candidateEntrances)
                         resultEntrances.Add(MathUtils.ChooseFromHash(candidateSet, map.Rand));
-                    //fulfill them with a simple inwards digging until a walkable is reached
+
+                    // fulfill them with a simple inwards digging until a walkable is reached
                     for (int jj = 0; jj < resultEntrances.Count; jj++)
-                        DigAtBorder(map, dir, resultEntrances[jj]);
+                        this.DigAtBorder(map, dir, resultEntrances[jj]);
                 }
                 else
                 {
                     for (int jj = 0; jj < side.Length; jj++)
                     {
-                        if (fulfillableBorder[dir][jj])
+                        if (this.FulfillableBorder[dir][jj])
                         {
                             foreach (Range range in unfulfilled[dir])
                             {
                                 if (range.Contains(side.Min + jj))
                                 {
-                                    DigAtBorder(map, dir, side.Min + jj);
+                                    this.DigAtBorder(map, dir, side.Min + jj);
                                     break;
                                 }
                             }
@@ -325,8 +271,8 @@ namespace RogueElements
         /// <param name="scalar"></param>
         public virtual void DigAtBorder(ITiledGenContext map, Dir4 dir, int scalar)
         {
-            Loc curLoc = GetEdgeLoc(dir, scalar);
-            int length = dir.ToAxis() == Axis4.Vert ? Draw.Height : Draw.Width;
+            Loc curLoc = this.GetEdgeLoc(dir, scalar);
+            int length = dir.ToAxis() == Axis4.Vert ? this.Draw.Height : this.Draw.Width;
             bool foundTile = false;
             for (int kk = 0; kk < length; kk++)
             {
@@ -335,20 +281,13 @@ namespace RogueElements
                     foundTile = true;
                     break;
                 }
+
                 map.SetTile(curLoc, map.RoomTerrain.Copy());
                 curLoc += dir.Reverse().GetLoc();
             }
-            if (!foundTile)//complain if we reach the end
-                throw new ArgumentException("Room border auto-tunneling could not find open tile.");
-        }
 
-        private void updateUnfulfilled(List<Range> unfulfilled, int ii)
-        {
-            for (int jj = unfulfilled.Count - 1; jj >= 0; jj--)
-            {
-                if (unfulfilled[jj].Contains(ii))
-                    unfulfilled.RemoveAt(jj);
-            }
+            if (!foundTile) // complain if we reach the end
+                throw new ArgumentException("Room border auto-tunneling could not find open tile.");
         }
 
         /// <summary>
@@ -362,13 +301,13 @@ namespace RogueElements
             switch (dir)
             {
                 case Dir4.Down:
-                    return new Loc(scalar, Draw.End.Y - 1);
+                    return new Loc(scalar, this.Draw.End.Y - 1);
                 case Dir4.Left:
-                    return new Loc(Draw.X, scalar);
+                    return new Loc(this.Draw.X, scalar);
                 case Dir4.Up:
-                    return new Loc(scalar, Draw.Y);
+                    return new Loc(scalar, this.Draw.Y);
                 case Dir4.Right:
-                    return new Loc(Draw.End.X - 1, scalar);
+                    return new Loc(this.Draw.End.X - 1, scalar);
                 case Dir4.None:
                     throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
                 default:
@@ -381,18 +320,19 @@ namespace RogueElements
             switch (dir)
             {
                 case Dir4.Down:
-                    return new Loc(scalar, Draw.End.Y);
+                    return new Loc(scalar, this.Draw.End.Y);
                 case Dir4.Left:
-                    return new Loc(Draw.X - size.X, scalar);
+                    return new Loc(this.Draw.X - size.X, scalar);
                 case Dir4.Up:
-                    return new Loc(scalar, Draw.Y - size.Y);
+                    return new Loc(scalar, this.Draw.Y - size.Y);
                 case Dir4.Right:
-                    return new Loc(Draw.End.X, scalar);
+                    return new Loc(this.Draw.End.X, scalar);
                 case Dir4.None:
                     throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
             }
+
             throw new ArgumentException("Must specify a valid direction!");
         }
 
@@ -407,70 +347,138 @@ namespace RogueElements
         /// <returns></returns>
         public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)
         {
-            //Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
+            // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
             List<Range> sideReqs = new List<Range>();
             sideReqs.AddRange(origSideReqs);
 
             List<HashSet<int>> resultStarts = new List<HashSet<int>>();
             while (sideReqs.Count > 0)
             {
-                //choose a random sidereq
+                // choose a random sidereq
                 int chosenIndex = rand.Next(sideReqs.Count);
                 HashSet<int> tiles = new HashSet<int>();
-                //add all included bordertiles to its set
+
+                // add all included bordertiles to its set
                 for (int ii = 0; ii < permittedRange.Length; ii++)
                 {
                     if (permittedRange[ii] && sideReqs[chosenIndex].Contains(ii + scalarStart))
                         tiles.Add(ii + scalarStart);
                 }
+
                 bool overlap = false;
                 for (int ii = 0; ii < resultStarts.Count; ii++)
                 {
-                    //does its bordertiles overlap? superset? subset? with an existing set?
+                    // does its bordertiles overlap? superset? subset? with an existing set?
                     if (tiles.IsSupersetOf(resultStarts[ii]))
                     {
-                        //if superset, do nothing
+                        // if superset, do nothing
                         overlap = true;
                         break;
                     }
                     else if (tiles.Overlaps(resultStarts[ii]))
                     {
-                        //if subset, narrow the tiles to that set
-                        //if intersect, narrow the tiles to that set
+                        // if subset, narrow the tiles to that set
+                        // if intersect, narrow the tiles to that set
                         resultStarts[ii].IntersectWith(tiles);
                         overlap = true;
                         break;
                     }
                 }
-                //if nothing, just add the new set
+
+                // if nothing, just add the new set
                 if (!overlap)
                     resultStarts.Add(tiles);
 
-                //continue for all sidereqs
+                // continue for all sidereqs
                 sideReqs.RemoveAt(chosenIndex);
             }
+
             return resultStarts;
         }
 
-    }
+        protected abstract void PrepareFulfillableBorders(IRandom rand);
 
+        protected void ReceiveBorder(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
+        {
+            Loc startLoc = this.GetEdgeLoc(dir, 0);
+            Loc endLoc = sourceRoom.GetEdgeLoc(dir.Reverse(), 0);
+            if (startLoc + dir.GetLoc() != endLoc)
+                throw new ArgumentException("Rooms must touch each other in the specified direction.");
 
-    public interface IRoomGen
-    {
-        void ReceiveOpenedBorder(IRoomGen sourceRoom, Dir4 dir);
-        void ReceiveFulfillableBorder(IRoomGen sourceRoom, Dir4 dir);
-        void ReceiveBorderRange(Range range, Dir4 dir);
-        bool GetOpenedBorder(Dir4 dir, int index);
-        bool GetFulfillableBorder(Dir4 dir, int index);
-        int GetBorderLength(Dir4 dir);
-        Rect Draw { get; }
-        Loc ProposeSize(IRandom rand);
-        void PrepareSize(IRandom rand, Loc size);
-        void SetLoc(Loc loc);
-        void DrawOnMap(ITiledGenContext map);
-        Loc GetEdgeLoc(Dir4 dir, int scalar);
-        Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar);
+            // compute the starting index in otherBorder to start transferring
+            Range sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
+            this.FillSideReq(sourceSide, dir);
+            bool[] destBorder = this.BorderToFulfill[dir];
+            Loc diff = sourceRoom.Draw.Start - this.Draw.Start; // how far ahead the start of source is to dest
 
-        IRoomGen Copy();
+            // compute the starting index in otherBorder to start transferring
+            int offset = diff.GetScalar(dir.ToAxis().Orth());
+
+            // Traverse the region that both borders touch
+            // make this room's opened borders into the other room's permitted borders
+            bool hasOpening = false;
+            int sourceLength = sourceRoom.GetBorderLength(dir.Reverse());
+            for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
+            {
+                bool sourceOpened;
+                if (fulfillable)
+                    sourceOpened = sourceRoom.GetFulfillableBorder(dir.Reverse(), ii - offset);
+                else
+                    sourceOpened = sourceRoom.GetOpenedBorder(dir.Reverse(), ii - offset);
+
+                destBorder[ii] = sourceOpened || destBorder[ii];
+                hasOpening |= sourceOpened;
+            }
+
+            if (!hasOpening)
+                throw new ArgumentException("Permitted borders needs at least one open tile for each sideReq!");
+        }
+
+        protected void DrawMapDefault(T map)
+        {
+            // draw on all
+            for (int x = 0; x < this.Draw.Size.X; x++)
+            {
+                for (int y = 0; y < this.Draw.Size.Y; y++)
+                    map.SetTile(new Loc(this.Draw.X + x, this.Draw.Y + y), map.RoomTerrain.Copy());
+            }
+
+            this.SetRoomBorders(map);
+        }
+
+        private static void UpdateUnfulfilled(List<Range> unfulfilled, int ii)
+        {
+            for (int jj = unfulfilled.Count - 1; jj >= 0; jj--)
+            {
+                if (unfulfilled[jj].Contains(ii))
+                    unfulfilled.RemoveAt(jj);
+            }
+        }
+
+        private void FillSideReq(Range range, Dir4 dir)
+        {
+            if (range.Length <= 0)
+                throw new ArgumentException("Range must have a positive length.");
+            if (dir == Dir4.None || !dir.Validate())
+                throw new ArgumentException("Invalid dir value.");
+
+            // also throw exception if the range fails to
+            // hit at least one open requestableBorderTile
+            Range side = this.Draw.GetSide(dir.ToAxis());
+            Range trueRange = new Range(Math.Max(range.Min, side.Min), Math.Min(range.Max, side.Max));
+            bool fulfillable = false;
+            for (int ii = trueRange.Min - side.Min; ii < trueRange.Max - side.Min; ii++)
+            {
+                if (this.FulfillableBorder[dir][ii])
+                {
+                    fulfillable = true;
+                    break;
+                }
+            }
+
+            if (!fulfillable)
+                throw new ArgumentException("The given range does not include a fulfillable tile!");
+            this.RoomSideReqs[dir].Add(trueRange);
+        }
     }
 }
