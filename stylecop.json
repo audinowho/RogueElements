@@ -8,6 +8,9 @@
                 "licenseName": "MIT",
                 "licenseFile": "LICENSE"
             }
+        },
+        "orderingRules": {
+            "usingDirectivesPlacement": "outsideNamespace",
         }
     }
 }

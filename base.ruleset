@@ -11,8 +11,6 @@
    <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.CSharp.LayoutRules">
      <Rule Id="SA1310" Action="None" />
      <Rule Id="SA1503" Action="None" />
-     <!-- Temporary rules. Remove before merging to master -->
-     <Rule Id="SA1200" Action="None" />
      <!-- Documentation rules. TODO after resolving all other errors -->
      <Rule Id="SA1600" Action="None" />
      <Rule Id="SA1602" Action="None" />
