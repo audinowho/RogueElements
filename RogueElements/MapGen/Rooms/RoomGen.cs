@@ -44,13 +44,13 @@ namespace RogueElements
             this.FulfillableBorder = new Dictionary<Dir4, bool[]>();
             this.BorderToFulfill = new Dictionary<Dir4, bool[]>();
 
-            this.draw = new Rect(new Loc(-1), new Loc(-1));
+            this.Draw = new Rect(new Loc(-1), new Loc(-1));
         }
 
         /// <summary>
         /// The rectangle that the room is drawn in.
         /// </summary>
-        public virtual Rect Draw => this.draw;
+        public virtual Rect Draw { get => this.draw; protected set => this.draw = value; }
 
         protected Dictionary<Dir4, List<Range>> RoomSideReqs { get => this.roomSideReqs; set => this.roomSideReqs = value; }
 
@@ -95,7 +95,9 @@ namespace RogueElements
             if (size.X <= 0 || size.Y <= 0)
                 throw new ArgumentException("Rooms must be of a positive size.");
 
-            this.draw.Size = size;
+            Rect currDraw = this.Draw;
+            currDraw.Size = size;
+            this.Draw = currDraw;
 
             // set all border tile classes to the correct length
             foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -125,7 +127,12 @@ namespace RogueElements
             }
         }
 
-        public void SetLoc(Loc loc) => this.draw.Start = loc;
+        public void SetLoc(Loc loc)
+        {
+            Rect currDraw = this.Draw;
+            currDraw.Start = loc;
+            this.Draw = currDraw;
+        }
 
        /// <summary>
         /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder

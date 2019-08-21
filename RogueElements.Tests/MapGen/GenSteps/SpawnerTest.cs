@@ -323,8 +323,9 @@ namespace RogueElements.Tests
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
-            startRoom.Object.Identifier = 'A';
+            startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
+            startRoom.Object.Identifier = 'A';
             mockFloor.Setup(p => p.GetRoom(0)).Returns(startRoom.Object);
             mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
             mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
@@ -371,8 +372,9 @@ namespace RogueElements.Tests
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
             mockFloor.Setup(p => p.GetRoom(0)).Returns(new TestFloorPlanGen('A'));
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
-            startRoom.Object.Identifier = 'B';
+            startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
+            startRoom.Object.Identifier = 'B';
             mockFloor.Setup(p => p.GetRoom(1)).Returns(startRoom.Object);
             mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
@@ -419,8 +421,9 @@ namespace RogueElements.Tests
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(4);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
-            startRoom.Object.Identifier = 'A';
+            startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
+            startRoom.Object.Identifier = 'A';
             mockFloor.Setup(p => p.GetRoom(0)).Returns(startRoom.Object);
             mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
             mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));

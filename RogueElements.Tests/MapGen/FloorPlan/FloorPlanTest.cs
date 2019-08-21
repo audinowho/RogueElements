@@ -662,7 +662,7 @@ namespace RogueElements.Tests
 
         public void PrepareDraw(Rect rect)
         {
-            Draw1 = rect;
+            Draw = rect;
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 OpenedBorder[dir] = new bool[GetBorderLength(dir)];
