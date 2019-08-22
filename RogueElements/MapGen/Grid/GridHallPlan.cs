@@ -3,8 +3,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -13,21 +13,20 @@ namespace RogueElements
     /// </summary>
     public class GridHallPlan
     {
-        public List<IPermissiveRoomGen> Gens;
-
-        public IPermissiveRoomGen MainGen => Gens.Count > 0 ? Gens[0] : null;
-
         public GridHallPlan()
         {
-            Gens = new List<IPermissiveRoomGen>();
+            this.Gens = new List<IPermissiveRoomGen>();
         }
+
+        public List<IPermissiveRoomGen> Gens { get; set; }
+
+        public IPermissiveRoomGen MainGen => this.Gens.Count > 0 ? this.Gens[0] : null;
 
         public void SetGen(IPermissiveRoomGen roomGen)
         {
-            Gens = new List<IPermissiveRoomGen>();
+            this.Gens = new List<IPermissiveRoomGen>();
             if (roomGen != null)
-                Gens.Add(roomGen);
+                this.Gens.Add(roomGen);
         }
     }
-
 }

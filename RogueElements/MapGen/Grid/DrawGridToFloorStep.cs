@@ -9,9 +9,12 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class DrawGridToFloorStep<T> : GenStep<T> where T : class, IRoomGridGenContext
+    public class DrawGridToFloorStep<T> : GenStep<T>
+        where T : class, IRoomGridGenContext
     {
-        public DrawGridToFloorStep() { }
+        public DrawGridToFloorStep()
+        {
+        }
 
         public override void Apply(T map)
         {
@@ -21,6 +24,5 @@ namespace RogueElements
 
             map.GridPlan.PlaceRoomsOnFloor(map);
         }
-
     }
 }

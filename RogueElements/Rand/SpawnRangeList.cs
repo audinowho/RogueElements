@@ -12,11 +12,10 @@ namespace RogueElements
     /// A data structure representing spawn rates of items spread across a range of floors.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    // TODO: Binary Space Partition Tree
     [Serializable]
     public class SpawnRangeList<T>
     {
-        // TODO: Binary Space Partition Tree
-
         private readonly List<SpawnRange> spawns;
 
         public SpawnRangeList()

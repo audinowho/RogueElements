@@ -823,10 +823,10 @@ namespace RogueElements.Tests
 
     public class TestGridFloorPlan : GridPlan
     {
-        public List<GridRoomPlan> PublicArrayRooms { get { return arrayRooms; } }
-        public int[][] PublicRooms { get { return rooms; } }
-        public GridHallPlan[][] PublicVHalls { get { return vHalls; } }
-        public GridHallPlan[][] PublicHHalls { get { return hHalls; } }
+        public List<GridRoomPlan> PublicArrayRooms { get { return ArrayRooms; } }
+        public int[][] PublicRooms { get { return Rooms; } }
+        public GridHallPlan[][] PublicVHalls { get { return VHalls; } }
+        public GridHallPlan[][] PublicHHalls { get { return HHalls; } }
         
         public static void CompareFloorPlans(TestGridFloorPlan floorPlan, TestGridFloorPlan compareFloorPlan)
         {
@@ -885,13 +885,13 @@ namespace RogueElements.Tests
                     {
                         if (val >= 'A' && val <= 'Z')
                         {
-                            floorPlan.rooms[x][y] = val - 'A';
+                            floorPlan.Rooms[x][y] = val - 'A';
                             if (addedRooms[val - 'A'] == null)
                                 addedRooms[val - 'A'] = new GridRoomPlan(new Rect(x,y,1,1), new TestGridRoomGen(val));
                             addedRooms[val - 'A'].Bounds = Rect.IncludeLoc(addedRooms[val - 'A'].Bounds, new Loc(x,y));
                         }
                         else if (val == '0')
-                            floorPlan.rooms[x][y] = -1;
+                            floorPlan.Rooms[x][y] = -1;
                         else
                             throw new ArgumentException($"Bad input grid val at room {x},{y}!");
                     }
@@ -899,9 +899,9 @@ namespace RogueElements.Tests
                     {
                         //vhalls
                         if (val == '#')
-                            floorPlan.vHalls[x][y].SetGen(new TestGridRoomGen());
+                            floorPlan.VHalls[x][y].SetGen(new TestGridRoomGen());
                         else if (val == '.')
-                            floorPlan.vHalls[x][y].SetGen(null);
+                            floorPlan.VHalls[x][y].SetGen(null);
                         else
                             throw new ArgumentException($"Bad input grid val at vertical hall {x},{y}!");
                     }
@@ -909,9 +909,9 @@ namespace RogueElements.Tests
                     {
                         //hhalls
                         if (val == '#')
-                            floorPlan.hHalls[x][y].SetGen(new TestGridRoomGen());
+                            floorPlan.HHalls[x][y].SetGen(new TestGridRoomGen());
                         else if (val == '.')
-                            floorPlan.hHalls[x][y].SetGen(null);
+                            floorPlan.HHalls[x][y].SetGen(null);
                         else
                             throw new ArgumentException($"Bad input grid val at horizontal hall {x},{y}!");
                     }
@@ -926,7 +926,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 26; ii++)
             {
                 if (addedRooms[ii] != null)
-                    floorPlan.arrayRooms.Add(addedRooms[ii]);
+                    floorPlan.ArrayRooms.Add(addedRooms[ii]);
             }
             return floorPlan;
         }

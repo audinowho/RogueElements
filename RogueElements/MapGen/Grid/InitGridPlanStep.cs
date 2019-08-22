@@ -9,27 +9,35 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class InitGridPlanStep<T> : GenStep<T> where T : class, IRoomGridGenContext
+    public class InitGridPlanStep<T> : GenStep<T>
+        where T : class, IRoomGridGenContext
     {
-        public int CellWall;
-        public int CellWidth;
-        public int CellHeight;
+        public InitGridPlanStep()
+        {
+        }
 
-        public int CellX;
-        public int CellY;
+        public InitGridPlanStep(int cellWall)
+        {
+            this.CellWall = cellWall;
+        }
 
-        public InitGridPlanStep() { }
-        public InitGridPlanStep(int cellWall) { CellWall = cellWall; }
+        public int CellWall { get; set; }
+
+        public int CellWidth { get; set; }
+
+        public int CellHeight { get; set; }
+
+        public int CellX { get; set; }
+
+        public int CellY { get; set; }
 
         public override void Apply(T map)
         {
-            //initialize grid
+            // initialize grid
             var floorPlan = new GridPlan();
-            floorPlan.InitSize(CellX, CellY, CellWidth, CellHeight, CellWall);
+            floorPlan.InitSize(this.CellX, this.CellY, this.CellWidth, this.CellHeight, this.CellWall);
 
             map.InitGrid(floorPlan);
-
         }
-
     }
 }

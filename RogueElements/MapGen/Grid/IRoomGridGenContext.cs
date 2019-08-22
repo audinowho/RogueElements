@@ -10,8 +10,8 @@ namespace RogueElements
 {
     public interface IRoomGridGenContext : IFloorPlanGenContext
     {
-        void InitGrid(GridPlan plan);
         GridPlan GridPlan { get; }
-    }
 
+        void InitGrid(GridPlan plan);
+    }
 }
