@@ -1,14 +1,18 @@
-﻿using System;
+﻿// <copyright file="RoomGenCrossTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
     [TestFixture]
     public class RoomGenCrossTest
     {
-
         [Test]
         public void ProposeSize()
         {
@@ -26,28 +30,35 @@ namespace RogueElements.Tests
         [Test]
         public void DrawOnMap()
         {
-            //verify pieces stay in contact even with adversarial rolls
-            Mock<RoomGenCross<ITiledGenContext>> roomGen = new Mock<RoomGenCross<ITiledGenContext>>() { CallBase = true };
+            // verify pieces stay in contact even with adversarial rolls
+            Mock<RoomGenCross<ITiledGenContext>> roomGen = new Mock<RoomGenCross<ITiledGenContext>> { CallBase = true };
             roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
             roomGen.Object.MajorWidth = new RandRange(2, 6);
             roomGen.Object.MajorHeight = new RandRange(3, 9);
             roomGen.Object.MinorWidth = new RandRange(1, 2);
             roomGen.Object.MinorHeight = new RandRange(1, 2);
-            string[] inGrid =  { "XXXXXXXX",
-                                 "XXXXXXXX",
-                                 "XXXXXXXX",
-                                 "XXXXXXXX",
-                                 "XXXXXXXX",
-                                 "XXXXXXXX",
-                                 "XXXXXXXX" };
+            string[] inGrid =
+            {
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+            };
 
-            string[] outGrid = {"XXXXXXXX",
-                                "XX.....X",
-                                "XXXXXX.X",
-                                "XXXXXX.X",
-                                "XXXXXX.X",
-                                "XXXXXXXX",
-                                "XXXXXXXX" };
+            string[] outGrid =
+            {
+                "XXXXXXXX",
+                "XX.....X",
+                "XXXXXX.X",
+                "XXXXXX.X",
+                "XXXXXX.X",
+                "XXXXXXXX",
+                "XXXXXXXX",
+            };
+
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(1, 2));
             seq = seq.Returns(1);
@@ -83,38 +94,28 @@ namespace RogueElements.Tests
                 MajorWidth = new RandRange(2, 4),
                 MajorHeight = new RandRange(3, 9),
                 MinorWidth = new RandRange(1, 3),
-                MinorHeight = new RandRange(1, 7)
+                MinorHeight = new RandRange(1, 7),
             };
 
-            var expectedFulfillable = new Dictionary<Dir4, bool[]>();
-            expectedFulfillable[Dir4.Down] = new bool[2];
-            expectedFulfillable[Dir4.Down][0] = false;
-            expectedFulfillable[Dir4.Down][1] = true;
-            expectedFulfillable[Dir4.Left] = new bool[3];
-            expectedFulfillable[Dir4.Left][0] = true;
-            expectedFulfillable[Dir4.Left][1] = true;
-            expectedFulfillable[Dir4.Left][2] = false;
-            expectedFulfillable[Dir4.Up] = new bool[2];
-            expectedFulfillable[Dir4.Up][0] = false;
-            expectedFulfillable[Dir4.Up][1] = true;
-            expectedFulfillable[Dir4.Right] = new bool[3];
-            expectedFulfillable[Dir4.Right][0] = true;
-            expectedFulfillable[Dir4.Right][1] = true;
-            expectedFulfillable[Dir4.Right][2] = false;
+            var expectedFulfillable = new Dictionary<Dir4, bool[]>
+            {
+                [Dir4.Down] = new bool[] { false, true },
+                [Dir4.Left] = new bool[] { true, true, false },
+                [Dir4.Up] = new bool[] { false, true },
+                [Dir4.Right] = new bool[] { true, true, false },
+            };
 
-
-            roomGen.PrepareSize(testRand.Object, new Loc(2,3));
-            
+            roomGen.PrepareSize(testRand.Object, new Loc(2, 3));
 
             Assert.That(roomGen.PublicFulfillableBorder, Is.EqualTo(expectedFulfillable));
             testRand.Verify(p => p.Next(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(2));
             testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(2));
         }
-    }
 
-
-    public class TestRoomGenCross<T> : RoomGenCross<T> where T : ITiledGenContext
-    {
-        public Dictionary<Dir4, bool[]> PublicFulfillableBorder { get { return FulfillableBorder; } }
+        public class TestRoomGenCross<T> : RoomGenCross<T>
+            where T : ITiledGenContext
+        {
+            public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
+        }
     }
 }

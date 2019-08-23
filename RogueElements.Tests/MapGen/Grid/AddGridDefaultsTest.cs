@@ -1,7 +1,12 @@
-﻿using System;
+﻿// <copyright file="AddGridDefaultsTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
@@ -11,12 +16,14 @@ namespace RogueElements.Tests
         [Test]
         public void StraightPath0Percent()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0",
-                                ". . . . . . .",
-                                "0.A#B#C#D#E.0",
-                                ". . . . . . .",
-                                "0.0.0.0.0.0.0"};
-
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0",
+                ". . . . . . .",
+                "0.A#B#C#D#E.0",
+                ". . . . . . .",
+                "0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
@@ -28,7 +35,7 @@ namespace RogueElements.Tests
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(5));
             Assert.That(floorPlan.GetRoomPlan(0).RoomGen, Is.TypeOf<TestGridRoomGen>());
             Assert.That(floorPlan.GetRoomPlan(1).RoomGen, Is.TypeOf<TestGridRoomGen>());
@@ -40,12 +47,14 @@ namespace RogueElements.Tests
         [Test]
         public void StraightPath50Percent()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0",
-                                ". . . . . . .",
-                                "0.A#B#C#D#E#F",
-                                ". . . . . . .",
-                                "0.0.0.0.0.0.0"};
-
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0",
+                ". . . . . . .",
+                "0.A#B#C#D#E#F",
+                ". . . . . . .",
+                "0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
@@ -57,7 +66,7 @@ namespace RogueElements.Tests
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(6));
             Assert.That(floorPlan.GetRoomPlan(0).RoomGen, Is.TypeOf<TestGridRoomGen>());
             Assert.That(floorPlan.GetRoomPlan(1).RoomGen, Is.TypeOf<RoomGenDefault<IGridPathTestContext>>());
@@ -70,12 +79,14 @@ namespace RogueElements.Tests
         [Test]
         public void StraightPath100Percent()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0",
-                                ". . . . . . .",
-                                "0.A#B#C#D#E.0",
-                                ". . . . . . .",
-                                "0.0.0.0.0.0.0"};
-            
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0",
+                ". . . . . . .",
+                "0.A#B#C#D#E.0",
+                ". . . . . . .",
+                "0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
@@ -87,7 +98,7 @@ namespace RogueElements.Tests
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(5));
             Assert.That(floorPlan.GetRoomPlan(0).RoomGen, Is.TypeOf<TestGridRoomGen>());
             Assert.That(floorPlan.GetRoomPlan(1).RoomGen, Is.TypeOf<RoomGenDefault<IGridPathTestContext>>());
@@ -95,17 +106,18 @@ namespace RogueElements.Tests
             Assert.That(floorPlan.GetRoomPlan(3).RoomGen, Is.TypeOf<RoomGenDefault<IGridPathTestContext>>());
             Assert.That(floorPlan.GetRoomPlan(4).RoomGen, Is.TypeOf<TestGridRoomGen>());
         }
-        
 
         [Test]
         public void BranchedPath100Percent()
         {
-            string[] inGrid = { "0.0.E.F.0.0",
-                                ". . # # . .",
-                                "0.A#B#C#D.0",
-                                ". . # # . .",
-                                "0.0.G.H.0.0"};
-
+            string[] inGrid =
+            {
+                "0.0.E.F.0.0",
+                ". . # # . .",
+                "0.A#B#C#D.0",
+                ". . # # . .",
+                "0.0.G.H.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
@@ -117,7 +129,7 @@ namespace RogueElements.Tests
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(8));
             Assert.That(floorPlan.GetRoomPlan(0).RoomGen, Is.TypeOf<TestGridRoomGen>());
             Assert.That(floorPlan.GetRoomPlan(1).RoomGen, Is.TypeOf<RoomGenDefault<IGridPathTestContext>>());
@@ -132,12 +144,14 @@ namespace RogueElements.Tests
         [Test]
         public void Immutable100Percent()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0",
-                                ". . . . . . .",
-                                "0.A#B#C#D#E.0",
-                                ". . . . . . .",
-                                "0.0.0.0.0.0.0"};
-
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0",
+                ". . . . . . .",
+                "0.A#B#C#D#E.0",
+                ". . . . . . .",
+                "0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(2);
@@ -151,7 +165,7 @@ namespace RogueElements.Tests
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(5));
             Assert.That(floorPlan.GetRoomPlan(0).RoomGen, Is.TypeOf<TestGridRoomGen>());
             Assert.That(floorPlan.GetRoomPlan(1).RoomGen, Is.TypeOf<RoomGenDefault<IGridPathTestContext>>());

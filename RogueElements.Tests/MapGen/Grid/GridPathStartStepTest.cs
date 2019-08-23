@@ -1,7 +1,12 @@
-﻿using System;
+﻿// <copyright file="GridPathStartStepTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
@@ -11,13 +16,19 @@ namespace RogueElements.Tests
         [Test]
         public void CreateErrorPath()
         {
-            string[] inGrid = { "0.0",
-                                ". .",
-                                "0.0" };
+            string[] inGrid =
+            {
+                "0.0",
+                ". .",
+                "0.0",
+            };
 
-            string[] outGrid = { "A.0",
-                                 ". .",
-                                 "0.0" };
+            string[] outGrid =
+            {
+                "A.0",
+                ". .",
+                "0.0",
+            };
 
             var pathGen = new Mock<GridPathStartStepGeneric<IGridPathTestContext>> { CallBase = true };
 
@@ -40,19 +51,22 @@ namespace RogueElements.Tests
             pathGen.Verify(p => p.GetDefaultGen(), Times.Exactly(1));
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void RollRatio()
         {
             throw new NotImplementedException();
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void SafeAddHall()
         {
             throw new NotImplementedException();
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void SelectSpecialRooms()
         {
             throw new NotImplementedException();
