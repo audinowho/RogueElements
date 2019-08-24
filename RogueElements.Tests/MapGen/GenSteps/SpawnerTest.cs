@@ -17,7 +17,7 @@ namespace RogueElements.Tests
         {
         }
 
-        public interface IViewPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<SpawnableInt>
+        public interface IViewPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<TestEntryPoint>
         {
         }
 
@@ -364,7 +364,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>(null, 100) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 3;
@@ -412,7 +412,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>(null, 100) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100) { CallBase = true };
 
             const int maxVal = 2;
             const int rooms = 3;
@@ -465,7 +465,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, SpawnableInt>>(null, 100) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 4;
@@ -501,21 +501,21 @@ namespace RogueElements.Tests
             public ISpawnable Copy() => new SpawnableChar(this);
         }
 
-        public struct SpawnableInt : ISpawnable
+        public struct TestEntryPoint : IEntrance, IExit
         {
-            public int ID;
-
-            public SpawnableInt(int value)
+            public TestEntryPoint(int value)
             {
                 this.ID = value;
             }
 
-            public SpawnableInt(SpawnableInt other)
+            public TestEntryPoint(TestEntryPoint other)
             {
                 this.ID = other.ID;
             }
 
-            public ISpawnable Copy() => new SpawnableInt(this);
+            public int ID { get; set; }
+
+            public ISpawnable Copy() => new TestEntryPoint(this);
         }
     }
 }

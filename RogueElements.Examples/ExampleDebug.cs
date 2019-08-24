@@ -31,6 +31,7 @@ namespace RogueElements.Examples
         public static void Init(IGenContext newMap)
         {
             curMap = newMap;
+            currentDepth = 0;
             stepStack = new List<string>();
             gridDebugString = new List<DebugState>();
             listDebugString = new List<DebugState>();

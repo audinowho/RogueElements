@@ -292,6 +292,16 @@ namespace RogueElements
             return locList;
         }
 
+        /// <summary>
+        /// Determines if blocking off a specific tile would cause a path leading through it to become inaccessible.
+        /// If a tile is a choke point, there are no alternate paths.
+        /// </summary>
+        /// <param name="rectStart">Top-Left of the rectangle to search for alternate paths.</param>
+        /// <param name="rectSize">Dimensions of the rectangle to search for alternate paths.</param>
+        /// <param name="point">The tile to block off.</param>
+        /// <param name="checkBlock">Determines if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Determines if a tile checked diagonally is blocked.</param>
+        /// <returns></returns>
         public static bool IsChokePoint(Loc rectStart, Loc rectSize, Loc point, LocTest checkBlock, LocTest checkDiagBlock)
         {
             if (checkBlock == null)

@@ -119,7 +119,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(new LocRay4(hHallSites[ii], Dir4.Right), floorPlan, this.GenericHalls.Pick(rand), this.GenericRooms.Pick(rand));
+                    SafeAddHall(new LocRay4(hHallSites[ii], Dir4.Left), floorPlan, this.GenericHalls.Pick(rand), this.GenericRooms.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                     placedHalls--;
                 }
@@ -131,7 +131,7 @@ namespace RogueElements
             {
                 if (rand.Next() % halls < placedHalls)
                 {
-                    SafeAddHall(new LocRay4(vHallSites[ii], Dir4.Down), floorPlan, this.GenericHalls.Pick(rand), this.GenericRooms.Pick(rand));
+                    SafeAddHall(new LocRay4(vHallSites[ii], Dir4.Up), floorPlan, this.GenericHalls.Pick(rand), this.GenericRooms.Pick(rand));
                     GenContextDebug.DebugProgress("Hall");
                     placedHalls--;
                 }

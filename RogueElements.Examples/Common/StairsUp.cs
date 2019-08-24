@@ -8,7 +8,7 @@ using RogueElements;
 
 namespace RogueElements.Examples
 {
-    public class StairsUp : Stairs
+    public class StairsUp : Stairs, IEntrance
     {
         public StairsUp()
             : base()

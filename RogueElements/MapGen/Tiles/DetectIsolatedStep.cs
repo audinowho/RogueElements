@@ -8,9 +8,9 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class DetectIsolatedStep<TGenContext, TSpawnable> : GenStep<TGenContext>
-        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TSpawnable>
-        where TSpawnable : ISpawnable
+    public class DetectIsolatedStep<TGenContext, TEntrance> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<IEntrance>
+        where TEntrance : IEntrance
     {
         public DetectIsolatedStep()
         {

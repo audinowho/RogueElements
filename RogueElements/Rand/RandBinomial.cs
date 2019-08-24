@@ -30,6 +30,10 @@ namespace RogueElements
         /// </summary>
         private readonly int percent;
 
+        public RandBinomial()
+        {
+        }
+
         public RandBinomial(int trials, int percent)
         {
             this.trials = trials;

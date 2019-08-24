@@ -8,11 +8,18 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Places items on the map based on how far they are from the entrance of the map.
+    /// Distance is measured in the amount of rooms one must travel to reach the room in question.
+    /// </summary>
+    /// <typeparam name="TGenContext">Type of the MapGenContext.</typeparam>
+    /// <typeparam name="TSpawnable">Type of the item to spawn.</typeparam>
+    /// <typeparam name="TEntrance">Type of the Map Entrance.</typeparam>
     [Serializable]
     public class DueSpawnStep<TGenContext, TSpawnable, TEntrance> : RoomSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>, IViewPlaceableGenContext<TEntrance>
         where TSpawnable : ISpawnable
-        where TEntrance : ISpawnable
+        where TEntrance : IEntrance
     {
         public DueSpawnStep()
             : base()
@@ -25,6 +32,9 @@ namespace RogueElements
             this.SuccessPercent = successPercent;
         }
 
+        /// <summary>
+        /// The percentage chance to multiply a room's spawning chance when it successfully spawns an item.
+        /// </summary>
         public int SuccessPercent { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)

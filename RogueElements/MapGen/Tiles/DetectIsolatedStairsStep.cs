@@ -10,8 +10,8 @@ namespace RogueElements
     [Serializable]
     public class DetectIsolatedStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>
-        where TEntrance : ISpawnable
-        where TExit : ISpawnable
+        where TEntrance : IEntrance
+        where TExit : IExit
     {
         public DetectIsolatedStairsStep()
         {

@@ -11,8 +11,8 @@ namespace RogueElements
     [Serializable]
     public class FloorStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
-        where TEntrance : ISpawnable
-        where TExit : ISpawnable
+        where TEntrance : IEntrance
+        where TExit : IExit
     {
         public FloorStairsStep()
         {
