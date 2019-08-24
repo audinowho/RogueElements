@@ -1,23 +1,32 @@
-﻿using System;
+﻿// <copyright file="ExampleDebug.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using RogueElements;
-using System.Diagnostics;
 
 namespace RogueElements.Examples
 {
+    [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:ElementsMustBeOrderedByAccess", Justification = "Methods grouped for documentation purposes")]
     public static class ExampleDebug
     {
-        const ConsoleKey STEP_IN_KEY = ConsoleKey.F5;
-        const ConsoleKey STEP_OUT_KEY = ConsoleKey.F6;
-        public static int Printing;
-        public static bool SteppingIn;
-        static List<string> stepStack;
-        static List<DebugState> gridDebugString;
-        static List<DebugState> listDebugString;
-        static List<DebugState> tileDebugString;
-        static int currentDepth;
-        static IGenContext curMap;
+        private const ConsoleKey STEP_IN_KEY = ConsoleKey.F5;
+        private const ConsoleKey STEP_OUT_KEY = ConsoleKey.F6;
+        private static List<string> stepStack;
+        private static List<DebugState> gridDebugString;
+        private static List<DebugState> listDebugString;
+        private static List<DebugState> tileDebugString;
+        private static int currentDepth;
+        private static IGenContext curMap;
+
+        public static int Printing { get; set; }
+
+        public static bool SteppingIn { get; set; }
 
         public static void Init(IGenContext newMap)
         {
@@ -27,7 +36,7 @@ namespace RogueElements.Examples
             listDebugString = new List<DebugState>();
             tileDebugString = new List<DebugState>();
 
-            stepStack.Add("");
+            stepStack.Add(string.Empty);
             gridDebugString.Add(new DebugState());
             listDebugString.Add(new DebugState());
             tileDebugString.Add(new DebugState());
@@ -43,9 +52,9 @@ namespace RogueElements.Examples
 
             if (SteppingIn)
                 Printing = Math.Max(Printing, currentDepth + 1);
-
         }
 
+        [SuppressMessage("Microsoft.Diagnostics.CodeAnalysis", "IDE0059:ValueAssignedIsUnused", Justification="Variable present for example")]
         public static void StepOut()
         {
             currentDepth--;
@@ -60,32 +69,29 @@ namespace RogueElements.Examples
 
             Printing = Math.Min(Printing, currentDepth + 1);
 
-            //print within printing
-            printStep(createStackString() + "<" + stepOutName + "<");
+            // print within printing
+            PrintStep(CreateStackString() + "<" + stepOutName + "<");
         }
 
         public static void OnStep(string msg)
         {
-            printStep(createStackString() + ">" + msg);
+            PrintStep(CreateStackString() + ">" + msg);
         }
 
-
-
-        private static void clearLine(int lineNum)
+        private static void ClearLine(int lineNum)
         {
             Console.SetCursorPosition(0, lineNum);
             Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
         }
 
-        private static void rewriteLine(int lineNum, string msg)
+        private static void RewriteLine(int lineNum, string msg)
         {
             Console.SetCursorPosition(0, lineNum);
             Console.Write(msg);
             Console.Write(new string(' ', Console.WindowWidth - Console.CursorLeft));
         }
 
-
-        private static string createStackString()
+        private static string CreateStackString()
         {
             var str = new StringBuilder();
             for (int ii = 0; ii < stepStack.Count; ii++)
@@ -94,13 +100,13 @@ namespace RogueElements.Examples
                     str.Append(">");
                 str.Append(stepStack[ii]);
             }
+
             return str.ToString();
         }
 
+        /* Code below is specific to the map gen context; it can be tweaked to vary by game implementation */
 
-        //Code below is specific to the map gen context; it can be tweaked to vary by game implementation
-
-        public static void printStep(string msg)
+        public static void PrintStep(string msg)
         {
             bool printDebug = false;
             bool printViewer = false;
@@ -111,10 +117,10 @@ namespace RogueElements.Examples
                     printDebug = true;
                     printViewer = true;
                 }
+
                 if (currentDepth == 0)
                     printDebug = true;
             }
-
 
             ConsoleKey key = ConsoleKey.Enter;
             {
@@ -134,16 +140,22 @@ namespace RogueElements.Examples
                 if (key == ConsoleKey.Enter)
                     key = newKey;
             }
-            if (key == STEP_IN_KEY)
-                SteppingIn = true;
-            else if (key == STEP_OUT_KEY)
-                Printing--;
-            else if (key == ConsoleKey.Escape)
-                Printing = 0;
 
+            switch (key)
+            {
+                case STEP_IN_KEY:
+                    SteppingIn = true;
+                    break;
+                case STEP_OUT_KEY:
+                    Printing--;
+                    break;
+                case ConsoleKey.Escape:
+                    Printing = 0;
+                    break;
+                default:
+                    break;
+            }
         }
-
-
 
         public static ConsoleKey PrintTiles(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
@@ -161,9 +173,13 @@ namespace RogueElements.Examples
                 for (int xx = 0; xx < context.Width; xx++)
                 {
                     if (context.GetTile(new Loc(xx, yy)).TileEquivalent(context.RoomTerrain))
+                    {
                         str.Append('.');
+                    }
                     else if (context.GetTile(new Loc(xx, yy)).TileEquivalent(context.WallTerrain))
+                    {
                         str.Append('#');
+                    }
                     else
                     {
                         if (context.TileBlocked(new Loc(xx, yy)))
@@ -173,7 +189,6 @@ namespace RogueElements.Examples
                     }
                 }
             }
-
 
             string newStr = str.ToString();
             if (tileDebugString[currentDepth].MapString == newStr)
@@ -189,8 +204,8 @@ namespace RogueElements.Examples
 
             if (printViewer)
             {
-                //TODO: print with highlighting (use the bounds variable)
-                //TODO: print with color
+                // TODO: print with highlighting (use the bounds variable)
+                // TODO: print with color
                 SteppingIn = false;
                 Console.Clear();
                 Console.WriteLine(msg);
@@ -204,17 +219,16 @@ namespace RogueElements.Examples
                 {
                     int farthestPrint = end.Y;
                     Loc mapLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
-                    rewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
+                    RewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
                     farthestPrint++;
                     ITile tile = context.GetTile(mapLoc);
-                    rewriteLine(farthestPrint, $"Tile: {tile}");
+                    RewriteLine(farthestPrint, $"Tile: {tile}");
                     farthestPrint++;
 
                     for (int ii = farthestPrint; ii < prevFarthestPrint; ii++)
-                        clearLine(ii);
+                        ClearLine(ii);
                     prevFarthestPrint = farthestPrint;
                     Console.SetCursorPosition(start.X + mapLoc.X, start.Y + mapLoc.Y);
-
 
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.UpArrow)
@@ -230,7 +244,9 @@ namespace RogueElements.Examples
                 }
             }
             else
+            {
                 return ConsoleKey.Enter;
+            }
         }
 
         public static ConsoleKey PrintListRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
@@ -253,13 +269,13 @@ namespace RogueElements.Examples
 
             for (int ii = 0; ii < plan.RoomCount; ii++)
             {
-                char chosenChar = (char)('A' + ii % 26);
+                char chosenChar = (char)('A' + (ii % 26));
                 IRoomGen gen = plan.GetRoom(ii);
                 for (int xx = gen.Draw.Left; xx < gen.Draw.Right; xx++)
                 {
                     for (int yy = gen.Draw.Top; yy < gen.Draw.Bottom; yy++)
                     {
-                        int index = yy * plan.DrawRect.Right + xx;
+                        int index = (yy * plan.DrawRect.Right) + xx;
 
                         if (str[index] == ' ')
                             str[index] = chosenChar;
@@ -268,9 +284,10 @@ namespace RogueElements.Examples
                     }
                 }
             }
+
             for (int ii = 0; ii < plan.HallCount; ii++)
             {
-                char chosenChar = (char)('a' + ii % 26);
+                char chosenChar = (char)('a' + (ii % 26));
 
                 IRoomGen gen = plan.GetHall(ii);
 
@@ -278,11 +295,11 @@ namespace RogueElements.Examples
                 {
                     for (int yy = gen.Draw.Top; yy < gen.Draw.Bottom; yy++)
                     {
-                        int index = yy * plan.DrawRect.Right + xx;
+                        int index = (yy * plan.DrawRect.Right) + xx;
 
                         if (str[index] == ' ')
                             str[index] = chosenChar;
-                        else if (str[index] >= 'a' && str[index] <= 'z' || str[index] == '#')
+                        else if ((str[index] >= 'a' && str[index] <= 'z') || str[index] == '#')
                             str[index] = '+';
                         else
                             str[index] = '!';
@@ -293,13 +310,11 @@ namespace RogueElements.Examples
             for (int yy = plan.DrawRect.Bottom - 1; yy > 0; yy--)
                 str.Insert(plan.DrawRect.Right * yy, '\n');
 
-
             string newStr = str.ToString();
             if (listDebugString[currentDepth].MapString == newStr)
                 return ConsoleKey.Enter;
 
             listDebugString[currentDepth].MapString = newStr;
-
 
             if (printDebug)
             {
@@ -322,7 +337,7 @@ namespace RogueElements.Examples
                 {
                     int farthestPrint = end.Y;
                     Loc mapLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
-                    rewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
+                    RewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
                     farthestPrint++;
 
                     for (int ii = 0; ii < plan.RoomCount; ii++)
@@ -330,17 +345,18 @@ namespace RogueElements.Examples
                         FloorRoomPlan roomPlan = plan.GetRoomPlan(ii);
                         if (roomPlan.RoomGen.Draw.Contains(mapLoc))
                         {
-                            //stats
+                            // stats
                             string roomString = $"Room #{ii}: {roomPlan.RoomGen.Draw.X}x{roomPlan.RoomGen.Draw.Y} {roomPlan.RoomGen}";
                             if (roomPlan.Immutable)
                                 roomString += " [Immutable]";
-                            rewriteLine(farthestPrint, roomString);
+                            RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
-                            //borders
+
+                            // borders
                             var lineString = new StringBuilder(" ");
                             for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
                                 lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Up, xx) ? "^" : " ");
-                            rewriteLine(farthestPrint, lineString.ToString());
+                            RewriteLine(farthestPrint, lineString.ToString());
                             farthestPrint++;
                             for (int yy = 0; yy < roomPlan.RoomGen.Draw.Height; yy++)
                             {
@@ -348,33 +364,33 @@ namespace RogueElements.Examples
                                 for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
                                     lineString.Append("#");
                                 lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Right, yy) ? ">" : " ");
-                                rewriteLine(farthestPrint, lineString.ToString());
+                                RewriteLine(farthestPrint, lineString.ToString());
                                 farthestPrint++;
                             }
+
                             lineString = new StringBuilder(" ");
                             for (int xx = 0; xx < roomPlan.RoomGen.Draw.Width; xx++)
                                 lineString.Append(roomPlan.RoomGen.GetFulfillableBorder(Dir4.Down, xx) ? "V" : " ");
-                            rewriteLine(farthestPrint, lineString.ToString());
+                            RewriteLine(farthestPrint, lineString.ToString());
                             farthestPrint++;
                         }
                     }
+
                     for (int ii = 0; ii < plan.HallCount; ii++)
                     {
                         IPermissiveRoomGen gen = plan.GetHall(ii);
                         if (gen.Draw.Contains(mapLoc))
                         {
                             string roomString = $"Hall #{ii}: {gen.Draw.X}x{gen.Draw.Y} {gen}";
-                            rewriteLine(farthestPrint, roomString);
+                            RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
                         }
                     }
 
-
                     for (int ii = farthestPrint; ii < prevFarthestPrint; ii++)
-                        clearLine(ii);
+                        ClearLine(ii);
                     prevFarthestPrint = farthestPrint;
                     Console.SetCursorPosition(start.X + mapLoc.X, start.Y + mapLoc.Y);
-
 
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.UpArrow)
@@ -390,7 +406,9 @@ namespace RogueElements.Examples
                 }
             }
             else
+            {
                 return ConsoleKey.Enter;
+            }
         }
 
         public static ConsoleKey PrintGridRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
@@ -413,10 +431,11 @@ namespace RogueElements.Examples
                     int roomIndex = plan.GetRoomIndex(new Loc(xx, yy));
                     if (roomIndex == -1)
                         str.Append('0');
-                    else// if (roomIndex < 26)
-                        str.Append((char)('A' + roomIndex % 26));
-                    //else
-                    //    str.Append('@');
+                    else // if (roomIndex < 26)
+                        str.Append((char)('A' + (roomIndex % 26)));
+                    /* else
+                           str.Append('@');
+                    */
 
                     if (xx < plan.GridWidth - 1)
                     {
@@ -445,13 +464,11 @@ namespace RogueElements.Examples
                 }
             }
 
-
             string newStr = str.ToString();
             if (gridDebugString[currentDepth].MapString == newStr)
                 return ConsoleKey.Enter;
 
             gridDebugString[currentDepth].MapString = newStr;
-
 
             if (printDebug)
             {
@@ -475,7 +492,7 @@ namespace RogueElements.Examples
                     int farthestPrint = end.Y;
                     Loc gridLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
                     Loc mapLoc = gridLoc / 2;
-                    rewriteLine(farthestPrint, $"X:{gridLoc.X / 2f:0.0}  Y:{gridLoc.Y / 2f:0.0}");
+                    RewriteLine(farthestPrint, $"X:{gridLoc.X / 2f:0.0}  Y:{gridLoc.Y / 2f:0.0}");
                     farthestPrint++;
 
                     bool alignX = gridLoc.X % 2 == 0;
@@ -492,7 +509,7 @@ namespace RogueElements.Examples
                                 roomString += " [Immutable]";
                             if (roomPlan.PreferHall)
                                 roomString += " [Hall]";
-                            rewriteLine(farthestPrint, roomString);
+                            RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
                         }
                     }
@@ -501,7 +518,7 @@ namespace RogueElements.Examples
                         IPermissiveRoomGen hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Down));
                         if (hall != null)
                         {
-                            rewriteLine(farthestPrint, "Hall: " + hall.ToString());
+                            RewriteLine(farthestPrint, "Hall: " + hall);
                             farthestPrint++;
                         }
                     }
@@ -510,16 +527,15 @@ namespace RogueElements.Examples
                         IPermissiveRoomGen hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Right));
                         if (hall != null)
                         {
-                            rewriteLine(farthestPrint, "Hall: " + hall.ToString());
+                            RewriteLine(farthestPrint, "Hall: " + hall);
                             farthestPrint++;
                         }
                     }
 
                     for (int ii = farthestPrint; ii < prevFarthestPrint; ii++)
-                        clearLine(ii);
+                        ClearLine(ii);
                     prevFarthestPrint = farthestPrint;
                     Console.SetCursorPosition(start.X + gridLoc.X, start.Y + gridLoc.Y);
-
 
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.UpArrow)
@@ -535,7 +551,9 @@ namespace RogueElements.Examples
                 }
             }
             else
+            {
                 return ConsoleKey.Enter;
+            }
         }
     }
 }
