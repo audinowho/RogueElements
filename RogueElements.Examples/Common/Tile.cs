@@ -13,7 +13,7 @@ namespace RogueElements.Examples
     {
         public Tile()
         {
-            this.ID = 0;
+            this.ID = BaseMap.WALL_TERRAIN_ID;
         }
 
         public Tile(int id)

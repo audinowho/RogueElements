@@ -57,12 +57,12 @@ namespace RogueElements.Examples
 
         bool ITiledGenContext.TileBlocked(Loc loc)
         {
-            return this.Map.Tiles[loc.X][loc.Y].ID == 1;
+            return this.Map.Tiles[loc.X][loc.Y].ID == BaseMap.WALL_TERRAIN_ID;
         }
 
         bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
         {
-            return this.Map.Tiles[loc.X][loc.Y].ID == 1;
+            return this.Map.Tiles[loc.X][loc.Y].ID == BaseMap.WALL_TERRAIN_ID;
         }
 
         public virtual void CreateNew(int width, int height)
