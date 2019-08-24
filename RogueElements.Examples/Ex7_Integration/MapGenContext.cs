@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using RogueSharp;
-using RogueSharp.MapCreation;
 
 namespace RogueElements.Examples.Ex7_Integration
 {
@@ -10,10 +8,10 @@ namespace RogueElements.Examples.Ex7_Integration
     {
         public Map Map { get; set; }
 
-        public ITile RoomTerrain { get { return new Cell(0, 0, true, true, false); } }
-        public ITile WallTerrain { get { return new Cell(0, 0, false, false, false); } }
+        public ITile RoomTerrain { get { return new CellTile(0, 0, true, true, false); } }
+        public ITile WallTerrain { get { return new CellTile(0, 0, false, false, false); } }
 
-        public ITile GetTile(Loc loc) { return (Cell)Map.GetCell(loc.X, loc.Y); }
+        public ITile GetTile(Loc loc) { return CellTile.FromCell(Map.GetCell(loc.X, loc.Y)); }
         public bool CanSetTile(Loc loc, ITile tile)
         {
             return true;
@@ -43,7 +41,7 @@ namespace RogueElements.Examples.Ex7_Integration
         {
             Map = new Map();
         }
-        
+
         public void InitSeed(ulong seed)
         {
             rand = new ReRandom(seed);
