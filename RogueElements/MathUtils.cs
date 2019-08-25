@@ -31,7 +31,7 @@ namespace RogueElements
         /// <summary>
         /// Choose a random member from a set.
         /// </summary>
-        /// <typeparam name="T">Type of the input <cref="HashSet"/></typeparam>
+        /// <typeparam name="T">Type of the input <see cref="HashSet{T}"/></typeparam>
         /// <param name="hash"></param>
         /// <param name="rand"></param>
         /// <returns></returns>

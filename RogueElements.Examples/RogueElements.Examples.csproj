@@ -6,6 +6,8 @@
     <AssemblyName>RogueElements.Examples</AssemblyName>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <CodeAnalysisRuleSet>./examples.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

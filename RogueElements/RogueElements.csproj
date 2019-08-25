@@ -7,6 +7,8 @@
     <Version>1.0.0</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>../base.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
 
     <Authors>Audino</Authors>
     <Description>Roguelike Map Generation, built to be game-agnostic.</Description>

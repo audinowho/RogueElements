@@ -252,20 +252,20 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets whether or not the provided <see cref="Vector2"/> lies within the bounds of this <see cref="Rect"/>.
+        /// Gets whether or not the provided <see cref="Loc"/> lies within the bounds of this <see cref="Rect"/>.
         /// </summary>
         /// <param name="value">The coordinates to check for inclusion in this <see cref="Rect"/>.</param>
-        /// <returns><c>true</c> if the provided <see cref="Vector2"/> lies inside this <see cref="Rect"/>; <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if the provided <see cref="Loc"/> lies inside this <see cref="Rect"/>; <c>false</c> otherwise.</returns>
         public bool Contains(Loc value)
         {
             return this.X <= value.X && value.X < this.X + this.Width && this.Y <= value.Y && value.Y < this.Y + this.Height;
         }
 
         /// <summary>
-        /// Gets whether or not the provided <see cref="Vector2"/> lies within the bounds of this <see cref="Rect"/>.
+        /// Gets whether or not the provided <see cref="Loc"/> lies within the bounds of this <see cref="Rect"/>.
         /// </summary>
         /// <param name="value">The coordinates to check for inclusion in this <see cref="Rect"/>.</param>
-        /// <param name="result"><c>true</c> if the provided <see cref="Vector2"/> lies inside this <see cref="Rect"/>; <c>false</c> otherwise. As an output parameter.</param>
+        /// <param name="result"><c>true</c> if the provided <see cref="Loc"/> lies inside this <see cref="Rect"/>; <c>false</c> otherwise. As an output parameter.</param>
         public void Contains(ref Loc value, out bool result)
         {
             result = (this.X <= value.X) && (value.X < this.X + this.Width) && (this.Y <= value.Y) && (value.Y < this.Y + this.Height);
@@ -470,7 +470,7 @@ namespace RogueElements
         /// depth values can be negative depending on which wides the rectangles
         /// intersect. This allows callers to determine the correct direction
         /// to push objects in order to resolve collisions.
-        /// If the rectangles are not intersecting, Vector2.Zero is returned.
+        /// If the rectangles are not intersecting, Loc.Zero is returned.
         /// </returns>
         public Loc IntersectionDepth(Rect other)
         {
