@@ -45,9 +45,9 @@ namespace RogueElements
                     {
 #if DEBUG
                         PrintGrid(connectionGrid);
-                        throw new Exception("Detected orphaned tile at X" + xx + " Y" + yy + "!  Seed: " + map.Rand.FirstSeed);
+                        throw new Exception($"Detected orphaned tile at X{xx} Y{yy}!  Seed: {map.Rand.FirstSeed}");
 #else
-                        Console.WriteLine("Detected orphaned tile at X"+xx+" Y"+yy+"!  Seed: " + map.Rand.FirstSeed);
+                        Console.WriteLine($"Detected orphaned tile at X{xx} Y{yy}!  Seed: {map.Rand.FirstSeed}");
                         return;
 #endif
                     }
