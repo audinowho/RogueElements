@@ -1,19 +1,11 @@
 language: csharp
 solution: RogueElements.sln
-matrix:
-  include:
-    - mono: none
-      dotnet: 2.2.0
-      install:
-        - dotnet restore
-      script:
-        - dotnet build
-        - dotnet test
-    - mono: 
-        - latest
-      install:
-        - nuget restore solution-name.sln
-        - nuget install NUnit.Console -Version 3.10.0 -OutputDirectory testrunner
-      script:
-        - msbuild /p:Configuration=Release RogueElements.sln
-        - mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe ./RogueElements.Tests/bin/Release/RogueElements.Tests.dll
+dotnet: 2.2
+mono: none
+
+install:
+  - dotnet restore
+
+script:
+  - dotnet build
+  - dotnet test
