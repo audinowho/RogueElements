@@ -205,7 +205,7 @@ namespace RogueElements
             return room;
         }
 
-        private protected static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo)
+        protected static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo)
         {
             bool vertical = expandTo.ToAxis() == Axis4.Vert;
 
@@ -273,7 +273,7 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
         /// <returns>All possible RoomHallIndex that can receive an expansion.</returns>
-        private protected static List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
+        protected static List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
         {
             List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)

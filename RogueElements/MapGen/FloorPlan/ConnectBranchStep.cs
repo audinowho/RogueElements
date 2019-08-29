@@ -73,7 +73,7 @@ namespace RogueElements
             }
         }
 
-        private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
+        protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
         {
             List<ListPathTraversalNode> endBranches = new List<ListPathTraversalNode>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
