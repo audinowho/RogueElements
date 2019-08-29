@@ -1,29 +1,42 @@
-﻿using System;
+﻿// <copyright file="RandomRoomSpawnStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class RandomRoomSpawnStep<T, E> : RoomSpawnStep<T, E>
-        where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public class RandomRoomSpawnStep<TGenContext, TSpawnable> : RoomSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public bool IncludeHalls;
-        public RandomRoomSpawnStep() { }
-        public RandomRoomSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
-        public RandomRoomSpawnStep(IStepSpawner<T, E> spawn, bool includeHalls) : base(spawn) { IncludeHalls = includeHalls; }
-
-        public override void DistributeSpawns(T map, List<E> spawns)
+        public RandomRoomSpawnStep()
+            : base()
         {
-            //random per room, not per-tile
+        }
 
-            SpawnList<RoomHallIndex> spawningRooms = new SpawnList<RoomHallIndex>();
+        public RandomRoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, bool includeHalls = false)
+            : base(spawn)
+        {
+            this.IncludeHalls = includeHalls;
+        }
+
+        public bool IncludeHalls { get; set; }
+
+        public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
+        {
+            // random per room, not per-tile
+            var spawningRooms = new SpawnList<RoomHallIndex>();
 
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 spawningRooms.Add(new RoomHallIndex(ii, false));
             }
-            if (IncludeHalls)
+
+            if (this.IncludeHalls)
             {
                 for (int ii = 0; ii < map.RoomPlan.HallCount; ii++)
                 {
@@ -31,7 +44,7 @@ namespace RogueElements
                 }
             }
 
-            SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
+            this.SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
         }
     }
 }

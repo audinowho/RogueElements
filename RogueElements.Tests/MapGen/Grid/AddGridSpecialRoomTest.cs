@@ -1,30 +1,36 @@
-﻿using System;
+﻿// <copyright file="AddGridSpecialRoomTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
+    // place on a floor with two normal rooms
     [TestFixture]
     public class AddGridSpecialRoomTest
     {
-        //place on a floor with two normal rooms
-
         [Test]
         [TestCase(0, 0)]
         [TestCase(1, 2)]
         [TestCase(2, 4)]
         public void PlaceRoom(int roll, int expectedChosen)
         {
-            //verify rand is working
-            //place on a floor where the first room is immutable
-            //place on a floor where the first room is default
-            string[] inGrid = { "0.0.0.0.0.0.0",
-                                ". . . . . . .",
-                                "0.A#B#C#D#E.0",
-                                ". . . . . . .",
-                                "0.0.0.0.0.0.0"};
-
+            // verify rand is working
+            // place on a floor where the first room is immutable
+            // place on a floor where the first room is default
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0",
+                ". . . . . . .",
+                "0.A#B#C#D#E.0",
+                ". . . . . . .",
+                "0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
@@ -36,12 +42,14 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3)).Returns(roll);
 
-            AddGridSpecialRoomStep<IGridPathTestContext> pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>();
-            pathGen.Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>());
+            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            {
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
+            };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(5));
             for (int ii = 0; ii < 5; ii++)
             {
@@ -55,15 +63,17 @@ namespace RogueElements.Tests
         [Test]
         public void PlaceRoomImpossible()
         {
-            //verify rand is working
-            //place on a floor where the first room is immutable
-            //place on a floor where the first room is default
-            string[] inGrid = { "0.0.0.0.0",
-                                ". . . . .",
-                                "0.A#B#C.0",
-                                ". . . . .",
-                                "0.0.0.0.0"};
-
+            // verify rand is working
+            // place on a floor where the first room is immutable
+            // place on a floor where the first room is default
+            string[] inGrid =
+            {
+                "0.0.0.0.0",
+                ". . . . .",
+                "0.A#B#C.0",
+                ". . . . .",
+                "0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(0);
@@ -75,12 +85,14 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            AddGridSpecialRoomStep<IGridPathTestContext> pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>();
-            pathGen.Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>());
+            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            {
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
+            };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
-            //check the rooms
+            // check the rooms
             Assert.That(floorPlan.RoomCount, Is.EqualTo(3));
             for (int ii = 0; ii < 3; ii++)
             {

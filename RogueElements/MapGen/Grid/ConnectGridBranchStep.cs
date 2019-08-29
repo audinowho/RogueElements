@@ -1,24 +1,31 @@
-﻿using System;
+﻿// <copyright file="ConnectGridBranchStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class ConnectGridBranchStep<T> : GridPlanStep<T> where T : class, IRoomGridGenContext
+    public class ConnectGridBranchStep<T> : GridPlanStep<T>
+        where T : class, IRoomGridGenContext
     {
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls;
-        public int ConnectPercent;
-
         public ConnectGridBranchStep()
         {
-            GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
+            this.GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
         }
 
         public ConnectGridBranchStep(int connectPercent)
             : this()
         {
-            ConnectPercent = connectPercent;
+            this.ConnectPercent = connectPercent;
         }
+
+        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+
+        public int ConnectPercent { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
@@ -48,7 +55,9 @@ namespace RogueElements
                         if (dir != chosenBranch.Dir)
                         {
                             if (floorPlan.GetHall(new LocRay4(chosenBranch.Loc, dir)) != null)
+                            {
                                 connectors.Add(new LocRay4(chosenBranch.Loc, dir));
+                            }
                             else
                             {
                                 Loc loc = chosenBranch.Loc + dir.GetLoc();
@@ -67,31 +76,37 @@ namespace RogueElements
                             chosenBranch = new LocRay4(new Loc(-1));
                         }
                         else
+                        {
                             chosenBranch = new LocRay4(connectors[0].Traverse(1), connectors[0].Dir.Reverse());
+                        }
                     }
                     else
+                    {
                         chosenBranch = new LocRay4(new Loc(-1));
+                    }
                 }
             }
 
-            //compute a goal amount of terminals to connect
-            //this computation ignores the fact that some terminals may be impossible
-            RandBinomial randBin = new RandBinomial(candBranchPoints.Count, ConnectPercent);
+            // compute a goal amount of terminals to connect
+            // this computation ignores the fact that some terminals may be impossible
+            var randBin = new RandBinomial(candBranchPoints.Count, this.ConnectPercent);
             int connectionsLeft = randBin.Pick(rand);
 
             while (candBranchPoints.Count > 0 && connectionsLeft > 0)
             {
-                //choose random point to connect
+                // choose random point to connect
                 int randIndex = rand.Next(candBranchPoints.Count);
                 List<LocRay4> candBonds = candBranchPoints[randIndex];
                 LocRay4 chosenDir = candBonds[rand.Next(candBonds.Count)];
-                //connect
-                floorPlan.SetHall(chosenDir, GenericHalls.Pick(rand));
+
+                // connect
+                floorPlan.SetHall(chosenDir, this.GenericHalls.Pick(rand));
                 candBranchPoints.RemoveAt(randIndex);
                 GenContextDebug.DebugProgress("Connected Branch");
                 connectionsLeft--;
-                //check to see if connection destination was also a candidate,
-                //counting this as a double if so
+
+                // check to see if connection destination was also a candidate,
+                // counting this as a double if so
                 for (int ii = candBranchPoints.Count - 1; ii >= 0; ii--)
                 {
                     if (candBranchPoints[ii][0].Loc == chosenDir.Traverse(1))
@@ -101,9 +116,6 @@ namespace RogueElements
                     }
                 }
             }
-
         }
-
-
     }
 }

@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="CollisionTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -21,7 +26,7 @@ namespace RogueElements.Tests
         [TestCase(9, 10, Dir8.DownRight, 10, false)]
         [TestCase(9, 10, Dir8.Down, 10, false)]
         [TestCase(0, 0, (Dir8)(-2), 0, false, true)]
-        [TestCase(0, 0, (Dir8)(8), 0, false, true)]
+        [TestCase(0, 0, (Dir8)8, 0, false, true)]
         public void InFront(int testX, int testY, Dir8 dir, int range, bool expected, bool exception = false)
         {
             if (exception)
@@ -29,7 +34,6 @@ namespace RogueElements.Tests
             else
                 Assert.That(Collision.InFront(new Loc(testX, testY), dir, range), Is.EqualTo(expected));
         }
-
 
         [Test]
         [TestCase(2, 4, 4, 4, true)]
@@ -41,8 +45,6 @@ namespace RogueElements.Tests
         {
             Assert.That(Collision.Collides(start1, size1, start2, size2), Is.EqualTo(expected));
         }
-
-        
 
         [Test]
         [TestCase(5, 0, true)]
@@ -57,6 +59,5 @@ namespace RogueElements.Tests
         {
             Assert.That(Collision.InBounds(size, pt), Is.EqualTo(expected));
         }
-
     }
 }

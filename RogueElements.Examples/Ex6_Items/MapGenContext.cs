@@ -1,146 +1,147 @@
-﻿using System;
+﻿// <copyright file="MapGenContext.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RogueElements;
 
 namespace RogueElements.Examples.Ex6_Items
 {
-
-    public class MapGenContext : ITiledGenContext, IRoomGridGenContext,
+    public class MapGenContext : BaseMapGenContext<Map>, IRoomGridGenContext,
         IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>,
         IPlaceableGenContext<Item>, IPlaceableGenContext<Mob>
     {
-        public Map Map { get; set; }
-
-        public ITile RoomTerrain { get { return new Tile(Map.ROOM_TERRAIN_ID); } }
-        public ITile WallTerrain { get { return new Tile(Map.WALL_TERRAIN_ID); } }
-
-        public ITile GetTile(Loc loc) { return Map.Tiles[loc.X][loc.Y]; }
-        public bool CanSetTile(Loc loc, ITile tile)
-        {
-            for (int ii = 0; ii < GenEntrances.Count; ii++)
-            {
-                if (GenEntrances[ii].Loc == loc)
-                    return false;
-            }
-            for (int ii = 0; ii < GenExits.Count; ii++)
-            {
-                if (GenExits[ii].Loc == loc)
-                    return false;
-            }
-            return true;
-        }
-        public bool TrySetTile(Loc loc, ITile tile)
-        {
-            if (!CanSetTile(loc, tile)) return false;
-            Map.Tiles[loc.X][loc.Y] = (Tile)tile;
-            return true;
-        }
-        public void SetTile(Loc loc, ITile tile)
-        {
-            if (!TrySetTile(loc, tile))
-                throw new InvalidOperationException("Can't place tile!");
-        }
-        public bool TilesInitialized { get { return Map.Tiles != null; } }
-
-        public int Width { get { return Map.Width; } }
-        public int Height { get { return Map.Height; } }
-
-        public List<StairsUp> GenEntrances {  get { return Map.GenEntrances; } }
-        public List<StairsDown> GenExits { get { return Map.GenExits; } }
-
-        public IRandom Rand { get { return Map.Rand; } }
-
         public MapGenContext()
+            : base()
         {
-            Map = new Map();
-        }
-        
-        public void InitSeed(ulong seed)
-        {
-            Map.Rand = new ReRandom(seed);
         }
 
-        bool ITiledGenContext.TileBlocked(Loc loc)
-        {
-            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
-        }
-
-        bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
-        {
-            return Map.Tiles[loc.X][loc.Y].ID == Map.WALL_TERRAIN_ID;
-        }
-
-
-        public virtual void CreateNew(int width, int height)
-        {
-            Map.InitializeTiles(width, height);
-        }
-
-
-        public void FinishGen() { }
-
-
-        public void InitPlan(FloorPlan plan)
-        {
-            RoomPlan = plan;
-        }
+        protected delegate List<Loc> GetOpen(Rect rect);
 
         public FloorPlan RoomPlan { get; private set; }
 
+        public GridPlan GridPlan { get; private set; }
+
+        public List<StairsUp> GenEntrances => this.Map.GenEntrances;
+
+        public List<StairsDown> GenExits => this.Map.GenExits;
+
+        int IViewPlaceableGenContext<StairsUp>.Count => this.GenEntrances.Count;
+
+        int IViewPlaceableGenContext<StairsDown>.Count => this.GenExits.Count;
+
+        public override bool CanSetTile(Loc loc, ITile tile)
+        {
+            for (int ii = 0; ii < this.GenEntrances.Count; ii++)
+            {
+                if (this.GenEntrances[ii].Loc == loc)
+                    return false;
+            }
+
+            for (int ii = 0; ii < this.GenExits.Count; ii++)
+            {
+                if (this.GenExits[ii].Loc == loc)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void InitPlan(FloorPlan plan)
+        {
+            this.RoomPlan = plan;
+        }
 
         public void InitGrid(GridPlan plan)
         {
-            GridPlan = plan;
-        }
-        public GridPlan GridPlan { get; private set; }
-
-
-
-
-        List<Loc> IPlaceableGenContext<Item>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
-        List<Loc> IPlaceableGenContext<Mob>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
-        List<Loc> IPlaceableGenContext<StairsUp>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
-        List<Loc> IPlaceableGenContext<StairsDown>.GetAllFreeTiles() { return getAllFreeTiles(getOpenTiles); }
-
-
-        protected delegate List<Loc> getOpen(Rect rect);
-        protected virtual List<Loc> getAllFreeTiles(getOpen func)
-        {
-            return func(new Rect(0, 0, Width, Height));
+            this.GridPlan = plan;
         }
 
-        List<Loc> IPlaceableGenContext<Item>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
-        List<Loc> IPlaceableGenContext<Mob>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
-        List<Loc> IPlaceableGenContext<StairsUp>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
-        List<Loc> IPlaceableGenContext<StairsDown>.GetFreeTiles(Rect rect) { return getOpenTiles(rect); }
+        List<Loc> IPlaceableGenContext<Item>.GetAllFreeTiles() => this.GetAllFreeTiles(this.GetOpenTiles);
 
-        protected List<Loc> getOpenTiles(Rect rect)
+        List<Loc> IPlaceableGenContext<Mob>.GetAllFreeTiles() => this.GetAllFreeTiles(this.GetOpenTiles);
+
+        List<Loc> IPlaceableGenContext<StairsUp>.GetAllFreeTiles() => this.GetAllFreeTiles(this.GetOpenTiles);
+
+        List<Loc> IPlaceableGenContext<StairsDown>.GetAllFreeTiles() => this.GetAllFreeTiles(this.GetOpenTiles);
+
+        List<Loc> IPlaceableGenContext<Item>.GetFreeTiles(Rect rect) => this.GetOpenTiles(rect);
+
+        List<Loc> IPlaceableGenContext<Mob>.GetFreeTiles(Rect rect) => this.GetOpenTiles(rect);
+
+        List<Loc> IPlaceableGenContext<StairsUp>.GetFreeTiles(Rect rect) => this.GetOpenTiles(rect);
+
+        List<Loc> IPlaceableGenContext<StairsDown>.GetFreeTiles(Rect rect) => this.GetOpenTiles(rect);
+
+        bool IPlaceableGenContext<Item>.CanPlaceItem(Loc loc) => !this.IsTileOccupied(loc);
+
+        bool IPlaceableGenContext<Mob>.CanPlaceItem(Loc loc) => !this.IsTileOccupied(loc);
+
+        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) => !this.IsTileOccupied(loc);
+
+        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) => !this.IsTileOccupied(loc);
+
+        void IPlaceableGenContext<Item>.PlaceItem(Loc loc, Item item)
         {
-            Grid.LocTest checkOp = (Loc loc) =>
-            {
-                return !isTileOccupied(loc);
-            };
-
-            return Grid.FindTilesInBox(rect.Start, rect.Size, checkOp);
+            Item newItem = new Item(item.ID, loc);
+            this.Map.Items.Add(newItem);
         }
 
-        bool IPlaceableGenContext<Item>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
-        bool IPlaceableGenContext<Mob>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
-        bool IPlaceableGenContext<StairsUp>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
-        bool IPlaceableGenContext<StairsDown>.CanPlaceItem(Loc loc) { return !isTileOccupied(loc); }
-
-        private bool isTileOccupied(Loc loc)
+        void IPlaceableGenContext<Mob>.PlaceItem(Loc loc, Mob item)
         {
-            if (Map.Tiles[loc.X][loc.Y].ID != Map.ROOM_TERRAIN_ID)
+            Mob newItem = new Mob(item.ID, loc);
+            this.Map.Mobs.Add(newItem);
+        }
+
+        void IPlaceableGenContext<StairsUp>.PlaceItem(Loc loc, StairsUp item)
+        {
+            var stairs = (StairsUp)item.Copy();
+            stairs.Loc = loc;
+            this.GenEntrances.Add(stairs);
+        }
+
+        void IPlaceableGenContext<StairsDown>.PlaceItem(Loc loc, StairsDown item)
+        {
+            var stairs = (StairsDown)item.Copy();
+            stairs.Loc = loc;
+            this.GenExits.Add(stairs);
+        }
+
+        StairsUp IViewPlaceableGenContext<StairsUp>.GetItem(int index) => this.GenEntrances[index];
+
+        Loc IViewPlaceableGenContext<StairsUp>.GetLoc(int index) => this.GenEntrances[index].Loc;
+
+        StairsDown IViewPlaceableGenContext<StairsDown>.GetItem(int index) => this.GenExits[index];
+
+        Loc IViewPlaceableGenContext<StairsDown>.GetLoc(int index) => this.GenExits[index].Loc;
+
+        protected virtual List<Loc> GetAllFreeTiles(GetOpen func)
+        {
+            return func?.Invoke(new Rect(0, 0, this.Width, this.Height));
+        }
+
+        protected List<Loc> GetOpenTiles(Rect rect)
+        {
+            bool CheckOp(Loc loc) => !this.IsTileOccupied(loc);
+
+            return Grid.FindTilesInBox(rect.Start, rect.Size, CheckOp);
+        }
+
+        private bool IsTileOccupied(Loc loc)
+        {
+            if (this.Map.Tiles[loc.X][loc.Y].ID != Map.ROOM_TERRAIN_ID)
                 return true;
 
-            foreach (Item item in Map.Items)
+            foreach (Item item in this.Map.Items)
             {
                 if (item.Loc == loc)
                     return true;
             }
-            foreach (Mob item in Map.Mobs)
+
+            foreach (Mob item in this.Map.Mobs)
             {
                 if (item.Loc == loc)
                     return true;
@@ -148,39 +149,5 @@ namespace RogueElements.Examples.Ex6_Items
 
             return false;
         }
-
-
-        void IPlaceableGenContext<Item>.PlaceItem(Loc loc, Item item)
-        {
-            Item newItem = new Item(item.ID, loc);
-            Map.Items.Add(newItem);
-        }
-        void IPlaceableGenContext<Mob>.PlaceItem(Loc loc, Mob item)
-        {
-            Mob newItem = new Mob(item.ID, loc);
-            Map.Mobs.Add(newItem);
-        }
-        void IPlaceableGenContext<StairsUp>.PlaceItem(Loc loc, StairsUp item)
-        {
-            StairsUp stairs = (StairsUp)item.Copy();
-            stairs.Loc = loc;
-            GenEntrances.Add(stairs);
-        }
-        void IPlaceableGenContext<StairsDown>.PlaceItem(Loc loc, StairsDown item)
-        {
-            StairsDown stairs = (StairsDown)item.Copy();
-            stairs.Loc = loc;
-            GenExits.Add(stairs);
-        }
-
-
-        int IViewPlaceableGenContext<StairsUp>.Count { get { return GenEntrances.Count; } }
-        StairsUp IViewPlaceableGenContext<StairsUp>.GetItem(int index) { return GenEntrances[index]; }
-        Loc IViewPlaceableGenContext<StairsUp>.GetLoc(int index) { return GenEntrances[index].Loc; }
-
-        int IViewPlaceableGenContext<StairsDown>.Count { get { return GenExits.Count; } }
-        StairsDown IViewPlaceableGenContext<StairsDown>.GetItem(int index) { return GenExits[index]; }
-        Loc IViewPlaceableGenContext<StairsDown>.GetLoc(int index) { return GenExits[index].Loc; }
-
     }
 }

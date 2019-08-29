@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="BaseSpawnStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
@@ -7,29 +12,35 @@ namespace RogueElements
     /// Spawns objects of type E to IPlaceableGenContext T.
     /// Child classes offer a different way to place the list of spawns provided by Spawn.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public abstract class BaseSpawnStep<T, E> : GenStep<T>
-        where T : class, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public abstract class BaseSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public IStepSpawner<T, E> Spawn;
-
-        public BaseSpawnStep() { }
-        public BaseSpawnStep(IStepSpawner<T, E> spawn)
+        protected BaseSpawnStep()
         {
-            Spawn = spawn;
         }
 
-        public abstract void DistributeSpawns(T map, List<E> spawns);
-
-        public override void Apply(T map)
+        protected BaseSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
         {
-            List<E> spawns = Spawn.GetSpawns(map);
+            this.Spawn = spawn;
+        }
+
+        public IStepSpawner<TGenContext, TSpawnable> Spawn { get; set; }
+
+        public abstract void DistributeSpawns(TGenContext map, List<TSpawnable> spawns);
+
+        public override void Apply(TGenContext map)
+        {
+            if (this.Spawn is null)
+                return;
+
+            List<TSpawnable> spawns = this.Spawn.GetSpawns(map);
 
             if (spawns.Count > 0)
-                DistributeSpawns(map, spawns);
+                this.DistributeSpawns(map, spawns);
         }
     }
 }

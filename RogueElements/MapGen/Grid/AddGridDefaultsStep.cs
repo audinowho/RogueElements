@@ -1,21 +1,27 @@
-﻿using System;
+﻿// <copyright file="AddGridDefaultsStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class AddGridDefaultsStep<T> : GridPlanStep<T> where T : class, IRoomGridGenContext
+    public class AddGridDefaultsStep<T> : GridPlanStep<T>
+        where T : class, IRoomGridGenContext
     {
-
-        public RandRange DefaultRatio;
-
         public AddGridDefaultsStep()
-        { }
+        {
+        }
 
         public AddGridDefaultsStep(RandRange defaultRatio)
         {
-            DefaultRatio = defaultRatio;
+            this.DefaultRatio = defaultRatio;
         }
+
+        public RandRange DefaultRatio { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
@@ -29,8 +35,9 @@ namespace RogueElements
                         candidates.Add(ii);
                 }
             }
-            //our candidates are all rooms except immutables and terminals
-            int amountToDefault = DefaultRatio.Pick(rand) * candidates.Count / 100;
+
+            // our candidates are all rooms except immutables and terminals
+            int amountToDefault = this.DefaultRatio.Pick(rand) * candidates.Count / 100;
             for (int ii = 0; ii < amountToDefault; ii++)
             {
                 int randIndex = rand.Next(candidates.Count);
@@ -41,7 +48,5 @@ namespace RogueElements
                 GenContextDebug.DebugProgress("Defaulted Room");
             }
         }
-
-        
     }
 }

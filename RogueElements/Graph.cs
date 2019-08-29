@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Graph.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +13,7 @@ namespace RogueElements
     public static class Graph
     {
         public delegate List<int> GetAdjacents(int nodeIndex);
+
         public delegate void DistNodeAction(int nodeIndex, int distance);
 
         /// <summary>
@@ -19,6 +25,11 @@ namespace RogueElements
         /// <param name="getAdjacents"></param>
         public static void TraverseBreadthFirst(int count, int start, DistNodeAction nodeAct, GetAdjacents getAdjacents)
         {
+            if (nodeAct == null)
+                throw new ArgumentNullException(nameof(nodeAct));
+            if (getAdjacents == null)
+                throw new ArgumentNullException(nameof(getAdjacents));
+
             int[] found = new int[count];
             for (int ii = 0; ii < found.Length; ii++)
                 found[ii] = -1;
@@ -27,11 +38,13 @@ namespace RogueElements
             found[start] = 0;
             while (toExplore.Count > 0)
             {
-                //take a node
+                // take a node
                 int node = toExplore.Dequeue();
-                //act on node
+
+                // act on node
                 nodeAct(node, found[node]);
-                //add adjacents to the END of queue
+
+                // add adjacents to the END of queue
                 List<int> adjacents = getAdjacents(node);
                 for (int ii = 0; ii < adjacents.Count; ii++)
                 {
@@ -39,11 +52,10 @@ namespace RogueElements
                     if (found[adjacent] == -1)
                     {
                         toExplore.Enqueue(adjacent);
-                        found[adjacent] = found[node]+1;
+                        found[adjacent] = found[node] + 1;
                     }
                 }
             }
         }
-        
     }
 }

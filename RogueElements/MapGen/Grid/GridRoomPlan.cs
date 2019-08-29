@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="GridRoomPlan.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 
 namespace RogueElements
@@ -6,25 +10,28 @@ namespace RogueElements
     /// <summary>
     /// Contains data about which cells a room occupies in a GridFloorPlan.
     /// </summary>
+    [Serializable]
     public class GridRoomPlan
     {
-        public Rect Bounds;
-        public bool Immutable;
-        public bool PreferHall;
-        public IRoomGen RoomGen;
-
         public GridRoomPlan(Rect bounds, IRoomGen roomGen)
         {
-            Bounds = bounds;
-            RoomGen = roomGen;
+            this.Bounds = bounds;
+            this.RoomGen = roomGen;
         }
+
+        public Rect Bounds { get; set; }
+
+        public bool Immutable { get; set; }
+
+        public bool PreferHall { get; set; }
+
+        public IRoomGen RoomGen { get; set; }
 
         public bool CountsAsHall()
         {
-            if (!PreferHall)
+            if (!this.PreferHall)
                 return false;
-            return RoomGen is IPermissiveRoomGen;
+            return this.RoomGen is IPermissiveRoomGen;
         }
     }
-    
 }

@@ -1,6 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// <copyright file="IRandPicker.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -20,14 +25,12 @@ namespace RogueElements
         /// </summary>
         bool CanPick { get; }
 
-
         /// <summary>
         /// Randomly generates an item of type T.
         /// </summary>
         /// <param name="rand"></param>
         /// <returns></returns>
         T Pick(IRandom rand);
-
 
         /// <summary>
         /// Returns a IRandPicker of the same state as this instance.
@@ -36,5 +39,4 @@ namespace RogueElements
         /// <returns></returns>
         IRandPicker<T> CopyState();
     }
-    
 }

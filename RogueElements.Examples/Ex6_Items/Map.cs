@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Map.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,43 +11,22 @@ using RogueElements;
 
 namespace RogueElements.Examples.Ex6_Items
 {
-
-    public class Map
+    public class Map : BaseMap
     {
-        public const int WALL_TERRAIN_ID = 0;
-        public const int ROOM_TERRAIN_ID = 1;
-
-        public ReRandom Rand;
-
-        public Tile[][] Tiles;
-        
-        public int Width { get { return Tiles.Length; } }
-        public int Height { get { return Tiles[0].Length; } }
-
-        public List<StairsUp> GenEntrances;
-        public List<StairsDown> GenExits;
-        public List<Item> Items;
-        public List<Mob> Mobs;
-
         public Map()
         {
-            GenEntrances = new List<StairsUp>();
-            GenExits = new List<StairsDown>();
-            Items = new List<Item>();
-            Mobs = new List<Mob>();
+            this.GenEntrances = new List<StairsUp>();
+            this.GenExits = new List<StairsDown>();
+            this.Items = new List<Item>();
+            this.Mobs = new List<Mob>();
         }
 
-        public void InitializeTiles(int width, int height)
-        {
-            Tiles = new Tile[width][];
-            for (int ii = 0; ii < width; ii++)
-            {
-                Tiles[ii] = new Tile[height];
-                for (int jj = 0; jj < height; jj++)
-                    Tiles[ii][jj] = new Tile();
-            }
-        }
+        public List<StairsUp> GenEntrances { get; set; }
 
+        public List<StairsDown> GenExits { get; set; }
 
+        public List<Item> Items { get; set; }
+
+        public List<Mob> Mobs { get; set; }
     }
 }

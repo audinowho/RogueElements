@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="RoomHallIndex.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -10,20 +15,9 @@ namespace RogueElements
 
         public RoomHallIndex(int index, bool isHall)
         {
-            Index = index;
-            IsHall = isHall;
+            this.Index = index;
+            this.IsHall = isHall;
         }
-
-        public override bool Equals(object obj)
-        {
-            return (obj is RoomHallIndex) && Equals((RoomHallIndex)obj);
-        }
-
-        public bool Equals(RoomHallIndex other)
-        {
-            return (IsHall == other.IsHall && Index == other.Index);
-        }
-
 
         public static bool operator ==(RoomHallIndex value1, RoomHallIndex value2)
         {
@@ -35,9 +29,19 @@ namespace RogueElements
             return !(value1 == value2);
         }
 
+        public override bool Equals(object obj)
+        {
+            return (obj is RoomHallIndex) && this.Equals((RoomHallIndex)obj);
+        }
+
+        public bool Equals(RoomHallIndex other)
+        {
+            return this.IsHall == other.IsHall && this.Index == other.Index;
+        }
+
         public override int GetHashCode()
         {
-            return IsHall.GetHashCode() ^ Index.GetHashCode();
+            return this.IsHall.GetHashCode() ^ this.Index.GetHashCode();
         }
     }
 }

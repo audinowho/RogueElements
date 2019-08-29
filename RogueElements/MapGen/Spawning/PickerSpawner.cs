@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="PickerSpawner.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
@@ -6,31 +11,35 @@ namespace RogueElements
     /// <summary>
     /// Geenrates spawnables from a specifically defined IMultiRandPicker.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class PickerSpawner<T, E> : IStepSpawner<T, E> 
-        where T : IGenContext
-        where E : ISpawnable
+    public class PickerSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+        where TGenContext : IGenContext
+        where TSpawnable : ISpawnable
     {
-        public IMultiRandPicker<E> Picker;
-
-        public PickerSpawner() { }
-
-        public PickerSpawner(IMultiRandPicker<E> picker)
+        public PickerSpawner()
         {
-            Picker = picker;
         }
 
-        public List<E> GetSpawns(T map)
+        public PickerSpawner(IMultiRandPicker<TSpawnable> picker)
         {
-            IMultiRandPicker<E> picker = Picker;
+            this.Picker = picker;
+        }
+
+        public IMultiRandPicker<TSpawnable> Picker { get; set; }
+
+        public List<TSpawnable> GetSpawns(TGenContext map)
+        {
+            if (this.Picker is null)
+                return new List<TSpawnable>();
+            IMultiRandPicker<TSpawnable> picker = this.Picker;
             if (picker.ChangesState)
                 picker = picker.CopyState();
-            List<E> results = picker.Roll(map.Rand);
-            List<E> copyResults = new List<E>();
-            foreach (E result in results)
-                copyResults.Add((E)result.Copy());
+            List<TSpawnable> results = picker.Roll(map.Rand);
+            var copyResults = new List<TSpawnable>();
+            foreach (TSpawnable result in results)
+                copyResults.Add((TSpawnable)result.Copy());
             return copyResults;
         }
     }
