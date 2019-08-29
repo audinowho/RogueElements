@@ -1,66 +1,69 @@
-﻿using System;
+﻿// <copyright file="StairsStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class StairsStep<T, E, F> : GenStep<T>
-        where T : class, IPlaceableGenContext<E>, IPlaceableGenContext<F>
-        where E : IEntrance
-        where F : IExit
+    public class StairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+        where TEntrance : IEntrance
+        where TExit : IExit
     {
-        public List<E> Entrance;
-        public List<F> Exit;
-
         public StairsStep()
         {
-            Entrance = new List<E>();
-            Exit = new List<F>();
-        }
-        
-        public StairsStep(E entrance, F exit) : this()
-        {
-            Entrance.Add(entrance);
-            Exit.Add(exit);
+            this.Entrance = new List<TEntrance>();
+            this.Exit = new List<TExit>();
         }
 
-        public override void Apply(T map)
+        public StairsStep(TEntrance entrance, TExit exit)
         {
+            this.Entrance = new List<TEntrance> { entrance };
+            this.Exit = new List<TExit> { exit };
+        }
 
-            Loc defaultLoc = new Loc();
+        public List<TEntrance> Entrance { get; }
 
-            for (int ii = 0; ii < Entrance.Count; ii++)
+        public List<TExit> Exit { get; }
+
+        public override void Apply(TGenContext map)
+        {
+            Loc defaultLoc = Loc.Zero;
+
+            for (int ii = 0; ii < this.Entrance.Count; ii++)
             {
-                Loc start = getOutlet<E>(map);
+                Loc start = GetOutlet<TEntrance>(map);
                 if (start == new Loc(-1))
                     start = defaultLoc;
                 else
                     defaultLoc = start;
-                ((IPlaceableGenContext<E>)map).PlaceItem(start, Entrance[ii]);
-                GenContextDebug.DebugProgress("Entrance");
+                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.Entrance[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Entrance));
             }
 
-            for (int ii = 0; ii < Exit.Count; ii++)
+            for (int ii = 0; ii < this.Exit.Count; ii++)
             {
-                Loc end = getOutlet<F>(map);
+                Loc end = GetOutlet<TExit>(map);
                 if (end == new Loc(-1))
                     end = defaultLoc;
-                ((IPlaceableGenContext<F>)map).PlaceItem(end, Exit[ii]);
-                GenContextDebug.DebugProgress("Exit");
+                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.Exit[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Exit));
             }
         }
 
-
-        private Loc getOutlet<N>(T map)
-            where N : ISpawnable
+        private static Loc GetOutlet<T>(TGenContext map)
+            where T : ISpawnable
         {
-            List<Loc> tiles = ((IPlaceableGenContext<N>)map).GetAllFreeTiles();
+            List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetAllFreeTiles();
 
             if (tiles.Count > 0)
                 return tiles[map.Rand.Next(tiles.Count)];
 
-            return new Loc(-1);
+            return -Loc.One;
         }
-
     }
 }

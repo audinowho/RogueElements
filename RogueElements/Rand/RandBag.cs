@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="RandBag.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,44 +16,54 @@ namespace RogueElements
     [Serializable]
     public class RandBag<T> : IRandPicker<T>
     {
+        public RandBag()
+        {
+            this.ToSpawn = new List<T>();
+        }
+
+        public RandBag(params T[] toSpawn)
+        {
+            this.ToSpawn = new List<T>(toSpawn);
+        }
+
+        public RandBag(List<T> toSpawn)
+        {
+            this.ToSpawn = toSpawn;
+        }
+
+        protected RandBag(RandBag<T> other)
+        {
+            this.ToSpawn = new List<T>(other.ToSpawn);
+            this.RemoveOnRoll = other.RemoveOnRoll;
+        }
+
         /// <summary>
         /// The items to choose from.
         /// </summary>
-        public List<T> ToSpawn;
+        public List<T> ToSpawn { get; }
 
         /// <summary>
         /// False if this is a bag with replacement.  True if not.
         /// </summary>
-        public bool RemoveOnRoll;
+        public bool RemoveOnRoll { get; set; }
 
-        public bool ChangesState { get { return RemoveOnRoll; } }
-        public bool CanPick { get { return ToSpawn.Count > 0; } }
+        public bool ChangesState => this.RemoveOnRoll;
 
-        public RandBag() { ToSpawn = new List<T>(); }
-        public RandBag(params T[] toSpawn) : this() { ToSpawn.AddRange(toSpawn); }
-        public RandBag(List<T> toSpawn) { ToSpawn = toSpawn; }
-        protected RandBag(RandBag<T> other) : this()
-        {
-            ToSpawn.AddRange(other.ToSpawn);
-            RemoveOnRoll = other.RemoveOnRoll;
-        }
-        public IRandPicker<T> CopyState() { return new RandBag<T>(this); }
+        public bool CanPick => this.ToSpawn.Count > 0;
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            foreach (T element in ToSpawn)
-                yield return element;
-        }
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        public IRandPicker<T> CopyState() => new RandBag<T>(this);
+
+        public IEnumerator<T> GetEnumerator() => this.ToSpawn.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public T Pick(IRandom rand)
         {
-            int index = rand.Next(ToSpawn.Count);
-            T choice = ToSpawn[index];
-            if (RemoveOnRoll)
-                ToSpawn.RemoveAt(index);
+            int index = rand.Next(this.ToSpawn.Count);
+            T choice = this.ToSpawn[index];
+            if (this.RemoveOnRoll)
+                this.ToSpawn.RemoveAt(index);
             return choice;
         }
     }
-    
 }

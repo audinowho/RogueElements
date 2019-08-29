@@ -1,7 +1,12 @@
-﻿using System;
+﻿// <copyright file="GridPathBranchTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
@@ -13,16 +18,18 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsAlone(bool branch)
         {
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.A.0",
-                                ". . .",
-                                "0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.A.0",
+                ". . .",
+                "0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -40,25 +47,27 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsDouble(bool branch)
         {
-            string[] inGrid = { "0.0.0.0",
-                                ". . . .",
-                                "0.A#B.0",
-                                ". . . .",
-                                "0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.A#B.0",
+                ". . . .",
+                "0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
                 compare.Add(new LocRay4(new Loc(1), Dir4.Down));
                 compare.Add(new LocRay4(new Loc(1), Dir4.Left));
                 compare.Add(new LocRay4(new Loc(1), Dir4.Up));
-                compare.Add(new LocRay4(new Loc(2,1), Dir4.Down));
-                compare.Add(new LocRay4(new Loc(2,1), Dir4.Up));
-                compare.Add(new LocRay4(new Loc(2,1), Dir4.Right));
+                compare.Add(new LocRay4(new Loc(2, 1), Dir4.Down));
+                compare.Add(new LocRay4(new Loc(2, 1), Dir4.Up));
+                compare.Add(new LocRay4(new Loc(2, 1), Dir4.Right));
             }
 
             Assert.That(rays, Is.EqualTo(compare));
@@ -69,18 +78,20 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsAngle(bool branch)
         {
-            string[] inGrid = { "0.0.0.0",
-                                ". . . .",
-                                "0.0.C.0",
-                                ". . # .",
-                                "0.A#B.0",
-                                ". . . .",
-                                "0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.C.0",
+                ". . # .",
+                "0.A#B.0",
+                ". . . .",
+                "0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -105,16 +116,18 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsStraight(bool branch)
         {
-            string[] inGrid = { "0.0.0.0.0",
-                                ". . . . .",
-                                "0.A#B#C.0",
-                                ". . . . .",
-                                "0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0",
+                ". . . . .",
+                "0.A#B#C.0",
+                ". . . . .",
+                "0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -139,18 +152,20 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsT(bool branch)
         {
-            string[] inGrid = { "0.0.0.0.0",
-                                ". . . . .",
-                                "0.A#B#C.0",
-                                ". . # . .",
-                                "0.0.D.0.0",
-                                ". . . . .",
-                                "0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0",
+                ". . . . .",
+                "0.A#B#C.0",
+                ". . # . .",
+                "0.0.D.0.0",
+                ". . . . .",
+                "0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -177,16 +192,18 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsCorner(bool branch)
         {
-            string[] inGrid = { "A.0.0",
-                                ". . .",
-                                "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            string[] inGrid =
+            {
+                "A.0.0",
+                ". . .",
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -202,16 +219,18 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsAngleCorner(bool branch)
         {
-            string[] inGrid = { "B#C.0",
-                                "# . .",
-                                "A.0.0",
-                                ". . .",
-                                "0.0.0"};
+            string[] inGrid =
+            {
+                "B#C.0",
+                "# . .",
+                "A.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
             if (!branch)
             {
@@ -229,14 +248,16 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsUCorner(bool branch)
         {
-            string[] inGrid = { "A.D",
-                                "# #",
-                                "B#C"};
+            string[] inGrid =
+            {
+                "A.D",
+                "# #",
+                "B#C",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
 
             Assert.That(rays, Is.EqualTo(compare));
@@ -247,39 +268,45 @@ namespace RogueElements.Tests
         [TestCase(true)]
         public void GetPossibleExpansionsUNCorner(bool branch)
         {
-            string[] inGrid = { "A.D#E",
-                                "# # #",
-                                "B#C.F"};
+            string[] inGrid =
+            {
+                "A.D#E",
+                "# # #",
+                "B#C.F",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            List<LocRay4> rays = pathGen.GetPossibleExpansions(floorPlan, branch);
+            List<LocRay4> rays = GridPathBranch<IGridPathTestContext>.GetPossibleExpansions(floorPlan, branch);
             List<LocRay4> compare = new List<LocRay4>();
 
             Assert.That(rays, Is.EqualTo(compare));
         }
 
-
-
         [Test]
         public void CreatePath0Percent()
         {
-            string[] inGrid = { "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
 
-            string[] outGrid ={ "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0",
-                                ". . . .",
-                                "0.A.0.0",
-                                ". . . .",
-                                "0.0.0.0"};
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.A.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(4));
@@ -287,10 +314,12 @@ namespace RogueElements.Tests
             seq = seq.Returns(2);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
 
-            GridPathBranch<IGridPathTestContext> pathGen = new GridPathBranch<IGridPathTestContext>();
-            pathGen.RoomRatio = new RandRange(0);
-            pathGen.BranchRatio = new RandRange(0);
-            pathGen.NoForcedBranches = false;
+            var pathGen = new GridPathBranch<IGridPathTestContext>
+            {
+                RoomRatio = new RandRange(0),
+                BranchRatio = new RandRange(0),
+                NoForcedBranches = false,
+            };
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -308,7 +337,7 @@ namespace RogueElements.Tests
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
             testRand.Verify(p => p.Next(4), Times.Exactly(2));
-            //testRand.Verify(p => p.Next(1), Times.Exactly(2));
+
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Never);
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(1));
         }
@@ -316,18 +345,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath100Percent()
         {
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#C",
-                                ". . #",
-                                "F#E#D",
-                                "# . .",
-                                "G#H#I"};
-
+            string[] outGrid =
+            {
+                "A#B#C",
+                ". . #",
+                "F#E#D",
+                "# . .",
+                "G#H#I",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -339,7 +373,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
@@ -368,7 +402,7 @@ namespace RogueElements.Tests
             roomSeq = roomSeq.Returns(new TestGridRoomGen('H'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('I'));
             pathGen.Object.GenericRooms = mockRooms.Object;
-            
+
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -382,17 +416,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath50Percent()
         {
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#C",
-                                ". . #",
-                                "0.0.D",
-                                ". . .",
-                                "0.0.0"};
+            string[] outGrid =
+            {
+                "A#B#C",
+                ". . #",
+                "0.0.D",
+                ". . .",
+                "0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -404,7 +444,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(50);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
@@ -424,7 +464,6 @@ namespace RogueElements.Tests
             roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));
             pathGen.Object.GenericRooms = mockRooms.Object;
 
-
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -438,15 +477,21 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath100PercentNoFit()
         {
-            //a situation in which a no-branching path
-            //is forced to branch to make the room quota
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            // a situation in which a no-branching path
+            // is forced to branch to make the room quota
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#E",
-                                ". # #",
-                                "D#C.F"};
+            string[] outGrid =
+            {
+                "A#B#E",
+                ". # #",
+                "D#C.F",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -459,7 +504,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
@@ -471,8 +516,6 @@ namespace RogueElements.Tests
             pathSeq = pathSeq.Returns(new LocRay4(Dir4.None));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Down));
-            
-            
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -502,15 +545,20 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath100PercentNoFitCannotBranch()
         {
-            //cannot make branch quota after ten tries
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            // cannot make branch quota after ten tries
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
-            string[] outGrid ={ "A#B.0",
-                                ". # .",
-                                "D#C.0"};
-
+            string[] outGrid =
+            {
+                "A#B.0",
+                ". # .",
+                "D#C.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -521,7 +569,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = true;
@@ -533,7 +581,6 @@ namespace RogueElements.Tests
                 pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Left));
                 pathSeq = pathSeq.Returns(new LocRay4(Dir4.None));
             }
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -547,6 +594,7 @@ namespace RogueElements.Tests
                 roomSeq = roomSeq.Returns(new TestGridRoomGen('C'));
                 roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));
             }
+
             pathGen.Object.GenericRooms = mockRooms.Object;
 
             pathGen.Object.ApplyToPath(testRand.Object, floorPlan);
@@ -564,17 +612,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath0PercentBranch()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#C#D#E#F#G#H",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            string[] outGrid =
+            {
+                "A#B#C#D#E#F#G#H",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -587,7 +641,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(34, 34)).Returns(34);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(34);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
@@ -599,8 +653,6 @@ namespace RogueElements.Tests
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 0), Dir4.Right));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 0), Dir4.Right));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 0), Dir4.Right));
-
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -631,17 +683,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath50PercentBranch()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
-            string[] outGrid ={ "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "A#B#C#D#F#G#I#J",
-                                ". # # # . . . .",
-                                "0.E.H.K.0.0.0.0"};
+            string[] outGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "A#B#C#D#F#G#I#J",
+                ". # # # . . . .",
+                "0.E.H.K.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -654,7 +712,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
             testRand.Setup(p => p.Next(46, 46)).Returns(46);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(46);
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = true;
@@ -670,7 +728,6 @@ namespace RogueElements.Tests
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Right));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -705,18 +762,24 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath50PercentBranchExtend()
         {
-            //to confirm that newly made branches also count as terminals
-            string[] inGrid = { "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            // to confirm that newly made branches also count as terminals
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#C#D#G#J.0.0",
-                                ". # # # . . . .",
-                                "0.E.H.K.0.0.0.0",
-                                ". # # # . . . .",
-                                "0.F.I.L.0.0.0.0"};
+            string[] outGrid =
+            {
+                "A#B#C#D#G#J.0.0",
+                ". # # # . . . .",
+                "0.E.H.K.0.0.0.0",
+                ". # # # . . . .",
+                "0.F.I.L.0.0.0.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -728,7 +791,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(50);
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = true;
@@ -745,7 +808,6 @@ namespace RogueElements.Tests
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 0), Dir4.Right));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 0), Dir4.Down));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -781,17 +843,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath100PercentBranch()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
-            string[] outGrid ={ "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "A#B#C#E#G#I#K#M",
-                                ". # # # # # # .",
-                                "0.D.F.H.J.L.N.0"};
+            string[] outGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "A#B#C#E#G#I#K#M",
+                ". # # # # # # .",
+                "0.D.F.H.J.L.N.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -804,7 +872,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(59, 59)).Returns(59);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(59);
             pathGen.Object.BranchRatio = new RandRange(100);
             pathGen.Object.NoForcedBranches = true;
@@ -823,7 +891,6 @@ namespace RogueElements.Tests
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Down));
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Down));
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -861,18 +928,23 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePath200PercentBranch()
         {
-            string[] inGrid = { "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0",
-                                ". . . . . . . .",
-                                "0.0.0.0.0.0.0.0"};
+            string[] inGrid =
+            {
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+                ". . . . . . . .",
+                "0.0.0.0.0.0.0.0",
+            };
 
-            string[] outGrid ={ "0.E.H.K.N.Q.T.0",
-                                ". # # # # # # .",
-                                "A#B#C#F#I#L#O#R",
-                                ". # # # # # # .",
-                                "0.D.G.J.M.P.S.0"};
-
+            string[] outGrid =
+            {
+                "0.E.H.K.N.Q.T.0",
+                ". # # # # # # .",
+                "A#B#C#F#I#L#O#R",
+                ". # # # # # # .",
+                "0.D.G.J.M.P.S.0",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -885,7 +957,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(84, 84)).Returns(84);
             testRand.Setup(p => p.Next(200, 200)).Returns(200);
 
-            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>>() { CallBase = true };
+            Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(84);
             pathGen.Object.BranchRatio = new RandRange(200);
             pathGen.Object.NoForcedBranches = true;
@@ -910,7 +982,6 @@ namespace RogueElements.Tests
             pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Down));
             branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Up));
-
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());

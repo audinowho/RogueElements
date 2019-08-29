@@ -71,6 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MapGen\FloorPlan\ConnectTest.cs" />
+    <Compile Include="MapGen\FloorPlan\IFloorPlanTestContext.cs" />
+    <Compile Include="MapGen\FloorPlan\TestFloorPlan.cs" />
+    <Compile Include="MapGen\FloorPlan\TestFloorPlanGen.cs" />
+    <Compile Include="MapGen\FloorPlan\TestFloorRoomGen.cs" />
+    <Compile Include="MapGen\GenSteps\BlobWaterStepTest.cs" />
+    <Compile Include="MapGen\GenSteps\IsolatedStepTest.cs" />
     <Compile Include="MapGen\Grid\AddGridSpecialRoomTest.cs" />
     <Compile Include="MapGen\Grid\AddGridDefaultsTest.cs" />
     <Compile Include="MapGen\Grid\GridFloorPlanTest.cs" />
@@ -80,15 +86,16 @@
     <Compile Include="MapGen\FloorPlan\FloorPlanTest.cs" />
     <Compile Include="MapGen\FloorPlan\FloorPathBranchTest.cs" />
     <Compile Include="MapGen\GenSteps\PathStepTest.cs" />
-    <Compile Include="MapGen\GenSteps\IsolateStepTest.cs" />
     <Compile Include="MapGen\GenSteps\StartEndStepTest.cs" />
-    <Compile Include="MapGen\GenSteps\WaterStepTest.cs" />
     <Compile Include="MapGen\Grid\GridPathStartStepTest.cs" />
     <Compile Include="MapGen\Grid\GridPathBranchTest.cs" />
     <Compile Include="MapGen\Grid\GridPathGridTest.cs" />
     <Compile Include="MapGen\Grid\GridPathTwoSidesTest.cs" />
     <Compile Include="MapGen\Grid\GridPathSpecificTest.cs" />
     <Compile Include="MapGen\Grid\GridPathCircleTest.cs" />
+    <Compile Include="MapGen\Grid\IGridPathTestContext.cs" />
+    <Compile Include="MapGen\Grid\TestGridFloorPlan.cs" />
+    <Compile Include="MapGen\Grid\TestGridRoomGen.cs" />
     <Compile Include="MapGen\Rooms\RoomGenAngledHallTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenCaveTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenSpecificTest.cs" />
@@ -99,14 +106,19 @@
     <Compile Include="MapGen\Rooms\RoomGenSquareTest.cs" />
     <Compile Include="MapGen\Rooms\PermissiveRoomGenTest.cs" />
     <Compile Include="MapGen\Rooms\RoomGenTest.cs" />
+    <Compile Include="MapGen\Rooms\TestGenContext.cs" />
+    <Compile Include="MapGen\Rooms\TestTile.cs" />
     <Compile Include="NoiseGenTest.cs" />
     <Compile Include="MapGen\GenSteps\SpawnerTest.cs" />
-    <Compile Include="RandTest.cs" />
     <Compile Include="GridTest.cs" />
     <Compile Include="DetectionTest.cs" />
     <Compile Include="CollisionTest.cs" />
     <Compile Include="DirExtTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rand\RandRangeTest.cs" />
+    <Compile Include="Rand\SpawnListExceptionTest.cs" />
+    <Compile Include="Rand\SpawnListTest.cs" />
+    <Compile Include="Rand\SpawnRangeListTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RogueElements\RogueElements.csproj">
@@ -116,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="tests.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

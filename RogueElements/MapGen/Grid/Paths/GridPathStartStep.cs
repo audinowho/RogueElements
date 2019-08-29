@@ -1,6 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using RogueElements;
+﻿// <copyright file="GridPathStartStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace RogueElements
 {
@@ -8,13 +11,6 @@ namespace RogueElements
     public abstract class GridPathStartStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
-
-        public void CreateErrorPath(IRandom rand, GridPlan floorPlan)
-        {
-            floorPlan.Clear();
-            floorPlan.AddRoom(new Loc(0, 0), GetDefaultGen());
-        }
-        
         public static bool RollRatio(IRandom rand, ref int ratio, ref int max)
         {
             bool roll = false;
@@ -23,6 +19,7 @@ namespace RogueElements
                 roll = true;
                 ratio--;
             }
+
             max--;
             return roll;
         }
@@ -37,10 +34,15 @@ namespace RogueElements
                 floorPlan.AddRoom(dest, roomGen, false, preferHall);
         }
 
+        public virtual void CreateErrorPath(IRandom rand, GridPlan floorPlan)
+        {
+            floorPlan.Clear();
+            floorPlan.AddRoom(new Loc(0, 0), this.GetDefaultGen());
+        }
+
         public virtual RoomGen<T> GetDefaultGen()
         {
             return new RoomGenDefault<T>();
         }
     }
-    
 }

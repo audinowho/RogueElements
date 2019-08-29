@@ -1,68 +1,84 @@
-﻿using System;
+﻿// <copyright file="FloorStairsStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class FloorStairsStep<T, E, F> : GenStep<T>
-        where T : class, IFloorPlanGenContext, IPlaceableGenContext<E>, IPlaceableGenContext<F>
-        where E : IEntrance
-        where F : IExit
+    public class FloorStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+        where TEntrance : IEntrance
+        where TExit : IExit
     {
-        public List<E> Entrance;
-        public List<F> Exit;
-
         public FloorStairsStep()
         {
-            Entrance = new List<E>();
-            Exit = new List<F>();
-        }
-        
-        public FloorStairsStep(E entrance, F exit) : this()
-        {
-            Entrance.Add(entrance);
-            Exit.Add(exit);
+            this.Entrances = new List<TEntrance>();
+            this.Exits = new List<TExit>();
         }
 
-        public override void Apply(T map)
+        public FloorStairsStep(TEntrance entrance, TExit exit)
+        {
+            this.Entrances = new List<TEntrance> { entrance };
+            this.Exits = new List<TExit> { exit };
+        }
+
+        public FloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
+        {
+            this.Entrances = entrances;
+            this.Exits = exits;
+        }
+
+        public List<TEntrance> Entrances { get; }
+
+        public List<TExit> Exits { get; }
+
+        public override void Apply(TGenContext map)
         {
             List<int> room_indices = new List<int>();
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 room_indices.Add(ii);
             }
+
             List<int> used_indices = new List<int>();
 
-            Loc defaultLoc = new Loc();
+            Loc defaultLoc = Loc.Zero;
 
-            for (int ii = 0; ii < Entrance.Count; ii++)
+            for (int ii = 0; ii < this.Entrances.Count; ii++)
             {
                 int startRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc start = getOutlet<E>(map, startRoom);
+                Loc start = GetOutlet<TEntrance>(map, startRoom);
                 if (start == new Loc(-1))
                     start = defaultLoc;
                 else
                     defaultLoc = start;
-                ((IPlaceableGenContext<E>)map).PlaceItem(start, Entrance[ii]);
-                GenContextDebug.DebugProgress("Entrance");
+                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.Entrances[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Entrances));
             }
 
-            for (int ii = 0; ii < Exit.Count; ii++)
+            for (int ii = 0; ii < this.Exits.Count; ii++)
             {
                 int endRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc end = getOutlet<F>(map, endRoom);
+                Loc end = GetOutlet<TExit>(map, endRoom);
                 if (end == new Loc(-1))
                     end = defaultLoc;
-                ((IPlaceableGenContext<F>)map).PlaceItem(end, Exit[ii]);
-                GenContextDebug.DebugProgress("Exit");
+                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.Exits[ii]);
+                GenContextDebug.DebugProgress(nameof(this.Exits));
             }
         }
 
         /// <summary>
         /// Attempt to choose a room with no entrance/exit, and updates their availability.  If none exists, default to a chosen room.
         /// </summary>
+        /// <param name="rand">todo: describe rand parameter on NextRoom</param>
+        /// <param name="room_indices">todo: describe room_indices parameter on NextRoom</param>
+        /// <param name="used_indices">todo: describe used_indices parameter on NextRoom</param>
         /// <returns></returns>
-        private int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
+        private static int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
         {
             if (room_indices.Count > 0)
             {
@@ -77,17 +93,15 @@ namespace RogueElements
             return used_indices[altIndex];
         }
 
-
-        private Loc getOutlet<N>(T map, int index)
-            where N : ISpawnable
+        private static Loc GetOutlet<T>(TGenContext map, int index)
+            where T : ISpawnable
         {
-            List<Loc> tiles = ((IPlaceableGenContext<N>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
+            List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
 
             if (tiles.Count > 0)
                 return tiles[map.Rand.Next(tiles.Count)];
 
-            return new Loc(-1);
+            return -Loc.One;
         }
-
     }
 }

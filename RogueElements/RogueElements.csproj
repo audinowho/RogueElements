@@ -78,6 +78,8 @@
     <Compile Include="Detection.cs" />
     <Compile Include="MapGen\FloorPlan\ConnectStep.cs" />
     <Compile Include="MapGen\FloorPlan\ConnectRoomStep.cs" />
+    <Compile Include="MapGen\FloorPlan\FloorHallPlan.cs" />
+    <Compile Include="MapGen\FloorPlan\IFloorRoomPlan.cs" />
     <Compile Include="MapGen\GenContextDebug.cs" />
     <Compile Include="MapGen\Grid\GridHallPlan.cs" />
     <Compile Include="MapGen\Grid\IRoomGridGenContext.cs" />
@@ -98,6 +100,10 @@
     <Compile Include="MapGen\FloorPlan\FloorPlan.cs" />
     <Compile Include="MapGen\Grid\AddGridDefaultsStep.cs" />
     <Compile Include="MapGen\FloorPlan\Paths\FloorPathBranch.cs" />
+    <Compile Include="MapGen\Grid\Paths\SpecificGridRoomPlan.cs" />
+    <Compile Include="MapGen\IGenStep.cs" />
+    <Compile Include="MapGen\Rooms\IPermissiveRoomGen.cs" />
+    <Compile Include="MapGen\Rooms\IRoomGen.cs" />
     <Compile Include="MapGen\Rooms\RoomGenCave.cs" />
     <Compile Include="MapGen\Rooms\RoomGenSpecific.cs" />
     <Compile Include="MapGen\Spawning\IEntrance.cs" />
@@ -147,7 +153,6 @@
     <Compile Include="PriorityList.cs" />
     <Compile Include="Rand\IRandom.cs" />
     <Compile Include="Rand\RandBinomial.cs" />
-    <Compile Include="RangeList.cs" />
     <Compile Include="MapGen\Rooms\RoomGen.cs" />
     <Compile Include="MapGen\Rooms\RoomGenBlocked.cs" />
     <Compile Include="MapGen\Rooms\RoomGenBump.cs" />
@@ -174,9 +179,7 @@
     <Compile Include="MathUtils.cs" />
     <Compile Include="NoiseGen.cs" />
     <Compile Include="Range.cs" />
-    <Compile Include="PathTile.cs" />
     <Compile Include="Rand\ReRandom.cs" />
-    <Compile Include="ScanLineTile.cs" />
     <Compile Include="StablePriorityQueue.cs" />
   </ItemGroup>
   <ItemGroup>

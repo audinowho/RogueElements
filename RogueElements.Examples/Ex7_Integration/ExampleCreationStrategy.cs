@@ -1,20 +1,25 @@
+// <copyright file="ExampleCreationStrategy.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
-using System.Collections.Generic;
 using RogueSharp;
 using RogueSharp.MapCreation;
 
 namespace RogueElements.Examples.Ex7_Integration
 {
-    public class ExampleCreationStrategy<T> : IMapCreationStrategy<T> where T : Map, new()
+    public class ExampleCreationStrategy<T> : IMapCreationStrategy<T>
+        where T : Map, new()
     {
-        public ulong Seed { get; set; }
-        public MapGen<MapGenContext> Layout;
-
         public ExampleCreationStrategy()
         {
-            Layout = new MapGen<MapGenContext>();
+            this.Layout = new MapGen<MapGenContext>();
         }
 
+        public ulong Seed { get; set; }
+
+        public MapGen<MapGenContext> Layout { get; set; }
 
         /// <summary>
         /// Creates a new IMap of the specified type.
@@ -22,7 +27,7 @@ namespace RogueElements.Examples.Ex7_Integration
         /// <returns>An IMap of the specified type</returns>
         public T CreateMap()
         {
-            MapGenContext context = Layout.GenMap(MathUtils.Rand.NextUInt64());
+            MapGenContext context = this.Layout.GenMap(MathUtils.Rand.NextUInt64());
 
             return (T)context.Map;
         }

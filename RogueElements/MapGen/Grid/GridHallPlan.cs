@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿// <copyright file="GridHallPlan.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -8,30 +13,20 @@ namespace RogueElements
     /// </summary>
     public class GridHallPlan
     {
-        public List<IPermissiveRoomGen> Gens;
-
-        public IPermissiveRoomGen MainGen
-        {
-            get
-            {
-                if (Gens.Count > 0)
-                    return Gens[0];
-                else
-                    return null;
-            }
-        }
-
         public GridHallPlan()
         {
-            Gens = new List<IPermissiveRoomGen>();
+            this.Gens = new List<IPermissiveRoomGen>();
         }
+
+        public List<IPermissiveRoomGen> Gens { get; set; }
+
+        public IPermissiveRoomGen MainGen => this.Gens.Count > 0 ? this.Gens[0] : null;
 
         public void SetGen(IPermissiveRoomGen roomGen)
         {
-            Gens = new List<IPermissiveRoomGen>();
+            this.Gens = new List<IPermissiveRoomGen>();
             if (roomGen != null)
-                Gens.Add(roomGen);
+                this.Gens.Add(roomGen);
         }
     }
-    
 }

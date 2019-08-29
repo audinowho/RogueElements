@@ -72,44 +72,35 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\BaseMap.cs" />
+    <Compile Include="Common\BaseMapGenContext.cs" />
+    <Compile Include="Common\Stairs.cs" />
+    <Compile Include="Common\StairsDown.cs" />
+    <Compile Include="Common\StairsUp.cs" />
+    <Compile Include="Common\Tile.cs" />
     <Compile Include="DebugState.cs" />
     <Compile Include="Ex1_Tiles\Map.cs" />
     <Compile Include="Ex1_Tiles\MapGenContext.cs" />
-    <Compile Include="Ex1_Tiles\Tile.cs" />
     <Compile Include="Ex1_Tiles\Example1.cs" />
     <Compile Include="Ex2_Rooms\Example2.cs" />
     <Compile Include="Ex2_Rooms\Map.cs" />
     <Compile Include="Ex2_Rooms\MapGenContext.cs" />
-    <Compile Include="Ex2_Rooms\Tile.cs" />
     <Compile Include="Ex3_Grid\Example3.cs" />
     <Compile Include="Ex3_Grid\Map.cs" />
     <Compile Include="Ex3_Grid\MapGenContext.cs" />
-    <Compile Include="Ex3_Grid\Tile.cs" />
     <Compile Include="Ex4_Stairs\Example4.cs" />
     <Compile Include="Ex4_Stairs\Map.cs" />
     <Compile Include="Ex4_Stairs\MapGenContext.cs" />
-    <Compile Include="Ex4_Stairs\Stairs.cs" />
-    <Compile Include="Ex4_Stairs\Tile.cs" />
     <Compile Include="Ex5_Terrain\Example5.cs" />
     <Compile Include="Ex5_Terrain\Map.cs" />
     <Compile Include="Ex5_Terrain\MapGenContext.cs" />
-    <Compile Include="Ex5_Terrain\Stairs.cs" />
-    <Compile Include="Ex5_Terrain\Tile.cs" />
     <Compile Include="Ex6_Items\Example6.cs" />
     <Compile Include="Ex6_Items\Mob.cs" />
     <Compile Include="Ex6_Items\Item.cs" />
     <Compile Include="Ex6_Items\Map.cs" />
     <Compile Include="Ex6_Items\MapGenContext.cs" />
-    <Compile Include="Ex6_Items\Stairs.cs" />
-    <Compile Include="Ex6_Items\Tile.cs" />
-    <Compile Include="Ex7_Integration\Cell.cs" />
     <Compile Include="Ex7_Integration\Example7.cs" />
     <Compile Include="Ex7_Integration\ExampleCreationStrategy.cs" />
-    <Compile Include="Ex7_Integration\FieldOfView.cs" />
-    <Compile Include="Ex7_Integration\ICell.cs" />
-    <Compile Include="Ex7_Integration\IMap.cs" />
-    <Compile Include="Ex7_Integration\IMapCreationStrategy.cs" />
-    <Compile Include="Ex7_Integration\Map.cs" />
     <Compile Include="Ex7_Integration\MapGenContext.cs" />
     <Compile Include="ExampleDebug.cs" />
     <Compile Include="Program.cs" />
@@ -117,15 +108,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="examples.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RogueElements\RogueElements.csproj">
       <Project>{a777bc3d-2635-401d-96d7-162178d8dfc4}</Project>
       <Name>RogueElements</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Ex7_Integration\RogueSharp.LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

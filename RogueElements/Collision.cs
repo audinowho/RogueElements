@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Collision.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +19,10 @@ namespace RogueElements
 
         public static bool InFront(Loc testLoc, Dir8 dir, int range)
         {
-            if (!Enum.IsDefined(typeof(Dir8), dir))
+            if (!dir.Validate())
                 throw new ArgumentException("Invalid value to convert.");
-            if (testLoc == Loc.Zero) return true;
+            if (testLoc == Loc.Zero)
+                return true;
             int foundRange = testLoc.Dist8();
             if (range >= 0 && foundRange > range)
                 return false;
@@ -27,6 +33,7 @@ namespace RogueElements
         {
             return Collides(bound1.Start, bound1.Size, bound2.Start, bound2.Size);
         }
+
         public static bool Collides(Loc start1, Loc size1, Loc start2, Loc size2)
         {
             return Collides(start1.X, size1.X, start2.X, size2.X) &&
@@ -35,10 +42,8 @@ namespace RogueElements
 
         public static bool Collides(int start1, int size1, int start2, int size2)
         {
-            return (start1 + size1 > start2 && start2 + size2 > start1);
+            return start1 + size1 > start2 && start2 + size2 > start1;
         }
-
-
 
         public static bool InBounds(Rect rect, Loc point)
         {

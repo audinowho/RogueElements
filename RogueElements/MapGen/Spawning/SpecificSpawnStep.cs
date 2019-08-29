@@ -1,28 +1,34 @@
-﻿using System;
+﻿// <copyright file="SpecificSpawnStep.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class SpecificSpawnStep<T, E> : GenStep<T>
-        where T : class, IPlaceableGenContext<E>
-        where E : ISpawnable
+    public class SpecificSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>
+        where TSpawnable : ISpawnable
     {
-        public List<Tuple<E, Loc>> Spawns;
-
-        public SpecificSpawnStep() { }
-        public SpecificSpawnStep(List<Tuple<E, Loc>> spawns)
+        public SpecificSpawnStep()
         {
-            Spawns = spawns;
+            this.Spawns = new List<(TSpawnable Item, Loc loc)>();
         }
 
-        public override void Apply(T map)
+        public SpecificSpawnStep(List<(TSpawnable Item, Loc Loc)> spawns)
         {
-            for (int ii = 0; ii < Spawns.Count; ii++)
-            {
-                E item = Spawns[ii].Item1;
-                Loc loc = Spawns[ii].Item2;
+            this.Spawns = spawns;
+        }
 
+        public List<(TSpawnable Item, Loc Loc)> Spawns { get; }
+
+        public override void Apply(TGenContext map)
+        {
+            foreach ((TSpawnable item, Loc loc) in this.Spawns)
+            {
                 map.PlaceItem(loc, item);
                 GenContextDebug.DebugProgress("Placed Object");
             }

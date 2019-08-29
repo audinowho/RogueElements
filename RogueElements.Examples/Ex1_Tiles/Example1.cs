@@ -1,5 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// <copyright file="Example1.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Text;
 
 namespace RogueElements.Examples.Ex1_Tiles
@@ -9,70 +13,64 @@ namespace RogueElements.Examples.Ex1_Tiles
         public static void Run()
         {
             Console.Clear();
-            string title = "1: A Static Map Example";
-            MapGen<MapGenContext> layout = new MapGen<MapGenContext>();
+            const string title = "1: A Static Map Example";
+            var layout = new MapGen<MapGenContext>();
 
-
-
-
-            //Initialize a 30x25 blank map full of Wall tiles
-            InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>();
-            startStep.Width = 30;
-            startStep.Height = 25;
+            // Initialize a 30x25 blank map full of Wall tiles
+            InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>(30, 25);
             layout.GenSteps.Add(0, startStep);
 
-            //Draw a specific array of tiles onto the map at offset X2,Y3
-            SpecificTilesStep<MapGenContext> drawStep = new SpecificTilesStep<MapGenContext>(new Loc(2, 3));
-            string[] level = {
-                            ".........................",
-                            ".........................",
-                            "...........#.............",
-                            "....###...###...###......",
-                            "...#.#.....#.....#.#.....",
-                            "...####...###...####.....",
-                            "...#.#############.#.....",
-                            "......##.......##........",
-                            "......#..#####..#........",
-                            "......#.#######.#........",
-                            "...#.##.#######.##.#.....",
-                            "..#####.###.###.#####....",
-                            "...#.##.#######.##.#.....",
-                            "......#.#######.#........",
-                            "......#..#####..#........",
-                            "......##.......##........",
-                            "...#.#############.#.....",
-                            "...####...###...####.....",
-                            "...#.#.....#.....#.#.....",
-                            "....###...###...###......",
-                            "...........#............."
-                        };
-            drawStep.Tiles = new ITile[level[0].Length][];
+            // Draw a specific array of tiles onto the map at offset X2,Y3
+            string[] level =
+            {
+                ".........................",
+                ".........................",
+                "...........#.............",
+                "....###...###...###......",
+                "...#.#.....#.....#.#.....",
+                "...####...###...####.....",
+                "...#.#############.#.....",
+                "......##.......##........",
+                "......#..#####..#........",
+                "......#.#######.#........",
+                "...#.##.#######.##.#.....",
+                "..#####.###.###.#####....",
+                "...#.##.#######.##.#.....",
+                "......#.#######.#........",
+                "......#..#####..#........",
+                "......##.......##........",
+                "...#.#############.#.....",
+                "...####...###...####.....",
+                "...#.#.....#.....#.#.....",
+                "....###...###...###......",
+                "...........#.............",
+            };
+            ITile[][] tiles = new ITile[level[0].Length][];
             for (int xx = 0; xx < level[0].Length; xx++)
             {
-                drawStep.Tiles[xx] = new ITile[level.Length];
+                tiles[xx] = new ITile[level.Length];
                 for (int yy = 0; yy < level.Length; yy++)
                 {
                     int id = Map.WALL_TERRAIN_ID;
                     if (level[yy][xx] == '.')
                         id = Map.ROOM_TERRAIN_ID;
-                    drawStep.Tiles[xx][yy] = new Tile(id);
+                    tiles[xx][yy] = new Tile(id);
                 }
             }
+
+            var drawStep = new SpecificTilesStep<MapGenContext>(tiles, new Loc(2, 3));
             layout.GenSteps.Add(0, drawStep);
 
-
-
-
-            //Run the generator and print
+            // Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());
             Print(context.Map, title);
         }
 
         public static void Print(Map map, string title)
         {
-            StringBuilder topString = new StringBuilder("");
+            var topString = new StringBuilder(string.Empty);
             string turnString = title;
-            topString.Append(String.Format("{0,-82}", turnString));
+            topString.Append($"{turnString,-82}");
             topString.Append('\n');
             for (int i = 0; i < map.Width + 1; i++)
                 topString.Append("=");
@@ -82,19 +80,20 @@ namespace RogueElements.Examples.Ex1_Tiles
             {
                 for (int x = 0; x < map.Width; x++)
                 {
-                    Loc loc = new Loc(x, y);
-                    char tileChar = ' ';
+                    char tileChar;
                     Tile tile = map.Tiles[x][y];
-                    if (tile.ID <= 0)//wall
+                    if (tile.ID <= 0) // wall
                         tileChar = '#';
-                    else if (tile.ID == 1)//floor
+                    else if (tile.ID == 1) // floor
                         tileChar = '.';
                     else
                         tileChar = '?';
                     topString.Append(tileChar);
                 }
+
                 topString.Append('\n');
             }
+
             Console.Write(topString.ToString());
         }
     }

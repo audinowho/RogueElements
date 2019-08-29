@@ -1,7 +1,12 @@
-﻿using System;
+﻿// <copyright file="GridPathCircleTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
@@ -11,13 +16,16 @@ namespace RogueElements.Tests
         [Test]
         public void CreateError()
         {
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0" };
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathCircle<IGridPathTestContext> pathGen = new GridPathCircle<IGridPathTestContext>();
+            var pathGen = new GridPathCircle<IGridPathTestContext>();
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             pathGen.GenericHalls = mockHalls.Object;
@@ -29,30 +37,32 @@ namespace RogueElements.Tests
             Assert.Throws<InvalidOperationException>(() => { pathGen.ApplyToPath(testRand.Object, floorPlan); });
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void CreatePathSize()
         {
-            //min size
-            //bigger size
+            // min size
+            // bigger size
             throw new NotImplementedException();
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void CreatePathCircle()
         {
-            //0 circle rooms
-            //all circle rooms
-            //some circle rooms
+            // 0 circle rooms
+            // all circle rooms
+            // some circle rooms
             throw new NotImplementedException();
         }
 
-        //TODO: [Test]
+        [Test]
+        [Ignore("TODO")]
         public void CreatePathInnerPaths()
         {
-            //0 inner paths
-            //some inner paths
+            // 0 inner paths
+            // some inner paths
             throw new NotImplementedException();
         }
-
     }
 }

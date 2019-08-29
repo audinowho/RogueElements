@@ -1,7 +1,12 @@
-﻿using System;
+﻿// <copyright file="GridPathSpecificTest.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Moq;
+using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
@@ -19,22 +24,27 @@ namespace RogueElements.Tests
         [TestCase(4, 2, 3, 4)]
         public void CreatePathWrongDimensions(int vwidth, int vheight, int hwidth, int hheight)
         {
-            string[] inGrid = { "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0",
-                                ". . . .",
-                                "0.0.0.0" };
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathSpecific<IGridPathTestContext> pathGen = new GridPathSpecific<IGridPathTestContext>();
-            pathGen.SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[vwidth][];
+            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            {
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[vwidth][],
+            };
             for (int ii = 0; ii < vwidth; ii++)
                 pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[vheight];
             pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[hwidth][];
             for (int ii = 0; ii < hwidth; ii++)
                 pathGen.SpecificHHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[hheight];
-            
+
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
             Assert.Throws<InvalidOperationException>(() => { pathGen.ApplyToPath(testRand.Object, floorPlan); });
@@ -43,27 +53,34 @@ namespace RogueElements.Tests
         [Test]
         public void CreatePathSpecific()
         {
-            //specific halls and rooms
-            string[] inGrid = { "0.0.0",
-                                ". . .",
-                                "0.0.0",
-                                ". . .",
-                                "0.0.0"};
+            // specific halls and rooms
+            string[] inGrid =
+            {
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+                ". . .",
+                "0.0.0",
+            };
 
-            string[] outGrid ={ "A#B#C",
-                                ". . #",
-                                "H#I.D",
-                                "# . #",
-                                "G#F#E"};
-
+            string[] outGrid =
+            {
+                "A#B#C",
+                ". . #",
+                "H#I.D",
+                "# . #",
+                "G#F#E",
+            };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            GridPathSpecific<IGridPathTestContext> pathGen = new GridPathSpecific<IGridPathTestContext>();
-            pathGen.SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[3][];
+            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            {
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[3][],
+            };
             for (int ii = 0; ii < 3; ii++)
                 pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[2];
             pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[2][];
@@ -91,8 +108,6 @@ namespace RogueElements.Tests
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
-
         }
-        
     }
 }
