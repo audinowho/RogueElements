@@ -30,7 +30,7 @@ namespace RogueElements
             this.ToSpawn = other.ToSpawn;
         }
 
-        public T ToSpawn { get; }
+        public T ToSpawn { get; set; }
 
         public bool ChangesState => false;
 
