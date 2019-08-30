@@ -87,7 +87,7 @@ namespace RogueElements
                             int topright = prev_noise[newX][oldY];
                             int bottomleft = prev_noise[oldX][newY];
                             int bottomright = prev_noise[newX][newY];
-                            noise[xx][yy] = BiInterpolate(topleft, topright, bottomleft, bottomright, (xx % 2) * 100 / 2, (yy % 2) * 100 / 2);
+                            noise[xx][yy] = MathUtils.BiInterpolate(topleft, topright, bottomleft, bottomright, (xx % 2) * 100 / 2, (yy % 2) * 100 / 2);
                         }
 
                         // add the new noise (if not merely expanding)
@@ -103,18 +103,6 @@ namespace RogueElements
             }
 
             return noise;
-        }
-
-        public static int BiInterpolate(int topleft, int topright, int bottomleft, int bottomright, int degreeX, int degreeY)
-        {
-            int bottom = ((topleft * (100 - degreeX)) + (topright * degreeX)) * (100 - degreeY) / 100;
-            int top = ((bottomleft * (100 - degreeX)) + (bottomright * degreeX)) * degreeY / 100;
-            return (bottom + top) / 100;
-        }
-
-        public static int Interpolate(int a, int b, int degree)
-        {
-            return ((a * (100 - degree)) + (b * degree)) / 100;
         }
 
         public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations)

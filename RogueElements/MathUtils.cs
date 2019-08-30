@@ -94,7 +94,19 @@ namespace RogueElements
             }
 
             // no place found
-            list.Insert(point + compare > 0 ? 0 : 1, element);
+            list.Insert(point + (compare > 0 ? 0 : 1), element);
+        }
+
+        public static int BiInterpolate(int topleft, int topright, int bottomleft, int bottomright, int degreeX, int degreeY)
+        {
+            int bottom = ((topleft * (100 - degreeX)) + (topright * degreeX)) * (100 - degreeY) / 100;
+            int top = ((bottomleft * (100 - degreeX)) + (bottomright * degreeX)) * degreeY / 100;
+            return (bottom + top) / 100;
+        }
+
+        public static int Interpolate(int a, int b, int degree)
+        {
+            return ((a * (100 - degree)) + (b * degree)) / 100;
         }
     }
 }
