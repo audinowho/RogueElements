@@ -21,20 +21,6 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        [Ignore("TODO")]
-        public void BiInterpolate()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        [Ignore("TODO")]
-        public void Interpolate()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
         [TestCase(CellRule.None, false)]
         [TestCase(CellRule.All, true)]
         [TestCase(CellRule.Eq0, true)]
