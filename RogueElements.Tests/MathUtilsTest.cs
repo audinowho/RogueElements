@@ -31,7 +31,7 @@ namespace RogueElements.Tests
         {
             List<int> sortedList = new List<int>();
 
-            MathUtils.AddToSortedList(sortedList, 5, (int a, int b) => { return b - a; });
+            MathUtils.AddToSortedList(sortedList, 5, (int a, int b) => { return a - b; });
 
             Assert.That(sortedList.Count, Is.EqualTo(1));
             Assert.That(sortedList[0], Is.EqualTo(5));
@@ -46,7 +46,7 @@ namespace RogueElements.Tests
         {
             List<int> sortedList = new List<int> { 5 };
 
-            MathUtils.AddToSortedList(sortedList, addedValue, (int a, int b) => { return b - a; });
+            MathUtils.AddToSortedList(sortedList, addedValue, (int a, int b) => { return a - b; });
 
             Assert.That(sortedList.Count, Is.EqualTo(2));
             for (int ii = 1; ii < sortedList.Count; ii++)
