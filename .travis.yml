@@ -1,0 +1,11 @@
+language: csharp
+solution: RogueElements.sln
+dotnet: 2.2
+mono: none
+
+install:
+  - dotnet restore
+
+script:
+  - dotnet build
+  - dotnet test
