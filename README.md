@@ -1,5 +1,5 @@
 # RogueElements #
-[![Build Status](https://travis-ci.org/audino/RogueElements.svg?branch=master)](https://travis-ci.org/audino/RogueElements)
+[![Build Status](https://travis-ci.org/audinowho/RogueElements.svg?branch=master)](https://travis-ci.org/audinowho/RogueElements)
 
 RogueElements is a C# library that allows the user to randomly generate maps for use in roguelikes.  Generation is implemented in a series of interchangeable steps, similar to shader passes.  These steps all share a base class, which the user can inherit to make their own steps.  Additionally, RogueElements contains a collection of functions designed to make working with 4-directional and 8-directional tile maps more convenient.
 
