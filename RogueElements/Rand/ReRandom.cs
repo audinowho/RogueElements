@@ -14,6 +14,12 @@ namespace RogueElements
     /// <summary>
     /// A custom random class that holds on to its seed, for repeatability.
     /// </summary>
+    /// <remarks>
+    /// This is xoshiro256** 1.0,an all-purpose, rock-solid
+    /// generators.It has excellent(sub-ns) speed, a state(256 bits) that is
+    /// large enough for any parallel application, and it passes all tests
+    /// known at the time of writing.
+    /// </remarks>
     [Serializable]
     public class ReRandom : IRandom
     {
@@ -28,22 +34,18 @@ namespace RogueElements
         {
             this.FirstSeed = seed;
 
+            SplitMix64 sm = new SplitMix64(this.FirstSeed);
             this.s = new ulong[4];
-            this.s[0] = SplitMix64(this.FirstSeed);
-            this.s[1] = SplitMix64(this.s[0]);
-            this.s[2] = SplitMix64(this.s[1]);
-            this.s[3] = SplitMix64(this.s[2]);
+            this.s[0] = sm.Next();
+            this.s[1] = sm.Next();
+            this.s[2] = sm.Next();
+            this.s[3] = sm.Next();
         }
 
         /// <summary>
         /// The seed value that the class was initialized with.
         /// </summary>
         public ulong FirstSeed { get; private set; }
-
-        /* This is xoshiro256** 1.0, one of our all-purpose, rock-solid
-        generators. It has excellent (sub-ns) speed, a state (256 bits) that is
-        large enough for any parallel application, and it passes all tests we
-        are aware of.*/
 
         public virtual ulong NextUInt64()
         {
@@ -91,17 +93,14 @@ namespace RogueElements
             return (int)(this.NextUInt64() % (ulong)maxValue);
         }
 
+        /// <remarks>
+        /// Floating point operations, including doubles, are non-deterministic.
+        /// They will vary by compiler, architecture, etc.
+        /// Understand the risks before using.
+        /// </remarks>
         public virtual double NextDouble()
         {
             return (double)this.NextUInt64() / ((double)ulong.MaxValue + 1);
-        }
-
-        private static ulong SplitMix64(ulong x)
-        {
-            ulong z = x += 0x9E3779B97F4A7C15;
-            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
-            z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
-            return z ^ (z >> 31);
         }
 
         private static ulong Rotl(ulong x, int k)
