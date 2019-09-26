@@ -1,0 +1,8 @@
+packages/
+bin/
+obj/
+.vs/
+*.csproj.user
+*.suo
+*.tmp
+.vscode

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="RogueElements" ToolsVersion="15.0">
+   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+     <!-- Primitives raise false positives; remove this suppression once bug is fixed -->
+     <Rule Id="CA2235" Action="None" />
+   </Rules>
+   <Rules AnalyzerId="CodeCracker.CSharp" RuleNamespace="CodeCracker.CSharp">
+     <Rule Id="CC0001" Action="None" />
+     <Rule Id="CC0105" Action="None" />
+   </Rules>
+   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.CSharp.LayoutRules">
+     <Rule Id="SA1310" Action="None" />
+     <Rule Id="SA1503" Action="None" />
+     <!-- Documentation rules. TODO after resolving all other errors -->
+     <Rule Id="SA1600" Action="None" />
+     <Rule Id="SA1601" Action="None" />
+     <Rule Id="SA1602" Action="None" />
+     <Rule Id="SA1604" Action="None" />
+     <Rule Id="SA1606" Action="None" />
+     <Rule Id="SA1612" Action="None" />
+     <Rule Id="SA1614" Action="None" />
+     <Rule Id="SA1615" Action="None" />
+     <Rule Id="SA1616" Action="None" />
+     <Rule Id="SA1622" Action="None" />
+     <Rule Id="SA1623" Action="None" />
+     <Rule Id="SA1626" Action="None" />
+     <Rule Id="SA1629" Action="None" />
+     <Rule Id="SA1636" Action="None" />
+   </Rules>
+</RuleSet>
