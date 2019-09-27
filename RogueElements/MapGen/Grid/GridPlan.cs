@@ -446,9 +446,9 @@ namespace RogueElements
                 // also sets the sidereqs
                 int tier = vertical ? x : y;
                 Dir4 dir = vertical ? Dir4.Down : Dir4.Right;
-                Range startRange = this.GetHallTouchRange(startRoom.RoomGen, dir, tier);
-                Range endRange = this.GetHallTouchRange(endRoom.RoomGen, dir.Reverse(), tier);
-                Range combinedRange = new Range(Math.Min(startRange.Min, endRange.Min), Math.Max(startRange.Max, endRange.Max));
+                IntRange startRange = this.GetHallTouchRange(startRoom.RoomGen, dir, tier);
+                IntRange endRange = this.GetHallTouchRange(endRoom.RoomGen, dir.Reverse(), tier);
+                IntRange combinedRange = new IntRange(Math.Min(startRange.Min, endRange.Min), Math.Max(startRange.Max, endRange.Max));
                 Loc start = startRoom.RoomGen.Draw.End;
                 Loc end = endRoom.RoomGen.Draw.Start;
 
@@ -482,8 +482,8 @@ namespace RogueElements
                 else
                 {
                     int divPoint = startCell.GetScalar(dir) + 1;
-                    Range startDivRange = startRange;
-                    Range endDivRange = endRange;
+                    IntRange startDivRange = startRange;
+                    IntRange endDivRange = endRange;
                     if (startIntrude && !endIntrude)
                     {
                         // side A intrudes bound, side B does not: divide A and B; doesn't matter who gets border
@@ -525,9 +525,9 @@ namespace RogueElements
 
                         // side A touches border, side B touches border: A gets border; don't need B -  this cannot happen
                         // both sides need to cover the intersection of their cells
-                        Range interCellSide = Range.Intersect(startCell.GetSide(dir.ToAxis()), endCell.GetSide(dir.ToAxis()));
-                        startDivRange = Range.IncludeRange(startDivRange, interCellSide);
-                        endDivRange = Range.IncludeRange(endDivRange, interCellSide);
+                        IntRange interCellSide = IntRange.Intersect(startCell.GetSide(dir.ToAxis()), endCell.GetSide(dir.ToAxis()));
+                        startDivRange = IntRange.IncludeRange(startDivRange, interCellSide);
+                        endDivRange = IntRange.IncludeRange(endDivRange, interCellSide);
                     }
 
                     Rect startBox = vertical ? new Rect(startDivRange.Min, start.Y, startDivRange.Length, divPoint - start.Y)
@@ -605,7 +605,7 @@ namespace RogueElements
         /// <param name="dir">Direction from room to hall.</param>
         /// <param name="tier"></param>
         /// <returns></returns>
-        public virtual Range GetHallTouchRange(IRoomGen room, Dir4 dir, int tier)
+        public virtual IntRange GetHallTouchRange(IRoomGen room, Dir4 dir, int tier)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
 
@@ -613,7 +613,7 @@ namespace RogueElements
             // Things get tricky for a target room that occupies more than one cell.
             // First, try to cover only the part of the target room that's in the cell.
             // If that's not possible, try to extend the hall until it covers one tile of the target room.
-            Range startRange = room.Draw.GetSide(dir.ToAxis());
+            IntRange startRange = room.Draw.GetSide(dir.ToAxis());
 
             // factor possibletiles into this calculation
             int borderLength = room.GetBorderLength(dir);
@@ -637,14 +637,14 @@ namespace RogueElements
 
             int tierStart = vertical ? tier * (this.WidthPerCell + this.CellWall) : tier * (this.HeightPerCell + this.CellWall);
             int tierLength = vertical ? this.WidthPerCell : this.HeightPerCell;
-            Range newRange = new Range(Math.Max(startRange.Min, tierStart), Math.Min(startRange.Max, tierStart + tierLength));
+            IntRange newRange = new IntRange(Math.Max(startRange.Min, tierStart), Math.Min(startRange.Max, tierStart + tierLength));
             if (newRange.Max <= newRange.Min)
             {
                 // try to extend the hall until it covers one tile of the target room.
                 // first, note that the current end range is covering the zone between the tier and the edge of the room (inverted)
                 // un-invert this and inflate by 1, and you will have a zone that covers 1 tile with the room
                 // get the intersection of this zone and the room.
-                newRange = new Range(Math.Max(startRange.Min, newRange.Max - 1), Math.Min(startRange.Max, newRange.Min + 1));
+                newRange = new IntRange(Math.Max(startRange.Min, newRange.Max - 1), Math.Min(startRange.Max, newRange.Min + 1));
             }
 
             return newRange;

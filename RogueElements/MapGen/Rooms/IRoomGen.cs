@@ -13,7 +13,7 @@ namespace RogueElements
 
         void ReceiveFulfillableBorder(IRoomGen sourceRoom, Dir4 dir);
 
-        void ReceiveBorderRange(Range range, Dir4 dir);
+        void ReceiveBorderRange(IntRange range, Dir4 dir);
 
         bool GetOpenedBorder(Dir4 dir, int index);
 

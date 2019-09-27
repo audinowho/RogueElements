@@ -212,7 +212,7 @@ namespace RogueElements
             // this scaling factor equalizes the chances of long sides vs short sides
             int reverseSideMult = vertical ? roomFrom.Draw.Width * room.Draw.Width : roomFrom.Draw.Height * room.Draw.Height;
 
-            Range side = roomFrom.Draw.GetSide(expandTo.ToAxis());
+            IntRange side = roomFrom.Draw.GetSide(expandTo.ToAxis());
 
             // subtract the room's original size, not the inflated trialrect size
             side.Min -= (vertical ? room.Draw.Size.X : room.Draw.Size.Y) - 1;

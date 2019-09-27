@@ -355,14 +355,14 @@ namespace RogueElements
             }
         }
 
-        public Range GetSide(Axis4 axis)
+        public IntRange GetSide(Axis4 axis)
         {
             switch (axis)
             {
                 case Axis4.Vert:
-                    return new Range(this.X, this.X + this.Width);
+                    return new IntRange(this.X, this.X + this.Width);
                 case Axis4.Horiz:
-                    return new Range(this.Y, this.Y + this.Height);
+                    return new IntRange(this.Y, this.Y + this.Height);
                 default:
                     throw new ArgumentException("Invalid value to get.");
             }

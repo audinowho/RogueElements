@@ -445,8 +445,8 @@ namespace RogueElements.Tests
             mockHall.Setup(p => p.PrepareSize(mockRand.Object, new Loc(5, 6)));
             floorPlan.Object.PublicVHalls[1][1].SetGen(mockHall.Object);
 
-            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom1.Object, Dir4.Down, 1)).Returns(new Range(6, 9));
-            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom2.Object, Dir4.Up, 1)).Returns(new Range(8, 11));
+            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom1.Object, Dir4.Down, 1)).Returns(new IntRange(6, 9));
+            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom2.Object, Dir4.Up, 1)).Returns(new IntRange(8, 11));
 
             floorPlan.Object.ChooseHallBounds(mockRand.Object, 1, 1, true);
 
@@ -903,8 +903,8 @@ namespace RogueElements.Tests
             IRoomGen testGen = floorPlan.PublicArrayRooms[0].RoomGen;
             testGen.PrepareSize(testRand.Object, new Loc(4, 2));
             testGen.SetLoc(new Loc(8, 6));
-            Range bounds = floorPlan.GetHallTouchRange(testGen, dir, 1);
-            Range compareBounds = new Range(rangeMin, rangeMax);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen, dir, 1);
+            IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
 
@@ -935,8 +935,8 @@ namespace RogueElements.Tests
             IRoomGen testGen = floorPlan.PublicArrayRooms[0].RoomGen;
             testGen.PrepareSize(testRand.Object, new Loc(5, 10));
             testGen.SetLoc(new Loc(1, 2));
-            Range bounds = floorPlan.GetHallTouchRange(testGen, dir, tier);
-            Range compareBounds = new Range(rangeMin, rangeMax);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen, dir, tier);
+            IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
     }

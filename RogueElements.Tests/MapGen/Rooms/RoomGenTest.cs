@@ -112,8 +112,8 @@ namespace RogueElements.Tests
             else
             {
                 roomGenTo.ReceiveOpenedBorder(roomGenFrom, dir);
-                Range newRange = roomGenTo.RoomSideReqs[dir][0];
-                Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
+                IntRange newRange = roomGenTo.RoomSideReqs[dir][0];
+                Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
         }
 
@@ -239,13 +239,13 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir); });
+                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
             }
             else
             {
-                roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir);
-                Range newRange = roomGen.RoomSideReqs[dir][0];
-                Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
+                roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir);
+                IntRange newRange = roomGen.RoomSideReqs[dir][0];
+                Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
         }
 
@@ -271,13 +271,13 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir); });
+                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
             }
             else
             {
-                roomGen.ReceiveBorderRange(new Range(rangeStart, rangeEnd), dir);
-                Range newRange = roomGen.RoomSideReqs[dir][0];
-                Assert.That(newRange, Is.EqualTo(new Range(expectedStart, expectedEnd)));
+                roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir);
+                IntRange newRange = roomGen.RoomSideReqs[dir][0];
+                Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
         }
 
@@ -290,7 +290,7 @@ namespace RogueElements.Tests
             roomGen.PrepareSize(testRand.Object, new Loc(5, 7));
             roomGen.SetLoc(new Loc(2, 3));
 
-            roomGen.ReceiveBorderRange(new Range(1, 6), Dir4.Right);
+            roomGen.ReceiveBorderRange(new IntRange(1, 6), Dir4.Right);
             var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
             {
                 [Dir4.Down] = new bool[] { false, false, false, false, false },
@@ -481,13 +481,13 @@ namespace RogueElements.Tests
 
             // find where the class chose to dig
             if (reqDown)
-                roomGen.Object.ReceiveBorderRange(new Range(2, 7), Dir4.Down);
+                roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Down);
             if (reqLeft)
-                roomGen.Object.ReceiveBorderRange(new Range(1, 5), Dir4.Left);
+                roomGen.Object.ReceiveBorderRange(new IntRange(1, 5), Dir4.Left);
             if (reqUp)
-                roomGen.Object.ReceiveBorderRange(new Range(2, 7), Dir4.Up);
+                roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Up);
             if (reqRight)
-                roomGen.Object.ReceiveBorderRange(new Range(1, 5), Dir4.Right);
+                roomGen.Object.ReceiveBorderRange(new IntRange(1, 5), Dir4.Right);
 
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
@@ -518,8 +518,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new Range(4, 7), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new Range(2, 5), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(4, 7), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(2, 5), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
@@ -556,7 +556,7 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new Range(3, 7), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(3, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expectedX), Times.Once());
@@ -592,8 +592,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new Range(3, 6), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new Range(4, 7), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(3, 6), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(4, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 4), Times.Once());
@@ -627,7 +627,7 @@ namespace RogueElements.Tests
             roomGen.Object.PublicFulfillableBorder[Dir4.Down][3] = false;
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new Range(2, 7), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, true);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 2), Times.Once());
@@ -668,8 +668,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new Range(3, 7), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new Range(2, 5), Dir4.Right);
+            roomGen.Object.ReceiveBorderRange(new IntRange(3, 7), Dir4.Down);
+            roomGen.Object.ReceiveBorderRange(new IntRange(2, 5), Dir4.Right);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expected1), Times.Once());
@@ -768,7 +768,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            var sideReqs = new List<Range> { new Range(5, 8) };
+            var sideReqs = new List<IntRange> { new IntRange(5, 8) };
             var compare = new List<HashSet<int>>();
             var set = new HashSet<int> { 5, 6, 7 };
             compare.Add(set);
@@ -787,7 +787,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, false, true, false, true };
-            List<Range> sideReqs = new List<Range> { new Range(5, 8) };
+            List<IntRange> sideReqs = new List<IntRange> { new IntRange(5, 8) };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 6 };
 
@@ -807,10 +807,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 6),
-                new Range(7, 9),
+                new IntRange(4, 6),
+                new IntRange(7, 9),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 7, 8 };
@@ -836,10 +836,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 7),
-                new Range(5, 8),
+                new IntRange(4, 7),
+                new IntRange(5, 8),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 5, 6 };
@@ -863,10 +863,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 9),
-                new Range(6, 8),
+                new IntRange(4, 9),
+                new IntRange(6, 8),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 6, 7 };
@@ -888,10 +888,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, false, false, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 7),
-                new Range(5, 8),
+                new IntRange(4, 7),
+                new IntRange(5, 8),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 4 };
@@ -919,11 +919,11 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 6),
-                new Range(5, 8),
-                new Range(7, 9),
+                new IntRange(4, 6),
+                new IntRange(5, 8),
+                new IntRange(7, 9),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 5 };
@@ -952,11 +952,11 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(1)).Returns(0);
             var roomGen = new TestRoomGen<ITiledGenContext>();
             bool[] permittedRange = { true, true, true, true, true };
-            List<Range> sideReqs = new List<Range>
+            List<IntRange> sideReqs = new List<IntRange>
             {
-                new Range(4, 6),
-                new Range(5, 8),
-                new Range(7, 9),
+                new IntRange(4, 6),
+                new IntRange(5, 8),
+                new IntRange(7, 9),
             };
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 7 };
@@ -995,7 +995,7 @@ namespace RogueElements.Tests
         public class TestRoomGen<T> : RoomGen<T>
             where T : ITiledGenContext
         {
-            public new Dictionary<Dir4, List<Range>> RoomSideReqs => base.RoomSideReqs;
+            public new Dictionary<Dir4, List<IntRange>> RoomSideReqs => base.RoomSideReqs;
 
             public Dictionary<Dir4, bool[]> PublicOpenedBorder => this.OpenedBorder;
 
@@ -1011,7 +1011,7 @@ namespace RogueElements.Tests
             {
             }
 
-            public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)
+            public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
             {
                 return this.ChoosePossibleStartRanges(rand, scalarStart, permittedRange, origSideReqs);
             }

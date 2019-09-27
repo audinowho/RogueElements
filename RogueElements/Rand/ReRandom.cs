@@ -14,6 +14,12 @@ namespace RogueElements
     /// <summary>
     /// A custom random class that holds on to its seed, for repeatability.
     /// </summary>
+    /// <remarks>
+    /// This is xoshiro256** 1.0,an all-purpose, rock-solid
+    /// generators.It has excellent(sub-ns) speed, a state(256 bits) that is
+    /// large enough for any parallel application, and it passes all tests
+    /// known at the time of writing.
+    /// </remarks>
     [Serializable]
     public class ReRandom : IRandom
     {
@@ -28,9 +34,12 @@ namespace RogueElements
         {
             this.FirstSeed = seed;
 
-            this.s = new ulong[2];
-            this.s[0] = SplitMix64(this.FirstSeed);
-            this.s[1] = SplitMix64(this.s[1]);
+            SplitMix64 sm = new SplitMix64(this.FirstSeed);
+            this.s = new ulong[4];
+            this.s[0] = sm.Next();
+            this.s[1] = sm.Next();
+            this.s[2] = sm.Next();
+            this.s[3] = sm.Next();
         }
 
         /// <summary>
@@ -38,37 +47,21 @@ namespace RogueElements
         /// </summary>
         public ulong FirstSeed { get; private set; }
 
-        // xoroshiro128+
-        /* This is the successor to xorshift128+. It is the fastest full-period
-           generator passing BigCrush without systematic failures, but due to the
-           relatively short period it is acceptable only for applications with a
-           mild amount of parallelism; otherwise, use a xorshift1024* generator.
-
-           Beside passing BigCrush, this generator passes the PractRand test suite
-           up to (and included) 16TB, with the exception of binary rank tests,
-           which fail due to the lowest bit being an LFSR; all other bits pass all
-           tests. We suggest to use a sign test to extract a random Boolean value.
-
-           Note that the generator uses a simulated rotate operation, which most C
-           compilers will turn into a single instruction. In Java, you can use
-           Long.rotateLeft(). In languages that do not make low-level rotation
-           instructions accessible xorshift128+ could be faster.
-
-           The state must be seeded so that it is not everywhere zero. If you have
-           a 64-bit seed, we suggest to seed a splitmix64 generator and use its
-           output to fill s. */
-
         public virtual ulong NextUInt64()
         {
-            ulong s0 = this.s[0];
-            ulong s1 = this.s[1];
-            ulong result = s0 + s1;
+            ulong result = Rotl(this.s[1] * 5, 7) * 9;
+            ulong t = this.s[1] << 17;
 
-            s1 ^= s0;
-            this.s[0] = Rotl(s0, 55) ^ s1 ^ (s1 << 14); // a, b
-            this.s[1] = Rotl(s1, 36); // c
+            this.s[2] ^= this.s[0];
+            this.s[3] ^= this.s[1];
+            this.s[1] ^= this.s[2];
+            this.s[0] ^= this.s[3];
 
-            return result >> 1 | result << 63;
+            this.s[2] ^= t;
+
+            this.s[3] = Rotl(this.s[3], 45);
+
+            return result;
         }
 
         public virtual int Next()
@@ -100,17 +93,14 @@ namespace RogueElements
             return (int)(this.NextUInt64() % (ulong)maxValue);
         }
 
+        /// <remarks>
+        /// Floating point operations, including doubles, are non-deterministic.
+        /// They will vary by compiler, architecture, etc.
+        /// Understand the risks before using.
+        /// </remarks>
         public virtual double NextDouble()
         {
             return (double)this.NextUInt64() / ((double)ulong.MaxValue + 1);
-        }
-
-        private static ulong SplitMix64(ulong x)
-        {
-            ulong z = x += 0x9E3779B97F4A7C15;
-            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9;
-            z = (z ^ (z >> 27)) * 0x94D049BB133111EB;
-            return z ^ (z >> 31);
         }
 
         private static ulong Rotl(ulong x, int k)

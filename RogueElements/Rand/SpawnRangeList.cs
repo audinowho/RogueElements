@@ -25,7 +25,7 @@ namespace RogueElements
 
         public int Count => this.spawns.Count;
 
-        public void Add(T spawn, Range range, int rate = 10)
+        public void Add(T spawn, IntRange range, int rate = 10)
         {
             if (rate < 0)
                 throw new ArgumentException("Spawn rate must be 0 or higher.");
@@ -121,9 +121,9 @@ namespace RogueElements
         {
             public T Spawn;
             public int Rate;
-            public Range Range;
+            public IntRange Range;
 
-            public SpawnRange(T item, int rate, Range range)
+            public SpawnRange(T item, int rate, IntRange range)
             {
                 this.Spawn = item;
                 this.Rate = rate;
