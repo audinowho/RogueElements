@@ -145,7 +145,7 @@ namespace RogueElements
                 throw new ArgumentNullException(nameof(fillOp));
 
             Stack<ScanLineTile> stack = new Stack<ScanLineTile>();
-            stack.Push(new ScanLineTile(new Range(loc.X, loc.X), loc.Y, DirV.None, true, true));
+            stack.Push(new ScanLineTile(new IntRange(loc.X, loc.X), loc.Y, DirV.None, true, true));
             fillOp(loc);
 
             while (stack.Count > 0)
@@ -477,7 +477,7 @@ namespace RogueElements
                 }
                 else if (line_start > -1 && !empty)
                 {
-                    stack.Push(new ScanLineTile(new Range(line_start, x - 1), new_y, dir, line_start <= range_min, x > range_max));
+                    stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, x > range_max));
                     line_start = -1;
                 }
 
@@ -489,18 +489,18 @@ namespace RogueElements
             }
 
             if (line_start > -1)
-                stack.Push(new ScanLineTile(new Range(line_start, x - 1), new_y, dir, line_start <= range_min, true));
+                stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, true));
         }
 
         private struct ScanLineTile
         {
-            public Range X;
+            public IntRange X;
             public int Y;
             public DirV Dir;
             public bool GoLeft;
             public bool GoRight;
 
-            public ScanLineTile(Range x, int y, DirV dir, bool goLeft, bool goRight)
+            public ScanLineTile(IntRange x, int y, DirV dir, bool goLeft, bool goRight)
             {
                 this.X = x;
                 this.Y = y;

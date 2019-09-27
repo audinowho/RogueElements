@@ -19,8 +19,8 @@ namespace RogueElements.Tests
         public void SpawnListSetUp()
         {
             this.spawnRangeList = new SpawnRangeList<string>();
-            this.spawnRangeList.Add("apple", new Range(0, 5), 10);
-            this.spawnRangeList.Add("orange", new Range(3, 9), 20);
+            this.spawnRangeList.Add("apple", new IntRange(0, 5), 10);
+            this.spawnRangeList.Add("orange", new IntRange(3, 9), 20);
         }
 
         [Test]
@@ -107,13 +107,13 @@ namespace RogueElements.Tests
         [Test]
         public void SpawnRangeListRangeError()
         {
-            Assert.Throws<ArgumentException>(() => { this.spawnRangeList.Add("pear", new Range(3, 3), 10); });
+            Assert.Throws<ArgumentException>(() => { this.spawnRangeList.Add("pear", new IntRange(3, 3), 10); });
         }
 
         [Test]
         public void SpawnRangeListRateError()
         {
-            Assert.Throws<ArgumentException>(() => { this.spawnRangeList.Add("pear", new Range(3, 4), -1); });
+            Assert.Throws<ArgumentException>(() => { this.spawnRangeList.Add("pear", new IntRange(3, 4), -1); });
         }
 
         [Test]
