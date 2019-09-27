@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="DirExt.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="IntRange.cs" />
     <Compile Include="IPriorityList.cs" />
     <Compile Include="LocRay.cs" />
     <Compile Include="BlobMap.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Rand\SpawnRangeList.cs" />
     <Compile Include="MapGen\Grid\GridPlan.cs" />
     <Compile Include="MapGen\Grid\InitGridPlanStep.cs" />
+    <Compile Include="Rand\SplitMix64.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Grid.cs" />
@@ -197,7 +199,6 @@
     <Compile Include="Dirs.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="NoiseGen.cs" />
-    <Compile Include="Range.cs" />
     <Compile Include="Rand\ReRandom.cs" />
     <Compile Include="StablePriorityQueue.cs" />
   </ItemGroup>
