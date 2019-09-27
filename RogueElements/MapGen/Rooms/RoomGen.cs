@@ -30,7 +30,7 @@ namespace RogueElements
     {
         // Ranges that must have at least one of their permitted tiles touched
         [NonSerialized]
-        private Dictionary<Dir4, List<Range>> roomSideReqs;
+        private Dictionary<Dir4, List<IntRange>> roomSideReqs;
 
         [NonSerialized]
         private Dictionary<Dir4, bool[]> openedBorder;
@@ -48,9 +48,9 @@ namespace RogueElements
 
         protected RoomGen()
         {
-            this.RoomSideReqs = new Dictionary<Dir4, List<Range>>();
+            this.RoomSideReqs = new Dictionary<Dir4, List<IntRange>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                this.RoomSideReqs[dir] = new List<Range>();
+                this.RoomSideReqs[dir] = new List<IntRange>();
             this.OpenedBorder = new Dictionary<Dir4, bool[]>();
             this.FulfillableBorder = new Dictionary<Dir4, bool[]>();
             this.BorderToFulfill = new Dictionary<Dir4, bool[]>();
@@ -63,7 +63,7 @@ namespace RogueElements
         /// </summary>
         public virtual Rect Draw { get => this.draw; protected set => this.draw = value; }
 
-        protected Dictionary<Dir4, List<Range>> RoomSideReqs { get => this.roomSideReqs; set => this.roomSideReqs = value; }
+        protected Dictionary<Dir4, List<IntRange>> RoomSideReqs { get => this.roomSideReqs; set => this.roomSideReqs = value; }
 
         protected Dictionary<Dir4, bool[]> OpenedBorder { get => this.openedBorder; set => this.openedBorder = value; }
 
@@ -166,7 +166,7 @@ namespace RogueElements
         }
 
         // assumes that the borders are touching.
-        public virtual void ReceiveBorderRange(Range range, Dir4 dir)
+        public virtual void ReceiveBorderRange(IntRange range, Dir4 dir)
         {
             this.FillSideReq(range, dir);
 
@@ -216,10 +216,10 @@ namespace RogueElements
             // for each side
 
             // get all unfulfilled borders
-            var unfulfilled = new Dictionary<Dir4, List<Range>>();
+            var unfulfilled = new Dictionary<Dir4, List<IntRange>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                unfulfilled[dir] = new List<Range>();
+                unfulfilled[dir] = new List<IntRange>();
                 unfulfilled[dir].AddRange(this.RoomSideReqs[dir]);
             }
 
@@ -246,7 +246,7 @@ namespace RogueElements
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 // get the permitted tiles for each sidereq
-                Range side = this.Draw.GetSide(dir.ToAxis());
+                IntRange side = this.Draw.GetSide(dir.ToAxis());
 
                 if (!openAll)
                 {
@@ -267,7 +267,7 @@ namespace RogueElements
                     {
                         if (this.FulfillableBorder[dir][jj])
                         {
-                            foreach (Range range in unfulfilled[dir])
+                            foreach (IntRange range in unfulfilled[dir])
                             {
                                 if (range.Contains(side.Min + jj))
                                 {
@@ -363,10 +363,10 @@ namespace RogueElements
         /// <param name="permittedRange">todo: describe permittedRange parameter on ChoosePossibleStartRanges</param>
         /// <param name="origSideReqs">todo: describe origSideReqs parameter on ChoosePossibleStartRanges</param>
         /// <returns></returns>
-        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<Range> origSideReqs)
+        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
         {
             // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
-            List<Range> sideReqs = new List<Range>();
+            List<IntRange> sideReqs = new List<IntRange>();
             sideReqs.AddRange(origSideReqs);
 
             List<HashSet<int>> resultStarts = new List<HashSet<int>>();
@@ -424,7 +424,7 @@ namespace RogueElements
                 throw new ArgumentException("Rooms must touch each other in the specified direction.");
 
             // compute the starting index in otherBorder to start transferring
-            Range sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
+            IntRange sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
             this.FillSideReq(sourceSide, dir);
             bool[] destBorder = this.BorderToFulfill[dir];
             Loc diff = sourceRoom.Draw.Start - this.Draw.Start; // how far ahead the start of source is to dest
@@ -464,7 +464,7 @@ namespace RogueElements
             this.SetRoomBorders(map);
         }
 
-        private static void UpdateUnfulfilled(List<Range> unfulfilled, int ii)
+        private static void UpdateUnfulfilled(List<IntRange> unfulfilled, int ii)
         {
             for (int jj = unfulfilled.Count - 1; jj >= 0; jj--)
             {
@@ -473,7 +473,7 @@ namespace RogueElements
             }
         }
 
-        private void FillSideReq(Range range, Dir4 dir)
+        private void FillSideReq(IntRange range, Dir4 dir)
         {
             if (range.Length <= 0)
                 throw new ArgumentException("Range must have a positive length.");
@@ -482,8 +482,8 @@ namespace RogueElements
 
             // also throw exception if the range fails to
             // hit at least one open requestableBorderTile
-            Range side = this.Draw.GetSide(dir.ToAxis());
-            Range trueRange = new Range(Math.Max(range.Min, side.Min), Math.Min(range.Max, side.Max));
+            IntRange side = this.Draw.GetSide(dir.ToAxis());
+            IntRange trueRange = new IntRange(Math.Max(range.Min, side.Min), Math.Min(range.Max, side.Max));
             bool fulfillable = false;
             for (int ii = trueRange.Min - side.Min; ii < trueRange.Max - side.Min; ii++)
             {

@@ -35,17 +35,17 @@ namespace RogueElements
             supportRect.Start += dir.GetLoc() * supportRect.Size.GetScalar(dir.ToAxis());
             supportRect.SetScalar(dir, oldGen.Draw.GetScalar(dir));
 
-            Range minMax = newGen.Draw.GetSide(dir.ToAxis());
+            IntRange minMax = newGen.Draw.GetSide(dir.ToAxis());
 
             foreach (RoomHallIndex adj in adjacentsInDir)
             {
                 IRoomGen adjGen = floorPlan.GetRoomHall(adj).RoomGen;
-                Range adjMinMax = adjGen.Draw.GetSide(dir.ToAxis());
-                minMax = new Range(Math.Min(adjMinMax.Min, minMax.Min), Math.Max(adjMinMax.Max, minMax.Max));
+                IntRange adjMinMax = adjGen.Draw.GetSide(dir.ToAxis());
+                minMax = new IntRange(Math.Min(adjMinMax.Min, minMax.Min), Math.Max(adjMinMax.Max, minMax.Max));
             }
 
-            Range oldMinMax = oldGen.Draw.GetSide(dir.ToAxis());
-            minMax = new Range(Math.Max(oldMinMax.Min, minMax.Min), Math.Min(oldMinMax.Max, minMax.Max));
+            IntRange oldMinMax = oldGen.Draw.GetSide(dir.ToAxis());
+            minMax = new IntRange(Math.Max(oldMinMax.Min, minMax.Min), Math.Min(oldMinMax.Max, minMax.Max));
 
             if (vertical)
             {

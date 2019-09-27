@@ -25,7 +25,7 @@ namespace RogueElements.Tests
                 }
                 else if (inGrid[0][ii] == 'X' && upStart > -1)
                 {
-                    roomGen.ReceiveBorderRange(new Range(upStart, ii), Dir4.Up);
+                    roomGen.ReceiveBorderRange(new IntRange(upStart, ii), Dir4.Up);
                     upStart = -1;
                 }
 
@@ -35,15 +35,15 @@ namespace RogueElements.Tests
                 }
                 else if (inGrid[inGrid.Length - 1][ii] == 'X' && downStart > -1)
                 {
-                    roomGen.ReceiveBorderRange(new Range(downStart, ii), Dir4.Down);
+                    roomGen.ReceiveBorderRange(new IntRange(downStart, ii), Dir4.Down);
                     downStart = -1;
                 }
             }
 
             if (upStart > -1)
-                roomGen.ReceiveBorderRange(new Range(upStart, inGrid[0].Length), Dir4.Up);
+                roomGen.ReceiveBorderRange(new IntRange(upStart, inGrid[0].Length), Dir4.Up);
             if (downStart > -1)
-                roomGen.ReceiveBorderRange(new Range(downStart, inGrid[0].Length), Dir4.Down);
+                roomGen.ReceiveBorderRange(new IntRange(downStart, inGrid[0].Length), Dir4.Down);
 
             int leftStart = -1;
             int rightStart = -1;
@@ -55,7 +55,7 @@ namespace RogueElements.Tests
                 }
                 else if (inGrid[ii][0] == 'X' && leftStart > -1)
                 {
-                    roomGen.ReceiveBorderRange(new Range(leftStart, ii), Dir4.Left);
+                    roomGen.ReceiveBorderRange(new IntRange(leftStart, ii), Dir4.Left);
                     leftStart = -1;
                 }
 
@@ -65,15 +65,15 @@ namespace RogueElements.Tests
                 }
                 else if (inGrid[ii][inGrid[0].Length - 1] == 'X' && rightStart > -1)
                 {
-                    roomGen.ReceiveBorderRange(new Range(rightStart, ii), Dir4.Right);
+                    roomGen.ReceiveBorderRange(new IntRange(rightStart, ii), Dir4.Right);
                     rightStart = -1;
                 }
             }
 
             if (leftStart > -1)
-                roomGen.ReceiveBorderRange(new Range(leftStart, inGrid.Length), Dir4.Left);
+                roomGen.ReceiveBorderRange(new IntRange(leftStart, inGrid.Length), Dir4.Left);
             if (rightStart > -1)
-                roomGen.ReceiveBorderRange(new Range(rightStart, inGrid.Length), Dir4.Right);
+                roomGen.ReceiveBorderRange(new IntRange(rightStart, inGrid.Length), Dir4.Right);
         }
 
         [Test]

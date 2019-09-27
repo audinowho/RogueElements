@@ -117,7 +117,7 @@ namespace RogueElements
                         // choose vertical starts if vertical, horiz starts if otherwise
                         if (possibleStarts[dir].Count > 0)
                         {
-                            Range side = this.Draw.GetSide(dir.ToAxis().Orth());
+                            IntRange side = this.Draw.GetSide(dir.ToAxis().Orth());
                             int forwardEnd = map.Rand.Next(side.Min + 1, side.Max - 1);
 
                             // choose the starts
@@ -209,9 +209,9 @@ namespace RogueElements
             // Choose whether to start at the min X/Y, or the max X/Y
             Loc forwardStartLoc = (dir == Dir4.Up || dir == Dir4.Left) ? this.Draw.Start : this.Draw.End - new Loc(1);
 
-            Range start = this.Draw.GetSide(dir.ToAxis());
+            IntRange start = this.Draw.GetSide(dir.ToAxis());
             start.Max -= 1;
-            start = new Range(start.Max, start.Min);
+            start = new IntRange(start.Max, start.Min);
 
             // draw the halls
             for (int jj = 0; jj < starts.Length; jj++)
