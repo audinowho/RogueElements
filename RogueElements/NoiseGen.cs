@@ -87,7 +87,7 @@ namespace RogueElements
                             int topright = prev_noise[newX][oldY];
                             int bottomleft = prev_noise[oldX][newY];
                             int bottomright = prev_noise[newX][newY];
-                            noise[xx][yy] = MathUtils.BiInterpolate(topleft, topright, bottomleft, bottomright, (xx % 2) * 100 / 2, (yy % 2) * 100 / 2);
+                            noise[xx][yy] = MathUtils.BiInterpolate(topleft, topright, bottomleft, bottomright, xx % 2, 2, yy % 2, 2);
                         }
 
                         // add the new noise (if not merely expanding)
