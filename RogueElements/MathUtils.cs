@@ -97,16 +97,16 @@ namespace RogueElements
             list.Insert(point + (compare > 0 ? 0 : 1), element);
         }
 
-        public static int BiInterpolate(int topleft, int topright, int bottomleft, int bottomright, int degreeX, int degreeY)
+        public static int BiInterpolate(int topleft, int topright, int bottomleft, int bottomright, int degreeX, int xTotal, int degreeY, int yTotal)
         {
-            int bottom = ((topleft * (100 - degreeX)) + (topright * degreeX)) * (100 - degreeY) / 100;
-            int top = ((bottomleft * (100 - degreeX)) + (bottomright * degreeX)) * degreeY / 100;
-            return (bottom + top) / 100;
+            int bottom = ((topleft * (xTotal - degreeX)) + (topright * degreeX)) * (yTotal - degreeY) / xTotal;
+            int top = ((bottomleft * (xTotal - degreeX)) + (bottomright * degreeX)) * degreeY / xTotal;
+            return (bottom + top) / yTotal;
         }
 
-        public static int Interpolate(int a, int b, int degree)
+        public static int Interpolate(int a, int b, int degree, int total)
         {
-            return ((a * (100 - degree)) + (b * degree)) / 100;
+            return ((a * (total - degree)) + (b * degree)) / total;
         }
     }
 }
