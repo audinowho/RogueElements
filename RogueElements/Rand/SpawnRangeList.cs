@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RogueElements
@@ -14,7 +15,7 @@ namespace RogueElements
     /// <typeparam name="T"></typeparam>
     // TODO: Binary Space Partition Tree
     [Serializable]
-    public class SpawnRangeList<T>
+    public class SpawnRangeList<T> : IEnumerable<T>, IEnumerable
     {
         private readonly List<SpawnRange> spawns;
 
@@ -58,6 +59,14 @@ namespace RogueElements
             foreach (SpawnRange spawn in this.spawns)
                 yield return spawn.Spawn;
         }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (SpawnRange spawn in this.spawns)
+                yield return spawn.Spawn;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public SpawnList<T> GetSpawnList(int level)
         {
