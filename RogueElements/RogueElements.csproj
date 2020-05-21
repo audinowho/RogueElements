@@ -171,6 +171,7 @@
     <Compile Include="MapGen\Spawning\RandomSpawnStep.cs" />
     <Compile Include="MapGen\FloorPlan\FloorStairsStep.cs" />
     <Compile Include="PriorityList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rand\IRandom.cs" />
     <Compile Include="Rand\RandBinomial.cs" />
     <Compile Include="MapGen\Rooms\RoomGen.cs" />
@@ -202,9 +203,7 @@
     <Compile Include="Rand\ReRandom.cs" />
     <Compile Include="StablePriorityQueue.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

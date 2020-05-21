@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RogueElements.Tests")]
+[assembly: AssemblyTitle("RogueElements")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Audino")]
-[assembly: AssemblyProduct("RogueElements.Tests")]
+[assembly: AssemblyProduct("RogueElements")]
 [assembly: AssemblyCopyright("Copyright © Audino 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
