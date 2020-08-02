@@ -225,6 +225,16 @@ namespace RogueElements
                 loc);
         }
 
+        /// <summary>
+        /// Finds the tile that fits the specified requirements, starting from an origin point and searching outwards.
+        /// </summary>
+        /// <param name="rectStart">Start of the rectangle to search in.</param>
+        /// <param name="rectSize">Size of the rectangle to search in.</param>
+        /// <param name="checkFree">The check to see if the tile is eligible for return.</param>
+        /// <param name="checkBlock">The check to see if the tile cannot be traversed.</param>
+        /// <param name="checkDiagBlock">The check to see if the tile would prevent a diagonal traversal.</param>
+        /// <param name="loc">Origin point to start search from.</param>
+        /// <returns></returns>
         public static Loc? FindClosestConnectedTile(Loc rectStart, Loc rectSize, LocTest checkFree, LocTest checkBlock, LocTest checkDiagBlock, Loc loc)
         {
             foreach (Loc returnLoc in FindClosestConnectedTiles(rectStart, rectSize, checkFree, checkBlock, checkDiagBlock, loc, 1))
@@ -345,7 +355,7 @@ namespace RogueElements
 
             void Fill(Loc loc)
             {
-                fillArray[loc.X][loc.Y] = true;
+                fillArray[loc.X - rectStart.X][loc.Y - rectStart.Y] = true;
                 if (forkList.Contains(loc))
                     forkList.Remove(loc);
             }

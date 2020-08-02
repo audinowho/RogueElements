@@ -291,6 +291,7 @@ namespace RogueElements.Tests
         [TestCase(2, true)]
         [TestCase(3, true)]
         [TestCase(4, true)]
+        [TestCase(5, false)]
         public void IsChokePoint(int gridType, bool result)
         {
             string[] inGrid;
@@ -351,6 +352,17 @@ namespace RogueElements.Tests
                         "XX.XX",
                     };
                     break;
+                case 5:
+                    // attempt center block without a fork (no)
+                    inGrid = new string[]
+                    {
+                        ".....",
+                        ".....",
+                        "..X..",
+                        ".....",
+                        ".....",
+                    };
+                    break;
                 default:
                     throw new Exception();
             }
@@ -361,6 +373,53 @@ namespace RogueElements.Tests
             bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
             bool isChoke = Grid.IsChokePoint(Loc.Zero, new Loc(map[0].Length, map.Length), new Loc(2), CheckBlock, CheckDiag);
+            Assert.That(isChoke, Is.EqualTo(result));
+        }
+
+        [Test]
+        [TestCase(0, false)]
+        [TestCase(1, true)]
+        public void IsChokePointSubRect(int gridType, bool result)
+        {
+            string[] inGrid;
+            switch (gridType)
+            {
+                case 0:
+                    // attempt one without a fork (no)
+                    inGrid = new string[]
+                    {
+                        ".......",
+                        ".......",
+                        ".......",
+                        ".......",
+                        ".......",
+                        ".......",
+                        ".......",
+                    };
+                    break;
+                case 1:
+                    // then a connected 2-way fork
+                    inGrid = new string[]
+                    {
+                        "XXX....",
+                        "XXXXXX.",
+                        "XXXXXX.",
+                        "XXX....",
+                        "XXX.XX.",
+                        "XXX.XX.",
+                        "XXX....",
+                    };
+                    break;
+                default:
+                    throw new Exception();
+            }
+
+            char[][] map = InitGrid(inGrid);
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            bool isChoke = Grid.IsChokePoint(new Loc(1), new Loc(5), new Loc(3), CheckBlock, CheckDiag);
             Assert.That(isChoke, Is.EqualTo(result));
         }
 
