@@ -14,14 +14,18 @@ namespace RogueElements
     {
         protected ConnectStep()
         {
+            this.Components = new ComponentCollection();
         }
 
         protected ConnectStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
         {
             this.GenericHalls = genericHalls;
+            this.Components = new ComponentCollection();
         }
 
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+
+        public ComponentCollection Components { get; set; }
 
         protected static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo)
         {

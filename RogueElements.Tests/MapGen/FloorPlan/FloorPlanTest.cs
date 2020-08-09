@@ -149,7 +149,7 @@ namespace RogueElements.Tests
             var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(1, 1, 2, 3));
             gen.Object.Identifier = 'A';
-            floorPlan.AddRoom(gen.Object, false);
+            floorPlan.AddRoom(gen.Object, false, new ComponentCollection());
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -174,7 +174,7 @@ namespace RogueElements.Tests
             gen.SetupGet(p => p.Draw).Returns(new Rect(3, 2, 3, 5));
             gen.Object.Identifier = 'B';
 
-            floorPlan.AddRoom(gen.Object, false, new RoomHallIndex(0, false), new RoomHallIndex(0, true));
+            floorPlan.AddRoom(gen.Object, false, new ComponentCollection(), new RoomHallIndex(0, false), new RoomHallIndex(0, true));
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -202,7 +202,7 @@ namespace RogueElements.Tests
             gen.Object.Identifier = 'B';
 
             // check the rooms
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false, new ComponentCollection()); });
         }
 
         [Test]
@@ -221,7 +221,7 @@ namespace RogueElements.Tests
             gen.Object.Identifier = 'A';
 
             // check the rooms
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false, new ComponentCollection()); });
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace RogueElements.Tests
             var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(1, 1, 2, 3));
             gen.Object.Identifier = 'a';
-            floorPlan.AddHall(gen.Object);
+            floorPlan.AddHall(gen.Object, new ComponentCollection());
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -268,7 +268,7 @@ namespace RogueElements.Tests
             gen.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             gen.Object.Identifier = 'b';
 
-            floorPlan.AddHall(gen.Object);
+            floorPlan.AddHall(gen.Object, new ComponentCollection());
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -288,7 +288,7 @@ namespace RogueElements.Tests
             gen.Object.Identifier = 'b';
 
             // check the rooms
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddHall(gen.Object); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddHall(gen.Object, new ComponentCollection()); });
         }
 
         [Test]
@@ -562,7 +562,7 @@ namespace RogueElements.Tests
                     roomGenTarget.Add(roomGen);
                 }
 
-                var roomPlan = new FloorRoomPlan(roomGen.Object);
+                var roomPlan = new FloorRoomPlan(roomGen.Object, new ComponentCollection());
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
@@ -580,7 +580,7 @@ namespace RogueElements.Tests
                     hallGenTarget.Add(roomGen);
                 }
 
-                var roomPlan = new FloorHallPlan(roomGen.Object);
+                var roomPlan = new FloorHallPlan(roomGen.Object, new ComponentCollection());
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
                 roomPlan.Adjacents.Add(new RoomHallIndex(1, true));

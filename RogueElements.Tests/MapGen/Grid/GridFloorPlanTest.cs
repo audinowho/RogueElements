@@ -72,7 +72,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('A');
-            floorPlan.AddRoom(new Rect(1, 0, 1, 1), gen);
+            floorPlan.AddRoom(new Rect(1, 0, 1, 1), gen, new ComponentCollection());
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -102,7 +102,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('A');
-            floorPlan.AddRoom(new Rect(1, 1, 3, 2), gen);
+            floorPlan.AddRoom(new Rect(1, 1, 3, 2), gen, new ComponentCollection());
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -123,7 +123,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('B');
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 0, 2, 2), gen); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 0, 2, 2), gen, new ComponentCollection()); });
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('A');
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen, new ComponentCollection()); });
         }
 
         [Test]
@@ -211,7 +211,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('I');
-            floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen);
+            floorPlan.AddRoom(new Rect(1, 1, 2, 2), gen, new ComponentCollection());
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
@@ -235,7 +235,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             var gen = new TestGridRoomGen('A');
-            Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(new Rect(x, y, w, h), gen); });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(new Rect(x, y, w, h), gen, new ComponentCollection()); });
         }
 
         [Test]
@@ -311,14 +311,14 @@ namespace RogueElements.Tests
             if (exception)
             {
                 if (dir == Dir4.None)
-                    Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
+                    Assert.Throws<ArgumentException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen, new ComponentCollection()); });
                 else
-                    Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen); });
+                    Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.SetHall(new LocRay4(1, 1, dir), gen, new ComponentCollection()); });
                 return;
             }
             else
             {
-                floorPlan.SetHall(new LocRay4(1, 1, dir), gen);
+                floorPlan.SetHall(new LocRay4(1, 1, dir), gen, new ComponentCollection());
             }
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
@@ -351,7 +351,7 @@ namespace RogueElements.Tests
             };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.SetHall(new LocRay4(1, 1, Dir4.Right), null);
+            floorPlan.SetHall(new LocRay4(1, 1, Dir4.Right), null, new ComponentCollection());
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -398,7 +398,7 @@ namespace RogueElements.Tests
             mockRoom.Setup(p => p.SetLoc(new Loc(x, y)));
 
             // manually place the mock object instead of using AddRoom to copy it over
-            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(Rect.Empty, mockRoom.Object));
+            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(Rect.Empty, mockRoom.Object, new ComponentCollection()));
 
             floorPlan.Object.ChooseRoomBounds(testRand.Object, 0);
 
@@ -430,20 +430,20 @@ namespace RogueElements.Tests
             mockRoom1.SetupGet(p => p.Draw).Returns(new Rect(6, 6, 3, 2));
 
             // manually place the mock object instead of using AddRoom to copy it over
-            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(new Rect(1, 1, 1, 1), mockRoom1.Object));
+            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(new Rect(1, 1, 1, 1), mockRoom1.Object, new ComponentCollection()));
             floorPlan.Object.PublicRooms[1][1] = 0;
 
             Mock<IRoomGen> mockRoom2 = new Mock<IRoomGen>(MockBehavior.Strict);
             mockRoom2.SetupGet(p => p.Draw).Returns(new Rect(8, 14, 3, 2));
 
             // manually place the mock object instead of using AddRoom to copy it over
-            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(new Rect(1, 1, 1, 1), mockRoom2.Object));
+            floorPlan.Object.PublicArrayRooms.Add(new GridRoomPlan(new Rect(1, 1, 1, 1), mockRoom2.Object, new ComponentCollection()));
             floorPlan.Object.PublicRooms[1][2] = 1;
 
             Mock<IPermissiveRoomGen> mockHall = new Mock<IPermissiveRoomGen>(MockBehavior.Strict);
             mockHall.Setup(p => p.SetLoc(new Loc(6, 8)));
             mockHall.Setup(p => p.PrepareSize(mockRand.Object, new Loc(5, 6)));
-            floorPlan.Object.PublicVHalls[1][1].SetGen(mockHall.Object);
+            floorPlan.Object.PublicVHalls[1][1].SetGen(mockHall.Object, new ComponentCollection());
 
             floorPlan.Setup(p => p.GetHallTouchRange(mockRoom1.Object, Dir4.Down, 1)).Returns(new IntRange(6, 9));
             floorPlan.Setup(p => p.GetHallTouchRange(mockRoom2.Object, Dir4.Up, 1)).Returns(new IntRange(8, 11));
@@ -475,10 +475,10 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
 
-            gridPlan.PublicVHalls[0][0].SetGen(new TestFloorPlanGen('a'));
-            gridPlan.PublicVHalls[1][0].SetGen(new TestFloorPlanGen('b'));
-            gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('c'));
-            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('d'));
+            gridPlan.PublicVHalls[0][0].SetGen(new TestFloorPlanGen('a'), new ComponentCollection());
+            gridPlan.PublicVHalls[1][0].SetGen(new TestFloorPlanGen('b'), new ComponentCollection());
+            gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('c'), new ComponentCollection());
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('d'), new ComponentCollection());
 
             TestFloorPlan compareFloorPlan;
             {
@@ -542,8 +542,8 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[2].RoomGen = gen;
             }
 
-            gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('b'));
-            gridPlan.PublicHHalls[1][0].SetGen(new TestFloorPlanGen('c'));
+            gridPlan.PublicHHalls[0][0].SetGen(new TestFloorPlanGen('b'), new ComponentCollection());
+            gridPlan.PublicHHalls[1][0].SetGen(new TestFloorPlanGen('c'), new ComponentCollection());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(
                 gridPlan.Size,
@@ -617,7 +617,7 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
 
-            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'), new ComponentCollection());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(
                 gridPlan.Size,
@@ -669,7 +669,7 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
 
-            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'), new ComponentCollection());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(
                 gridPlan.Size,
@@ -721,7 +721,7 @@ namespace RogueElements.Tests
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
 
-            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'));
+            gridPlan.PublicHHalls[0][1].SetGen(new TestFloorPlanGen('a'), new ComponentCollection());
 
             TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(
                 gridPlan.Size,

@@ -16,6 +16,7 @@ namespace RogueElements
             : base()
         {
             this.SpecificRooms = new List<SpecificGridRoomPlan<T>>();
+            this.HallComponents = new ComponentCollection();
         }
 
         public List<SpecificGridRoomPlan<T>> SpecificRooms { get; set; }
@@ -24,9 +25,11 @@ namespace RogueElements
 
         public PermissiveRoomGen<T>[][] SpecificHHalls { get; set; }
 
-        public static void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen)
+        public ComponentCollection HallComponents { get; set; }
+
+        public static void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, ComponentCollection components)
         {
-            floorPlan.SetHall(locRay, hallGen);
+            floorPlan.SetHall(locRay, hallGen, new ComponentCollection(components));
             GenContextDebug.DebugProgress("Hall");
             if (floorPlan.GetRoomPlan(locRay.Loc) == null || floorPlan.GetRoomPlan(locRay.Traverse(1)) == null)
             {
@@ -45,7 +48,7 @@ namespace RogueElements
 
             foreach (var chosenRoom in this.SpecificRooms)
             {
-                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Immutable, chosenRoom.PreferHall);
+                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, new ComponentCollection(chosenRoom.Components), chosenRoom.Immutable, chosenRoom.PreferHall);
                 GenContextDebug.DebugProgress("Room");
             }
 
@@ -57,13 +60,13 @@ namespace RogueElements
                     if (x > 0)
                     {
                         if (this.SpecificHHalls[x - 1][y] != null)
-                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Left), floorPlan, this.SpecificHHalls[x - 1][y]);
+                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Left), floorPlan, this.SpecificHHalls[x - 1][y], this.HallComponents);
                     }
 
                     if (y > 0)
                     {
                         if (this.SpecificVHalls[x][y - 1] != null)
-                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Up), floorPlan, this.SpecificVHalls[x][y - 1]);
+                            UnsafeAddHall(new LocRay4(new Loc(x, y), Dir4.Up), floorPlan, this.SpecificVHalls[x][y - 1], this.HallComponents);
                     }
                 }
             }

@@ -10,15 +10,18 @@ namespace RogueElements
 {
     public class FloorHallPlan : IFloorRoomPlan
     {
-        public FloorHallPlan(IPermissiveRoomGen roomGen)
+        public FloorHallPlan(IPermissiveRoomGen roomGen, ComponentCollection components)
         {
             this.RoomGen = roomGen;
+            this.Components = components;
             this.Adjacents = new List<RoomHallIndex>();
         }
 
         public IPermissiveRoomGen RoomGen { get; set; }
 
         IRoomGen IFloorRoomPlan.RoomGen => this.RoomGen;
+
+        public ComponentCollection Components { get; }
 
         public List<RoomHallIndex> Adjacents { get; }
     }

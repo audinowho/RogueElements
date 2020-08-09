@@ -16,17 +16,25 @@ namespace RogueElements
         {
             this.Rooms = null;
             this.Halls = null;
+            this.RoomComponents = new ComponentCollection();
+            this.HallComponents = new ComponentCollection();
         }
 
         public AddSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
         {
             this.Rooms = rooms;
             this.Halls = halls;
+            this.RoomComponents = new ComponentCollection();
+            this.HallComponents = new ComponentCollection();
         }
 
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
 
+        public ComponentCollection RoomComponents { get; set; }
+
         public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
+
+        public ComponentCollection HallComponents { get; set; }
 
         public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
@@ -156,7 +164,7 @@ namespace RogueElements
 
             // add the new room
             var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
-            floorPlan.AddRoom(newGen, true, newAdjacents.ToArray());
+            floorPlan.AddRoom(newGen, true, new ComponentCollection(this.RoomComponents), newAdjacents.ToArray());
 
             // add supporting halls
             foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -166,7 +174,7 @@ namespace RogueElements
                     // include an attachment to the newly added room
                     List<RoomHallIndex> adjToAdd = new List<RoomHallIndex> { newRoomInd };
                     adjToAdd.AddRange(adjacentsByDir[dir]);
-                    floorPlan.AddHall(supportHalls[dir], adjToAdd.ToArray());
+                    floorPlan.AddHall(supportHalls[dir], new ComponentCollection(this.HallComponents), adjToAdd.ToArray());
                 }
             }
         }

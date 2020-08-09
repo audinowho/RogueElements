@@ -11,6 +11,8 @@ namespace RogueElements
     {
         IRoomGen RoomGen { get; }
 
+        ComponentCollection Components { get; }
+
         List<RoomHallIndex> Adjacents { get; }
     }
 }

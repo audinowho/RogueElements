@@ -15,6 +15,7 @@ namespace RogueElements
         public ConnectGridBranchStep()
         {
             this.GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
+            this.HallComponents = new ComponentCollection();
         }
 
         public ConnectGridBranchStep(int connectPercent)
@@ -24,6 +25,8 @@ namespace RogueElements
         }
 
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+
+        public ComponentCollection HallComponents { get; set; }
 
         public int ConnectPercent { get; set; }
 
@@ -100,7 +103,7 @@ namespace RogueElements
                 LocRay4 chosenDir = candBonds[rand.Next(candBonds.Count)];
 
                 // connect
-                floorPlan.SetHall(chosenDir, this.GenericHalls.Pick(rand));
+                floorPlan.SetHall(chosenDir, this.GenericHalls.Pick(rand), this.HallComponents);
                 candBranchPoints.RemoveAt(randIndex);
                 GenContextDebug.DebugProgress("Connected Branch");
                 connectionsLeft--;

@@ -53,7 +53,7 @@ namespace RogueElements
                 int roomsLeft = roomsToOpen;
 
                 Loc sourceRoom = new Loc(rand.Next(floorPlan.GridWidth), rand.Next(floorPlan.GridHeight)); // randomly determine start room
-                floorPlan.AddRoom(sourceRoom, this.GenericRooms.Pick(rand));
+                floorPlan.AddRoom(sourceRoom, this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
 
                 GenContextDebug.DebugProgress("Start Room");
 
@@ -112,8 +112,8 @@ namespace RogueElements
             LocRay4 chosenRay = this.ChooseRoomExpansion(rand, floorPlan, branch);
             if (chosenRay.Dir == Dir4.None)
                 return false;
-            floorPlan.SetHall(chosenRay, this.GenericHalls.Pick(rand));
-            floorPlan.AddRoom(chosenRay.Traverse(1), this.GenericRooms.Pick(rand));
+            floorPlan.SetHall(chosenRay, this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+            floorPlan.AddRoom(chosenRay.Traverse(1), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
 
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
             return true;

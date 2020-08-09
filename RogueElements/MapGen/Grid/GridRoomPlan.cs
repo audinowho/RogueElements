@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -13,10 +14,11 @@ namespace RogueElements
     [Serializable]
     public class GridRoomPlan
     {
-        public GridRoomPlan(Rect bounds, IRoomGen roomGen)
+        public GridRoomPlan(Rect bounds, IRoomGen roomGen, ComponentCollection components)
         {
             this.Bounds = bounds;
             this.RoomGen = roomGen;
+            this.Components = components;
         }
 
         public Rect Bounds { get; set; }
@@ -27,11 +29,7 @@ namespace RogueElements
 
         public IRoomGen RoomGen { get; set; }
 
-        public bool CountsAsHall()
-        {
-            if (!this.PreferHall)
-                return false;
-            return this.RoomGen is IPermissiveRoomGen;
-        }
+        // TODO: needs a better class.  Only one RoomComponent subclass allowed per collection.  Also better lookup.
+        public ComponentCollection Components { get; }
     }
 }

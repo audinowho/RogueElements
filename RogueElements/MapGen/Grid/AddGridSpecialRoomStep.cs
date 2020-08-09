@@ -27,7 +27,7 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (!plan.Immutable && !plan.CountsAsHall())
+                if (!plan.Immutable && !plan.PreferHall)
                     room_indices.Add(ii);
             }
 
