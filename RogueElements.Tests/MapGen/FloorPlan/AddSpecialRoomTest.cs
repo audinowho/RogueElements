@@ -54,6 +54,14 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        [Ignore("TODO")]
+        public void ApplyWithComponent()
+        {
+            // check that components are placed as expected
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PlaceRoomOneAdjacent()
         {
             // the new room touches its only adjacent of the old room

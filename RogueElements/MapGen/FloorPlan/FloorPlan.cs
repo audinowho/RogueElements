@@ -102,7 +102,7 @@ namespace RogueElements
                 return this.Halls[room.Index];
         }
 
-        public void AddRoom(IRoomGen gen, bool immutable, params RoomHallIndex[] attached)
+        public void AddRoom(IRoomGen gen, bool immutable, ComponentCollection components, params RoomHallIndex[] attached)
         {
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
@@ -123,7 +123,7 @@ namespace RogueElements
 
             // we expect that the room has already been given a size
             // and that its fulfillables match up with its adjacent's fulfillables.
-            var plan = new FloorRoomPlan(gen, immutable);
+            var plan = new FloorRoomPlan(gen, components, immutable);
 
             // attach everything
             plan.Adjacents.AddRange(attached);
@@ -136,7 +136,7 @@ namespace RogueElements
             this.Rooms.Add(plan);
         }
 
-        public void AddHall(IPermissiveRoomGen gen, params RoomHallIndex[] attached)
+        public void AddHall(IPermissiveRoomGen gen, ComponentCollection components, params RoomHallIndex[] attached)
         {
             // we expect that the hall has already been given a size...
             // check against colliding on other rooms (and not halls)
@@ -149,7 +149,7 @@ namespace RogueElements
             // check against rooms that go out of bounds
             if (!this.DrawRect.Contains(gen.Draw))
                 throw new InvalidOperationException("Tried to add out of range!");
-            var plan = new FloorHallPlan(gen);
+            var plan = new FloorHallPlan(gen, components);
 
             // attach everything
             plan.Adjacents.AddRange(attached);

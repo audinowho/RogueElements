@@ -14,6 +14,13 @@ namespace RogueElements.Tests
     public class GridPathTwoSidesTest
     {
         [Test]
+        [Ignore("TODO")]
+        public void PlacePathWithComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void CreateError()
         {
             string[] inGrid =

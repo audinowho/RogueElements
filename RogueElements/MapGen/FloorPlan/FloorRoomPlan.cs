@@ -13,14 +13,18 @@ namespace RogueElements
     /// </summary>
     public class FloorRoomPlan : IFloorRoomPlan
     {
-        public FloorRoomPlan(IRoomGen roomGen, bool immutable = false)
+        public FloorRoomPlan(IRoomGen roomGen, ComponentCollection components, bool immutable = false)
         {
             this.RoomGen = roomGen;
+            this.Components = components;
             this.Adjacents = new List<RoomHallIndex>();
             this.Immutable = immutable;
         }
 
         public IRoomGen RoomGen { get; set; }
+
+        // TODO: needs a better class.  Only one RoomComponent subclass allowed per collection.  Also better lookup.
+        public ComponentCollection Components { get; }
 
         public List<RoomHallIndex> Adjacents { get; }
 

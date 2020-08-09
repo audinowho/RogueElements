@@ -12,8 +12,6 @@ namespace RogueElements
     public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>
         where T : class, IFloorPlanGenContext
     {
-        // maintains a separate grid based on markovs
-        // anything in the actual chain can link to the generic rooms/halls as a last resort
         public FloorPathBranch()
             : base()
         {
@@ -52,7 +50,7 @@ namespace RogueElements
                 room.SetLoc(new Loc(
                     rand.Next(floorPlan.DrawRect.Left, floorPlan.DrawRect.Right - room.Draw.Width + 1),
                     rand.Next(floorPlan.DrawRect.Top, floorPlan.DrawRect.Bottom - room.Draw.Height + 1)));
-                floorPlan.AddRoom(room, false);
+                floorPlan.AddRoom(room, false, new ComponentCollection(this.RoomComponents));
                 GenContextDebug.DebugProgress("Start Room");
 
                 tilesLeft -= room.Draw.Area;
@@ -310,13 +308,13 @@ namespace RogueElements
             RoomHallIndex from = expansion.From;
             if (expansion.Hall != null)
             {
-                floorPlan.AddHall(expansion.Hall, from);
+                floorPlan.AddHall(expansion.Hall, new ComponentCollection(this.HallComponents), from);
                 from = new RoomHallIndex(floorPlan.HallCount - 1, true);
                 tilesCovered += expansion.Hall.Draw.Area;
                 roomsAdded++;
             }
 
-            floorPlan.AddRoom(expansion.Room, false, from);
+            floorPlan.AddRoom(expansion.Room, false, new ComponentCollection(this.RoomComponents), from);
             tilesCovered += expansion.Room.Draw.Area;
             roomsAdded++;
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");

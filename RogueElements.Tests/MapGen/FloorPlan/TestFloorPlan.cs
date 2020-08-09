@@ -61,14 +61,14 @@ namespace RogueElements.Tests
             {
                 var gen = new TestFloorPlanGen((char)('A' + ii));
                 gen.PrepareDraw(rooms[ii]);
-                floorPlan.PublicRooms.Add(new FloorRoomPlan(gen));
+                floorPlan.PublicRooms.Add(new FloorRoomPlan(gen, new ComponentCollection()));
             }
 
             for (int ii = 0; ii < halls.Length; ii++)
             {
                 var gen = new TestFloorPlanGen((char)('a' + ii));
                 gen.PrepareDraw(halls[ii]);
-                floorPlan.PublicHalls.Add(new FloorHallPlan(gen));
+                floorPlan.PublicHalls.Add(new FloorHallPlan(gen, new ComponentCollection()));
             }
 
             // and finally a list of tuples that link rooms to rooms and halls to halls

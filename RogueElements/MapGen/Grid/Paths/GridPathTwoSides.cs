@@ -34,9 +34,9 @@ namespace RogueElements
             for (int ii = 0; ii < orth; ii++)
             {
                 // place the rooms at the edge
-                floorPlan.AddRoom(this.GapAxis.CreateLoc(0, ii), this.GenericRooms.Pick(rand));
+                floorPlan.AddRoom(this.GapAxis.CreateLoc(0, ii), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
                 GenContextDebug.DebugProgress("Room");
-                floorPlan.AddRoom(this.GapAxis.CreateLoc(scalar - 1, ii), this.GenericRooms.Pick(rand));
+                floorPlan.AddRoom(this.GapAxis.CreateLoc(scalar - 1, ii), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
                 GenContextDebug.DebugProgress("Room");
 
                 if (scalar > 2)
@@ -44,7 +44,7 @@ namespace RogueElements
                     // place hall rooms
                     Loc loc = this.GapAxis.CreateLoc(1, ii);
                     Loc size = this.GapAxis.CreateLoc(scalar - 2, 1);
-                    floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), false, true);
+                    floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), new ComponentCollection(this.HallComponents), false, true);
                     GenContextDebug.DebugProgress("Mid Room");
                 }
             }
@@ -99,7 +99,7 @@ namespace RogueElements
         public void PlaceOrientedHall(Axis4 axis, int scalar, int orth, int scalarDiff, GridPlan floorPlan, PermissiveRoomGen<T> hallGen)
         {
             Loc loc = this.GapAxis.CreateLoc(scalar, orth);
-            floorPlan.SetHall(new LocRay4(loc, axis.GetDir(scalarDiff)), hallGen);
+            floorPlan.SetHall(new LocRay4(loc, axis.GetDir(scalarDiff)), hallGen, new ComponentCollection(this.HallComponents));
         }
     }
 }

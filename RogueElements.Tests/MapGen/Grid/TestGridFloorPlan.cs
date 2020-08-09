@@ -79,7 +79,7 @@ namespace RogueElements.Tests
                         {
                             floorPlan.Rooms[x][y] = val - 'A';
                             if (addedRooms[val - 'A'] == null)
-                                addedRooms[val - 'A'] = new GridRoomPlan(new Rect(x, y, 1, 1), new TestGridRoomGen(val));
+                                addedRooms[val - 'A'] = new GridRoomPlan(new Rect(x, y, 1, 1), new TestGridRoomGen(val), new ComponentCollection());
                             addedRooms[val - 'A'].Bounds = Rect.IncludeLoc(addedRooms[val - 'A'].Bounds, new Loc(x, y));
                         }
                         else if (val == '0')
@@ -95,9 +95,9 @@ namespace RogueElements.Tests
                     {
                         // vhalls
                         if (val == '#')
-                            floorPlan.VHalls[x][y].SetGen(new TestGridRoomGen());
+                            floorPlan.VHalls[x][y].SetGen(new TestGridRoomGen(), new ComponentCollection());
                         else if (val == '.')
-                            floorPlan.VHalls[x][y].SetGen(null);
+                            floorPlan.VHalls[x][y].SetGen(null, new ComponentCollection());
                         else
                             throw new ArgumentException($"Bad input grid val at vertical hall {x},{y}!");
                     }
@@ -105,9 +105,9 @@ namespace RogueElements.Tests
                     {
                         // hhalls
                         if (val == '#')
-                            floorPlan.HHalls[x][y].SetGen(new TestGridRoomGen());
+                            floorPlan.HHalls[x][y].SetGen(new TestGridRoomGen(), new ComponentCollection());
                         else if (val == '.')
-                            floorPlan.HHalls[x][y].SetGen(null);
+                            floorPlan.HHalls[x][y].SetGen(null, new ComponentCollection());
                         else
                             throw new ArgumentException($"Bad input grid val at horizontal hall {x},{y}!");
                     }

@@ -14,6 +14,13 @@ namespace RogueElements.Tests
     public class GridPathSpecificTest
     {
         [Test]
+        [Ignore("TODO")]
+        public void PlacePathWithComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         [TestCase(3, 2, 3, 3)]
         [TestCase(5, 2, 3, 3)]
         [TestCase(4, 1, 3, 3)]

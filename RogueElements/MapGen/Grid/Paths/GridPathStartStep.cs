@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -24,20 +25,21 @@ namespace RogueElements
             return roll;
         }
 
-        public static void SafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen, bool preferHall = false)
+        public static void SafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen, ComponentCollection roomComponents, ComponentCollection hallComponents, bool preferHall = false)
         {
-            floorPlan.SetHall(locRay, hallGen);
+            floorPlan.SetHall(locRay, hallGen, new ComponentCollection(hallComponents));
+            ComponentCollection collection = preferHall ? hallComponents : roomComponents;
             if (floorPlan.GetRoomPlan(locRay.Loc) == null)
-                floorPlan.AddRoom(locRay.Loc, roomGen, false, preferHall);
+                floorPlan.AddRoom(locRay.Loc, roomGen, new ComponentCollection(collection), false, preferHall);
             Loc dest = locRay.Traverse(1);
             if (floorPlan.GetRoomPlan(dest) == null)
-                floorPlan.AddRoom(dest, roomGen, false, preferHall);
+                floorPlan.AddRoom(dest, roomGen, new ComponentCollection(collection), false, preferHall);
         }
 
         public virtual void CreateErrorPath(IRandom rand, GridPlan floorPlan)
         {
             floorPlan.Clear();
-            floorPlan.AddRoom(new Loc(0, 0), this.GetDefaultGen());
+            floorPlan.AddRoom(new Loc(0, 0), this.GetDefaultGen(), new ComponentCollection());
         }
 
         public virtual RoomGen<T> GetDefaultGen()

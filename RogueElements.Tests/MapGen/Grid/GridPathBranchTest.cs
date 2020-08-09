@@ -14,6 +14,13 @@ namespace RogueElements.Tests
     public class GridPathBranchTest
     {
         [Test]
+        [Ignore("TODO")]
+        public void PlacePathWithComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         [TestCase(false)]
         [TestCase(true)]
         public void GetPossibleExpansionsAlone(bool branch)

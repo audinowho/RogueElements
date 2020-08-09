@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
@@ -15,6 +16,7 @@ namespace RogueElements
         {
             this.Bounds = bounds;
             this.RoomGen = roomGen;
+            this.Components = new ComponentCollection();
         }
 
         public Rect Bounds { get; set; }
@@ -25,11 +27,6 @@ namespace RogueElements
 
         public RoomGen<T> RoomGen { get; set; }
 
-        public bool CountsAsHall()
-        {
-            if (!this.PreferHall)
-                return false;
-            return this.RoomGen is IPermissiveRoomGen;
-        }
+        public ComponentCollection Components { get; set; }
     }
 }

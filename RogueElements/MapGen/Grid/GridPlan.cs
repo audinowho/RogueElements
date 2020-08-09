@@ -134,16 +134,16 @@ namespace RogueElements
             List<RoomHallIndex> roomToHall = new List<RoomHallIndex>();
             foreach (var plan in this.ArrayRooms)
             {
-                if (plan.CountsAsHall())
+                if (plan.PreferHall)
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
-                    map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen);
+                    map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen, plan.Components);
                     GenContextDebug.DebugProgress("Add Hall Room");
                 }
                 else
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.RoomCount, false));
-                    map.RoomPlan.AddRoom(plan.RoomGen, plan.Immutable);
+                    map.RoomPlan.AddRoom(plan.RoomGen, plan.Immutable, plan.Components);
                     GenContextDebug.DebugProgress("Added Room");
                 }
             }
@@ -180,7 +180,7 @@ namespace RogueElements
                                     adj.Add(roomToHall[downRoom]);
                             }
 
-                            map.RoomPlan.AddHall(hall.Gens[ii], adj.ToArray());
+                            map.RoomPlan.AddHall(hall.Gens[ii], new ComponentCollection(), adj.ToArray());
                             GenContextDebug.DebugProgress("Add Hall");
                         }
                     }
@@ -215,7 +215,7 @@ namespace RogueElements
                                     adj.Add(roomToHall[rightRoom]);
                             }
 
-                            map.RoomPlan.AddHall(hall.Gens[ii], adj.ToArray());
+                            map.RoomPlan.AddHall(hall.Gens[ii], new ComponentCollection(), adj.ToArray());
                             GenContextDebug.DebugProgress("Add Hall");
                         }
                     }
@@ -300,22 +300,22 @@ namespace RogueElements
             }
         }
 
-        public void AddRoom(Loc loc, IRoomGen gen)
+        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components)
         {
-            this.AddRoom(new Rect(loc, new Loc(1)), gen, false, false);
+            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, false, false);
         }
 
-        public void AddRoom(Loc loc, IRoomGen gen, bool immutable, bool preferHall)
+        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components, bool immutable, bool preferHall)
         {
-            this.AddRoom(new Rect(loc, new Loc(1)), gen, immutable, preferHall);
+            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, immutable, preferHall);
         }
 
-        public void AddRoom(Rect rect, IRoomGen gen)
+        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components)
         {
-            this.AddRoom(rect, gen, false, false);
+            this.AddRoom(rect, gen, components, false, false);
         }
 
-        public void AddRoom(Rect rect, IRoomGen gen, bool immutable, bool preferHall)
+        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components, bool immutable, bool preferHall)
         {
             Rect floorRect = new Rect(0, 0, this.GridWidth, this.GridHeight);
             if (!floorRect.Contains(rect))
@@ -334,7 +334,10 @@ namespace RogueElements
                 }
             }
 
-            var room = new GridRoomPlan(rect, gen.Copy())
+            if (preferHall && !(gen is IPermissiveRoomGen))
+                throw new InvalidOperationException("Cannot prefer hall for a non-permissive gen!");
+
+            var room = new GridRoomPlan(rect, gen.Copy(), components)
             {
                 Immutable = immutable,
                 PreferHall = preferHall,
@@ -374,7 +377,8 @@ namespace RogueElements
         /// </summary>
         /// <param name="locRay">The location of the room + the direction of the connecting hall relative to the room.</param>
         /// <param name="hallGen"></param>
-        public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen)
+        /// <param name="components">components to include in the hall</param>
+        public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen, ComponentCollection components)
         {
             if (locRay.Dir == Dir4.None)
                 throw new ArgumentException("Invalid direction.");
@@ -384,23 +388,26 @@ namespace RogueElements
             IPermissiveRoomGen addHall = null;
             if (hallGen != null)
                 addHall = (IPermissiveRoomGen)hallGen.Copy();
+            else
+                components = new ComponentCollection();
+
             switch (locRay.Dir)
             {
                 case Dir4.Down:
                     if (locRay.Loc.Y < this.GridHeight - 1)
-                        this.VHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall);
+                        this.VHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall, components);
                     break;
                 case Dir4.Left:
                     if (locRay.Loc.X > 0)
-                        this.HHalls[locRay.Loc.X - 1][locRay.Loc.Y].SetGen(addHall);
+                        this.HHalls[locRay.Loc.X - 1][locRay.Loc.Y].SetGen(addHall, components);
                     break;
                 case Dir4.Up:
                     if (locRay.Loc.Y > 0)
-                        this.VHalls[locRay.Loc.X][locRay.Loc.Y - 1].SetGen(addHall);
+                        this.VHalls[locRay.Loc.X][locRay.Loc.Y - 1].SetGen(addHall, components);
                     break;
                 case Dir4.Right:
                     if (locRay.Loc.X < this.GridWidth - 1)
-                        this.HHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall);
+                        this.HHalls[locRay.Loc.X][locRay.Loc.Y].SetGen(addHall, components);
                     break;
                 case Dir4.None:
                     throw new ArgumentException($"No hall for dir {nameof(Dir4.None)}");

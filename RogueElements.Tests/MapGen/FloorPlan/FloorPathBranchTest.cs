@@ -14,6 +14,20 @@ namespace RogueElements.Tests
     public class FloorPathBranchTest
     {
         [Test]
+        [Ignore("TODO")]
+        public void PlaceRoomWithComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void PlaceHallWithComponent()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
         public void PrepareRoomRestrained()
         {
             // confirm the room is properly downsized
