@@ -15,9 +15,9 @@ namespace RogueElements.Tests
 
         public int[][] PublicRooms => this.Rooms;
 
-        public GridHallPlan[][] PublicVHalls => this.VHalls;
+        public GridHallGroup[][] PublicVHalls => this.VHalls;
 
-        public GridHallPlan[][] PublicHHalls => this.HHalls;
+        public GridHallGroup[][] PublicHHalls => this.HHalls;
 
         public static void CompareFloorPlans(TestGridFloorPlan floorPlan, TestGridFloorPlan compareFloorPlan)
         {
@@ -29,6 +29,7 @@ namespace RogueElements.Tests
                 GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
+                Assert.That(plan.Components.Components, Is.EquivalentTo(comparePlan.Components.Components));
             }
 
             // check positions
@@ -38,7 +39,13 @@ namespace RogueElements.Tests
             {
                 Assert.That(floorPlan.PublicVHalls[xx].Length, Is.EqualTo(compareFloorPlan.PublicVHalls[xx].Length));
                 for (int yy = 0; yy < floorPlan.PublicVHalls[xx].Length; yy++)
-                    Assert.That(floorPlan.PublicVHalls[xx][yy].Gens, Is.EqualTo(compareFloorPlan.PublicVHalls[xx][yy].Gens));
+                {
+                    for (int nn = 0; nn < floorPlan.PublicVHalls[xx][yy].HallParts.Count; nn++)
+                    {
+                        Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen));
+                        Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].Components.Components, Is.EquivalentTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].Components.Components));
+                    }
+                }
             }
 
             Assert.That(floorPlan.PublicHHalls.Length, Is.EqualTo(compareFloorPlan.PublicHHalls.Length));
@@ -46,7 +53,13 @@ namespace RogueElements.Tests
             {
                 Assert.That(floorPlan.PublicHHalls[xx].Length, Is.EqualTo(compareFloorPlan.PublicHHalls[xx].Length));
                 for (int yy = 0; yy < floorPlan.PublicVHalls[xx].Length; yy++)
-                    Assert.That(floorPlan.PublicHHalls[xx][yy].Gens, Is.EqualTo(compareFloorPlan.PublicHHalls[xx][yy].Gens));
+                {
+                    for (int nn = 0; nn < floorPlan.PublicHHalls[xx][yy].HallParts.Count; nn++)
+                    {
+                        Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen));
+                        Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].Components.Components, Is.EquivalentTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].Components.Components));
+                    }
+                }
             }
         }
 
@@ -95,9 +108,9 @@ namespace RogueElements.Tests
                     {
                         // vhalls
                         if (val == '#')
-                            floorPlan.VHalls[x][y].SetGen(new TestGridRoomGen(), new ComponentCollection());
+                            floorPlan.VHalls[x][y].SetHall(new GridHallPlan(new TestGridRoomGen(), new ComponentCollection()));
                         else if (val == '.')
-                            floorPlan.VHalls[x][y].SetGen(null, new ComponentCollection());
+                            floorPlan.VHalls[x][y].SetHall(null);
                         else
                             throw new ArgumentException($"Bad input grid val at vertical hall {x},{y}!");
                     }
@@ -105,9 +118,9 @@ namespace RogueElements.Tests
                     {
                         // hhalls
                         if (val == '#')
-                            floorPlan.HHalls[x][y].SetGen(new TestGridRoomGen(), new ComponentCollection());
+                            floorPlan.HHalls[x][y].SetHall(new GridHallPlan(new TestGridRoomGen(), new ComponentCollection()));
                         else if (val == '.')
-                            floorPlan.HHalls[x][y].SetGen(null, new ComponentCollection());
+                            floorPlan.HHalls[x][y].SetHall(null);
                         else
                             throw new ArgumentException($"Bad input grid val at horizontal hall {x},{y}!");
                     }

@@ -12,7 +12,7 @@ namespace RogueElements
     /// Contains data about which cells a room occupies in a GridFloorPlan.
     /// </summary>
     [Serializable]
-    public class GridRoomPlan
+    public class GridRoomPlan : IRoomPlan
     {
         public GridRoomPlan(Rect bounds, IRoomGen roomGen, ComponentCollection components)
         {
@@ -30,6 +30,7 @@ namespace RogueElements
         public IRoomGen RoomGen { get; set; }
 
         // TODO: needs a better class.  Only one RoomComponent subclass allowed per collection.  Also better lookup.
+        // This member will be assigned by reference to the Components of FloorRoomPlan
         public ComponentCollection Components { get; }
     }
 }

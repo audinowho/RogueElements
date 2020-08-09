@@ -7,12 +7,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IFloorRoomPlan
+    public interface IFloorRoomPlan : IRoomPlan
     {
-        IRoomGen RoomGen { get; }
-
-        ComponentCollection Components { get; }
-
         List<RoomHallIndex> Adjacents { get; }
     }
 }

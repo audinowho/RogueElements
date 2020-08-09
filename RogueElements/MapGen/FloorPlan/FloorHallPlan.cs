@@ -19,7 +19,7 @@ namespace RogueElements
 
         public IPermissiveRoomGen RoomGen { get; set; }
 
-        IRoomGen IFloorRoomPlan.RoomGen => this.RoomGen;
+        IRoomGen IRoomPlan.RoomGen => this.RoomGen;
 
         public ComponentCollection Components { get; }
 
