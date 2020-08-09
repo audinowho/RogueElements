@@ -516,19 +516,19 @@ namespace RogueElements.Examples
                     }
                     else if (alignX)
                     {
-                        IPermissiveRoomGen hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Down));
+                        GridHallPlan hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Down));
                         if (hall != null)
                         {
-                            RewriteLine(farthestPrint, "Hall: " + hall);
+                            RewriteLine(farthestPrint, "Hall: " + hall.RoomGen);
                             farthestPrint++;
                         }
                     }
                     else if (alignY)
                     {
-                        IPermissiveRoomGen hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Right));
+                        GridHallPlan hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Right));
                         if (hall != null)
                         {
-                            RewriteLine(farthestPrint, "Hall: " + hall);
+                            RewriteLine(farthestPrint, "Hall: " + hall.RoomGen);
                             farthestPrint++;
                         }
                     }
