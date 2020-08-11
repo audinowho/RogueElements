@@ -29,7 +29,7 @@ namespace RogueElements
 
         public static void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, ComponentCollection components)
         {
-            floorPlan.SetHall(locRay, hallGen, new ComponentCollection(components));
+            floorPlan.SetHall(locRay, hallGen, components.Clone());
             GenContextDebug.DebugProgress("Hall");
             if (floorPlan.GetRoomPlan(locRay.Loc) == null || floorPlan.GetRoomPlan(locRay.Traverse(1)) == null)
             {
@@ -48,7 +48,7 @@ namespace RogueElements
 
             foreach (var chosenRoom in this.SpecificRooms)
             {
-                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, new ComponentCollection(chosenRoom.Components), chosenRoom.Immutable, chosenRoom.PreferHall);
+                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Components.Clone(), chosenRoom.Immutable, chosenRoom.PreferHall);
                 GenContextDebug.DebugProgress("Room");
             }
 

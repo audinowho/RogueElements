@@ -27,13 +27,13 @@ namespace RogueElements
 
         public static void SafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen, ComponentCollection roomComponents, ComponentCollection hallComponents, bool preferHall = false)
         {
-            floorPlan.SetHall(locRay, hallGen, new ComponentCollection(hallComponents));
+            floorPlan.SetHall(locRay, hallGen, hallComponents.Clone());
             ComponentCollection collection = preferHall ? hallComponents : roomComponents;
             if (floorPlan.GetRoomPlan(locRay.Loc) == null)
-                floorPlan.AddRoom(locRay.Loc, roomGen, new ComponentCollection(collection), false, preferHall);
+                floorPlan.AddRoom(locRay.Loc, roomGen, collection.Clone(), false, preferHall);
             Loc dest = locRay.Traverse(1);
             if (floorPlan.GetRoomPlan(dest) == null)
-                floorPlan.AddRoom(dest, roomGen, new ComponentCollection(collection), false, preferHall);
+                floorPlan.AddRoom(dest, roomGen, collection.Clone(), false, preferHall);
         }
 
         public virtual void CreateErrorPath(IRandom rand, GridPlan floorPlan)

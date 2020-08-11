@@ -25,7 +25,7 @@ namespace RogueElements.Tests
                 FloorRoomPlan comparePlan = compareFloorPlan.PublicRooms[ii];
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
-                Assert.That(plan.Components.Components, Is.EquivalentTo(comparePlan.Components.Components));
+                Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
             }
 
             Assert.That(floorPlan.HallCount, Is.EqualTo(compareFloorPlan.HallCount));
@@ -35,7 +35,7 @@ namespace RogueElements.Tests
                 FloorHallPlan comparePlan = compareFloorPlan.PublicHalls[ii];
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
-                Assert.That(plan.Components.Components, Is.EquivalentTo(comparePlan.Components.Components));
+                Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
             }
         }
 
