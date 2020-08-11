@@ -3,25 +3,22 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 using System;
-using System.Collections.Generic;
 
 namespace RogueElements
 {
     [Serializable]
-    public class ComponentCollection
+    public class ComponentCollection : TypeDict<RoomComponent>
     {
         public ComponentCollection()
         {
-            this.Components = new List<RoomComponent>();
         }
 
-        public ComponentCollection(ComponentCollection other)
+        public ComponentCollection Clone()
         {
-            this.Components = new List<RoomComponent>();
-            foreach (RoomComponent component in other.Components)
-                this.Components.Add(component.Clone());
+            ComponentCollection newCollection = new ComponentCollection();
+            foreach (RoomComponent component in this)
+                newCollection.Set(component.Clone());
+            return newCollection;
         }
-
-        public List<RoomComponent> Components { get; }
     }
 }

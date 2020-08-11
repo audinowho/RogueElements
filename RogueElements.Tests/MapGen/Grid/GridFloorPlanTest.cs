@@ -15,6 +15,14 @@ namespace RogueElements.Tests
     {
         [Test]
         [Ignore("TODO")]
+        public void GetAll()
+        {
+            // init a grid and call the enumerator and make sure it has everything
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        [Ignore("TODO")]
         public void GetHall()
         {
             // get existent hall
@@ -49,6 +57,14 @@ namespace RogueElements.Tests
             // erase existent room
             // erase nonexistent room (same deal)
             // erase a big room; the whole room should be gone
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void GetRoomPlans()
+        {
+            // Test enumerator
             throw new NotImplementedException();
         }
 

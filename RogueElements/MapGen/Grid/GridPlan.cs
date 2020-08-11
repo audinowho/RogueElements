@@ -254,6 +254,30 @@ namespace RogueElements
             return null;
         }
 
+        public IEnumerable<IRoomPlan> GetAllPlans()
+        {
+            foreach (GridRoomPlan plan in this.ArrayRooms)
+                yield return plan;
+
+            for (int xx = 0; xx < this.VHalls.Length; xx++)
+            {
+                for (int yy = 0; yy < this.VHalls[xx].Length; yy++)
+                {
+                    for (int ii = 0; ii < this.VHalls[xx][yy].HallParts.Count; ii++)
+                        yield return this.VHalls[xx][yy].HallParts[ii];
+                }
+            }
+
+            for (int xx = 0; xx < this.HHalls.Length; xx++)
+            {
+                for (int yy = 0; yy < this.HHalls[xx].Length; yy++)
+                {
+                    for (int ii = 0; ii < this.HHalls[xx][yy].HallParts.Count; ii++)
+                        yield return this.HHalls[xx][yy].HallParts[ii];
+                }
+            }
+        }
+
         public IRoomGen GetRoom(int index)
         {
             return this.ArrayRooms[index].RoomGen;

@@ -89,6 +89,11 @@ namespace RogueElements
             return this.Rooms[index].RoomGen;
         }
 
+        public virtual FloorHallPlan GetHallPlan(int index)
+        {
+            return this.Halls[index];
+        }
+
         public virtual IPermissiveRoomGen GetHall(int index)
         {
             return this.Halls[index].RoomGen;
@@ -426,6 +431,15 @@ namespace RogueElements
             }
 
             return results;
+        }
+
+        public IEnumerable<IRoomPlan> GetAllPlans()
+        {
+            foreach (FloorRoomPlan plan in this.Rooms)
+                yield return plan;
+
+            foreach (FloorHallPlan plan in this.Halls)
+                yield return plan;
         }
 
         private List<int> GetBreadthFirstAdjacents(int nodeIndex)

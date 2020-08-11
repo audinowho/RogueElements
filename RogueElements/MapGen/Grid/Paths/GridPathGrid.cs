@@ -38,12 +38,12 @@ namespace RogueElements
             {
                 for (int y = 1; y < floorPlan.GridHeight - 1; y++)
                 {
-                    floorPlan.AddRoom(new Loc(x, y), this.GetDefaultGen(), new ComponentCollection(this.HallComponents), false, true);
+                    floorPlan.AddRoom(new Loc(x, y), this.GetDefaultGen(), this.HallComponents.Clone(), false, true);
 
                     if (x > 1)
-                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Left), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Left), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
                     if (y > 1)
-                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Up), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                        floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Up), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
 
                     GenContextDebug.DebugProgress("Room");
                 }
@@ -58,15 +58,15 @@ namespace RogueElements
             {
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
-                    floorPlan.AddRoom(new Loc(x, 0), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
-                    floorPlan.SetHall(new LocRay4(new Loc(x, 0), Dir4.Down), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                    floorPlan.AddRoom(new Loc(x, 0), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    floorPlan.SetHall(new LocRay4(new Loc(x, 0), Dir4.Down), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
                     GenContextDebug.DebugProgress("Room");
                 }
 
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
-                    floorPlan.AddRoom(new Loc(x, floorPlan.GridHeight - 1), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
-                    floorPlan.SetHall(new LocRay4(new Loc(x, floorPlan.GridHeight - 1), Dir4.Up), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                    floorPlan.AddRoom(new Loc(x, floorPlan.GridHeight - 1), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    floorPlan.SetHall(new LocRay4(new Loc(x, floorPlan.GridHeight - 1), Dir4.Up), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
                     GenContextDebug.DebugProgress("Room");
                 }
             }
@@ -75,15 +75,15 @@ namespace RogueElements
             {
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
-                    floorPlan.AddRoom(new Loc(0, y), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
-                    floorPlan.SetHall(new LocRay4(new Loc(0, y), Dir4.Right), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                    floorPlan.AddRoom(new Loc(0, y), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    floorPlan.SetHall(new LocRay4(new Loc(0, y), Dir4.Right), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
                     GenContextDebug.DebugProgress("Room");
                 }
 
                 if (RollRatio(rand, ref roomOpen, ref roomMax))
                 {
-                    floorPlan.AddRoom(new Loc(floorPlan.GridWidth - 1, y), this.GenericRooms.Pick(rand), new ComponentCollection(this.RoomComponents));
-                    floorPlan.SetHall(new LocRay4(new Loc(floorPlan.GridWidth - 1, y), Dir4.Left), this.GenericHalls.Pick(rand), new ComponentCollection(this.HallComponents));
+                    floorPlan.AddRoom(new Loc(floorPlan.GridWidth - 1, y), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    floorPlan.SetHall(new LocRay4(new Loc(floorPlan.GridWidth - 1, y), Dir4.Left), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
                     GenContextDebug.DebugProgress("Room");
                 }
             }

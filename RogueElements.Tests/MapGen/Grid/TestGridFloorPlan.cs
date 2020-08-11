@@ -29,7 +29,7 @@ namespace RogueElements.Tests
                 GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
-                Assert.That(plan.Components.Components, Is.EquivalentTo(comparePlan.Components.Components));
+                Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
             }
 
             // check positions
@@ -43,7 +43,7 @@ namespace RogueElements.Tests
                     for (int nn = 0; nn < floorPlan.PublicVHalls[xx][yy].HallParts.Count; nn++)
                     {
                         Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen));
-                        Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].Components.Components, Is.EquivalentTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].Components.Components));
+                        Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].Components, Is.EquivalentTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].Components));
                     }
                 }
             }
@@ -57,7 +57,7 @@ namespace RogueElements.Tests
                     for (int nn = 0; nn < floorPlan.PublicHHalls[xx][yy].HallParts.Count; nn++)
                     {
                         Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen));
-                        Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].Components.Components, Is.EquivalentTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].Components.Components));
+                        Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].Components, Is.EquivalentTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].Components));
                     }
                 }
             }

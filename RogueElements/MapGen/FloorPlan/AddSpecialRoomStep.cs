@@ -164,7 +164,7 @@ namespace RogueElements
 
             // add the new room
             var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
-            floorPlan.AddRoom(newGen, true, new ComponentCollection(this.RoomComponents), newAdjacents.ToArray());
+            floorPlan.AddRoom(newGen, true, this.RoomComponents.Clone(), newAdjacents.ToArray());
 
             // add supporting halls
             foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -174,7 +174,7 @@ namespace RogueElements
                     // include an attachment to the newly added room
                     List<RoomHallIndex> adjToAdd = new List<RoomHallIndex> { newRoomInd };
                     adjToAdd.AddRange(adjacentsByDir[dir]);
-                    floorPlan.AddHall(supportHalls[dir], new ComponentCollection(this.HallComponents), adjToAdd.ToArray());
+                    floorPlan.AddHall(supportHalls[dir], this.HallComponents.Clone(), adjToAdd.ToArray());
                 }
             }
         }
