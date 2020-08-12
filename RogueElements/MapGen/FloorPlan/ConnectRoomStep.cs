@@ -28,7 +28,11 @@ namespace RogueElements
         {
             List<RoomHallIndex> candBranchPoints = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
+            {
+                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                    continue;
                 candBranchPoints.Add(new RoomHallIndex(ii, false));
+            }
 
             // compute a goal amount of terminals to connect
             // this computation ignores the fact that some terminals may be impossible

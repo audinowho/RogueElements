@@ -79,7 +79,7 @@ namespace RogueElements
             this.Halls.Clear();
         }
 
-        public FloorRoomPlan GetRoomPlan(int index)
+        public virtual FloorRoomPlan GetRoomPlan(int index)
         {
             return this.Rooms[index];
         }

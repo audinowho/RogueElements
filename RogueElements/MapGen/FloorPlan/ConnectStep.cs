@@ -15,17 +15,21 @@ namespace RogueElements
         protected ConnectStep()
         {
             this.Components = new ComponentCollection();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         protected ConnectStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
         {
             this.GenericHalls = genericHalls;
             this.Components = new ComponentCollection();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
         public ComponentCollection Components { get; set; }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         protected static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo)
         {

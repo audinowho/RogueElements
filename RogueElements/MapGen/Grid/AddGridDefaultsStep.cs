@@ -14,26 +14,33 @@ namespace RogueElements
     {
         public AddGridDefaultsStep()
         {
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public AddGridDefaultsStep(RandRange defaultRatio)
         {
             this.DefaultRatio = defaultRatio;
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public RandRange DefaultRatio { get; set; }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             List<int> candidates = new List<int>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                if (!floorPlan.GetRoomPlan(ii).Immutable)
-                {
-                    List<int> adjacents = floorPlan.GetAdjacentRooms(ii);
-                    if (adjacents.Count > 1)
-                        candidates.Add(ii);
-                }
+                if (floorPlan.GetRoomPlan(ii).Immutable)
+                    continue;
+
+                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                    continue;
+
+                List<int> adjacents = floorPlan.GetAdjacentRooms(ii);
+                if (adjacents.Count > 1)
+                    candidates.Add(ii);
             }
 
             // our candidates are all rooms except immutables and terminals

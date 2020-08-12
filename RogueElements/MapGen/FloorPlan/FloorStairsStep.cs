@@ -18,29 +18,36 @@ namespace RogueElements
         {
             this.Entrances = new List<TEntrance>();
             this.Exits = new List<TExit>();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public FloorStairsStep(TEntrance entrance, TExit exit)
         {
             this.Entrances = new List<TEntrance> { entrance };
             this.Exits = new List<TExit> { exit };
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public FloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
         {
             this.Entrances = entrances;
             this.Exits = exits;
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public List<TEntrance> Entrances { get; }
 
         public List<TExit> Exits { get; }
 
+        public List<BaseRoomFilter> Filters { get; set; }
+
         public override void Apply(TGenContext map)
         {
             List<int> room_indices = new List<int>();
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
+                if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
+                    continue;
                 room_indices.Add(ii);
             }
 

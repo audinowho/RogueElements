@@ -28,6 +28,17 @@ namespace RogueElements
         {
             List<List<RoomHallIndex>> candBranchPoints = GetBranchArms(floorPlan);
 
+            // remove the rooms that do not pass filter
+            for (int xx = 0; xx < candBranchPoints.Count; xx++)
+            {
+                for (int yy = candBranchPoints[xx].Count - 1; yy >= 0; yy--)
+                {
+                    IFloorRoomPlan plan = floorPlan.GetRoomHall(candBranchPoints[xx][yy]);
+                    if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                        candBranchPoints[xx].RemoveAt(yy);
+                }
+            }
+
             // compute a goal amount of branches to connect
             // this computation ignores the fact that some terminals may be impossible
             var randBin = new RandBinomial(candBranchPoints.Count, this.ConnectPercent);
