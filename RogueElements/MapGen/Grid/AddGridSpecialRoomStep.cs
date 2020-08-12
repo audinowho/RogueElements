@@ -15,9 +15,12 @@ namespace RogueElements
         public AddGridSpecialRoomStep()
             : base()
         {
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
@@ -27,6 +30,8 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
+                if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                    continue;
                 if (!plan.Immutable && !plan.PreferHall)
                     room_indices.Add(ii);
             }

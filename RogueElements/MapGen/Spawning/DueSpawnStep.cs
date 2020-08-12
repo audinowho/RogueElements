@@ -48,8 +48,10 @@ namespace RogueElements
             int startRoom = 0;
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
-                IRoomGen room = map.RoomPlan.GetRoom(ii);
-                if (Collision.InBounds(room.Draw, map.GetLoc(0)))
+                FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
+                if (!BaseRoomFilter.PassesAllFilters(room, this.Filters))
+                    continue;
+                if (Collision.InBounds(room.RoomGen.Draw, map.GetLoc(0)))
                 {
                     startRoom = ii;
                     break;

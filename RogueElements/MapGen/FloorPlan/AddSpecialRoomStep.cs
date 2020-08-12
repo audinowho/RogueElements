@@ -18,6 +18,7 @@ namespace RogueElements
             this.Halls = null;
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public AddSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
@@ -26,6 +27,7 @@ namespace RogueElements
             this.Halls = halls;
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
@@ -35,6 +37,8 @@ namespace RogueElements
         public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
 
         public ComponentCollection HallComponents { get; set; }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
@@ -84,8 +88,11 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 FloorRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (!plan.Immutable &&
-                    plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
+                if (plan.Immutable)
+                    continue;
+                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                    continue;
+                if (plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
                     plan.RoomGen.Draw.Height >= newGen.Draw.Height)
                     room_indices.Add(new RoomHallIndex(ii, false), ComputeRoomChance(factor, plan.RoomGen.Draw, newGen.Draw));
             }
@@ -94,6 +101,8 @@ namespace RogueElements
             {
                 var roomHall = new RoomHallIndex(ii, true);
                 IFloorRoomPlan plan = floorPlan.GetRoomHall(roomHall);
+                if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                    continue;
                 if (plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
                     plan.RoomGen.Draw.Height >= newGen.Draw.Height)
                     room_indices.Add(roomHall, ComputeRoomChance(factor, plan.RoomGen.Draw, newGen.Draw));

@@ -16,12 +16,16 @@ namespace RogueElements
         protected RoomSpawnStep()
             : base()
         {
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         protected RoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
             : base(spawn)
         {
+            this.Filters = new List<BaseRoomFilter>();
         }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         public virtual void SpawnRandInCandRooms(TGenContext map, SpawnList<RoomHallIndex> spawningRooms, List<TSpawnable> spawns, int successPercent)
         {

@@ -33,6 +33,8 @@ namespace RogueElements
 
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
+                if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
+                    continue;
                 spawningRooms.Add(new RoomHallIndex(ii, false));
             }
 
@@ -40,6 +42,8 @@ namespace RogueElements
             {
                 for (int ii = 0; ii < map.RoomPlan.HallCount; ii++)
                 {
+                    if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetHallPlan(ii), this.Filters))
+                        continue;
                     spawningRooms.Add(new RoomHallIndex(ii, true));
                 }
             }

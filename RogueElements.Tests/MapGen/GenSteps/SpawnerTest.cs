@@ -264,9 +264,9 @@ namespace RogueElements.Tests
 
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
-            mockFloor.Setup(p => p.GetRoom(0)).Returns(new TestFloorPlanGen('A'));
-            mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
-            mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
@@ -295,10 +295,10 @@ namespace RogueElements.Tests
 
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(4);
-            mockFloor.Setup(p => p.GetRoom(0)).Returns(new TestFloorPlanGen('A'));
-            mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
-            mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
-            mockFloor.Setup(p => p.GetRoom(3)).Returns(new TestFloorPlanGen('D'));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan(new TestFloorPlanGen('D'), new ComponentCollection()));
             List<int> adjacents = new List<int>();
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
             adjacents = new List<int> { 2 };
@@ -347,9 +347,9 @@ namespace RogueElements.Tests
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoom(0)).Returns(startRoom.Object);
-            mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
-            mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             List<int> adjacents = new List<int> { 1 };
@@ -391,13 +391,13 @@ namespace RogueElements.Tests
 
             Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
-            mockFloor.Setup(p => p.GetRoom(0)).Returns(new TestFloorPlanGen('A'));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'B';
-            mockFloor.Setup(p => p.GetRoom(1)).Returns(startRoom.Object);
-            mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             List<int> adjacents = new List<int> { 1 };
@@ -445,10 +445,10 @@ namespace RogueElements.Tests
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoom(0)).Returns(startRoom.Object);
-            mockFloor.Setup(p => p.GetRoom(1)).Returns(new TestFloorPlanGen('B'));
-            mockFloor.Setup(p => p.GetRoom(2)).Returns(new TestFloorPlanGen('C'));
-            mockFloor.Setup(p => p.GetRoom(3)).Returns(new TestFloorPlanGen('D'));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan(new TestFloorPlanGen('D'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             List<int> adjacents = new List<int> { 1, 2 };

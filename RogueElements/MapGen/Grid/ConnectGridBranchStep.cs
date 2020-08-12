@@ -16,6 +16,7 @@ namespace RogueElements
         {
             this.GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
             this.HallComponents = new ComponentCollection();
+            this.Filters = new List<BaseRoomFilter>();
         }
 
         public ConnectGridBranchStep(int connectPercent)
@@ -25,6 +26,8 @@ namespace RogueElements
         }
 
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+
+        public List<BaseRoomFilter> Filters { get; set; }
 
         public ComponentCollection HallComponents { get; set; }
 
@@ -36,6 +39,10 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 GridRoomPlan roomPlan = floorPlan.GetRoomPlan(ii);
+
+                if (!BaseRoomFilter.PassesAllFilters(roomPlan, this.Filters))
+                    continue;
+
                 if (roomPlan.Bounds.Size == new Loc(1))
                 {
                     List<int> adjacents = floorPlan.GetAdjacentRooms(ii);
