@@ -140,7 +140,7 @@ namespace RogueElements
                         if (currentLength == pathLength - 1) // only the end room can be a non-hall
                             floorPlan.AddRoom(dest, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
                         else
-                            floorPlan.AddRoom(dest, this.GetDefaultGen(), this.HallComponents.Clone(), false, true);
+                            floorPlan.AddRoom(dest, this.GetDefaultGen(), this.HallComponents.Clone(), true);
                         GenContextDebug.DebugProgress("Room");
                     }
                     else if (existingRoom.PreferHall)
@@ -171,7 +171,7 @@ namespace RogueElements
             if (RollRatio(rand, ref roomOpen, ref maxRooms))
                 floorPlan.AddRoom(loc, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
             else
-                floorPlan.AddRoom(loc, this.GetDefaultGen(), this.HallComponents.Clone(), false, true);
+                floorPlan.AddRoom(loc, this.GetDefaultGen(), this.HallComponents.Clone(), true);
         }
     }
 }

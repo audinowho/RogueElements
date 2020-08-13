@@ -38,7 +38,7 @@ namespace RogueElements
             {
                 for (int y = 1; y < floorPlan.GridHeight - 1; y++)
                 {
-                    floorPlan.AddRoom(new Loc(x, y), this.GetDefaultGen(), this.HallComponents.Clone(), false, true);
+                    floorPlan.AddRoom(new Loc(x, y), this.GetDefaultGen(), this.HallComponents.Clone(), true);
 
                     if (x > 1)
                         floorPlan.SetHall(new LocRay4(new Loc(x, y), Dir4.Left), this.GenericHalls.Pick(rand), this.HallComponents.Clone());

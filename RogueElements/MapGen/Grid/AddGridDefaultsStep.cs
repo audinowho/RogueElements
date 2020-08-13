@@ -17,10 +17,10 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public AddGridDefaultsStep(RandRange defaultRatio)
+        public AddGridDefaultsStep(RandRange defaultRatio, List<BaseRoomFilter> filter)
         {
             this.DefaultRatio = defaultRatio;
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = filter;
         }
 
         public RandRange DefaultRatio { get; set; }
@@ -32,9 +32,6 @@ namespace RogueElements
             List<int> candidates = new List<int>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                if (floorPlan.GetRoomPlan(ii).Immutable)
-                    continue;
-
                 if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
                     continue;
 

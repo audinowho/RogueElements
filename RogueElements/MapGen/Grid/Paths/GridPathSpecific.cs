@@ -48,7 +48,7 @@ namespace RogueElements
 
             foreach (var chosenRoom in this.SpecificRooms)
             {
-                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Components.Clone(), chosenRoom.Immutable, chosenRoom.PreferHall);
+                floorPlan.AddRoom(chosenRoom.Bounds, chosenRoom.RoomGen, chosenRoom.Components.Clone(), chosenRoom.PreferHall);
                 GenContextDebug.DebugProgress("Room");
             }
 

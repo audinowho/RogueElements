@@ -13,12 +13,11 @@ namespace RogueElements
     /// </summary>
     public class FloorRoomPlan : IFloorRoomPlan
     {
-        public FloorRoomPlan(IRoomGen roomGen, ComponentCollection components, bool immutable = false)
+        public FloorRoomPlan(IRoomGen roomGen, ComponentCollection components)
         {
             this.RoomGen = roomGen;
             this.Components = components;
             this.Adjacents = new List<RoomHallIndex>();
-            this.Immutable = immutable;
         }
 
         public IRoomGen RoomGen { get; set; }
@@ -27,7 +26,5 @@ namespace RogueElements
         public ComponentCollection Components { get; }
 
         public List<RoomHallIndex> Adjacents { get; }
-
-        public bool Immutable { get; }
     }
 }

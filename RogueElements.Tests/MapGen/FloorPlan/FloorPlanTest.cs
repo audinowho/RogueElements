@@ -165,7 +165,7 @@ namespace RogueElements.Tests
             var gen = new Mock<TestFloorPlanGen>(MockBehavior.Loose) { CallBase = true };
             gen.SetupGet(p => p.Draw).Returns(new Rect(1, 1, 2, 3));
             gen.Object.Identifier = 'A';
-            floorPlan.AddRoom(gen.Object, false, new ComponentCollection());
+            floorPlan.AddRoom(gen.Object, new ComponentCollection());
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -190,7 +190,7 @@ namespace RogueElements.Tests
             gen.SetupGet(p => p.Draw).Returns(new Rect(3, 2, 3, 5));
             gen.Object.Identifier = 'B';
 
-            floorPlan.AddRoom(gen.Object, false, new ComponentCollection(), new RoomHallIndex(0, false), new RoomHallIndex(0, true));
+            floorPlan.AddRoom(gen.Object, new ComponentCollection(), new RoomHallIndex(0, false), new RoomHallIndex(0, true));
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
@@ -218,7 +218,7 @@ namespace RogueElements.Tests
             gen.Object.Identifier = 'B';
 
             // check the rooms
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false, new ComponentCollection()); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, new ComponentCollection()); });
         }
 
         [Test]
@@ -237,7 +237,7 @@ namespace RogueElements.Tests
             gen.Object.Identifier = 'A';
 
             // check the rooms
-            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, false, new ComponentCollection()); });
+            Assert.Throws<InvalidOperationException>(() => { floorPlan.AddRoom(gen.Object, new ComponentCollection()); });
         }
 
         [Test]

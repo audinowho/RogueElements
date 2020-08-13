@@ -21,8 +21,6 @@ namespace RogueElements
 
         public Rect Bounds { get; set; }
 
-        public bool Immutable { get; set; }
-
         public bool PreferHall { get; set; }
 
         public RoomGen<T> RoomGen { get; set; }

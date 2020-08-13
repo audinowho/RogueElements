@@ -9,8 +9,6 @@ namespace RogueElements
     {
         IRoomGen RoomGen { get; }
 
-        bool Immutable { get; }
-
         ComponentCollection Components { get; }
     }
 }

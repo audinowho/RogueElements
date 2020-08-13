@@ -143,7 +143,7 @@ namespace RogueElements
                 else
                 {
                     roomToHall.Add(new RoomHallIndex(map.RoomPlan.RoomCount, false));
-                    map.RoomPlan.AddRoom(plan.RoomGen, plan.Immutable, plan.Components);
+                    map.RoomPlan.AddRoom(plan.RoomGen, plan.Components);
                     GenContextDebug.DebugProgress("Added Room");
                 }
             }
@@ -321,20 +321,20 @@ namespace RogueElements
 
         public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components)
         {
-            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, false, false);
+            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, false);
         }
 
-        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components, bool immutable, bool preferHall)
+        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components, bool preferHall)
         {
-            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, immutable, preferHall);
+            this.AddRoom(new Rect(loc, new Loc(1)), gen, components, preferHall);
         }
 
         public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components)
         {
-            this.AddRoom(rect, gen, components, false, false);
+            this.AddRoom(rect, gen, components, false);
         }
 
-        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components, bool immutable, bool preferHall)
+        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components, bool preferHall)
         {
             Rect floorRect = new Rect(0, 0, this.GridWidth, this.GridHeight);
             if (!floorRect.Contains(rect))
@@ -358,7 +358,6 @@ namespace RogueElements
 
             var room = new GridRoomPlan(rect, gen.Copy(), components)
             {
-                Immutable = immutable,
                 PreferHall = preferHall,
             };
             this.ArrayRooms.Add(room);

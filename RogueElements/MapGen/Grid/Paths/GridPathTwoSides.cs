@@ -44,7 +44,7 @@ namespace RogueElements
                     // place hall rooms
                     Loc loc = this.GapAxis.CreateLoc(1, ii);
                     Loc size = this.GapAxis.CreateLoc(scalar - 2, 1);
-                    floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), this.HallComponents.Clone(), false, true);
+                    floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), this.HallComponents.Clone(), true);
                     GenContextDebug.DebugProgress("Mid Room");
                 }
             }

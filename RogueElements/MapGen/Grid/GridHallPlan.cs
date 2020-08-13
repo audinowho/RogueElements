@@ -23,8 +23,6 @@ namespace RogueElements
 
         IRoomGen IRoomPlan.RoomGen => this.RoomGen;
 
-        public bool Immutable => false;
-
         // This member will be assigned by reference to the Components of FloorHallPlan,
         // as well as to the components of any halls it is split into during bounds calculation
         public ComponentCollection Components { get; }

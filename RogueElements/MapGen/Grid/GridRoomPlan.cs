@@ -23,14 +23,12 @@ namespace RogueElements
 
         public Rect Bounds { get; set; }
 
-        public bool Immutable { get; set; }
-
         public bool PreferHall { get; set; }
 
         public IRoomGen RoomGen { get; set; }
 
         // TODO: needs a better class.  Only one RoomComponent subclass allowed per collection.  Also better lookup.
         // This member will be assigned by reference to the Components of FloorRoomPlan
-        public ComponentCollection Components { get; }
+        public ComponentCollection Components { get; set; }
     }
 }

@@ -21,8 +21,6 @@ namespace RogueElements
 
         IRoomGen IRoomPlan.RoomGen => this.RoomGen;
 
-        public bool Immutable => false;
-
         public ComponentCollection Components { get; }
 
         public List<RoomHallIndex> Adjacents { get; }
