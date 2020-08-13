@@ -49,8 +49,6 @@ namespace RogueElements
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
-                if (!BaseRoomFilter.PassesAllFilters(room, this.Filters))
-                    continue;
                 if (Collision.InBounds(room.RoomGen.Draw, map.GetLoc(0)))
                 {
                     startRoom = ii;
@@ -72,6 +70,11 @@ namespace RogueElements
             int multFactor = int.MaxValue / maxVal / roomWeights.Length;
             for (int ii = 0; ii < roomWeights.Length; ii++)
             {
+                FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
+                if (!BaseRoomFilter.PassesAllFilters(room, this.Filters))
+                    continue;
+                if (roomWeights[ii] == 0)
+                    continue;
                 spawningRooms.Add(new RoomHallIndex(ii, false), roomWeights[ii] * multFactor);
             }
 
