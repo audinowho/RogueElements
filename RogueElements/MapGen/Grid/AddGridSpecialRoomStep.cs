@@ -44,7 +44,8 @@ namespace RogueElements
                 int ind = rand.Next(room_indices.Count);
                 GridRoomPlan plan = floorPlan.GetRoomPlan(room_indices[ind]);
                 plan.RoomGen = this.Rooms.Pick(rand).Copy();
-                plan.Components = this.RoomComponents.Clone();
+                foreach (RoomComponent component in this.RoomComponents)
+                    plan.Components.Set(component.Clone());
                 room_indices.RemoveAt(ind);
                 GenContextDebug.DebugProgress("Set Special Room");
             }

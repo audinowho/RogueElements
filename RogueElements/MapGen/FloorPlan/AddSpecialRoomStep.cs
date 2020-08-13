@@ -136,7 +136,7 @@ namespace RogueElements
         {
             // first get the adjacents of the removed room
             Dictionary<Dir4, List<RoomHallIndex>> adjacentsByDir = GetDirectionAdjacents(floorPlan, oldRoomHall);
-            IRoomGen oldGen = floorPlan.GetRoomHall(oldRoomHall).RoomGen;
+            IRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
 
             // remove the room; update the adjacents too
             floorPlan.EraseRoomHall(oldRoomHall);
@@ -155,13 +155,13 @@ namespace RogueElements
             var supportHalls = new Dictionary<Dir4, IPermissiveRoomGen>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                if (newGen.Draw.GetScalar(dir) == oldGen.Draw.GetScalar(dir))
+                if (newGen.Draw.GetScalar(dir) == oldPlan.RoomGen.Draw.GetScalar(dir))
                 {
                     newAdjacents.AddRange(adjacentsByDir[dir]);
                 }
                 else if (adjacentsByDir[dir].Count > 0)
                 {
-                    Rect supportRect = GetSupportRect(floorPlan, oldGen, newGen, dir, adjacentsByDir[dir]);
+                    Rect supportRect = GetSupportRect(floorPlan, oldPlan.RoomGen, newGen, dir, adjacentsByDir[dir]);
                     var supportHall = (IPermissiveRoomGen)this.Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
@@ -171,7 +171,10 @@ namespace RogueElements
 
             // add the new room
             var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
-            floorPlan.AddRoom(newGen, this.RoomComponents.Clone(), newAdjacents.ToArray());
+            ComponentCollection newCollection = oldPlan.Components.Clone();
+            foreach (RoomComponent component in this.RoomComponents)
+                newCollection.Set(component.Clone());
+            floorPlan.AddRoom(newGen, newCollection, newAdjacents.ToArray());
 
             // add supporting halls
             foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -181,7 +184,10 @@ namespace RogueElements
                     // include an attachment to the newly added room
                     List<RoomHallIndex> adjToAdd = new List<RoomHallIndex> { newRoomInd };
                     adjToAdd.AddRange(adjacentsByDir[dir]);
-                    floorPlan.AddHall(supportHalls[dir], this.HallComponents.Clone(), adjToAdd.ToArray());
+                    ComponentCollection newHallCollection = oldPlan.Components.Clone();
+                    foreach (RoomComponent component in this.HallComponents)
+                        newHallCollection.Set(component.Clone());
+                    floorPlan.AddHall(supportHalls[dir], newHallCollection.Clone(), adjToAdd.ToArray());
                 }
             }
         }
