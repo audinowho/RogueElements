@@ -50,7 +50,7 @@ namespace RogueElements
                 room.SetLoc(new Loc(
                     rand.Next(floorPlan.DrawRect.Left, floorPlan.DrawRect.Right - room.Draw.Width + 1),
                     rand.Next(floorPlan.DrawRect.Top, floorPlan.DrawRect.Bottom - room.Draw.Height + 1)));
-                floorPlan.AddRoom(room, false, this.RoomComponents.Clone());
+                floorPlan.AddRoom(room, this.RoomComponents.Clone());
                 GenContextDebug.DebugProgress("Start Room");
 
                 tilesLeft -= room.Draw.Area;
@@ -314,7 +314,7 @@ namespace RogueElements
                 roomsAdded++;
             }
 
-            floorPlan.AddRoom(expansion.Room, false, this.RoomComponents.Clone(), from);
+            floorPlan.AddRoom(expansion.Room, this.RoomComponents.Clone(), from);
             tilesCovered += expansion.Room.Draw.Area;
             roomsAdded++;
             GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");

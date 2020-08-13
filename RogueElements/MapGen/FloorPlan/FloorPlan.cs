@@ -107,7 +107,7 @@ namespace RogueElements
                 return this.Halls[room.Index];
         }
 
-        public void AddRoom(IRoomGen gen, bool immutable, ComponentCollection components, params RoomHallIndex[] attached)
+        public void AddRoom(IRoomGen gen, ComponentCollection components, params RoomHallIndex[] attached)
         {
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
@@ -128,7 +128,7 @@ namespace RogueElements
 
             // we expect that the room has already been given a size
             // and that its fulfillables match up with its adjacent's fulfillables.
-            var plan = new FloorRoomPlan(gen, components, immutable);
+            var plan = new FloorRoomPlan(gen, components);
 
             // attach everything
             plan.Adjacents.AddRange(attached);

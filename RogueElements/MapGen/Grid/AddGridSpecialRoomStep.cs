@@ -16,9 +16,12 @@ namespace RogueElements
             : base()
         {
             this.Filters = new List<BaseRoomFilter>();
+            this.RoomComponents = new ComponentCollection();
         }
 
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
+
+        public ComponentCollection RoomComponents { get; set; }
 
         public List<BaseRoomFilter> Filters { get; set; }
 
@@ -32,7 +35,7 @@ namespace RogueElements
                 GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
                 if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
                     continue;
-                if (!plan.Immutable && !plan.PreferHall)
+                if (!plan.PreferHall)
                     room_indices.Add(ii);
             }
 
@@ -41,7 +44,7 @@ namespace RogueElements
                 int ind = rand.Next(room_indices.Count);
                 GridRoomPlan plan = floorPlan.GetRoomPlan(room_indices[ind]);
                 plan.RoomGen = this.Rooms.Pick(rand).Copy();
-                plan.Immutable = true;
+                plan.Components = this.RoomComponents.Clone();
                 room_indices.RemoveAt(ind);
                 GenContextDebug.DebugProgress("Set Special Room");
             }

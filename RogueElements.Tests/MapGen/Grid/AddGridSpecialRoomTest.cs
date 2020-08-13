@@ -34,7 +34,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
-            roomPlan.Immutable = true;
+            roomPlan.Components.Set(new TestComponent());
             roomPlan = floorPlan.GetRoomPlan(3);
             roomPlan.RoomGen = new RoomGenDefault<IGridPathTestContext>();
             roomPlan.PreferHall = true;
@@ -46,6 +46,7 @@ namespace RogueElements.Tests
             {
                 Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
             };
+            pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -77,11 +78,11 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(0);
-            roomPlan.Immutable = true;
+            roomPlan.Components.Set(new TestComponent());
             roomPlan = floorPlan.GetRoomPlan(1);
-            roomPlan.Immutable = true;
+            roomPlan.Components.Set(new TestComponent());
             roomPlan = floorPlan.GetRoomPlan(2);
-            roomPlan.Immutable = true;
+            roomPlan.Components.Set(new TestComponent());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
@@ -89,6 +90,7 @@ namespace RogueElements.Tests
             {
                 Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
             };
+            pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 

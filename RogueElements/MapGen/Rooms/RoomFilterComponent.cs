@@ -17,6 +17,14 @@ namespace RogueElements
             this.Components = new ComponentCollection();
         }
 
+        public RoomFilterComponent(bool negate, params RoomComponent[] components)
+        {
+            this.Negate = negate;
+            this.Components = new ComponentCollection();
+            foreach (RoomComponent component in components)
+                this.Components.Set(component);
+        }
+
         public bool Negate { get; set; }
 
         public ComponentCollection Components { get; set; }

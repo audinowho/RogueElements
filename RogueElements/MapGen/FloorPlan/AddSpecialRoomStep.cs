@@ -88,8 +88,6 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
                 FloorRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (plan.Immutable)
-                    continue;
                 if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
                     continue;
                 if (plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
@@ -173,7 +171,7 @@ namespace RogueElements
 
             // add the new room
             var newRoomInd = new RoomHallIndex(floorPlan.RoomCount, false);
-            floorPlan.AddRoom(newGen, true, this.RoomComponents.Clone(), newAdjacents.ToArray());
+            floorPlan.AddRoom(newGen, this.RoomComponents.Clone(), newAdjacents.ToArray());
 
             // add supporting halls
             foreach (Dir4 dir in DirExt.VALID_DIR4)

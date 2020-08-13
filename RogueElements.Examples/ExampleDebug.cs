@@ -348,8 +348,6 @@ namespace RogueElements.Examples
                         {
                             // stats
                             string roomString = $"Room #{ii}: {roomPlan.RoomGen.Draw.X}x{roomPlan.RoomGen.Draw.Y} {roomPlan.RoomGen}";
-                            if (roomPlan.Immutable)
-                                roomString += " [Immutable]";
                             RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
 
@@ -506,8 +504,6 @@ namespace RogueElements.Examples
                         if (roomPlan != null)
                         {
                             string roomString = $"Room #{index}: {roomPlan.RoomGen}";
-                            if (roomPlan.Immutable)
-                                roomString += " [Immutable]";
                             if (roomPlan.PreferHall)
                                 roomString += " [Hall]";
                             RewriteLine(farthestPrint, roomString);

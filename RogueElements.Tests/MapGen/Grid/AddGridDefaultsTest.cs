@@ -155,13 +155,14 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             GridRoomPlan roomPlan = floorPlan.GetRoomPlan(2);
-            roomPlan.Immutable = true;
+            roomPlan.Components.Set(new TestComponent());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
+            pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 

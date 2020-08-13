@@ -19,7 +19,7 @@ namespace RogueElements
             RoomGen<T> room = this.GetDefaultGen();
             room.PrepareSize(rand, Loc.One);
             room.SetLoc(Loc.Zero);
-            floorPlan.AddRoom(room, false, new ComponentCollection());
+            floorPlan.AddRoom(room, new ComponentCollection());
         }
 
         public virtual RoomGen<T> GetDefaultGen()
