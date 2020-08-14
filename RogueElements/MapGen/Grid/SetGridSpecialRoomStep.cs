@@ -1,4 +1,4 @@
-﻿// <copyright file="AddGridSpecialRoomStep.cs" company="Audino">
+﻿// <copyright file="SetGridSpecialRoomStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,10 +9,10 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class AddGridSpecialRoomStep<T> : GridPlanStep<T>
+    public class SetGridSpecialRoomStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
-        public AddGridSpecialRoomStep()
+        public SetGridSpecialRoomStep()
             : base()
         {
             this.Filters = new List<BaseRoomFilter>();

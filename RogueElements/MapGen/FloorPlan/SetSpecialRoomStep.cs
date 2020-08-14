@@ -1,4 +1,4 @@
-﻿// <copyright file="AddSpecialRoomStep.cs" company="Audino">
+﻿// <copyright file="SetSpecialRoomStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,10 +9,10 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class AddSpecialRoomStep<T> : FloorPlanStep<T>
+    public class SetSpecialRoomStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
-        public AddSpecialRoomStep()
+        public SetSpecialRoomStep()
         {
             this.Rooms = null;
             this.Halls = null;
@@ -21,7 +21,7 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public AddSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
+        public SetSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
         {
             this.Rooms = rooms;
             this.Halls = halls;

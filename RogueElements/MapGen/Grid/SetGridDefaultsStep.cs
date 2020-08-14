@@ -1,4 +1,4 @@
-﻿// <copyright file="AddGridDefaultsStep.cs" company="Audino">
+﻿// <copyright file="SetGridDefaultsStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,15 +9,15 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class AddGridDefaultsStep<T> : GridPlanStep<T>
+    public class SetGridDefaultsStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
-        public AddGridDefaultsStep()
+        public SetGridDefaultsStep()
         {
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public AddGridDefaultsStep(RandRange defaultRatio, List<BaseRoomFilter> filter)
+        public SetGridDefaultsStep(RandRange defaultRatio, List<BaseRoomFilter> filter)
         {
             this.DefaultRatio = defaultRatio;
             this.Filters = filter;
