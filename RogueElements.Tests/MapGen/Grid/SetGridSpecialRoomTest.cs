@@ -1,4 +1,4 @@
-﻿// <copyright file="AddGridSpecialRoomTest.cs" company="Audino">
+﻿// <copyright file="SetGridSpecialRoomTest.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -12,7 +12,7 @@ namespace RogueElements.Tests
 {
     // place on a floor with two normal rooms
     [TestFixture]
-    public class AddGridSpecialRoomTest
+    public class SetGridSpecialRoomTest
     {
         [Test]
         [TestCase(0, 0)]
@@ -42,7 +42,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3)).Returns(roll);
 
-            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
             {
                 Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
             };
@@ -86,7 +86,7 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            var pathGen = new AddGridSpecialRoomStep<IGridPathTestContext>
+            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
             {
                 Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
             };

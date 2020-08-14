@@ -1,4 +1,4 @@
-﻿// <copyright file="AddGridDefaultsTest.cs" company="Audino">
+﻿// <copyright file="SetGridDefaultsTest.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace RogueElements.Tests
 {
     [TestFixture]
-    public class AddGridDefaultsTest
+    public class SetGridDefaultsTest
     {
         [Test]
         public void StraightPath0Percent()
@@ -31,7 +31,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(0) };
+            var pathGen = new SetGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(0) };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -62,7 +62,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(50) };
+            var pathGen = new SetGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(50) };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -94,7 +94,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
+            var pathGen = new SetGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -125,7 +125,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
+            var pathGen = new SetGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -161,7 +161,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new AddGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
+            var pathGen = new SetGridDefaultsStep<IGridPathTestContext> { DefaultRatio = new RandRange(100) };
             pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);

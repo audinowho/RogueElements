@@ -1,4 +1,4 @@
-﻿// <copyright file="AddGridPlanComponentStep.cs" company="Audino">
+﻿// <copyright file="SetFloorPlanComponentStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,10 +9,10 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class AddGridPlanComponentStep<T> : GenStep<T>
-        where T : class, IRoomGridGenContext
+    public class SetFloorPlanComponentStep<T> : GenStep<T>
+        where T : class, IFloorPlanGenContext
     {
-        public AddGridPlanComponentStep()
+        public SetFloorPlanComponentStep()
         {
             this.Components = new ComponentCollection();
             this.Filters = new List<BaseRoomFilter>();
@@ -24,7 +24,7 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
-            foreach (IRoomPlan plan in map.GridPlan.GetAllPlans())
+            foreach (IRoomPlan plan in map.RoomPlan.GetAllPlans())
             {
                 if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
                     continue;
