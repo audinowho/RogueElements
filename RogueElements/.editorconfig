@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CC0031: Check for null before calling a delegate
+dotnet_diagnostic.CC0031.severity = none

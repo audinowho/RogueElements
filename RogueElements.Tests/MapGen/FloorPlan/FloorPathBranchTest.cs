@@ -1873,9 +1873,6 @@ namespace RogueElements.Tests
             {
             }
 
-            public static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, TestFloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo) => FloorPathBranch<IFloorPlanTestContext>.AddLegalPlacements(possiblePlacements, floorPlan, indexFrom, roomFrom, room, expandTo);
-
-            public static List<RoomHallIndex> GetPossibleExpansions(TestFloorPlan floorPlan, bool branch) => FloorPathBranch<IFloorPlanTestContext>.GetPossibleExpansions(floorPlan, branch);
         }
     }
 }
