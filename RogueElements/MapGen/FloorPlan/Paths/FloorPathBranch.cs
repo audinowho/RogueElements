@@ -22,6 +22,8 @@ namespace RogueElements
         {
         }
 
+        public delegate RoomGen<T> RoomPrep(IRandom rand, FloorPlan floorPlan, bool isHall);
+
         public RandRange FillPercent { get; set; }
 
         public int HallPercent { get; set; }
@@ -29,6 +31,172 @@ namespace RogueElements
         public RandRange BranchRatio { get; set; }
 
         public bool NoForcedBranches { get; set; }
+
+        /// <summary>
+        /// Gets all possible places a new path node can be added.
+        /// </summary>
+        /// <param name="floorPlan"></param>
+        /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
+        /// <returns>All possible RoomHallIndex that can receive an expansion.</returns>
+        public static List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
+        {
+            List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
+            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
+            {
+                var listHall = new RoomHallIndex(ii, false);
+                List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
+                if ((adjacents.Count <= 1) != branch)
+                    availableExpansions.Add(listHall);
+            }
+
+            for (int ii = 0; ii < floorPlan.HallCount; ii++)
+            {
+                var listHall = new RoomHallIndex(ii, true);
+                List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
+                if ((adjacents.Count <= 1) != branch)
+                    availableExpansions.Add(listHall);
+            }
+
+            return availableExpansions;
+        }
+
+        public static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo)
+        {
+            bool vertical = expandTo.ToAxis() == Axis4.Vert;
+
+            // this scaling factor equalizes the chances of long sides vs short sides
+            int reverseSideMult = vertical ? roomFrom.Draw.Width * room.Draw.Width : roomFrom.Draw.Height * room.Draw.Height;
+
+            IntRange side = roomFrom.Draw.GetSide(expandTo.ToAxis());
+
+            // subtract the room's original size, not the inflated trialrect size
+            side.Min -= (vertical ? room.Draw.Size.X : room.Draw.Size.Y) - 1;
+
+            Rect tryRect = room.Draw;
+
+            // expand in every direction
+            // this will create a one-tile buffer to check for collisions
+            tryRect.Inflate(1, 1);
+            int currentScalar = side.Min;
+            while (currentScalar < side.Max)
+            {
+                // compute the location
+                Loc trialLoc = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
+                tryRect.Start = trialLoc + new Loc(-1, -1);
+
+                // check for collisions (not counting the rectangle from)
+                List<RoomHallIndex> collisions = floorPlan.CheckCollision(tryRect);
+
+                // find the first tile in which no collisions will be found
+                int maxCollideScalar = currentScalar;
+                bool collided = false;
+                foreach (RoomHallIndex collision in collisions)
+                {
+                    if (collision != indexFrom)
+                    {
+                        IRoomGen collideRoom = floorPlan.GetRoomHall(collision).RoomGen;
+
+                        // this is the point at which the new room will barely touch the collided room
+                        // the +1 at the end will move it into the safe zone
+                        maxCollideScalar = Math.Max(maxCollideScalar, vertical ? collideRoom.Draw.Right : collideRoom.Draw.Bottom);
+                        collided = true;
+                    }
+                }
+
+                // if no collisions were hit, do final checks and add the room
+                if (!collided)
+                {
+                    Loc locTo = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
+
+                    // must be within the borders of the floor!
+                    if (floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
+                    {
+                        // check the border match and if add to possible placements
+                        int chanceTo = FloorPlan.GetBorderMatch(roomFrom, room, locTo, expandTo);
+                        if (chanceTo > 0)
+                            possiblePlacements.Add(locTo, chanceTo * reverseSideMult);
+                    }
+                }
+
+                currentScalar = maxCollideScalar + 1;
+            }
+        }
+
+        /// <summary>
+        /// Chooses a node to expand the path from based on the specified branch setting.
+        /// </summary>
+        /// <param name="availableExpansions">todo: describe availableExpansions parameter on ChooseRoomExpansion</param>
+        /// <param name="prepareRoom">todo: describe prepareRoom parameter on ChooseRoomExpansion</param>
+        /// <param name="hallPercent">todo: describe hallPercent parameter on ChooseRoomExpansion</param>
+        /// <param name="rand"></param>
+        /// <param name="floorPlan"></param>
+        /// <returns>A set of instructions on how to expand the path.</returns>
+        public static ListPathBranchExpansion? ChooseRoomExpansion(RoomPrep prepareRoom, int hallPercent, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        {
+            if (availableExpansions.Count == 0)
+                return null;
+
+            for (int ii = 0; ii < 30; ii++)
+            {
+                // choose the next room to add to
+                RoomHallIndex firstExpandFrom = availableExpansions[rand.Next(availableExpansions.Count)];
+                RoomHallIndex expandFrom = firstExpandFrom;
+                IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
+
+                // choose the next room to add
+                // choose room size/fulfillables
+                // note: by allowing halls to be picked as extensions, we run the risk of adding dead-end halls
+                // halls should always terminate at rooms?
+                // this means... doubling up with hall+room?
+                bool addHall = rand.Next(100) < hallPercent;
+                IRoomGen hall = null;
+                if (addHall)
+                {
+                    hall = prepareRoom(rand, floorPlan, true);
+
+                    // randomly choose a perimeter to assign this to
+                    SpawnList<Loc> possibleHallPlacements = new SpawnList<Loc>();
+                    foreach (Dir4 dir in DirExt.VALID_DIR4)
+                        AddLegalPlacements(possibleHallPlacements, floorPlan, expandFrom, roomFrom, hall, dir);
+
+                    // at this point, all possible factors for whether a placement is legal or not is accounted for
+                    // therefor just pick one
+                    if (possibleHallPlacements.Count == 0)
+                        continue;
+
+                    // randomly choose one
+                    Loc hallCandLoc = possibleHallPlacements.Pick(rand);
+
+                    // set location
+                    hall.SetLoc(hallCandLoc);
+
+                    // change the roomfrom for the upcoming room
+                    expandFrom = new RoomHallIndex(-1, false);
+                    roomFrom = hall;
+                }
+
+                IRoomGen room = prepareRoom(rand, floorPlan, false);
+
+                // randomly choose a perimeter to assign this to
+                SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
+                foreach (Dir4 dir in DirExt.VALID_DIR4)
+                    AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, dir);
+
+                // at this point, all possible factors for whether a placement is legal or not is accounted for
+                // therefore just pick one
+                if (possiblePlacements.Count > 0)
+                {
+                    // randomly choose one
+                    Loc candLoc = possiblePlacements.Pick(rand);
+
+                    // set location
+                    room.SetLoc(candLoc);
+                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+                }
+            }
+
+            return null;
+        }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
@@ -103,82 +271,6 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Chooses a node to expand the path from based on the specified branch setting.
-        /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="floorPlan"></param>
-        /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
-        /// <returns>A set of instructions on how to expand the path.</returns>
-        public virtual ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan, bool branch)
-        {
-            List<RoomHallIndex> availableExpansions = GetPossibleExpansions(floorPlan, branch);
-
-            if (availableExpansions.Count == 0)
-                return null;
-
-            for (int ii = 0; ii < 30; ii++)
-            {
-                // choose the next room to add to
-                RoomHallIndex firstExpandFrom = availableExpansions[rand.Next(availableExpansions.Count)];
-                RoomHallIndex expandFrom = firstExpandFrom;
-                IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
-
-                // choose the next room to add
-                // choose room size/fulfillables
-                // note: by allowing halls to be picked as extensions, we run the risk of adding dead-end halls
-                // halls should always terminate at rooms?
-                // this means... doubling up with hall+room?
-                bool addHall = rand.Next(100) < this.HallPercent;
-                IRoomGen hall = null;
-                if (addHall)
-                {
-                    hall = this.PrepareRoom(rand, floorPlan, true);
-
-                    // randomly choose a perimeter to assign this to
-                    SpawnList<Loc> possibleHallPlacements = new SpawnList<Loc>();
-                    foreach (Dir4 dir in DirExt.VALID_DIR4)
-                        AddLegalPlacements(possibleHallPlacements, floorPlan, expandFrom, roomFrom, hall, dir);
-
-                    // at this point, all possible factors for whether a placement is legal or not is accounted for
-                    // therefor just pick one
-                    if (possibleHallPlacements.Count == 0)
-                        continue;
-
-                    // randomly choose one
-                    Loc hallCandLoc = possibleHallPlacements.Pick(rand);
-
-                    // set location
-                    hall.SetLoc(hallCandLoc);
-
-                    // change the roomfrom for the upcoming room
-                    expandFrom = new RoomHallIndex(-1, false);
-                    roomFrom = hall;
-                }
-
-                IRoomGen room = this.PrepareRoom(rand, floorPlan, false);
-
-                // randomly choose a perimeter to assign this to
-                SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
-                foreach (Dir4 dir in DirExt.VALID_DIR4)
-                    AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, dir);
-
-                // at this point, all possible factors for whether a placement is legal or not is accounted for
-                // therefore just pick one
-                if (possiblePlacements.Count > 0)
-                {
-                    // randomly choose one
-                    Loc candLoc = possiblePlacements.Pick(rand);
-
-                    // set location
-                    room.SetLoc(candLoc);
-                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Returns a random generic room or hall that can fit in the specified floor.
         /// </summary>
         /// <param name="rand"></param>
@@ -203,94 +295,10 @@ namespace RogueElements
             return room;
         }
 
-        private protected static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo)
+        public virtual ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan, bool branch)
         {
-            bool vertical = expandTo.ToAxis() == Axis4.Vert;
-
-            // this scaling factor equalizes the chances of long sides vs short sides
-            int reverseSideMult = vertical ? roomFrom.Draw.Width * room.Draw.Width : roomFrom.Draw.Height * room.Draw.Height;
-
-            IntRange side = roomFrom.Draw.GetSide(expandTo.ToAxis());
-
-            // subtract the room's original size, not the inflated trialrect size
-            side.Min -= (vertical ? room.Draw.Size.X : room.Draw.Size.Y) - 1;
-
-            Rect tryRect = room.Draw;
-
-            // expand in every direction
-            // this will create a one-tile buffer to check for collisions
-            tryRect.Inflate(1, 1);
-            int currentScalar = side.Min;
-            while (currentScalar < side.Max)
-            {
-                // compute the location
-                Loc trialLoc = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
-                tryRect.Start = trialLoc + new Loc(-1, -1);
-
-                // check for collisions (not counting the rectangle from)
-                List<RoomHallIndex> collisions = floorPlan.CheckCollision(tryRect);
-
-                // find the first tile in which no collisions will be found
-                int maxCollideScalar = currentScalar;
-                bool collided = false;
-                foreach (RoomHallIndex collision in collisions)
-                {
-                    if (collision != indexFrom)
-                    {
-                        IRoomGen collideRoom = floorPlan.GetRoomHall(collision).RoomGen;
-
-                        // this is the point at which the new room will barely touch the collided room
-                        // the +1 at the end will move it into the safe zone
-                        maxCollideScalar = Math.Max(maxCollideScalar, vertical ? collideRoom.Draw.Right : collideRoom.Draw.Bottom);
-                        collided = true;
-                    }
-                }
-
-                // if no collisions were hit, do final checks and add the room
-                if (!collided)
-                {
-                    Loc locTo = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
-
-                    // must be within the borders of the floor!
-                    if (floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
-                    {
-                        // check the border match and if add to possible placements
-                        int chanceTo = FloorPlan.GetBorderMatch(roomFrom, room, locTo, expandTo);
-                        if (chanceTo > 0)
-                            possiblePlacements.Add(locTo, chanceTo * reverseSideMult);
-                    }
-                }
-
-                currentScalar = maxCollideScalar + 1;
-            }
-        }
-
-        /// <summary>
-        /// Gets all possible places a new path node can be added.
-        /// </summary>
-        /// <param name="floorPlan"></param>
-        /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
-        /// <returns>All possible RoomHallIndex that can receive an expansion.</returns>
-        private protected static List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
-        {
-            List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                var listHall = new RoomHallIndex(ii, false);
-                List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
-                if ((adjacents.Count <= 1) != branch)
-                    availableExpansions.Add(listHall);
-            }
-
-            for (int ii = 0; ii < floorPlan.HallCount; ii++)
-            {
-                var listHall = new RoomHallIndex(ii, true);
-                List<RoomHallIndex> adjacents = floorPlan.GetRoomHall(listHall).Adjacents;
-                if ((adjacents.Count <= 1) != branch)
-                    availableExpansions.Add(listHall);
-            }
-
-            return availableExpansions;
+            List<RoomHallIndex> possibles = GetPossibleExpansions(floorPlan, branch);
+            return ChooseRoomExpansion(this.PrepareRoom, this.HallPercent, rand, floorPlan, possibles);
         }
 
         private (int area, int rooms) ExpandPath(IRandom rand, FloorPlan floorPlan, bool branch)

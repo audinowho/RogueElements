@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Contains data about which cells a room occupies in a GridFloorPlan.
+    /// Contains data about which cells a room occupies in a FloorPlan.
     /// </summary>
     public class FloorRoomPlan : IFloorRoomPlan
     {
