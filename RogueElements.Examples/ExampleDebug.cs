@@ -350,6 +350,9 @@ namespace RogueElements.Examples
                             string roomString = $"Room #{ii}: {roomPlan.RoomGen.Draw.X}x{roomPlan.RoomGen.Draw.Y} {roomPlan.RoomGen}";
                             RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
+                            string componentString = string.Format("Components: {0}", string.Join(", ", roomPlan.Components));
+                            RewriteLine(farthestPrint, componentString);
+                            farthestPrint++;
 
                             // borders
                             var lineString = new StringBuilder(" ");
@@ -377,11 +380,14 @@ namespace RogueElements.Examples
 
                     for (int ii = 0; ii < plan.HallCount; ii++)
                     {
-                        IPermissiveRoomGen gen = plan.GetHall(ii);
-                        if (gen.Draw.Contains(mapLoc))
+                        FloorHallPlan hallPlan = plan.GetHallPlan(ii);
+                        if (hallPlan.RoomGen.Draw.Contains(mapLoc))
                         {
-                            string roomString = $"Hall #{ii}: {gen.Draw.X}x{gen.Draw.Y} {gen}";
+                            string roomString = $"Hall #{ii}: {hallPlan.RoomGen.Draw.X}x{hallPlan.RoomGen.Draw.Y} {hallPlan.RoomGen}";
                             RewriteLine(farthestPrint, roomString);
+                            farthestPrint++;
+                            string componentString = string.Format("Components: {0}", string.Join(", ", hallPlan.Components));
+                            RewriteLine(farthestPrint, componentString);
                             farthestPrint++;
                         }
                     }
@@ -508,6 +514,9 @@ namespace RogueElements.Examples
                                 roomString += " [Hall]";
                             RewriteLine(farthestPrint, roomString);
                             farthestPrint++;
+                            string componentString = string.Format("Components: {0}", string.Join(", ", roomPlan.Components));
+                            RewriteLine(farthestPrint, componentString);
+                            farthestPrint++;
                         }
                     }
                     else if (alignX)
@@ -516,6 +525,9 @@ namespace RogueElements.Examples
                         if (hall != null)
                         {
                             RewriteLine(farthestPrint, "Hall: " + hall.RoomGen);
+                            farthestPrint++;
+                            string componentString = string.Format("Components: {0}", string.Join(", ", hall.Components));
+                            RewriteLine(farthestPrint, componentString);
                             farthestPrint++;
                         }
                     }
