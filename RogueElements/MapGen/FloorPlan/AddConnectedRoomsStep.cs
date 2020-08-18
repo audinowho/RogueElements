@@ -1,4 +1,4 @@
-﻿// <copyright file="AddDisconnectedRoomsStep.cs" company="Audino">
+﻿// <copyright file="AddConnectedRoomsStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -20,6 +20,7 @@ namespace RogueElements
             this.HallComponents = new ComponentCollection();
             this.Filters = new List<BaseRoomFilter>();
         }
+
         public AddConnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base()
         {
