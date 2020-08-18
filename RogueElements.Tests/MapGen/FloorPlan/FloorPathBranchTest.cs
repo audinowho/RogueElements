@@ -1872,7 +1872,6 @@ namespace RogueElements.Tests
                 : base(genericRooms, genericHalls)
             {
             }
-
         }
     }
 }

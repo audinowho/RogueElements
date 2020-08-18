@@ -18,7 +18,7 @@ namespace RogueElements.Tests
         public void ProposeSizeStats()
         {
             ReRandom rand = new ReRandom(0);
-            Console.WriteLine(String.Format("Dims\tMin%\t10Pct%\tMed%\tMax%"));
+            Console.WriteLine(string.Format("Dims\tMin%\t10Pct%\tMed%\tMax%"));
             for (int xx = 3; xx < 21; xx++)
             {
                 for (int yy = 3; yy <= xx; yy++)
@@ -66,7 +66,6 @@ namespace RogueElements.Tests
         [Ignore("TODO")]
         public void ProposeSize()
         {
-
         }
 
         [Test]

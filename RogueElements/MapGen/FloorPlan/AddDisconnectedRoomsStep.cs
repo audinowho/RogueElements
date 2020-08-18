@@ -18,6 +18,7 @@ namespace RogueElements
         {
             this.Components = new ComponentCollection();
         }
+
         public AddDisconnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms)
             : base()
         {
