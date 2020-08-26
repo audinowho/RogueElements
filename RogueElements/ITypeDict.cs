@@ -4,10 +4,12 @@
 // </copyright>
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface ITypeDict<T>
+    public interface ITypeDict<T> : IEnumerable<T>
     {
         void Clear();
 
@@ -29,7 +31,7 @@ namespace RogueElements
         void Remove(Type type);
     }
 
-    public interface ITypeDict
+    public interface ITypeDict : IEnumerable
     {
         void Clear();
 
