@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace RogueElements
 {
     [Serializable]
-    public class TypeDict<T> : IEnumerable<T>, ITypeDict<T>, ITypeDict
+    public class TypeDict<T> : ITypeDict<T>, ITypeDict
     {
         [NonSerialized]
         private Dictionary<string, T> pointers;

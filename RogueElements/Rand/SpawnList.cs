@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class SpawnList<T> : IRandPicker<T>, ISpawnList
+    public class SpawnList<T> : IRandPicker<T>, ISpawnList<T>, ISpawnList
     {
         private readonly List<SpawnRate> spawns;
         private int spawnTotal;
@@ -51,6 +51,14 @@ namespace RogueElements
             if (rate < 0)
                 throw new ArgumentException("Spawn rate must be 0 or higher.");
             this.spawns.Add(new SpawnRate(spawn, rate));
+            this.spawnTotal += rate;
+        }
+
+        public void Insert(int index, T spawn, int rate)
+        {
+            if (rate < 0)
+                throw new ArgumentException("Spawn rate must be 0 or higher.");
+            this.spawns.Insert(index, new SpawnRate(spawn, rate));
             this.spawnTotal += rate;
         }
 
@@ -159,6 +167,11 @@ namespace RogueElements
         void ISpawnList.Add(object spawn, int rate)
         {
             this.Add((T)spawn, rate);
+        }
+
+        void ISpawnList.Insert(int index, object spawn, int rate)
+        {
+            this.Insert(index, (T)spawn, rate);
         }
 
         object ISpawnList.GetSpawn(int index)
