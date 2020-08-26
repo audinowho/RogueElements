@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class SpawnList<T> : IRandPicker<T>
+    public class SpawnList<T> : IRandPicker<T>, ISpawnList
     {
         private readonly List<SpawnRate> spawns;
         private int spawnTotal;
@@ -154,6 +154,21 @@ namespace RogueElements
             for (int ii = 0; ii < this.spawns.Count; ii++)
                 code ^= this.spawns[ii].Spawn.GetHashCode() ^ this.spawns[ii].Rate;
             return code;
+        }
+
+        void ISpawnList.Add(object spawn, int rate)
+        {
+            this.Add((T)spawn, rate);
+        }
+
+        object ISpawnList.GetSpawn(int index)
+        {
+            return this.GetSpawn(index);
+        }
+
+        void ISpawnList.SetSpawn(int index, object spawn)
+        {
+            this.SetSpawn(index, (T)spawn);
         }
 
         [Serializable]
