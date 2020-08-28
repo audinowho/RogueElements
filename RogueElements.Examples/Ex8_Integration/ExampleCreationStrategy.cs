@@ -7,7 +7,7 @@ using System;
 using RogueSharp;
 using RogueSharp.MapCreation;
 
-namespace RogueElements.Examples.Ex7_Integration
+namespace RogueElements.Examples.Ex8_Integration
 {
     public class ExampleCreationStrategy<T> : IMapCreationStrategy<T>
         where T : Map, new()

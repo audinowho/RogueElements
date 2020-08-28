@@ -1,4 +1,4 @@
-﻿// <copyright file="Example7.cs" company="Audino">
+﻿// <copyright file="Example8.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -7,14 +7,14 @@ using System;
 using System.Text;
 using RogueSharp;
 
-namespace RogueElements.Examples.Ex7_Integration
+namespace RogueElements.Examples.Ex8_Integration
 {
-    public static class Example7
+    public static class Example8
     {
         public static void Run()
         {
             Console.Clear();
-            const string title = "7: Implementation as a MapCreationStrategy in RogueSharp";
+            const string title = "8: Implementation as a MapCreationStrategy in RogueSharp";
             ExampleCreationStrategy<Map> exampleCreation = new ExampleCreationStrategy<Map>();
 
             // Initialize a 6x4 grid of 10x10 cells.
