@@ -30,12 +30,12 @@ namespace RogueElements.Examples
                 {
                     if (lastKey != ConsoleKey.Enter)
                     {
-                        Console.WriteLine("Press a key 1-7 | F4=Debug");
+                        Console.WriteLine("Press a key 1-8 | F4=Debug");
                         Console.WriteLine("While debugging: F5=Step-In | F6=Step-Out | ESC=Exit Debug");
                     }
                     else
                     {
-                        Console.WriteLine("Press a key 1-7:");
+                        Console.WriteLine("Press a key 1-8:");
                     }
                 }
 
@@ -91,7 +91,10 @@ namespace RogueElements.Examples
                         Ex6_Items.Example6.Run();
                         break;
                     case ConsoleKey.D7:
-                        Ex7_Integration.Example7.Run();
+                        Ex7_Special.Example7.Run();
+                        break;
+                    case ConsoleKey.D8:
+                        Ex8_Integration.Example8.Run();
                         break;
                     case ConsoleKey.Escape:
                         done = true;
