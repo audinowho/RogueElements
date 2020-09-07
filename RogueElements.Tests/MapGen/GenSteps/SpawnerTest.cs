@@ -275,9 +275,9 @@ namespace RogueElements.Tests
 
             SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>
             {
-                new RoomHallIndex(0, false),
-                new RoomHallIndex(1, false),
-                new RoomHallIndex(2, false),
+                { new RoomHallIndex(0, false), 10 },
+                { new RoomHallIndex(1, false), 10 },
+                { new RoomHallIndex(2, false), 10 },
             };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, 100));
@@ -315,15 +315,15 @@ namespace RogueElements.Tests
 
             var compare1 = new SpawnList<RoomHallIndex>
             {
-                new RoomHallIndex(1, false),
-                new RoomHallIndex(3, false),
+                { new RoomHallIndex(1, false), 10 },
+                { new RoomHallIndex(3, false), 10 },
             };
             var compare2 = new SpawnList<RoomHallIndex>
             {
-                new RoomHallIndex(0, false),
-                new RoomHallIndex(1, false),
-                new RoomHallIndex(2, false),
-                new RoomHallIndex(3, false),
+                { new RoomHallIndex(0, false), 10 },
+                { new RoomHallIndex(1, false), 10 },
+                { new RoomHallIndex(2, false), 10 },
+                { new RoomHallIndex(3, false), 10 },
             };
 
             roomSpawner.Setup(p => p.SpawnRandInCandRooms(mockMap.Object, It.IsAny<SpawnList<RoomHallIndex>>(), mockSpawns.Object, It.IsAny<int>()));

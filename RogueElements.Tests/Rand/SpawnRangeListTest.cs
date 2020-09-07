@@ -87,7 +87,7 @@ namespace RogueElements.Tests
         public void SpawnRangeListRemove()
         {
             this.spawnRangeList.Remove("apple");
-            IEnumerator<string> enumer = this.spawnRangeList.GetSpawns().GetEnumerator();
+            IEnumerator<string> enumer = this.spawnRangeList.GetEnumerator();
             Assert.That(enumer.MoveNext(), Is.EqualTo(true));
             Assert.That(enumer.Current, Is.EqualTo("orange"));
             Assert.That(enumer.MoveNext(), Is.EqualTo(false));
@@ -96,7 +96,7 @@ namespace RogueElements.Tests
         [Test]
         public void SpawnRangeListGetSpawns()
         {
-            IEnumerator<string> enumer = this.spawnRangeList.GetSpawns().GetEnumerator();
+            IEnumerator<string> enumer = this.spawnRangeList.GetEnumerator();
             Assert.That(enumer.MoveNext(), Is.EqualTo(true));
             Assert.That(enumer.Current, Is.EqualTo("apple"));
             Assert.That(enumer.MoveNext(), Is.EqualTo(true));
