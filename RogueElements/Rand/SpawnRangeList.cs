@@ -15,7 +15,7 @@ namespace RogueElements
     /// <typeparam name="T"></typeparam>
     // TODO: Binary Space Partition Tree
     [Serializable]
-    public class SpawnRangeList<T> : IEnumerable<T>, IEnumerable
+    public class SpawnRangeList<T> : ISpawnRangeList<T>, ISpawnRangeList
     {
         private readonly List<SpawnRange> spawns;
 
@@ -26,13 +26,20 @@ namespace RogueElements
 
         public int Count => this.spawns.Count;
 
-        public void Add(T spawn, IntRange range, int rate = 10)
+        public void Add(T spawn, IntRange range, int rate)
         {
             if (rate < 0)
                 throw new ArgumentException("Spawn rate must be 0 or higher.");
             if (range.Length <= 0)
                 throw new ArgumentException("Spawn range must be 1 or higher.");
             this.spawns.Add(new SpawnRange(spawn, rate, range));
+        }
+
+        public void Insert(int index, T spawn, IntRange range, int rate)
+        {
+            if (rate < 0)
+                throw new ArgumentException("Spawn rate must be 0 or higher.");
+            this.spawns.Insert(index, new SpawnRange(spawn, rate, range));
         }
 
         public void Remove(T spawn)
@@ -52,12 +59,6 @@ namespace RogueElements
         public void Clear()
         {
             this.spawns.Clear();
-        }
-
-        public IEnumerable<T> GetSpawns()
-        {
-            foreach (SpawnRange spawn in this.spawns)
-                yield return spawn.Spawn;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -95,7 +96,7 @@ namespace RogueElements
         {
             int spawnTotal = 0;
             List<SpawnRange> spawns = new List<SpawnRange>();
-            foreach (SpawnRange spawn in this.GetLevelSpawnsImpl(level))
+            foreach (SpawnRange spawn in this.GetLevelSpawns(level))
             {
                 spawns.Add(spawn);
                 spawnTotal += spawn.Rate;
@@ -116,7 +117,75 @@ namespace RogueElements
             throw new InvalidOperationException("Cannot spawn from a spawnlist of total rate 0!");
         }
 
-        private IEnumerable<SpawnRange> GetLevelSpawnsImpl(int level)
+        public T GetSpawn(int index)
+        {
+            return this.spawns[index].Spawn;
+        }
+
+        public int GetSpawnRate(T spawn)
+        {
+            for (int ii = 0; ii < this.spawns.Count; ii++)
+            {
+                if (this.spawns[ii].Spawn.Equals(spawn))
+                    return this.spawns[ii].Rate;
+            }
+
+            return 0;
+        }
+
+        public int GetSpawnRate(int index)
+        {
+            return this.spawns[index].Rate;
+        }
+
+        public IntRange GetSpawnRange(int index)
+        {
+            return this.spawns[index].Range;
+        }
+
+        public void SetSpawn(int index, T spawn)
+        {
+            this.spawns[index] = new SpawnRange(spawn, this.spawns[index].Rate, this.spawns[index].Range);
+        }
+
+        public void SetSpawnRate(int index, int rate)
+        {
+            if (rate < 0)
+                throw new ArgumentException("Spawn rate must be 0 or higher.");
+            this.spawns[index] = new SpawnRange(this.spawns[index].Spawn, rate, this.spawns[index].Range);
+        }
+
+        public void SetSpawnRange(int index, IntRange range)
+        {
+            this.spawns[index] = new SpawnRange(this.spawns[index].Spawn, this.spawns[index].Rate, range);
+        }
+
+        public void RemoveAt(int index)
+        {
+            this.spawns.RemoveAt(index);
+        }
+
+        void ISpawnRangeList.Add(object spawn, IntRange range, int rate)
+        {
+            this.Add((T)spawn, range, rate);
+        }
+
+        void ISpawnRangeList.Insert(int index, object spawn, IntRange range, int rate)
+        {
+            this.Insert(index, (T)spawn, range, rate);
+        }
+
+        object ISpawnRangeList.GetSpawn(int index)
+        {
+            return this.GetSpawn(index);
+        }
+
+        void ISpawnRangeList.SetSpawn(int index, object spawn)
+        {
+            this.SetSpawn(index, (T)spawn);
+        }
+
+        private IEnumerable<SpawnRange> GetLevelSpawns(int level)
         {
             foreach (SpawnRange spawn in this.spawns)
             {

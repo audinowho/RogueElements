@@ -41,11 +41,6 @@ namespace RogueElements
 
         public IRandPicker<T> CopyState() => new SpawnList<T>(this);
 
-        public void Add(T spawn)
-        {
-            this.Add(spawn, 10);
-        }
-
         public void Add(T spawn, int rate)
         {
             if (rate < 0)

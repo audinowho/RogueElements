@@ -24,8 +24,8 @@ namespace RogueElements.Examples.Ex7_Special
             // Create some room types to place
             SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>
             {
-                new RoomGenSquare<MapGenContext>(new RandRange(7, 9), new RandRange(7, 9)), // square
-                new RoomGenRound<MapGenContext>(new RandRange(6, 10), new RandRange(6, 10)), // round
+                { new RoomGenSquare<MapGenContext>(new RandRange(7, 9), new RandRange(7, 9)), 10 }, // square
+                { new RoomGenRound<MapGenContext>(new RandRange(6, 10), new RandRange(6, 10)), 10 }, // round
             };
 
             // Create some hall types to place

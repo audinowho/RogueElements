@@ -37,10 +37,10 @@ namespace RogueElements
             {
                 if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
                     continue;
-                spawningRooms.Add(new RoomHallIndex(ii, false));
+                spawningRooms.Add(new RoomHallIndex(ii, false), 10);
                 List<int> adjacent = map.RoomPlan.GetAdjacentRooms(ii);
                 if (adjacent.Count == 1)
-                    terminalRooms.Add(new RoomHallIndex(ii, false));
+                    terminalRooms.Add(new RoomHallIndex(ii, false), 10);
             }
 
             if (this.IncludeHalls)
@@ -49,10 +49,10 @@ namespace RogueElements
                 {
                     if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetHallPlan(ii), this.Filters))
                         continue;
-                    spawningRooms.Add(new RoomHallIndex(ii, true));
+                    spawningRooms.Add(new RoomHallIndex(ii, true), 10);
                     List<RoomHallIndex> adjacent = map.RoomPlan.GetRoomHall(new RoomHallIndex(ii, true)).Adjacents;
                     if (adjacent.Count == 1)
-                        terminalRooms.Add(new RoomHallIndex(ii, true));
+                        terminalRooms.Add(new RoomHallIndex(ii, true), 10);
                 }
             }
 
