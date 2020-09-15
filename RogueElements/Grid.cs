@@ -85,6 +85,44 @@ namespace RogueElements
             return GetBackreference(farthest_tile);
         }
 
+        /// <summary>
+        /// Get the offset that the existing grid will have to be moved in, if resized with the specified parameters.
+        /// </summary>
+        /// <param name="oldWidth"></param>
+        /// <param name="oldHeight"></param>
+        /// <param name="width">The new width.</param>
+        /// <param name="height">The new height.</param>
+        /// <param name="dir">The direction to expand/shrink in.</param>
+        /// <returns></returns>
+        public static Loc GetResizeOffset(int oldWidth, int oldHeight, int width, int height, Dir8 dir)
+        {
+            dir.Separate(out DirH horiz, out DirV vert);
+
+            Loc offset = Loc.Zero;
+            if (horiz == DirH.None)
+                offset.X = (width - oldWidth) / 2;
+            else if (horiz == DirH.Left)
+                offset.X = width - oldWidth;
+
+            if (vert == DirV.None)
+                offset.Y = (height - oldHeight) / 2;
+            else if (vert == DirV.Up)
+                offset.Y = height - oldHeight;
+
+            return offset;
+        }
+
+        /// <summary>
+        /// Resizes a 2-D array in a certain direction.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="width">The new width.</param>
+        /// <param name="height">The new height.</param>
+        /// <param name="dir">The direction to expand/shrink in.</param>
+        /// <param name="newLocOp">The operation to perform on the tile when it is moved.</param>
+        /// <param name="newTileOp">The operation to perform on the tile when it is completely new.</param>
+        /// <returns></returns>
         public static Loc ResizeJustified<T>(ref T[][] array, int width, int height, Dir8 dir, LocAction newLocOp, LocAction newTileOp)
         {
             if (newLocOp == null)
@@ -92,18 +130,7 @@ namespace RogueElements
             if (newTileOp == null)
                 throw new ArgumentNullException(nameof(newTileOp));
 
-            dir.Separate(out DirH horiz, out DirV vert);
-
-            Loc offset = Loc.Zero;
-            if (horiz == DirH.None)
-                offset.X = (width - array.Length) / 2;
-            else if (horiz == DirH.Left)
-                offset.X = width - array.Length;
-
-            if (vert == DirV.None)
-                offset.Y = (height - array[0].Length) / 2;
-            else if (vert == DirV.Up)
-                offset.Y = height - array[0].Length;
+            Loc offset = GetResizeOffset(array.Length, array[0].Length, width, height, dir);
 
             T[][] prevArray = array;
             array = new T[width][];

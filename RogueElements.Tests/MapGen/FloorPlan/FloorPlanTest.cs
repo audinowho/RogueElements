@@ -731,5 +731,30 @@ namespace RogueElements.Tests
 
             Assert.That(totalMatch, Is.EqualTo(expectedMatch));
         }
+
+        [Test]
+        [TestCase(Dir8.DownRight, Dir8.UpLeft, 0, 0, 4, 3)]
+        [TestCase(Dir8.DownRight, Dir8.DownRight, 0, 0, 8, 6)]
+        [TestCase(Dir8.None, Dir8.None, -2, -1, 4, 3)]
+        [TestCase(Dir8.UpLeft, Dir8.UpLeft, -4, -3, 0, 0)]
+        public void ResizeFloor(Dir8 expandDir, Dir8 anchorDir, int newX, int newY, int newRoomX, int newRoomY)
+        {
+            // add to empty space
+            TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(
+                new Rect(Loc.Zero, new Loc(22, 14)),
+                new Rect[] { new Rect(4, 3, 2, 3) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
+
+            TestFloorPlan compareFloorPlan = TestFloorPlan.InitFloorToContext(
+                new Rect(new Loc(newX, newY), new Loc(26, 17)),
+                new Rect[] { new Rect(newRoomX, newRoomY, 2, 3) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>());
+
+            floorPlan.Resize(new Loc(26, 17), expandDir, anchorDir);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
     }
 }
