@@ -80,6 +80,16 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        [Ignore("TODO")]
+        public void RandomTerrainSpawnStep()
+        {
+            // input a specific grid
+            // set random to choose specific tiles out of them
+            // verify the proper tiles are removed
+            throw new NotImplementedException();
+        }
+
+        [Test]
         [TestCase(0, 1, 2)]
         [TestCase(1, 3, 4)]
         [TestCase(2, 5, 5)]

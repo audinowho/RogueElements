@@ -18,6 +18,7 @@ namespace RogueElements.Tests
 
         public static void CompareFloorPlans(TestFloorPlan floorPlan, TestFloorPlan compareFloorPlan)
         {
+            Assert.That(floorPlan.DrawRect, Is.EqualTo(compareFloorPlan.DrawRect));
             Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
@@ -42,20 +43,27 @@ namespace RogueElements.Tests
         public static TestFloorPlan InitFloorToContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
             var floorPlan = new TestFloorPlan();
-            InitFloorToContext(floorPlan, size, rooms, halls, links);
+            InitFloorToContext(floorPlan, new Rect(Loc.Zero, size), rooms, halls, links);
+            return floorPlan;
+        }
+
+        public static TestFloorPlan InitFloorToContext(Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        {
+            var floorPlan = new TestFloorPlan();
+            InitFloorToContext(floorPlan, rect, rooms, halls, links);
             return floorPlan;
         }
 
         public static Mock<TestFloorPlan> InitFloorToMockContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
             var floorPlan = new Mock<TestFloorPlan> { CallBase = true };
-            InitFloorToContext(floorPlan.Object, size, rooms, halls, links);
+            InitFloorToContext(floorPlan.Object, new Rect(Loc.Zero, size), rooms, halls, links);
             return floorPlan;
         }
 
-        private static void InitFloorToContext(TestFloorPlan floorPlan, Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        private static void InitFloorToContext(TestFloorPlan floorPlan, Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
-            floorPlan.InitSize(new Loc(size.X, size.Y));
+            floorPlan.InitRect(rect);
 
             // a quick way to set up rooms, halls, and connections
             // a list of rects for rooms, a list of rects for halls

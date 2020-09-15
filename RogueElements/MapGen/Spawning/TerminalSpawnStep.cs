@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns the placeables in terminal (dead-end) rooms, falls back on normal rooms if there are some left over.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class TerminalSpawnStep<TGenContext, TSpawnable> : RoomSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>

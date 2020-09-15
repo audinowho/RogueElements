@@ -68,7 +68,13 @@ namespace RogueElements
 
         public void InitSize(Loc size)
         {
-            this.Size = size;
+            this.InitRect(new Rect(Loc.Zero, size));
+        }
+
+        public void InitRect(Rect rect)
+        {
+            this.Start = rect.Start;
+            this.Size = rect.Size;
             this.Rooms = new List<FloorRoomPlan>();
             this.Halls = new List<FloorHallPlan>();
         }
@@ -348,6 +354,25 @@ namespace RogueElements
 
             for (int ii = 0; ii < this.Halls.Count; ii++)
                 this.Halls[ii].RoomGen.SetLoc(this.Halls[ii].RoomGen.Draw.Start + diff);
+        }
+
+        /// <summary>
+        /// Changes size without changing the start.
+        /// </summary>
+        /// <param name="newSize"></param>
+        /// <param name="dir"></param>
+        /// <param name="anchorDir">The anchor point of the initial floor rect.</param>
+        public void Resize(Loc newSize, Dir8 dir, Dir8 anchorDir)
+        {
+            Loc diff = Grid.GetResizeOffset(this.Size.X, this.Size.Y, newSize.X, newSize.Y, dir);
+            Loc anchorDiff = Grid.GetResizeOffset(this.Size.X, this.Size.Y, newSize.X, newSize.Y, anchorDir.Reverse());
+            this.Start -= diff;
+            this.Size = newSize;
+            for (int ii = 0; ii < this.Rooms.Count; ii++)
+                this.Rooms[ii].RoomGen.SetLoc(this.Rooms[ii].RoomGen.Draw.Start + anchorDiff - diff);
+
+            for (int ii = 0; ii < this.Halls.Count; ii++)
+                this.Halls[ii].RoomGen.SetLoc(this.Halls[ii].RoomGen.Draw.Start + anchorDiff - diff);
         }
 
         public void DrawOnMap(ITiledGenContext map)
