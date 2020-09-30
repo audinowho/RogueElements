@@ -30,8 +30,8 @@ namespace RogueElements
             GenContextDebug.DebugInit(map);
 
             // postprocessing steps:
-            StablePriorityQueue<int, IGenStep> queue = new StablePriorityQueue<int, IGenStep>();
-            foreach (int priority in this.GenSteps.GetPriorities())
+            StablePriorityQueue<Priority, IGenStep> queue = new StablePriorityQueue<Priority, IGenStep>();
+            foreach (Priority priority in this.GenSteps.GetPriorities())
             {
                 foreach (IGenStep genStep in this.GenSteps.GetItems(priority))
                     queue.Enqueue(priority, genStep);
@@ -44,7 +44,7 @@ namespace RogueElements
             return map;
         }
 
-        protected static void ApplyGenSteps(T map, StablePriorityQueue<int, IGenStep> queue)
+        protected static void ApplyGenSteps(T map, StablePriorityQueue<Priority, IGenStep> queue)
         {
             while (queue.Count > 0)
             {

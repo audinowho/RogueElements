@@ -21,35 +21,35 @@ namespace RogueElements
 
         int Count { get; }
 
-        void Add(int priority, object item);
+        void Add(Priority priority, object item);
 
-        void Insert(int priority, int index, object item);
+        void Insert(Priority priority, int index, object item);
 
-        void RemoveAt(int priority, int index);
+        void RemoveAt(Priority priority, int index);
 
-        object Get(int priority, int index);
+        object Get(Priority priority, int index);
 
-        void Set(int priority, int index, object item);
+        void Set(Priority priority, int index, object item);
 
         void Clear();
 
-        int GetCountAtPriority(int priority);
+        int GetCountAtPriority(Priority priority);
 
-        IEnumerable<int> GetPriorities();
+        IEnumerable<Priority> GetPriorities();
 
-        IEnumerable GetItems(int priority);
+        IEnumerable GetItems(Priority priority);
     }
 
     public interface IPriorityList<T> : IEnumerable<T>, IPriorityList
     {
-        void Add(int priority, T item);
+        void Add(Priority priority, T item);
 
-        void Insert(int priority, int index, T item);
+        void Insert(Priority priority, int index, T item);
 
-        new T Get(int priority, int index);
+        new T Get(Priority priority, int index);
 
-        void Set(int priority, int index, T item);
+        void Set(Priority priority, int index, T item);
 
-        new IEnumerable<T> GetItems(int priority);
+        new IEnumerable<T> GetItems(Priority priority);
     }
 }
