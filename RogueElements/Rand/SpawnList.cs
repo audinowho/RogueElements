@@ -26,7 +26,7 @@ namespace RogueElements
 
         protected SpawnList(SpawnList<T> other)
         {
-            this.spawns = new List<SpawnRate>(other.spawns);
+            this.spawns = new List<SpawnRate>();
             foreach (SpawnRate item in other.spawns)
                 this.spawns.Add(new SpawnRate(item.Spawn, item.Rate));
         }
