@@ -15,43 +15,43 @@ namespace RogueElements
     [Serializable]
     public class RandBinomial : IRandPicker<int>
     {
-        /// <summary>
-        /// Adds an amount to the result before returning.
-        /// </summary>
-        private readonly int offset;
-
-        /// <summary>
-        /// The number of trials in the binomial distribution.
-        /// </summary>
-        private readonly int trials;
-
-        /// <summary>
-        /// The chance of an individual event occurring in the binomial distribution.
-        /// </summary>
-        private readonly int percent;
-
         public RandBinomial()
         {
         }
 
         public RandBinomial(int trials, int percent)
         {
-            this.trials = trials;
-            this.percent = percent;
+            this.Trials = trials;
+            this.Percent = percent;
         }
 
         public RandBinomial(int trials, int percent, int offset)
             : this(trials, percent)
         {
-            this.offset = offset;
+            this.Offset = offset;
         }
 
         protected RandBinomial(RandBinomial other)
         {
-            this.offset = other.offset;
-            this.trials = other.trials;
-            this.percent = other.percent;
+            this.Offset = other.Offset;
+            this.Trials = other.Trials;
+            this.Percent = other.Percent;
         }
+
+        /// <summary>
+        /// Adds an amount to the result before returning.
+        /// </summary>
+        public int Offset { get; set; }
+
+        /// <summary>
+        /// The number of trials in the binomial distribution.
+        /// </summary>
+        public int Trials { get; set; }
+
+        /// <summary>
+        /// The chance of an individual event occurring in the binomial distribution.
+        /// </summary>
+        public int Percent { get; set; }
 
         public bool ChangesState => false;
 
@@ -61,7 +61,7 @@ namespace RogueElements
 
         public IEnumerator<int> GetEnumerator()
         {
-            for (int ii = 0; ii < this.trials; ii++)
+            for (int ii = 0; ii < this.Trials; ii++)
                 yield return ii;
         }
 
@@ -70,13 +70,13 @@ namespace RogueElements
         public int Pick(IRandom rand)
         {
             int total = 0;
-            for (int ii = 0; ii < this.trials; ii++)
+            for (int ii = 0; ii < this.Trials; ii++)
             {
-                if (rand.Next(100) < this.percent)
+                if (rand.Next(100) < this.Percent)
                     total++;
             }
 
-            return this.offset + total;
+            return this.Offset + total;
         }
     }
 }
