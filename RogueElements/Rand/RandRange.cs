@@ -64,5 +64,10 @@ namespace RogueElements
         public override bool Equals(object obj) => (obj is RandRange) && this.Equals((RandRange)obj);
 
         public override int GetHashCode() => unchecked(191 + (this.Min.GetHashCode() * 313) ^ (this.Max.GetHashCode() * 739));
+
+        public override string ToString()
+        {
+            return string.Format("[{0},{1})", this.Min, this.Max);
+        }
     }
 }
