@@ -69,5 +69,20 @@ namespace RogueElements
         {
             return pt >= 0 && pt < size;
         }
+
+        public static Loc ClampToBounds(Rect rect, Loc point)
+        {
+            return ClampToBounds(rect.Size.X, rect.Size.Y, point - rect.Start);
+        }
+
+        public static Loc ClampToBounds(Loc start, Loc size, Loc point)
+        {
+            return ClampToBounds(size.X, size.Y, point - start) + start;
+        }
+
+        public static Loc ClampToBounds(int sizeX, int sizeY, Loc pt)
+        {
+            return new Loc(Math.Min(Math.Max(0, pt.X), sizeX - 1), Math.Min(Math.Max(0, pt.Y), sizeY - 1));
+        }
     }
 }
