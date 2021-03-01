@@ -60,7 +60,6 @@ namespace RogueElements.Tests
             Assert.That(Collision.InBounds(size, pt), Is.EqualTo(expected));
         }
 
-
         [Test]
         [TestCase(2, 3, 0, 0, 0, 0)]
         [TestCase(2, 3, -1, -1, 0, 0)]
@@ -70,7 +69,7 @@ namespace RogueElements.Tests
         [TestCase(2, 3, 1, 2, 1, 2)]
         public void ClampToBounds(int sizeX, int sizeY, int ptX, int ptY, int expectedX, int expectedY)
         {
-            Assert.That(Collision.ClampToBounds(sizeX,sizeY, new Loc(ptX, ptY)), Is.EqualTo(new Loc(expectedX, expectedY)));
+            Assert.That(Collision.ClampToBounds(sizeX, sizeY, new Loc(ptX, ptY)), Is.EqualTo(new Loc(expectedX, expectedY)));
         }
     }
 }

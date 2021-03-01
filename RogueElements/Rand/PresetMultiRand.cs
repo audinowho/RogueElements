@@ -17,25 +17,39 @@ namespace RogueElements
     {
         public PresetMultiRand()
         {
-            this.ToSpawn = new List<T>();
+            this.ToSpawn = new List<IRandPicker<T>>();
+        }
+
+        public PresetMultiRand(params IRandPicker<T>[] toSpawn)
+        {
+            this.ToSpawn = new List<IRandPicker<T>>(toSpawn);
         }
 
         public PresetMultiRand(params T[] toSpawn)
         {
-            this.ToSpawn = new List<T>(toSpawn);
+            this.ToSpawn = new List<IRandPicker<T>>();
+            foreach (T item in toSpawn)
+                this.ToSpawn.Add(new PresetPicker<T>(item));
         }
 
-        public PresetMultiRand(List<T> toSpawn)
+        public PresetMultiRand(List<IRandPicker<T>> toSpawn)
         {
             this.ToSpawn = toSpawn;
         }
 
-        protected PresetMultiRand(PresetMultiRand<T> other)
+        public PresetMultiRand(List<T> toSpawn)
         {
-            this.ToSpawn = new List<T>(other.ToSpawn);
+            this.ToSpawn = new List<IRandPicker<T>>();
+            foreach (T item in toSpawn)
+                this.ToSpawn.Add(new PresetPicker<T>(item));
         }
 
-        public List<T> ToSpawn { get; }
+        protected PresetMultiRand(PresetMultiRand<T> other)
+        {
+            this.ToSpawn = new List<IRandPicker<T>>(other.ToSpawn);
+        }
+
+        public List<IRandPicker<T>> ToSpawn { get; }
 
         public bool ChangesState => false;
 
@@ -46,7 +60,12 @@ namespace RogueElements
         public List<T> Roll(IRandom rand)
         {
             List<T> result = new List<T>();
-            result.AddRange(this.ToSpawn);
+            foreach (IRandPicker<T> picker in this.ToSpawn)
+            {
+                if (picker.CanPick)
+                    result.Add(picker.Pick(rand));
+            }
+
             return result;
         }
     }
