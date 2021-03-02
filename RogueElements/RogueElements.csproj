@@ -9,12 +9,12 @@
     <CodeAnalysisRuleSet>../base.ruleset</CodeAnalysisRuleSet>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
-
     <Authors>Audino</Authors>
     <Description>Roguelike Map Generation, built to be game-agnostic.</Description>
     <PackageTags>game;library;roguelike;map;random;generator</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/audinowho/RogueElements</RepositoryUrl>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CodeCracker.CSharp" Version="1.1.0">
