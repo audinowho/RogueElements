@@ -93,6 +93,7 @@ namespace RogueElements.Tests
             // two overlapping sides (half bias 49)
             Mock<RoomGenAngledHall<ITiledGenContext>> roomGen = new Mock<RoomGenAngledHall<ITiledGenContext>> { CallBase = true };
             roomGen.Object.HallTurnBias = bias;
+            roomGen.Object.Brush = new DefaultHallBrush();
             roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
 
             string[] inGrid =
@@ -319,6 +320,171 @@ namespace RogueElements.Tests
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
+                "XXXXXXXXXX",
+            };
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(1));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = testRand.SetupSequence(p => p.Next(100));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            TestGenContext testContext = TestGenContext.InitGridToContext(inGrid);
+            testContext.SetTestRand(testRand.Object);
+            TestGenContext resultContext = TestGenContext.InitGridToContext(outGrid);
+            roomGen.PrepareSize(testContext.Rand, new Loc(8, 8));
+            roomGen.SetLoc(new Loc(1, 1));
+            SetBorderInfo(roomGen, inGrid);
+
+            roomGen.DrawOnMap(testContext);
+
+            Assert.That(testContext.Tiles, Is.EqualTo(resultContext.Tiles));
+            testRand.Verify(p => p.Next(1), Times.Exactly(3));
+            testRand.Verify(p => p.Next(100), Times.Exactly(2));
+        }
+
+        [Test]
+        public void DrawOnMapStraightIntersectBigBrushWithRoom()
+        {
+            // straight hall but with a larger brush
+            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            string[] inGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                ".XXXXXXXX.",
+                ".XXXXXXXX.",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+            };
+
+            string[] outGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "..........",
+                "..........",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+            };
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(1));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = testRand.SetupSequence(p => p.Next(100));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            TestGenContext testContext = TestGenContext.InitGridToContext(inGrid);
+            testContext.SetTestRand(testRand.Object);
+            TestGenContext resultContext = TestGenContext.InitGridToContext(outGrid);
+            roomGen.PrepareSize(testContext.Rand, new Loc(8, 8));
+            roomGen.SetLoc(new Loc(1, 1));
+            SetBorderInfo(roomGen, inGrid);
+
+            roomGen.DrawOnMap(testContext);
+
+            Assert.That(testContext.Tiles, Is.EqualTo(resultContext.Tiles));
+            testRand.Verify(p => p.Next(1), Times.Exactly(3));
+            testRand.Verify(p => p.Next(100), Times.Exactly(2));
+        }
+
+        [Test]
+        public void DrawOnMapStraightIntersectBigBrush()
+        {
+            // straight hall but with a larger brush
+            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            string[] inGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                ".XXXXXXXX.",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+            };
+
+            string[] outGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "..........",
+                "X........X",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+            };
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(1));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            seq = testRand.SetupSequence(p => p.Next(100));
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+            TestGenContext testContext = TestGenContext.InitGridToContext(inGrid);
+            testContext.SetTestRand(testRand.Object);
+            TestGenContext resultContext = TestGenContext.InitGridToContext(outGrid);
+            roomGen.PrepareSize(testContext.Rand, new Loc(8, 8));
+            roomGen.SetLoc(new Loc(1, 1));
+            SetBorderInfo(roomGen, inGrid);
+
+            roomGen.DrawOnMap(testContext);
+
+            Assert.That(testContext.Tiles, Is.EqualTo(resultContext.Tiles));
+            testRand.Verify(p => p.Next(1), Times.Exactly(3));
+            testRand.Verify(p => p.Next(100), Times.Exactly(2));
+        }
+
+        [Test]
+        public void DrawOnMapStraightIntersectBigBrushBorder()
+        {
+            // straight hall with a large brush, but hitting the border
+            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            string[] inGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                ".XXXXXXXX.",
+                "XXXXXXXXXX",
+            };
+
+            string[] outGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "..........",
                 "XXXXXXXXXX",
             };
 
