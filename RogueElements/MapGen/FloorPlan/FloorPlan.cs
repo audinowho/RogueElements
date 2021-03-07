@@ -215,6 +215,8 @@ namespace RogueElements
 
         public virtual List<int> GetAdjacentRooms(int roomIndex)
         {
+            RoomHallIndex fullIndex = new RoomHallIndex(roomIndex, false);
+
             // skips halls
             // every listroomplan keeps a list of adjacents for easy traversal
             // just because two rooms are next to each other doesn't mean they will be adjacents
@@ -225,41 +227,31 @@ namespace RogueElements
             // but all setups are completable.
             List<int> returnList = new List<int>();
 
-            void NodeAct(int nodeIndex, int distance)
+            void NodeAct(RoomHallIndex nodeIndex, int distance)
             {
                 // only add nodes that are
-                if (nodeIndex == roomIndex)
-                    return; // A) Not the start node
-                if (nodeIndex >= this.Rooms.Count)
-                    return; // B) Not a hall node
+                if (nodeIndex.IsHall)
+                    return; // Not a hall node
 
-                returnList.Add(nodeIndex);
+                if (nodeIndex == fullIndex)
+                    return; // Not the start node
+
+                returnList.Add(nodeIndex.Index);
             }
 
-            List<int> GetAdjacents(int nodeIndex)
+            List<RoomHallIndex> GetAdjacents(RoomHallIndex nodeIndex)
             {
-                List<int> adjacents = new List<int>();
-                List<RoomHallIndex> roomAdjacents = new List<RoomHallIndex>();
-
                 // do not add adjacents if we arrive on a room
                 // unless it's the first one.
-                if (nodeIndex == roomIndex)
-                    roomAdjacents = this.Rooms[roomIndex].Adjacents;
-                else if (nodeIndex >= this.Rooms.Count)
-                    roomAdjacents = this.Halls[nodeIndex - this.Rooms.Count].Adjacents;
+                if (nodeIndex == fullIndex)
+                    return this.Rooms[roomIndex].Adjacents;
+                else if (nodeIndex.IsHall)
+                    return this.Halls[nodeIndex.Index].Adjacents;
 
-                foreach (RoomHallIndex adjacentRoom in roomAdjacents)
-                {
-                    if (adjacentRoom.IsHall)
-                        adjacents.Add(adjacentRoom.Index + this.Rooms.Count);
-                    else
-                        adjacents.Add(adjacentRoom.Index);
-                }
-
-                return adjacents;
+                return new List<RoomHallIndex>();
             }
 
-            Graph.TraverseBreadthFirst(this.Rooms.Count + this.Halls.Count, roomIndex, NodeAct, GetAdjacents);
+            Graph.TraverseBreadthFirst(fullIndex, NodeAct, GetAdjacents);
 
             return returnList;
         }
@@ -267,16 +259,13 @@ namespace RogueElements
         public int GetDistance(RoomHallIndex roomFrom, RoomHallIndex roomTo)
         {
             int returnValue = -1;
-            int startIndex = roomFrom.Index + (roomFrom.IsHall ? this.Rooms.Count : 0);
-            int endIndex = roomTo.Index + (roomTo.IsHall ? this.Rooms.Count : 0);
-
-            void NodeAct(int nodeIndex, int distance)
+            void NodeAct(RoomHallIndex nodeIndex, int distance)
             {
-                if (nodeIndex == endIndex)
+                if (nodeIndex == roomTo)
                     returnValue = distance;
             }
 
-            Graph.TraverseBreadthFirst(this.Rooms.Count + this.Halls.Count, startIndex, NodeAct, this.GetBreadthFirstAdjacents);
+            Graph.TraverseBreadthFirst(roomFrom, NodeAct, this.GetAdjacents);
 
             return returnValue;
         }
@@ -286,17 +275,15 @@ namespace RogueElements
             int roomsHit = 0;
             int hallsHit = 0;
 
-            void NodeAct(int nodeIndex, int distance)
+            void NodeAct(RoomHallIndex nodeIndex, int distance)
             {
-                if (nodeIndex < this.Rooms.Count)
+                if (!nodeIndex.IsHall)
                     roomsHit++;
                 else
                     hallsHit++;
             }
 
-            int startIndex = room.Index + (room.IsHall ? this.Rooms.Count : 0);
-
-            Graph.TraverseBreadthFirst(this.Rooms.Count + this.Halls.Count, startIndex, NodeAct, this.GetBreadthFirstAdjacents);
+            Graph.TraverseBreadthFirst(room, NodeAct, this.GetAdjacents);
 
             int totalRooms = roomsHit;
             int totalHalls = hallsHit;
@@ -308,27 +295,19 @@ namespace RogueElements
             else
                 hallsHit++;
 
-            List<int> GetChokeAdjacents(int nodeIndex)
+            List<RoomHallIndex> GetChokeAdjacents(RoomHallIndex nodeIndex)
             {
-                List<int> adjacents = new List<int>();
-                List<RoomHallIndex> roomAdjacents = new List<RoomHallIndex>();
+                List<RoomHallIndex> adjacents = new List<RoomHallIndex>();
+                List<RoomHallIndex> roomAdjacents = this.GetRoomHall(nodeIndex).Adjacents;
 
                 // do not add adjacents if we arrive on a room
                 // unless it's the first one.
-                if (nodeIndex < this.Rooms.Count)
-                    roomAdjacents = this.Rooms[nodeIndex].Adjacents;
-                else
-                    roomAdjacents = this.Halls[nodeIndex - this.Rooms.Count].Adjacents;
-
                 foreach (RoomHallIndex adjacentRoom in roomAdjacents)
                 {
                     // do not count the origin room
                     if (adjacentRoom == room)
                         continue;
-                    if (adjacentRoom.IsHall)
-                        adjacents.Add(adjacentRoom.Index + this.Rooms.Count);
-                    else
-                        adjacents.Add(adjacentRoom.Index);
+                    adjacents.Add(adjacentRoom);
                 }
 
                 return adjacents;
@@ -336,11 +315,7 @@ namespace RogueElements
 
             IFloorRoomPlan plan = this.GetRoomHall(room);
             if (plan.Adjacents.Count > 0)
-            {
-                int adjIndex = plan.Adjacents[0].Index + (plan.Adjacents[0].IsHall ? this.Rooms.Count : 0);
-
-                Graph.TraverseBreadthFirst(this.Rooms.Count + this.Halls.Count, adjIndex, NodeAct, GetChokeAdjacents);
-            }
+                Graph.TraverseBreadthFirst(plan.Adjacents[0], NodeAct, GetChokeAdjacents);
 
             return (roomsHit != totalRooms) || (hallsHit != totalHalls);
         }
@@ -467,27 +442,9 @@ namespace RogueElements
                 yield return plan;
         }
 
-        private List<int> GetBreadthFirstAdjacents(int nodeIndex)
+        public virtual List<RoomHallIndex> GetAdjacents(RoomHallIndex nodeIndex)
         {
-            List<int> adjacents = new List<int>();
-            List<RoomHallIndex> roomAdjacents;
-
-            // do not add adjacents if we arrive on a room
-            // unless it's the first one.
-            if (nodeIndex < this.Rooms.Count)
-                roomAdjacents = this.Rooms[nodeIndex].Adjacents;
-            else
-                roomAdjacents = this.Halls[nodeIndex - this.Rooms.Count].Adjacents;
-
-            foreach (RoomHallIndex adjacentRoom in roomAdjacents)
-            {
-                if (adjacentRoom.IsHall)
-                    adjacents.Add(adjacentRoom.Index + this.Rooms.Count);
-                else
-                    adjacents.Add(adjacentRoom.Index);
-            }
-
-            return adjacents;
+            return this.GetRoomHall(nodeIndex).Adjacents;
         }
     }
 }

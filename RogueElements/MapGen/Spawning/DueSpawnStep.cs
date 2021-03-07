@@ -26,10 +26,11 @@ namespace RogueElements
         {
         }
 
-        public DueSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent)
+        public DueSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent, bool includeHalls = false)
             : base(spawn)
         {
             this.SuccessPercent = successPercent;
+            this.IncludeHalls = includeHalls;
         }
 
         /// <summary>
@@ -37,12 +38,14 @@ namespace RogueElements
         /// </summary>
         public int SuccessPercent { get; set; }
 
+        public bool IncludeHalls { get; set; }
+
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
             // gather up all rooms and put in a spawn list
             // rooms that are farther from the start are more likely to have items
             var spawningRooms = new SpawnList<RoomHallIndex>();
-            int[] roomWeights = new int[map.RoomPlan.RoomCount];
+            Dictionary<RoomHallIndex, int> roomWeights = new Dictionary<RoomHallIndex, int>();
 
             // get the start room
             int startRoom = 0;
@@ -57,25 +60,25 @@ namespace RogueElements
             }
 
             int maxVal = 1;
-            void NodeAct(int nodeIndex, int distance)
+            void NodeAct(RoomHallIndex nodeIndex, int distance)
             {
                 roomWeights[nodeIndex] = distance + 1;
                 maxVal = Math.Max(maxVal, roomWeights[nodeIndex]);
             }
 
-            List<int> GetAdjacents(int nodeIndex) => map.RoomPlan.GetAdjacentRooms(nodeIndex);
+            Graph.TraverseBreadthFirst(new RoomHallIndex(startRoom, false), NodeAct, map.RoomPlan.GetAdjacents);
 
-            Graph.TraverseBreadthFirst(roomWeights.Length, startRoom, NodeAct, GetAdjacents);
-
-            int multFactor = int.MaxValue / maxVal / roomWeights.Length;
-            for (int ii = 0; ii < roomWeights.Length; ii++)
+            int multFactor = int.MaxValue / maxVal / roomWeights.Count;
+            foreach (RoomHallIndex idx in roomWeights.Keys)
             {
-                FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
+                IFloorRoomPlan room = map.RoomPlan.GetRoomHall(idx);
+                if (idx.IsHall && !this.IncludeHalls)
+                    continue;
                 if (!BaseRoomFilter.PassesAllFilters(room, this.Filters))
                     continue;
-                if (roomWeights[ii] == 0)
+                if (roomWeights[idx] == 0)
                     continue;
-                spawningRooms.Add(new RoomHallIndex(ii, false), roomWeights[ii] * multFactor);
+                spawningRooms.Add(idx, roomWeights[idx] * multFactor);
             }
 
             this.SpawnRandInCandRooms(map, spawningRooms, spawns, this.SuccessPercent);
