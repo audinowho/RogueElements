@@ -94,6 +94,11 @@ namespace RogueElements
             this.SetRoomBorders(map);
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}x{2}+{3}x{4}", this.GetType().Name, this.MajorWidth, this.MinorHeight, this.MinorWidth, this.MajorHeight);
+        }
+
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             this.ChosenMinorWidth = Math.Min(this.Draw.Width, this.MinorWidth.Pick(rand));

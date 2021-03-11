@@ -36,5 +36,10 @@ namespace RogueElements
                 GenContextDebug.DebugProgress("Placed Object");
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", this.GetType().Name);
+        }
     }
 }

@@ -115,5 +115,10 @@ namespace RogueElements
             room.PrepareSize(rand, size);
             return room;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Add:{1} Hall:{2}%", this.GetType().Name, this.Amount, this.HallPercent);
+        }
     }
 }

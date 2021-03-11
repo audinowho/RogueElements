@@ -78,6 +78,11 @@ namespace RogueElements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}", this.GetType().Name);
+        }
+
         /// <summary>
         /// Attempt to choose a room with no entrance/exit, and updates their availability.  If none exists, default to a chosen room.
         /// </summary>

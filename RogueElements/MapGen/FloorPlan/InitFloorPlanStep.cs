@@ -33,5 +33,10 @@ namespace RogueElements
 
             map.InitPlan(floorPlan);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Size:{1}x{2}", this.GetType().Name, this.Width, this.Height);
+        }
     }
 }

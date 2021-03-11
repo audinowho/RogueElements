@@ -141,5 +141,10 @@ namespace RogueElements
 
             GenContextDebug.StepOut();
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Room:{1}% Hall:{2}%", this.GetType().Name, this.RoomRatio, this.HallRatio);
+        }
     }
 }
