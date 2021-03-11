@@ -39,5 +39,10 @@ namespace RogueElements
 
             map.InitGrid(floorPlan);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Cells:{1}x{2} CellSize:{3}x{4}", this.GetType().Name, this.CellX, this.CellY, this.CellWidth, this.CellHeight);
+        }
     }
 }

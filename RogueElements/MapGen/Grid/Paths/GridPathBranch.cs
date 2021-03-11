@@ -107,6 +107,11 @@ namespace RogueElements
             return chosenRay;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: Fill:{1}% Branch:{2}%", this.GetType().Name, this.RoomRatio, this.BranchRatio);
+        }
+
         protected bool ExpandPath(IRandom rand, GridPlan floorPlan, bool branch)
         {
             LocRay4 chosenRay = this.ChooseRoomExpansion(rand, floorPlan, branch);

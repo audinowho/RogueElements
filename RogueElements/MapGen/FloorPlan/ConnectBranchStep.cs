@@ -84,6 +84,11 @@ namespace RogueElements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}%", this.GetType().Name, this.ConnectPercent);
+        }
+
         private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
         {
             List<ListPathTraversalNode> endBranches = new List<ListPathTraversalNode>();

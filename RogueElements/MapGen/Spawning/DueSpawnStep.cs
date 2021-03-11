@@ -83,5 +83,10 @@ namespace RogueElements
 
             this.SpawnRandInCandRooms(map, spawningRooms, spawns, this.SuccessPercent);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: WithHalls:{1} MultOnSuccess:{2}%", this.GetType().Name, this.IncludeHalls, this.SuccessPercent);
+        }
     }
 }

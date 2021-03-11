@@ -135,6 +135,11 @@ namespace RogueElements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}% {2}", this.GetType().Name, this.WaterPercent, this.Terrain.ToString());
+        }
+
         private void DrawWhole(T map, int[][] noise, int depthRange, int waterMark)
         {
             for (int xx = 0; xx < map.Width; xx++)

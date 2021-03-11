@@ -24,5 +24,10 @@ namespace RogueElements
 
             map.GridPlan.PlaceRoomsOnFloor(map);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", this.GetType().Name);
+        }
     }
 }

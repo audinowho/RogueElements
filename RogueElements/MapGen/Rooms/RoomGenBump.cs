@@ -85,5 +85,10 @@ namespace RogueElements
             // hall restrictions
             this.SetRoomBorders(map);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}x{2}", this.GetType().Name, this.Width, this.Height);
+        }
     }
 }

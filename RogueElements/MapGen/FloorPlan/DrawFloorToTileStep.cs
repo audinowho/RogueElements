@@ -39,5 +39,10 @@ namespace RogueElements
             GenContextDebug.DebugProgress("Moved Floor");
             map.RoomPlan.DrawOnMap(map);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Padding:{1}", this.GetType().Name, this.Padding);
+        }
     }
 }

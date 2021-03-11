@@ -166,6 +166,11 @@ namespace RogueElements
             GenContextDebug.StepOut();
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: Fill:{1}% Paths:{2}%", this.GetType().Name, this.CircleRoomRatio, this.Paths);
+        }
+
         private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
         {
             if (RollRatio(rand, ref roomOpen, ref maxRooms))

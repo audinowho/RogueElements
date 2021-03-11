@@ -258,6 +258,11 @@ namespace RogueElements
             this.DrawHall(map, combineStart, combineEnd, !vertical, map.RoomTerrain);
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: Angle:{1}%", this.GetType().Name, this.HallTurnBias);
+        }
+
         private static void Choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
         {
             // special case; make sure that start and end are NOT aligned to each other because we want a bend

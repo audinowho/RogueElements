@@ -101,5 +101,10 @@ namespace RogueElements
             Loc loc = this.GapAxis.CreateLoc(scalar, orth);
             floorPlan.SetHall(new LocRay4(loc, axis.GetDir(scalarDiff)), hallGen, this.HallComponents.Clone());
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: Axis:{1}", this.GetType().Name, this.GapAxis);
+        }
     }
 }
