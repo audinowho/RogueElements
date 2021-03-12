@@ -159,6 +159,11 @@ namespace RogueElements
             return code;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", this.GetType().Name, this.spawns.Count);
+        }
+
         void ISpawnList.Add(object spawn, int rate)
         {
             this.Add((T)spawn, rate);
