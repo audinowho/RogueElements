@@ -102,12 +102,18 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Enumerates all priorities. Does not have to be in order.
+        /// Enumerates all priorities. Returns in order.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Priority> GetPriorities()
         {
+            List<Priority> priorities = new List<Priority>();
             foreach (Priority key in this.dict.Keys)
+                priorities.Add(key);
+
+            priorities.Sort();
+
+            foreach (Priority key in priorities)
                 yield return key;
         }
 
@@ -125,7 +131,7 @@ namespace RogueElements
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (Priority key in this.dict.Keys)
+            foreach (Priority key in this.GetPriorities())
             {
                 foreach (T item in this.dict[key])
                     yield return item;
