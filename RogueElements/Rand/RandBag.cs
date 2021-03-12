@@ -65,5 +65,10 @@ namespace RogueElements
                 this.ToSpawn.RemoveAt(index);
             return choice;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", this.GetType().Name, this.ToSpawn.Count);
+        }
     }
 }

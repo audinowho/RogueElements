@@ -46,5 +46,10 @@ namespace RogueElements
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public T Pick(IRandom rand) => this.ToSpawn;
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", this.GetType().Name, this.ToSpawn == null ? this.ToSpawn.ToString() : "NULL");
+        }
     }
 }
