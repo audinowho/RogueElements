@@ -31,6 +31,23 @@ namespace RogueElements
             }
         }
 
+        public Priority(Priority other, params int[] vals)
+        {
+            if (vals == null || vals.Length == 0)
+            {
+                this.str = other.str;
+            }
+            else
+            {
+                int lastIdx = vals.Length - 1;
+                while (vals[lastIdx] == 0 && lastIdx > 0)
+                    lastIdx--;
+                this.str = new int[other.Length + lastIdx + 1];
+                Array.Copy(other.str, 0, this.str, 0, other.str.Length);
+                Array.Copy(vals, 0, this.str, other.Length, lastIdx + 1);
+            }
+        }
+
         public int Length
         {
             get { return this.str == null ? 0 : this.str.Length; }
