@@ -933,10 +933,10 @@ namespace RogueElements.Tests
         [TestCase(Dir4.Right, 2, 10, 12)]
 
         // a room that takes multiple cells and does not have area in the focused cell
-        [TestCase(Dir4.Down, 1, 5, 6)]
+        [TestCase(Dir4.Down, 1, 5, 8)]
         public void GetHallTouchRangeLargeRoom(Dir4 dir, int tier, int rangeMin, int rangeMax)
         {
-            // a room that takes up one cell
+            // a room that takes up multiple cells
             string[] inGrid =
             {
                 "A.A.0.0",
@@ -944,6 +944,8 @@ namespace RogueElements.Tests
                 "A.A.0.0",
                 ". . . .",
                 "A.A.0.0",
+                ". . . .",
+                "0.0.0.0",
             };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid, 6, 4);
@@ -952,6 +954,119 @@ namespace RogueElements.Tests
             testGen.PrepareSize(testRand.Object, new Loc(5, 10));
             testGen.SetLoc(new Loc(1, 2));
             IntRange bounds = floorPlan.GetHallTouchRange(testGen, dir, tier);
+            IntRange compareBounds = new IntRange(rangeMin, rangeMax);
+            Assert.That(bounds, Is.EqualTo(compareBounds));
+        }
+
+        // a room that takes up multiple cells and has fulfillable border in specific parts of the side
+        // left only
+        [TestCase(0, 2, 2, 4)]
+
+        // left and right intersecting
+        [TestCase(3, 6, 5, 6)]
+
+        // right only (close to left)
+        [TestCase(4, 5, 5, 7)]
+
+        // right only (close to end)
+        [TestCase(8, 9, 5, 11)]
+        public void GetHallTouchRangeLargeRoomLeft(int fulfillStart, int fulfillEnd, int rangeMin, int rangeMax)
+        {
+            string[] inGrid =
+            {
+                "A.A.0.0",
+                ". . . .",
+                "A.A.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+            int width = 10;
+            bool[] fulfillable = new bool[width];
+            for (int ii = fulfillStart; ii < fulfillEnd; ii++)
+                fulfillable[ii] = true;
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid, 6, 4);
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            TestGridRoomGen testGen = (TestGridRoomGen)floorPlan.PublicArrayRooms[0].RoomGen;
+            testGen.PrepareSize(testRand.Object, new Loc(width, 6));
+            testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
+            testGen.SetLoc(new Loc(2, 1));
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, 0);
+            IntRange compareBounds = new IntRange(rangeMin, rangeMax);
+            Assert.That(bounds, Is.EqualTo(compareBounds));
+        }
+
+        [TestCase(1, 12, 14)]
+        [TestCase(2, 13, 15)]
+        public void GetHallTouchRangeLargeRoomBorder(int tier, int rangeMin, int rangeMax)
+        {
+            string[] inGrid =
+            {
+                "0.A.A.0",
+                ". . . .",
+                "0.A.A.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+            int width = 13;
+            int fulfill = 6;
+            bool[] fulfillable = new bool[width];
+            fulfillable[fulfill] = true;
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid, 6, 4);
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            TestGridRoomGen testGen = (TestGridRoomGen)floorPlan.PublicArrayRooms[0].RoomGen;
+            testGen.PrepareSize(testRand.Object, new Loc(width, 6));
+            testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
+            testGen.SetLoc(new Loc(7, 1));
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, tier);
+            IntRange compareBounds = new IntRange(rangeMin, rangeMax);
+            Assert.That(bounds, Is.EqualTo(compareBounds));
+        }
+
+        // a room that takes up multiple cells and has fulfillable border in specific parts of the side
+        // left only
+        [TestCase(0, 0, 2, 8)]
+
+        // middle only
+        [TestCase(5, 10, 7, 13)]
+
+        // left and middle
+        [TestCase(0, 9, 11, 12)]
+
+        // right only
+        [TestCase(15, 15, 12, 18)]
+
+        // left and right, both close
+        [TestCase(4, 11, 6, 8)]
+
+        // left and right, left is closer
+        [TestCase(4, 12, 6, 8)]
+
+        // left and right, right is closer
+        [TestCase(3, 11, 12, 14)]
+        public void GetHallTouchRangeLargeRoomMiddle(int fulfill1, int fulfill2, int rangeMin, int rangeMax)
+        {
+            string[] inGrid =
+            {
+                "A.A.A.0",
+                ". . . .",
+                "A.A.A.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+            int width = 16;
+            bool[] fulfillable = new bool[width];
+            fulfillable[fulfill1] = true;
+            fulfillable[fulfill2] = true;
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid, 6, 4);
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            TestGridRoomGen testGen = (TestGridRoomGen)floorPlan.PublicArrayRooms[0].RoomGen;
+            testGen.PrepareSize(testRand.Object, new Loc(width, 6));
+            testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
+            testGen.SetLoc(new Loc(2, 1));
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, 1);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }

@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System;
+
 namespace RogueElements.Tests
 {
     public class TestFloorRoomGen<T> : PermissiveRoomGen<T>
@@ -49,6 +51,14 @@ namespace RogueElements.Tests
                 for (int jj = 0; jj < this.FulfillableBorder[dir].Length; jj++)
                     this.FulfillableBorder[dir][jj] = true;
             }
+        }
+
+        public void PrepareFulfillableBorder(Dir4 dir, bool[] fulfillable)
+        {
+            if (fulfillable.Length != this.FulfillableBorder[dir].Length)
+                throw new ArgumentException("Incorrect border length.");
+            for (int jj = 0; jj < fulfillable.Length; jj++)
+                this.FulfillableBorder[dir][jj] = fulfillable[jj];
         }
 
         public override bool Equals(object obj)

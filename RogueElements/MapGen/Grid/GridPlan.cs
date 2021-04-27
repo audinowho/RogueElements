@@ -623,7 +623,8 @@ namespace RogueElements
         }
 
         /// <summary>
-        ///
+        /// Gets the minimum range along the side of a room that includes all of its fulfillable borders.
+        /// Special cases arise if the room is multi-cell.
         /// </summary>
         /// <param name="room"></param>
         /// <param name="dir">Direction from room to hall.</param>
@@ -633,45 +634,75 @@ namespace RogueElements
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
 
-            // The hall will touch the entire side of each room under normal circumstances.
+            // The hall will touch the whole fulfillable side of each room under normal circumstances.
             // Things get tricky for a target room that occupies more than one cell.
             // First, try to cover only the part of the target room that's in the cell.
-            // If that's not possible, try to extend the hall until it covers one tile of the target room.
-            IntRange startRange = room.Draw.GetSide(dir.ToAxis());
-
-            // factor possibletiles into this calculation
-            int borderLength = room.GetBorderLength(dir);
-            for (int ii = 0; ii < borderLength; ii++)
-            {
-                if (room.GetFulfillableBorder(dir, ii))
-                {
-                    startRange.Min += ii;
-                    break;
-                }
-            }
-
-            for (int ii = 0; ii < borderLength; ii++)
-            {
-                if (room.GetFulfillableBorder(dir, borderLength - 1 - ii))
-                {
-                    startRange.Max -= ii;
-                    break;
-                }
-            }
-
             int tierStart = vertical ? tier * (this.WidthPerCell + this.CellWall) : tier * (this.HeightPerCell + this.CellWall);
             int tierLength = vertical ? this.WidthPerCell : this.HeightPerCell;
-            IntRange newRange = new IntRange(Math.Max(startRange.Min, tierStart), Math.Min(startRange.Max, tierStart + tierLength));
-            if (newRange.Max <= newRange.Min)
+            IntRange tierRange = new IntRange(tierStart, tierStart + tierLength);
+            IntRange roomRange = room.Draw.GetSide(dir.ToAxis());
+
+            // factor possibletiles into this calculation
+            int borderStart = tierStart - roomRange.Min;
+            if (borderStart < 0)
             {
-                // try to extend the hall until it covers one tile of the target room.
-                // first, note that the current end range is covering the zone between the tier and the edge of the room (inverted)
-                // un-invert this and inflate by 1, and you will have a zone that covers 1 tile with the room
-                // get the intersection of this zone and the room.
-                newRange = new IntRange(Math.Max(startRange.Min, newRange.Max - 1), Math.Min(startRange.Max, newRange.Min + 1));
+                tierRange.Min -= borderStart;
+                borderStart = 0;
             }
 
-            return newRange;
+            for (int ii = borderStart; ii < roomRange.Length; ii++)
+            {
+                if (room.GetFulfillableBorder(dir, ii))
+                    break;
+                else
+                    tierRange.Min += 1;
+            }
+
+            int borderEnd = tierStart + tierLength - roomRange.Min;
+            if (borderEnd > roomRange.Length)
+            {
+                tierRange.Max += roomRange.Length - borderEnd;
+                borderEnd = roomRange.Length;
+            }
+
+            for (int ii = borderEnd - 1; ii >= 0; ii--)
+            {
+                if (room.GetFulfillableBorder(dir, ii))
+                    break;
+                else
+                    tierRange.Max -= 1;
+            }
+
+            if (tierRange.Max > tierRange.Min)
+                return tierRange;
+
+            // If that's not possible, then it means that the room must have fulfillable tiles outside of the current bound.
+            // Try to extend the hall until it covers one fulfillable tile of the target room.
+            // Easy method: note that the current tierRange range is covering the zone between the tier and the edge of the room (inverted)
+            // There will be either a workable range at the start or a workable range at the end, never neither.
+            IntRange startRange = new IntRange(tierRange.Max - 1, tierStart + 1);
+            IntRange endRange = new IntRange(tierStart + tierLength - 1, tierRange.Min + 1);
+
+            bool chooseStart = true;
+            bool chooseEnd = true;
+
+            // if tierRanges reached the absolute limits of the roomRange, then there is no fulfillable tile on that side
+            if (startRange.Min < roomRange.Min)
+                chooseStart = false;
+            else if (endRange.Length > startRange.Length)
+                chooseEnd = false;
+
+            if (endRange.Max > roomRange.Max)
+                chooseEnd = false;
+            else if (startRange.Length > endRange.Length)
+                chooseStart = false;
+
+            if (!chooseStart && !chooseEnd)
+                throw new ArgumentException("PrepareFulfillableBorders did not open at least one open tile for each direction!");
+
+            if (chooseStart)
+                return startRange;
+            return endRange;
         }
     }
 }
