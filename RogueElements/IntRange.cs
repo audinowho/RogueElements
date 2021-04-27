@@ -73,7 +73,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return $"({this.Min}, {this.Max}]";
+            return $"[{this.Min}, {this.Max})";
         }
 
         public override bool Equals(object obj)
