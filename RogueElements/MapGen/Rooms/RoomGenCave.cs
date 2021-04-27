@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a cave-like room.
+    /// Will generate a square if asked to generate for a size it did not propose.
+    /// For square-looking rooms, check to make sure the room was not cut down.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenCave<T> : RoomGen<T>
         where T : ITiledGenContext
