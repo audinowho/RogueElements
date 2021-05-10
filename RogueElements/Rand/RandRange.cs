@@ -67,7 +67,10 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}-{1}", this.Min, this.Max);
+            if (this.Min + 1 >= this.Max)
+                return this.Min.ToString();
+            else
+                return string.Format("{0}-{1}", this.Min, this.Max);
         }
     }
 }
