@@ -47,5 +47,10 @@ namespace RogueElements
 
             return copyResults;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}", this.GetType().Name, this.Picker.ToString());
+        }
     }
 }
