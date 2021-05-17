@@ -13,10 +13,14 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="TGenContext">The IGenContext to place the spawns in.</typeparam>
     /// <typeparam name="TSpawnable">The type of the spawn to place in IGenContext</typeparam>
-    public interface IStepSpawner<TGenContext, TSpawnable>
+    public interface IStepSpawner<TGenContext, TSpawnable> : IStepSpawner
         where TGenContext : IGenContext
         where TSpawnable : ISpawnable
     {
         List<TSpawnable> GetSpawns(TGenContext map);
+    }
+
+    public interface IStepSpawner
+    {
     }
 }
