@@ -53,7 +53,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: WithHalls:{1}", this.GetType().Name, this.IncludeHalls);
+            return string.Format("{0}[{1}]: WithHalls:{2}", this.GetType().Name, typeof(TSpawnable).Name, this.IncludeHalls);
         }
     }
 }
