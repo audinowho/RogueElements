@@ -12,18 +12,8 @@ namespace RogueElements
     /// A random generator of a list of items.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IMultiRandPicker<T>
+    public interface IMultiRandPicker<T> : IMultiRandPicker
     {
-        /// <summary>
-        /// Determines if this object changes after a call to Roll().
-        /// </summary>
-        bool ChangesState { get; }
-
-        /// <summary>
-        /// Determines if this instance is in a state where Roll() can be called without throwing an exception.
-        /// </summary>
-        bool CanPick { get; }
-
         /// <summary>
         /// Randomly generates a list of items of type T.
         /// </summary>
@@ -37,5 +27,18 @@ namespace RogueElements
         /// </summary>
         /// <returns></returns>
         IMultiRandPicker<T> CopyState();
+    }
+
+    public interface IMultiRandPicker
+    {
+        /// <summary>
+        /// Determines if this object changes after a call to Roll().
+        /// </summary>
+        bool ChangesState { get; }
+
+        /// <summary>
+        /// Determines if this instance is in a state where Roll() can be called without throwing an exception.
+        /// </summary>
+        bool CanPick { get; }
     }
 }
