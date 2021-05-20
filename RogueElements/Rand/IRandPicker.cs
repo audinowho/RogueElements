@@ -13,18 +13,8 @@ namespace RogueElements
     /// A random generator of a single item.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IRandPicker<T> : IEnumerable<T>, IEnumerable
+    public interface IRandPicker<T> : IEnumerable<T>, IRandPicker
     {
-        /// <summary>
-        /// Determines if this object changes after a call to Pick().
-        /// </summary>
-        bool ChangesState { get; }
-
-        /// <summary>
-        /// Determines if this instance is in a state where Pick() can be called without throwing an exception.
-        /// </summary>
-        bool CanPick { get; }
-
         /// <summary>
         /// Randomly generates an item of type T.
         /// </summary>
@@ -38,5 +28,18 @@ namespace RogueElements
         /// </summary>
         /// <returns></returns>
         IRandPicker<T> CopyState();
+    }
+
+    public interface IRandPicker : IEnumerable
+    {
+        /// <summary>
+        /// Determines if this object changes after a call to Pick().
+        /// </summary>
+        bool ChangesState { get; }
+
+        /// <summary>
+        /// Determines if this instance is in a state where Pick() can be called without throwing an exception.
+        /// </summary>
+        bool CanPick { get; }
     }
 }
