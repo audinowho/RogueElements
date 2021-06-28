@@ -24,7 +24,20 @@ namespace RogueElements
             this.spawns = new List<SpawnRange>();
         }
 
+        public SpawnRangeList(SpawnRangeList<T> other)
+        {
+            this.spawns = new List<SpawnRange>();
+            foreach (SpawnRange item in other.spawns)
+                this.spawns.Add(new SpawnRange(item.Spawn, item.Rate, item.Range));
+        }
+
         public int Count => this.spawns.Count;
+
+        /// <summary>
+        /// This is a shallow copy.
+        /// </summary>
+        /// <returns></returns>
+        public SpawnRangeList<T> CopyState() => new SpawnRangeList<T>(this);
 
         public void Add(T spawn, IntRange range, int rate)
         {

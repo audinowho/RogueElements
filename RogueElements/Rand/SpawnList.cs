@@ -26,6 +26,7 @@ namespace RogueElements
 
         protected SpawnList(SpawnList<T> other)
         {
+            this.spawnTotal = other.spawnTotal;
             this.spawns = new List<SpawnRate>();
             foreach (SpawnRate item in other.spawns)
                 this.spawns.Add(new SpawnRate(item.Spawn, item.Rate));
@@ -39,6 +40,10 @@ namespace RogueElements
 
         public bool ChangesState => false;
 
+        /// <summary>
+        /// This is a shallow copy.
+        /// </summary>
+        /// <returns></returns>
         public IRandPicker<T> CopyState() => new SpawnList<T>(this);
 
         public void Add(T spawn, int rate)
