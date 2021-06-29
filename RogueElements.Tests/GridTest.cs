@@ -56,14 +56,194 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        [Ignore("TODO")]
-        public void FindAPath()
+        public void FindAPathStraight()
         {
+            string[] inGrid =
+            {
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".A...B.",
+                ".......",
+            };
+
             // test against a straight obstacle (1 goal)
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            Loc[] ends = new Loc[1];
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map.Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends[0] = new Loc(xx, yy);
+                }
+            }
+
+            List<Loc> result_path = new List<Loc>
+            {
+                new Loc(5, 5),
+                new Loc(4, 5),
+                new Loc(3, 5),
+                new Loc(2, 5),
+                new Loc(1, 5),
+            };
+
+            // nothing is blocked
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            Assert.That(path, Is.EquivalentTo(result_path));
+        }
+
+        [Test]
+        public void FindAPathCurved()
+        {
+            string[] inGrid =
+            {
+                ".......",
+                ".......",
+                ".......",
+                ".XXXXX.",
+                "...X...",
+                ".A.X.B.",
+                "...X...",
+            };
+
             // test against a concave obstacle (1 goal)
-            // test against an impossible obstacle (1 goal)
-            // test against 2 goals
-            throw new NotImplementedException();
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            Loc[] ends = new Loc[1];
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map.Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends[0] = new Loc(xx, yy);
+                }
+            }
+            List<Loc> result_path = new List<Loc>
+            {
+                new Loc(5, 5),
+                new Loc(6, 4),
+                new Loc(6, 3),
+                new Loc(6, 2),
+                new Loc(5, 2),
+                new Loc(4, 2),
+                new Loc(3, 2),
+                new Loc(2, 2),
+                new Loc(1, 2),
+                new Loc(0, 2),
+                new Loc(0, 3),
+                new Loc(0, 4),
+                new Loc(1, 5),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            Assert.That(path, Is.EquivalentTo(result_path));
+        }
+
+        [Test]
+        public void FindAPathImpossible()
+        {
+            string[] inGrid =
+            {
+                "...X...",
+                ".A.X...",
+                "...X...",
+                ".XXXXX.",
+                "...X...",
+                "...X.B.",
+                "...X...",
+            };
+
+            // test against an impossible obstacle (1 goal), result in the closest location that works
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            Loc[] ends = new Loc[1];
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map.Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends[0] = new Loc(xx, yy);
+                }
+            }
+            List<Loc> result_path = new List<Loc>
+            {
+                new Loc(2, 5),
+                new Loc(1, 5),
+                new Loc(0, 4),
+                new Loc(0, 3),
+                new Loc(0, 2),
+                new Loc(1, 1),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            Assert.That(path, Is.EquivalentTo(result_path));
+        }
+
+        [Test]
+        public void FindAPath2Goals()
+        {
+            string[] inGrid =
+            {
+                "...C...",
+                ".......",
+                ".......",
+                ".XXXXX.",
+                "...X...",
+                ".A.X.B.",
+                "...X...",
+            };
+
+            // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            Loc[] ends = new Loc[2];
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map.Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends[0] = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'C')
+                        ends[1] = new Loc(xx, yy);
+                }
+            }
+            List<Loc> result_path = new List<Loc>
+            {
+                new Loc(3, 0),
+                new Loc(2, 0),
+                new Loc(1, 1),
+                new Loc(0, 2),
+                new Loc(0, 3),
+                new Loc(0, 4),
+                new Loc(1, 5),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            Assert.That(path, Is.EquivalentTo(result_path));
         }
 
         [Test]

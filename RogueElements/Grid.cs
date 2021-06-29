@@ -23,9 +23,18 @@ namespace RogueElements
             return FindAPath(rectStart, rectSize, start, ends, checkBlock, checkDiagBlock);
         }
 
+        /// <summary>
+        /// Searches for the fastest path to any of the endpoints.  A-Star.
+        /// </summary>
+        /// <param name="rectStart"></param>
+        /// <param name="rectSize"></param>
+        /// <param name="start"></param>
+        /// <param name="ends"></param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <returns></returns>
         public static List<Loc> FindAPath(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock)
         {
-            // searches for one specific path (ends[0]), but doesn't mind hitting the other ones
             PathTile[][] tiles = new PathTile[rectSize.X][];
             for (int ii = 0; ii < rectSize.X; ii++)
             {
@@ -38,7 +47,10 @@ namespace RogueElements
 
             StablePriorityQueue<double, PathTile> candidates = new StablePriorityQueue<double, PathTile>();
             PathTile start_tile = tiles[offset_start.X][offset_start.Y];
-            start_tile.Heuristic = Math.Sqrt((ends[0] - start).DistSquared());
+            double min_start_heuristic = Math.Sqrt((ends[0] - start).DistSquared());
+            for (int ii = 1; ii < ends.Length; ii++)
+                min_start_heuristic = Math.Min(min_start_heuristic, Math.Sqrt((ends[ii] - start).DistSquared()));
+            start_tile.Heuristic = min_start_heuristic;
             start_tile.Cost = 0;
             candidates.Enqueue(start_tile.Heuristic + start_tile.Cost, start_tile);
 
@@ -59,10 +71,10 @@ namespace RogueElements
 
                 foreach (Dir8 dir in DirExt.VALID_DIR8)
                 {
-                    if (!IsDirBlocked(currentTile.Location, dir, checkBlock, checkDiagBlock))
+                    Loc newLoc = currentTile.Location - rectStart + dir.GetLoc();
+                    if (Collision.InBounds(rectSize.X, rectSize.Y, newLoc))
                     {
-                        Loc newLoc = currentTile.Location - rectStart + dir.GetLoc();
-                        if (Collision.InBounds(rectSize.X, rectSize.Y, newLoc))
+                        if (!IsDirBlocked(currentTile.Location, dir, checkBlock, checkDiagBlock))
                         {
                             PathTile tile = tiles[newLoc.X][newLoc.Y];
 
@@ -73,7 +85,12 @@ namespace RogueElements
                             if (tile.Cost == -1 || newCost < tile.Cost)
                             {
                                 tile.Cost = newCost;
-                                tile.Heuristic = Math.Sqrt((ends[0] - tile.Location).DistSquared());
+
+                                double min_heuristic = Math.Sqrt((ends[0] - tile.Location).DistSquared());
+                                for (int ii = 1; ii < ends.Length; ii++)
+                                    min_heuristic = Math.Min(min_heuristic, Math.Sqrt((ends[ii] - tile.Location).DistSquared()));
+                                tile.Heuristic = min_heuristic;
+
                                 tile.BackReference = currentTile;
                                 candidates.AddOrSetPriority(tile.Heuristic + tile.Cost, tile);
                             }
