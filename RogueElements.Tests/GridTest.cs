@@ -75,7 +75,7 @@ namespace RogueElements.Tests
             Loc[] ends = new Loc[1];
             for (int xx = 0; xx < map.Length; xx++)
             {
-                for (int yy = 0; yy < map.Length; yy++)
+                for (int yy = 0; yy < map[0].Length; yy++)
                 {
                     if (map[xx][yy] == 'A')
                         start = new Loc(xx, yy);
@@ -118,17 +118,18 @@ namespace RogueElements.Tests
             // test against a concave obstacle (1 goal)
             char[][] map = InitGrid(inGrid);
             Loc start = Loc.Zero;
-            Loc[] ends = new Loc[1];
+            List<Loc> ends = new List<Loc>();
             for (int xx = 0; xx < map.Length; xx++)
             {
-                for (int yy = 0; yy < map.Length; yy++)
+                for (int yy = 0; yy < map[0].Length; yy++)
                 {
                     if (map[xx][yy] == 'A')
                         start = new Loc(xx, yy);
                     else if (map[xx][yy] == 'B')
-                        ends[0] = new Loc(xx, yy);
+                        ends.Add(new Loc(xx, yy));
                 }
             }
+
             List<Loc> result_path = new List<Loc>
             {
                 new Loc(5, 5),
@@ -149,7 +150,7 @@ namespace RogueElements.Tests
             bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
             bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
-            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag);
             Assert.That(path, Is.EquivalentTo(result_path));
         }
 
@@ -170,17 +171,18 @@ namespace RogueElements.Tests
             // test against an impossible obstacle (1 goal), result in the closest location that works
             char[][] map = InitGrid(inGrid);
             Loc start = Loc.Zero;
-            Loc[] ends = new Loc[1];
+            List<Loc> ends = new List<Loc>();
             for (int xx = 0; xx < map.Length; xx++)
             {
-                for (int yy = 0; yy < map.Length; yy++)
+                for (int yy = 0; yy < map[0].Length; yy++)
                 {
                     if (map[xx][yy] == 'A')
                         start = new Loc(xx, yy);
                     else if (map[xx][yy] == 'B')
-                        ends[0] = new Loc(xx, yy);
+                        ends.Add(new Loc(xx, yy));
                 }
             }
+
             List<Loc> result_path = new List<Loc>
             {
                 new Loc(2, 5),
@@ -194,7 +196,7 @@ namespace RogueElements.Tests
             bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
             bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
-            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag);
             Assert.That(path, Is.EquivalentTo(result_path));
         }
 
@@ -203,7 +205,7 @@ namespace RogueElements.Tests
         {
             string[] inGrid =
             {
-                "...C...",
+                "...B...",
                 ".......",
                 ".......",
                 ".XXXXX.",
@@ -215,19 +217,18 @@ namespace RogueElements.Tests
             // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
             char[][] map = InitGrid(inGrid);
             Loc start = Loc.Zero;
-            Loc[] ends = new Loc[2];
+            List<Loc> ends = new List<Loc>();
             for (int xx = 0; xx < map.Length; xx++)
             {
-                for (int yy = 0; yy < map.Length; yy++)
+                for (int yy = 0; yy < map[0].Length; yy++)
                 {
                     if (map[xx][yy] == 'A')
                         start = new Loc(xx, yy);
                     else if (map[xx][yy] == 'B')
-                        ends[0] = new Loc(xx, yy);
-                    else if (map[xx][yy] == 'C')
-                        ends[1] = new Loc(xx, yy);
+                        ends.Add(new Loc(xx, yy));
                 }
             }
+
             List<Loc> result_path = new List<Loc>
             {
                 new Loc(3, 0),
@@ -242,8 +243,242 @@ namespace RogueElements.Tests
             bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
             bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
 
-            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends, CheckBlock, CheckDiag);
+            List<Loc> path = Grid.FindAPath(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag);
             Assert.That(path, Is.EquivalentTo(result_path));
+        }
+
+        [Test]
+        public void FindAllPaths2Goals()
+        {
+            string[] inGrid =
+            {
+                "...B...",
+                ".......",
+                ".......",
+                ".XXXXX.",
+                "...X...",
+                ".A.X.B.",
+                "...X...",
+            };
+
+            // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            List<Loc> ends = new List<Loc>();
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map[0].Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends.Add(new Loc(xx, yy));
+                }
+            }
+
+            List<Loc> result_path_0 = new List<Loc>
+            {
+                new Loc(3, 0),
+                new Loc(2, 0),
+                new Loc(1, 1),
+                new Loc(0, 2),
+                new Loc(0, 3),
+                new Loc(0, 4),
+                new Loc(1, 5),
+            };
+
+            List<Loc> result_path_1 = new List<Loc>
+            {
+                new Loc(5, 5),
+                new Loc(6, 4),
+                new Loc(6, 3),
+                new Loc(6, 2),
+                new Loc(5, 1),
+                new Loc(4, 0),
+                new Loc(3, 0),
+                new Loc(2, 0),
+                new Loc(1, 1),
+                new Loc(0, 2),
+                new Loc(0, 3),
+                new Loc(0, 4),
+                new Loc(1, 5),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc>[] path = Grid.FindAllPaths(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag);
+            Assert.That(path[0], Is.EquivalentTo(result_path_0));
+            Assert.That(path[1], Is.EquivalentTo(result_path_1));
+        }
+
+        [Test]
+        public void FindBestPaths()
+        {
+            string[] inGrid =
+            {
+                ".....B..",
+                "....B...",
+                "...B....",
+                "..B..A..",
+                ".B......",
+                "BBBBBBBB",
+            };
+
+            // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            List<Loc> ends = new List<Loc>();
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map[0].Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends.Add(new Loc(xx, yy));
+                }
+            }
+
+            List<Loc>[] result_paths = new List<Loc>[ends.Count];
+            result_paths[5] = new List<Loc>
+            {
+                new Loc(3, 2),
+                new Loc(4, 2),
+                new Loc(5, 3),
+            };
+
+            result_paths[6] = new List<Loc>
+            {
+                new Loc(3, 5),
+                new Loc(4, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[7] = new List<Loc>
+            {
+                new Loc(4, 1),
+                new Loc(4, 2),
+                new Loc(5, 3),
+            };
+
+            result_paths[8] = new List<Loc>
+            {
+                new Loc(4, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[10] = new List<Loc>
+            {
+                new Loc(5, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[11] = new List<Loc>
+            {
+                new Loc(6, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[12] = new List<Loc>
+            {
+                new Loc(7, 5),
+                new Loc(6, 4),
+                new Loc(5, 3),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc>[] path = Grid.FindNPaths(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag, 1, true);
+            for (int ii = 0; ii < ends.Count; ii++)
+            {
+                if (result_paths[ii] != null)
+                    Assert.That(path[ii], Is.EquivalentTo(result_paths[ii]));
+                else
+                    Assert.That(path[ii], Is.Null);
+            }
+        }
+
+        [Test]
+        public void FindBestPathsBlocked()
+        {
+            string[] inGrid =
+            {
+                ".....BX.",
+                "....BX..",
+                "...BX...",
+                "..BX.A..",
+                ".BX.....",
+                "BXBBBBBB",
+            };
+
+            // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            List<Loc> ends = new List<Loc>();
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map[0].Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends.Add(new Loc(xx, yy));
+                }
+            }
+
+            List<Loc>[] result_paths = new List<Loc>[ends.Count];
+
+            result_paths[5] = new List<Loc>
+            {
+                new Loc(3, 5),
+                new Loc(4, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[7] = new List<Loc>
+            {
+                new Loc(4, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[9] = new List<Loc>
+            {
+                new Loc(5, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[10] = new List<Loc>
+            {
+                new Loc(6, 5),
+                new Loc(5, 4),
+                new Loc(5, 3),
+            };
+
+            result_paths[11] = new List<Loc>
+            {
+                new Loc(7, 5),
+                new Loc(6, 4),
+                new Loc(5, 3),
+            };
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc>[] path = Grid.FindNPaths(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag, 1, true);
+            for (int ii = 0; ii < ends.Count; ii++)
+            {
+                if (result_paths[ii] != null)
+                    Assert.That(path[ii], Is.EquivalentTo(result_paths[ii]));
+                else
+                    Assert.That(path[ii], Is.Null);
+            }
         }
 
         [Test]
