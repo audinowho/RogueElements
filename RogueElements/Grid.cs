@@ -16,6 +16,10 @@ namespace RogueElements
 
         public delegate void LocAction(Loc loc);
 
+        private delegate bool EvalPaths(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile);
+
+        private delegate void EvalFallback(List<Loc>[] resultPaths, PathTile[] farthestTiles);
+
         public static List<Loc> FindPath(Loc rectStart, Loc rectSize, Loc start, Loc end, LocTest checkBlock, LocTest checkDiagBlock)
         {
             Loc[] ends = new Loc[1];
@@ -24,82 +28,134 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Searches for the fastest path to any of the endpoints.  A-Star.
+        /// Searches for the fastest path to any of the endpoints.  If multiple are tied it picks the first one.
         /// </summary>
         /// <param name="rectStart"></param>
         /// <param name="rectSize"></param>
         /// <param name="start"></param>
-        /// <param name="ends"></param>
+        /// <param name="ends">The list of goal points to path to.  Increase in count increases runtime linearly.</param>
         /// <param name="checkBlock"></param>
         /// <param name="checkDiagBlock"></param>
         /// <returns></returns>
         public static List<Loc> FindAPath(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock)
         {
-            PathTile[][] tiles = new PathTile[rectSize.X][];
-            for (int ii = 0; ii < rectSize.X; ii++)
+            List<Loc>[] multiEnds = FindMultiPaths(rectStart, rectSize, start, ends, checkBlock, checkDiagBlock, EvalPathOne, EvalFallbackOne);
+            for (int ii = 0; ii < multiEnds.Length; ii++)
             {
-                tiles[ii] = new PathTile[rectSize.Y];
-                for (int jj = 0; jj < rectSize.Y; jj++)
-                    tiles[ii][jj] = new PathTile(new Loc(rectStart.X + ii, rectStart.Y + jj));
+                if (multiEnds[ii] != null)
+                    return multiEnds[ii];
             }
 
-            Loc offset_start = start - rectStart;
+            throw new InvalidOperationException("Could not find a path!");
+        }
 
-            StablePriorityQueue<double, PathTile> candidates = new StablePriorityQueue<double, PathTile>();
-            PathTile start_tile = tiles[offset_start.X][offset_start.Y];
-            double min_start_heuristic = Math.Sqrt((ends[0] - start).DistSquared());
-            for (int ii = 1; ii < ends.Length; ii++)
-                min_start_heuristic = Math.Min(min_start_heuristic, Math.Sqrt((ends[ii] - start).DistSquared()));
-            start_tile.Heuristic = min_start_heuristic;
-            start_tile.Cost = 0;
-            candidates.Enqueue(start_tile.Heuristic + start_tile.Cost, start_tile);
+        public static List<Loc>[] FindAllPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock)
+        {
+            return FindMultiPaths(rectStart, rectSize, start, ends, checkBlock, checkDiagBlock, EvalPathAll, EvalFallbackAll);
+        }
 
-            PathTile farthest_tile = start_tile;
-            while (candidates.Count > 0)
+        /// <summary>
+        /// Searches for the N fastest paths to any of the endpoints.
+        /// </summary>
+        /// <param name="rectStart"></param>
+        /// <param name="rectSize"></param>
+        /// <param name="start"></param>
+        /// <param name="ends">The list of goal points to path to.  Increase in count increases runtime linearly.</param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <param name="amt">Top N</param>
+        /// <param name="multiTie">If multiple are tied it returns all involved in the tie.</param>
+        public static List<Loc>[] FindNPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock, int amt, bool multiTie)
+        {
+            EvalPaths evalPathTied = (Loc[] evalEnds, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile) =>
             {
-                PathTile currentTile = candidates.Dequeue();
-                for (int ii = 0; ii < ends.Length; ii++)
+                int foundResults = 0;
+                int highestBackRefCount = 0;
+                for (int ii = 0; ii < resultPaths.Length; ii++)
                 {
-                    if (currentTile.Location == ends[ii])
-                        return GetBackreference(currentTile);
-                }
-
-                if (currentTile.Heuristic < farthest_tile.Heuristic)
-                    farthest_tile = currentTile;
-
-                currentTile.Traversed = true;
-
-                foreach (Dir8 dir in DirExt.VALID_DIR8)
-                {
-                    Loc newLoc = currentTile.Location - rectStart + dir.GetLoc();
-                    if (Collision.InBounds(rectSize.X, rectSize.Y, newLoc))
+                    if (resultPaths[ii] != null)
                     {
-                        if (!IsDirBlocked(currentTile.Location, dir, checkBlock, checkDiagBlock))
-                        {
-                            PathTile tile = tiles[newLoc.X][newLoc.Y];
-
-                            if (tile.Traversed)
-                                continue;
-
-                            int newCost = currentTile.Cost + 1;
-                            if (tile.Cost == -1 || newCost < tile.Cost)
-                            {
-                                tile.Cost = newCost;
-
-                                double min_heuristic = Math.Sqrt((ends[0] - tile.Location).DistSquared());
-                                for (int ii = 1; ii < ends.Length; ii++)
-                                    min_heuristic = Math.Min(min_heuristic, Math.Sqrt((ends[ii] - tile.Location).DistSquared()));
-                                tile.Heuristic = min_heuristic;
-
-                                tile.BackReference = currentTile;
-                                candidates.AddOrSetPriority(tile.Heuristic + tile.Cost, tile);
-                            }
-                        }
+                        foundResults++;
+                        highestBackRefCount = Math.Max(highestBackRefCount, resultPaths[ii].Count);
                     }
                 }
-            }
 
-            return GetBackreference(farthest_tile);
+                bool addedResult = false;
+                for (int ii = 0; ii < evalEnds.Length; ii++)
+                {
+                    if (currentTile.Location == evalEnds[ii])
+                    {
+                        List<Loc> proposedBackRef = GetBackreference(currentTile);
+
+                        // in multiTie mode, we are waiting for confirmation that we've found all ties.  This means having found something that fails a tie.
+                        if (multiTie && foundResults >= amt)
+                        {
+                            // if this new proposed backref takes more steps than the current longest, then it is a failed tie
+                            if (proposedBackRef.Count > highestBackRefCount)
+                                return true;
+                        }
+
+                        resultPaths[ii] = proposedBackRef;
+                    }
+
+                    if (currentTile.Heuristic[ii] < farthestTiles[ii].Heuristic[ii])
+                        farthestTiles[ii] = currentTile;
+                }
+
+                // if we're just looking for the amount and not paying attention to tiebreakers, we can call it a day when we reach the amount.
+                if (!multiTie && addedResult)
+                {
+                    if (foundResults + 1 >= amt)
+                        return true;
+                }
+
+                return false;
+            };
+
+            EvalFallback evalFallbackTied = (List<Loc>[] resultPaths, PathTile[] farthestTiles) =>
+            {
+                int foundResults = 0;
+                int highestBackRefCount = 0;
+                StablePriorityQueue<int, int> lowestStepsQueue = new StablePriorityQueue<int, int>();
+                List<Loc>[] proposedPaths = new List<Loc>[resultPaths.Length];
+
+                for (int ii = 0; ii < resultPaths.Length; ii++)
+                {
+                    if (resultPaths[ii] != null)
+                    {
+                        foundResults++;
+                        highestBackRefCount = Math.Max(highestBackRefCount, resultPaths[ii].Count);
+                    }
+                    else
+                    {
+                        proposedPaths[ii] = GetBackreference(farthestTiles[ii]);
+                        lowestStepsQueue.AddOrSetPriority(proposedPaths[ii].Count, ii);
+                    }
+                }
+
+                while (lowestStepsQueue.Count > 0)
+                {
+                    int newIdx = lowestStepsQueue.Dequeue();
+                    if (multiTie && foundResults >= amt)
+                    {
+                        // we've run out of ties.  stop adding paths
+                        if (proposedPaths[newIdx].Count > highestBackRefCount)
+                            break;
+                    }
+
+                    resultPaths[newIdx] = proposedPaths[newIdx];
+                    highestBackRefCount = proposedPaths[newIdx].Count;
+                    foundResults++;
+
+                    if (!multiTie)
+                    {
+                        if (foundResults >= amt)
+                            break;
+                    }
+                }
+            };
+
+            return FindMultiPaths(rectStart, rectSize, start, ends, checkBlock, checkDiagBlock, evalPathTied, evalFallbackTied);
         }
 
         /// <summary>
@@ -546,6 +602,138 @@ namespace RogueElements
                 stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, true));
         }
 
+        private static List<Loc>[] FindMultiPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock, EvalPaths eval, EvalFallback fallback)
+        {
+            PathTile[][] tiles = new PathTile[rectSize.X][];
+            for (int ii = 0; ii < rectSize.X; ii++)
+            {
+                tiles[ii] = new PathTile[rectSize.Y];
+                for (int jj = 0; jj < rectSize.Y; jj++)
+                    tiles[ii][jj] = new PathTile(new Loc(rectStart.X + ii, rectStart.Y + jj));
+            }
+
+            Loc offset_start = start - rectStart;
+
+            StablePriorityQueue<double, PathTile> candidates = new StablePriorityQueue<double, PathTile>();
+            PathTile start_tile = tiles[offset_start.X][offset_start.Y];
+            start_tile.UpdateHeuristics(ends);
+            start_tile.Cost = 0;
+            candidates.Enqueue(start_tile.MinHeuristic + start_tile.Cost, start_tile);
+
+            List<Loc>[] resultPaths = new List<Loc>[ends.Length];
+
+            PathTile[] farthestTiles = new PathTile[ends.Length];
+            for (int ii = 0; ii < farthestTiles.Length; ii++)
+                farthestTiles[ii] = start_tile;
+
+            while (candidates.Count > 0)
+            {
+                PathTile currentTile = candidates.Dequeue();
+
+                if (eval(ends, resultPaths, farthestTiles, currentTile))
+                    return resultPaths;
+
+                currentTile.Traversed = true;
+
+                foreach (Dir8 dir in DirExt.VALID_DIR8)
+                {
+                    Loc newLoc = currentTile.Location - rectStart + dir.GetLoc();
+                    if (Collision.InBounds(rectSize.X, rectSize.Y, newLoc))
+                    {
+                        if (!IsDirBlocked(currentTile.Location, dir, checkBlock, checkDiagBlock))
+                        {
+                            PathTile tile = tiles[newLoc.X][newLoc.Y];
+
+                            if (tile.Traversed)
+                                continue;
+
+                            int newCost = currentTile.Cost + 1;
+                            if (tile.Cost == -1 || newCost < tile.Cost)
+                            {
+                                tile.Cost = newCost;
+                                tile.UpdateHeuristics(ends);
+                                tile.BackReference = currentTile;
+                                candidates.AddOrSetPriority(tile.MinHeuristic + tile.Cost, tile);
+                            }
+                        }
+                    }
+                }
+            }
+
+            fallback(resultPaths, farthestTiles);
+
+            return resultPaths;
+        }
+
+        /// <summary>
+        /// Only needs one path completed to return.
+        /// </summary>
+        /// <param name="ends"></param>
+        /// <param name="resultPaths"></param>
+        /// <param name="farthestTiles"></param>
+        /// <param name="currentTile"></param>
+        /// <returns></returns>
+        private static bool EvalPathOne(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile)
+        {
+            GenericUpdateCompletePaths(ends, resultPaths, farthestTiles, currentTile);
+
+            for (int ii = 0; ii < resultPaths.Length; ii++)
+            {
+                if (resultPaths[ii] != null)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool EvalPathAll(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile)
+        {
+            GenericUpdateCompletePaths(ends, resultPaths, farthestTiles, currentTile);
+
+            for (int ii = 0; ii < resultPaths.Length; ii++)
+            {
+                if (resultPaths[ii] == null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static void GenericUpdateCompletePaths(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile)
+        {
+            for (int ii = 0; ii < ends.Length; ii++)
+            {
+                if (currentTile.Location == ends[ii])
+                    resultPaths[ii] = GetBackreference(currentTile);
+
+                if (currentTile.Heuristic[ii] < farthestTiles[ii].Heuristic[ii])
+                    farthestTiles[ii] = currentTile;
+            }
+        }
+
+        private static void EvalFallbackOne(List<Loc>[] resultPaths, PathTile[] farthestTiles)
+        {
+            int minHeuristicIndex = 0;
+            for (int ii = 1; ii < resultPaths.Length; ii++)
+            {
+                if (farthestTiles[ii].Heuristic[ii] < farthestTiles[minHeuristicIndex].Heuristic[minHeuristicIndex])
+                    minHeuristicIndex = ii;
+            }
+
+            resultPaths[minHeuristicIndex] = GetBackreference(farthestTiles[minHeuristicIndex]);
+        }
+
+        private static void EvalFallbackAll(List<Loc>[] resultPaths, PathTile[] farthestTiles)
+        {
+            for (int ii = 0; ii < resultPaths.Length; ii++)
+            {
+                if (resultPaths[ii] != null)
+                    continue;
+
+                resultPaths[ii] = GetBackreference(farthestTiles[ii]);
+            }
+        }
+
         private struct ScanLineTile
         {
             public IntRange X;
@@ -578,9 +766,24 @@ namespace RogueElements
 
             public int Cost { get; set; }
 
-            public double Heuristic { get; set; }
+            public double[] Heuristic { get; private set; }
+
+            public double MinHeuristic { get; private set; }
 
             public PathTile BackReference { get; set; }
+
+            public void UpdateHeuristics(Loc[] ends)
+            {
+                this.Heuristic = new double[ends.Length];
+
+                this.Heuristic[0] = Math.Sqrt((ends[0] - this.Location).DistSquared());
+                this.MinHeuristic = this.Heuristic[0];
+                for (int ii = 1; ii < ends.Length; ii++)
+                {
+                    this.Heuristic[ii] = Math.Sqrt((ends[ii] - this.Location).DistSquared());
+                    this.MinHeuristic = Math.Min(this.MinHeuristic, this.Heuristic[ii]);
+                }
+            }
         }
     }
 }
