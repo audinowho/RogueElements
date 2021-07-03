@@ -604,6 +604,9 @@ namespace RogueElements
 
         private static List<Loc>[] FindMultiPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock, EvalPaths eval, EvalFallback fallback)
         {
+            if (ends.Length == 0)
+                return new List<Loc>[0];
+
             PathTile[][] tiles = new PathTile[rectSize.X][];
             for (int ii = 0; ii < rectSize.X; ii++)
             {
