@@ -482,6 +482,43 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        public void FindBestPathsNone()
+        {
+            string[] inGrid =
+            {
+                ".......",
+                ".......",
+                ".......",
+                "....A..",
+                ".......",
+                ".......",
+            };
+
+            // test against 2 goals, the closer one (in terms of steps, not initial heuristic evaluation) should be reached first
+            char[][] map = InitGrid(inGrid);
+            Loc start = Loc.Zero;
+            List<Loc> ends = new List<Loc>();
+            for (int xx = 0; xx < map.Length; xx++)
+            {
+                for (int yy = 0; yy < map[0].Length; yy++)
+                {
+                    if (map[xx][yy] == 'A')
+                        start = new Loc(xx, yy);
+                    else if (map[xx][yy] == 'B')
+                        ends.Add(new Loc(xx, yy));
+                }
+            }
+
+            List<Loc>[] result_paths = new List<Loc>[ends.Count];
+
+            bool CheckBlock(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+            bool CheckDiag(Loc testLoc) => map[testLoc.X][testLoc.Y] == 'X';
+
+            List<Loc>[] path = Grid.FindNPaths(Loc.Zero, new Loc(map.Length, map[0].Length), start, ends.ToArray(), CheckBlock, CheckDiag, 1, true);
+            Assert.That(path, Is.EquivalentTo(result_paths));
+        }
+
+        [Test]
         public void FloodFillSubRect()
         {
             // filling a sub-rectangle of the main map
