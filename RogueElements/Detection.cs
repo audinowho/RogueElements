@@ -278,9 +278,9 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets the N largest rectangles in the grid that are not a subset of a larger rectangle.  Modifies the grid in-place.
+        /// Gets the N largest rectangles in the grid that are not a subset of a larger rectangle.
         /// </summary>
-        /// <param name="grid">2D array of 0's and 1's</param>
+        /// <param name="grid">2D array of booleans</param>
         /// <param name="amount">Max number of rectangles to return.</param>
         /// <returns></returns>
         public static List<Rect> DetectNLargestRects(bool[][] grid, int amount)

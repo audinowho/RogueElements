@@ -380,6 +380,26 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        public void FindAllRectsEmpty()
+        {
+            // single rect
+            string[] inGrid =
+            {
+                "......",
+                "......",
+                "......",
+                "......",
+                "......",
+            };
+
+            bool[][] map = InitGrid(inGrid);
+
+            List<Rect> result = Detection.FindAllRects(map);
+            var compare = new List<Rect>();
+            Assert.That(result, Is.EqualTo(compare));
+        }
+
+        [Test]
         public void FindAllRectsSingle()
         {
             // single rect
