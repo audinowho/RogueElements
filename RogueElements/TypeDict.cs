@@ -64,7 +64,7 @@ namespace RogueElements
             return success;
         }
 
-        public bool TryGet(Type type, T item)
+        public bool TryGet(Type type, out T item)
         {
             return this.pointers.TryGetValue(type.AssemblyQualifiedName, out item);
         }
