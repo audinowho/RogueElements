@@ -8,4 +8,11 @@ namespace RogueElements
     public interface IPermissiveRoomGen : IRoomGen
     {
     }
+
+    public interface ISizedRoomGen : IRoomGen
+    {
+        RandRange Width { get; set; }
+
+        RandRange Height { get; set; }
+    }
 }

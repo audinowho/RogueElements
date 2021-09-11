@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomGenBlocked<T> : PermissiveRoomGen<T>
+    public class RoomGenBlocked<T> : PermissiveRoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
     {
         public RoomGenBlocked()

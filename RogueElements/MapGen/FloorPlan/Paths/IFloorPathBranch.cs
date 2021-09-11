@@ -1,4 +1,4 @@
-﻿// <copyright file="FloorPathBranch.cs" company="Audino">
+﻿// <copyright file="IFloorPathBranch.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,17 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IFloorPathBranch
+    {
+        RandRange FillPercent { get; set; }
+
+        int HallPercent { get; set; }
+
+        RandRange BranchRatio { get; set; }
+    }
+
     [Serializable]
-    public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>
+    public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>, IFloorPathBranch
         where T : class, IFloorPlanGenContext
     {
         public FloorPathBranch()

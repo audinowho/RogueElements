@@ -1,4 +1,4 @@
-﻿// <copyright file="GridPathCircle.cs" company="Audino">
+﻿// <copyright file="IGridPathCircle.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,8 +9,15 @@ using System.Linq;
 
 namespace RogueElements
 {
+    public interface IGridPathCircle
+    {
+        RandRange CircleRoomRatio { get; set; }
+
+        RandRange Paths { get; set; }
+    }
+
     [Serializable]
-    public class GridPathCircle<T> : GridPathStartStepGeneric<T>
+    public class GridPathCircle<T> : GridPathStartStepGeneric<T>, IGridPathCircle
         where T : class, IRoomGridGenContext
     {
         public GridPathCircle()

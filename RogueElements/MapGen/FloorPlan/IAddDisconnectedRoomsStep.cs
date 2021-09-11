@@ -1,4 +1,4 @@
-﻿// <copyright file="AddDisconnectedRoomsStep.cs" company="Audino">
+﻿// <copyright file="IAddDisconnectedRoomsStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -9,8 +9,13 @@ using System.Text;
 
 namespace RogueElements
 {
+    public interface IAddDisconnectedRoomsStep
+    {
+        RandRange Amount { get; set; }
+    }
+
     [Serializable]
-    public class AddDisconnectedRoomsStep<T> : FloorPlanStep<T>
+    public class AddDisconnectedRoomsStep<T> : FloorPlanStep<T>, IAddDisconnectedRoomsStep
         where T : class, IFloorPlanGenContext
     {
         public AddDisconnectedRoomsStep()

@@ -34,7 +34,11 @@ namespace RogueElements
 
         public IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>> Picker { get; set; }
 
-        IMultiRandPicker IMultiStepSpawner.Picker { get { return this.Picker; } set { this.Picker = (IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>>)value; } }
+        IMultiRandPicker IMultiStepSpawner.Picker
+        {
+            get { return this.Picker; }
+            set { this.Picker = (IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>>)value; }
+        }
 
         public List<TSpawnable> GetSpawns(TGenContext map)
         {

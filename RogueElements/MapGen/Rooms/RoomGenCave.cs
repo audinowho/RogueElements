@@ -15,7 +15,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class RoomGenCave<T> : RoomGen<T>
+    public class RoomGenCave<T> : RoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
     {
         private const int AUTOMATA_CHANCE = 55;
