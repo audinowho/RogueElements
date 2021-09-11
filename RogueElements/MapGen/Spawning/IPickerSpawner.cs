@@ -1,4 +1,4 @@
-﻿// <copyright file="PickerSpawner.cs" company="Audino">
+﻿// <copyright file="IPickerSpawner.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,13 +8,18 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IPickerSpawner
+    {
+        IMultiRandPicker Picker { get; set; }
+    }
+
     /// <summary>
-    /// Geenrates spawnables from a specifically defined IMultiRandPicker.
+    /// Generates spawnables from a specifically defined IMultiRandPicker.
     /// </summary>
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class PickerSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+    public class PickerSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>, IPickerSpawner
         where TGenContext : IGenContext
         where TSpawnable : ISpawnable
     {
@@ -28,6 +33,8 @@ namespace RogueElements
         }
 
         public IMultiRandPicker<TSpawnable> Picker { get; set; }
+
+        IMultiRandPicker IPickerSpawner.Picker { get { return this.Picker; } set { this.Picker = (IMultiRandPicker<TSpawnable>)value; } }
 
         public List<TSpawnable> GetSpawns(TGenContext map)
         {

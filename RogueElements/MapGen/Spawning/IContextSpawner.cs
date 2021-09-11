@@ -1,4 +1,4 @@
-﻿// <copyright file="ContextSpawner.cs" company="Audino">
+﻿// <copyright file="IContextSpawner.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,13 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IContextSpawner
+    {
+        RandRange Amount { get; set; }
+    }
+
     [Serializable]
-    public class ContextSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+    public class ContextSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>, IContextSpawner
         where TGenContext : ISpawningGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
