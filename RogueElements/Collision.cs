@@ -12,11 +12,26 @@ namespace RogueElements
 {
     public static class Collision
     {
+        /// <summary>
+        /// Given a first entity and its facing direction, determines if the second entity is in front of the first entity.
+        /// </summary>
+        /// <param name="startLoc">First entity location</param>
+        /// <param name="testLoc">Second entity location</param>
+        /// <param name="dir">First entity direction</param>
+        /// <param name="range">-1 for infinite range.</param>
+        /// <returns></returns>
         public static bool InFront(Loc startLoc, Loc testLoc, Dir8 dir, int range)
         {
             return InFront(testLoc - startLoc, dir, range);
         }
 
+        /// <summary>
+        /// Given a first entity at 0,0 and its facing direction, determines if the second entity is in front of the first entity.
+        /// </summary>
+        /// <param name="testLoc">Second entity location</param>
+        /// <param name="dir">First entity direction</param>
+        /// <param name="range">-1 for infinite range.</param>
+        /// <returns></returns>
         public static bool InFront(Loc testLoc, Dir8 dir, int range)
         {
             if (!dir.Validate())
