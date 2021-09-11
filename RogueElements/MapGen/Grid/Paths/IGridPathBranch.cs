@@ -1,4 +1,4 @@
-﻿// <copyright file="GridPathBranch.cs" company="Audino">
+﻿// <copyright file="IGridPathBranch.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,15 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IGridPathBranch
+    {
+        RandRange RoomRatio { get; set; }
+
+        RandRange BranchRatio { get; set; }
+    }
+
     [Serializable]
-    public class GridPathBranch<T> : GridPathStartStepGeneric<T>
+    public class GridPathBranch<T> : GridPathStartStepGeneric<T>, IGridPathBranch
         where T : class, IRoomGridGenContext
     {
         public GridPathBranch()

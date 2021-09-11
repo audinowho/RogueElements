@@ -1,4 +1,4 @@
-﻿// <copyright file="ConnectRoomStep.cs" company="Audino">
+﻿// <copyright file="IConnectRoomStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,13 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IConnectRoomStep
+    {
+        RandRange ConnectFactor { get; set; }
+    }
+
     [Serializable]
-    public class ConnectRoomStep<T> : ConnectStep<T>
+    public class ConnectRoomStep<T> : ConnectStep<T>, IConnectRoomStep
         where T : class, IFloorPlanGenContext
     {
         public ConnectRoomStep()

@@ -8,7 +8,7 @@ using System;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomGenSquare<T> : PermissiveRoomGen<T>
+    public class RoomGenSquare<T> : PermissiveRoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
     {
         public RoomGenSquare()
