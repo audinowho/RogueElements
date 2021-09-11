@@ -1,4 +1,4 @@
-﻿// <copyright file="StepSpawner.cs" company="Audino">
+﻿// <copyright file="IMultiStepSpawner.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,26 +8,33 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IMultiStepSpawner
+    {
+        IMultiRandPicker Picker { get; set; }
+    }
+
     /// <summary>
-    /// Geenrates spawnables from a specifically defined IMultiRandPicker.
+    /// Chooses an IStepSpawner from a specifically defined IMultiRandPicker, then generates the Spawnables from that IStepSpawner.
     /// </summary>
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class StepSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>
+    public class MultiStepSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>, IMultiStepSpawner
         where TGenContext : IGenContext
         where TSpawnable : ISpawnable
     {
-        public StepSpawner()
+        public MultiStepSpawner()
         {
         }
 
-        public StepSpawner(IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>> picker)
+        public MultiStepSpawner(IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>> picker)
         {
             this.Picker = picker;
         }
 
         public IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>> Picker { get; set; }
+
+        IMultiRandPicker IMultiStepSpawner.Picker { get { return this.Picker; } set { this.Picker = (IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>>)value; } }
 
         public List<TSpawnable> GetSpawns(TGenContext map)
         {
