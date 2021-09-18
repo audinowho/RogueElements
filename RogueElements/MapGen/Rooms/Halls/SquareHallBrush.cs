@@ -36,7 +36,7 @@ namespace RogueElements
             return new SquareHallBrush(this);
         }
 
-        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical, ITile terrain)
+        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical)
         {
             Rect brushRect = new Rect(point, this.Dims);
             if (bounds.Contains(brushRect))
@@ -45,13 +45,13 @@ namespace RogueElements
                 {
                     for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
                     {
-                        map.SetTile(new Loc(xx, yy), terrain.Copy());
+                        map.SetTile(new Loc(xx, yy), map.RoomTerrain.Copy());
                     }
                 }
             }
             else
             {
-                map.SetTile(point, terrain.Copy());
+                map.SetTile(point, map.RoomTerrain.Copy());
             }
         }
     }
