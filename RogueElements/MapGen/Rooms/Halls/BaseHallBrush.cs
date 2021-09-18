@@ -12,7 +12,7 @@ namespace RogueElements
     public abstract class BaseHallBrush
     {
         /// <summary>
-        /// Communicates to the Hoom/HallGen the size of the brush, for alignment purposes.
+        /// Communicates to the Room/HallGen the size of the brush, for alignment purposes.
         /// </summary>
         public abstract Loc Size { get; }
 
@@ -23,6 +23,6 @@ namespace RogueElements
 
         public abstract BaseHallBrush Clone();
 
-        public abstract void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical, ITile terrain);
+        public abstract void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical);
     }
 }
