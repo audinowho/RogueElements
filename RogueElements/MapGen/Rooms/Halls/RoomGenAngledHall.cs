@@ -339,7 +339,6 @@ namespace RogueElements
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="vertical"></param>
-        /// <param name="terrain"></param>
         private void DrawHall(ITiledGenContext map, Loc point1, Loc point2, bool vertical)
         {
             if (point1 == point2)
