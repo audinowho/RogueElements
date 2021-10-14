@@ -27,6 +27,9 @@ namespace RogueElements
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
+            IRoomGen newGen = this.Rooms.Pick(rand).Copy();
+            Loc size = newGen.ProposeSize(rand);
+
             // choose certain rooms in the list to be special rooms
             // special rooms are required; so make sure they don't overlap
             List<int> room_indices = new List<int>();
@@ -35,7 +38,10 @@ namespace RogueElements
                 GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
                 if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
                     continue;
-                if (!plan.PreferHall)
+                if (plan.PreferHall)
+                    continue;
+                Loc boundsSize = GetBoundsSize(floorPlan, plan);
+                if (boundsSize.X >= size.X && boundsSize.Y >= size.Y)
                     room_indices.Add(ii);
             }
 
@@ -43,12 +49,19 @@ namespace RogueElements
             {
                 int ind = rand.Next(room_indices.Count);
                 GridRoomPlan plan = floorPlan.GetRoomPlan(room_indices[ind]);
-                plan.RoomGen = this.Rooms.Pick(rand).Copy();
+                plan.RoomGen = newGen;
                 foreach (RoomComponent component in this.RoomComponents)
                     plan.Components.Set(component.Clone());
                 room_indices.RemoveAt(ind);
                 GenContextDebug.DebugProgress("Set Special Room");
             }
+        }
+
+        private static Loc GetBoundsSize(GridPlan floorPlan, GridRoomPlan plan)
+        {
+            Loc cellSize = new Loc(plan.Bounds.Width * floorPlan.WidthPerCell, plan.Bounds.Height * floorPlan.HeightPerCell);
+            Loc cellWallSize = new Loc((plan.Bounds.Width - 1) * floorPlan.CellWall, (plan.Bounds.Height - 1) * floorPlan.CellWall);
+            return cellSize + cellWallSize;
         }
     }
 }

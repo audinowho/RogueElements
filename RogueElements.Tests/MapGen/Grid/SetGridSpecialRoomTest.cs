@@ -40,6 +40,11 @@ namespace RogueElements.Tests
             roomPlan.PreferHall = true;
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+
+            // The roll for size
+            testRand.Setup(p => p.Next(0, 0)).Returns(0);
+
+            // The roll for choosing room index
             testRand.Setup(p => p.Next(3)).Returns(roll);
 
             var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
@@ -85,6 +90,9 @@ namespace RogueElements.Tests
             roomPlan.Components.Set(new TestComponent());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+
+            // The roll for size
+            testRand.Setup(p => p.Next(0, 0)).Returns(0);
 
             var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
             {
