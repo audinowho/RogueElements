@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PriorityList<T> : IPriorityList<T>
+    public class PriorityList<T> : IPriorityList<T>, ICollection<KeyValuePair<Priority, T>>
     {
         private readonly Dictionary<Priority, List<T>> dict;
 
@@ -42,6 +42,8 @@ namespace RogueElements
             }
         }
 
+        bool ICollection<KeyValuePair<Priority, T>>.IsReadOnly => false;
+
         public void Add(int priority, T item)
         {
             this.Add(new Priority(priority), item);
@@ -53,6 +55,8 @@ namespace RogueElements
                 this.dict[priority] = new List<T>();
             this.dict[priority].Add(item);
         }
+
+        void ICollection<KeyValuePair<Priority, T>>.Add(KeyValuePair<Priority, T> item) => this.Add(item.Key, item.Value);
 
         void IPriorityList.Add(Priority priority, object item) => this.Add(priority, (T)item);
 
@@ -82,9 +86,25 @@ namespace RogueElements
                 this.dict.Remove(priority);
         }
 
+        bool ICollection<KeyValuePair<Priority, T>>.Remove(KeyValuePair<Priority, T> item)
+        {
+            List<T> val;
+            if (this.dict.TryGetValue(item.Key, out val))
+                return val.Remove(item.Value);
+            return false;
+        }
+
         public T Get(Priority priority, int index)
         {
             return this.dict[priority][index];
+        }
+
+        bool ICollection<KeyValuePair<Priority, T>>.Contains(KeyValuePair<Priority, T> item)
+        {
+            List<T> val;
+            if (this.dict.TryGetValue(item.Key, out val))
+                return val.Contains(item.Value);
+            return false;
         }
 
         object IPriorityList.Get(Priority priority, int index) => this.Get(priority, index);
@@ -126,10 +146,10 @@ namespace RogueElements
         IEnumerable IPriorityList.GetItems(Priority priority) => this.GetItems(priority);
 
         /// <summary>
-        /// Enumerates all items. Does not have to be in priority order.
+        /// Enumerates all items. Does so in priority order.
         /// </summary>
         /// <returns></returns>
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerable<T> EnumerateInOrder()
         {
             foreach (Priority key in this.GetPriorities())
             {
@@ -138,7 +158,7 @@ namespace RogueElements
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.EnumerateKeyValuePairs();
 
         public int GetCountAtPriority(Priority priority)
         {
@@ -147,6 +167,32 @@ namespace RogueElements
             return 0;
         }
 
+        void ICollection<KeyValuePair<Priority, T>>.CopyTo(KeyValuePair<Priority, T>[] array, int arrayIndex)
+        {
+            foreach (Priority key in this.GetPriorities())
+            {
+                foreach (T item in this.dict[key])
+                {
+                    array[arrayIndex] = new KeyValuePair<Priority, T>(key, item);
+                    arrayIndex++;
+                }
+            }
+        }
+
+        IEnumerator<KeyValuePair<Priority, T>> IEnumerable<KeyValuePair<Priority, T>>.GetEnumerator()
+        {
+            return this.EnumerateKeyValuePairs();
+        }
+
         int IPriorityList.GetCountAtPriority(Priority priority) => this.GetCountAtPriority(priority);
+
+        private IEnumerator<KeyValuePair<Priority, T>> EnumerateKeyValuePairs()
+        {
+            foreach (Priority key in this.GetPriorities())
+            {
+                foreach (T item in this.dict[key])
+                    yield return new KeyValuePair<Priority, T>(key, item);
+            }
+        }
     }
 }

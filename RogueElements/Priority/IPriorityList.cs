@@ -15,7 +15,7 @@ namespace RogueElements
         "CA1010:CollectionsShouldImplementGenericInterface",
         MessageId = nameof(IPriorityList),
         Justification = "Non-generic interface for typically generic classes")]
-    public interface IPriorityList : IEnumerable
+    public interface IPriorityList
     {
         int PriorityCount { get; }
 
@@ -40,7 +40,7 @@ namespace RogueElements
         IEnumerable GetItems(Priority priority);
     }
 
-    public interface IPriorityList<T> : IEnumerable<T>, IPriorityList
+    public interface IPriorityList<T> : IPriorityList
     {
         void Add(Priority priority, T item);
 
