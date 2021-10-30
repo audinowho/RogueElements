@@ -152,6 +152,8 @@ namespace RogueElements
 #pragma warning restore CC0057 // Unused parameters
         {
             this.pointers = new Dictionary<string, T>();
+            if (this.serializationObjects == null)
+                this.serializationObjects = new List<T>();
             for (int ii = 0; ii < this.serializationObjects.Count; ii++)
                 this.pointers[this.serializationObjects[ii].GetType().AssemblyQualifiedName] = this.serializationObjects[ii];
         }
