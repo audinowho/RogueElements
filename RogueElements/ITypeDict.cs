@@ -9,10 +9,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface ITypeDict<T> : IEnumerable<T>
+    public interface ITypeDict<T> : IEnumerable<T>, ICollection<T>
     {
-        void Clear();
-
         bool Contains(Type type);
 
         bool Contains<TK>()
@@ -21,14 +19,14 @@ namespace RogueElements
         TK Get<TK>()
             where TK : T;
 
-        void Remove<TK>()
+        bool Remove<TK>()
             where TK : T;
 
         T Get(Type type);
 
         void Set(T item);
 
-        void Remove(Type type);
+        bool Remove(Type type);
     }
 
     public interface ITypeDict : IEnumerable
@@ -41,6 +39,6 @@ namespace RogueElements
 
         void Set(object item);
 
-        void Remove(Type type);
+        bool Remove(Type type);
     }
 }
