@@ -25,6 +25,8 @@ namespace RogueElements
 
         public int Count => this.pointers.Count;
 
+        bool ICollection<T>.IsReadOnly => false;
+
         public void Clear()
         {
             this.pointers.Clear();
@@ -40,6 +42,20 @@ namespace RogueElements
         public bool Contains(Type type)
         {
             return this.pointers.ContainsKey(type.AssemblyQualifiedName);
+        }
+
+        public void CopyTo(T[] array, int idx)
+        {
+            foreach (T element in this.pointers.Values)
+            {
+                array[idx] = element;
+                idx++;
+            }
+        }
+
+        bool ICollection<T>.Contains(T element)
+        {
+            return this.Contains(element.GetType());
         }
 
         public TK Get<TK>()
@@ -69,6 +85,13 @@ namespace RogueElements
             return this.pointers.TryGetValue(type.AssemblyQualifiedName, out item);
         }
 
+        void ICollection<T>.Add(T item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            this.pointers[item.GetType().AssemblyQualifiedName] = item;
+        }
+
         public void Set(T item)
         {
             if (item == null)
@@ -86,16 +109,21 @@ namespace RogueElements
             this.Set((T)item);
         }
 
-        public void Remove<TK>()
+        public bool Remove<TK>()
             where TK : T
         {
             Type type = typeof(TK);
-            this.Remove(type);
+            return this.Remove(type);
         }
 
-        public void Remove(Type type)
+        public bool Remove(Type type)
         {
-            this.pointers.Remove(type.AssemblyQualifiedName);
+            return this.pointers.Remove(type.AssemblyQualifiedName);
+        }
+
+        bool ICollection<T>.Remove(T element)
+        {
+            return this.Remove(element.GetType());
         }
 
         public IEnumerator<T> GetEnumerator()
