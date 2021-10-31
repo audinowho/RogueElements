@@ -33,9 +33,9 @@ namespace RogueElements
 
         public bool ChangesState => this.Spawner.ChangesState || this.AmountSpawner.ChangesState;
 
-        public IRandPicker<T> Spawner { get; }
+        public IRandPicker<T> Spawner { get; set; }
 
-        public IRandPicker<int> AmountSpawner { get; }
+        public IRandPicker<int> AmountSpawner { get; set; }
 
         public bool CanPick => this.AmountSpawner.CanPick;
 
