@@ -15,7 +15,7 @@ namespace RogueElements
     /// <typeparam name="T"></typeparam>
     // TODO: Binary Space Partition Tree
     [Serializable]
-    public class SpawnRangeList<T> : ISpawnRangeList<T>, ISpawnRangeList
+    public class SpawnRangeList<T> : ISpawnRangeList<T>, ICollection<SpawnRangeList<T>.SpawnRange>, ISpawnRangeList
     {
         private readonly List<SpawnRange> spawns;
 
@@ -33,11 +33,22 @@ namespace RogueElements
 
         public int Count => this.spawns.Count;
 
+        bool ICollection<SpawnRange>.IsReadOnly => false;
+
         /// <summary>
         /// This is a shallow copy.
         /// </summary>
         /// <returns></returns>
         public SpawnRangeList<T> CopyState() => new SpawnRangeList<T>(this);
+
+        void ICollection<SpawnRange>.Add(SpawnRange range)
+        {
+            if (range.Rate < 0)
+                throw new ArgumentException("Spawn rate must be 0 or higher.");
+            if (range.Range.Length <= 0)
+                throw new ArgumentException("Spawn range must be 1 or higher.");
+            this.spawns.Add(range);
+        }
 
         public void Add(T spawn, IntRange range, int rate)
         {
@@ -53,6 +64,11 @@ namespace RogueElements
             if (rate < 0)
                 throw new ArgumentException("Spawn rate must be 0 or higher.");
             this.spawns.Insert(index, new SpawnRange(spawn, rate, range));
+        }
+
+        bool ICollection<SpawnRange>.Remove(SpawnRange randRange)
+        {
+            return this.spawns.Remove(randRange);
         }
 
         public void Remove(T spawn)
@@ -74,13 +90,32 @@ namespace RogueElements
             this.spawns.Clear();
         }
 
-        public IEnumerator<T> GetEnumerator()
+        void ICollection<SpawnRange>.CopyTo(SpawnRange[] array, int arrayIndex)
+        {
+            foreach (SpawnRange spawn in this.spawns)
+            {
+                array[arrayIndex] = spawn;
+                arrayIndex++;
+            }
+        }
+
+        public IEnumerable<T> EnumerateOutcomes()
         {
             foreach (SpawnRange spawn in this.spawns)
                 yield return spawn.Spawn;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator<SpawnRange> IEnumerable<SpawnRange>.GetEnumerator()
+        {
+            foreach (SpawnRange spawn in this.spawns)
+                yield return spawn;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            foreach (SpawnRange spawn in this.spawns)
+                yield return spawn;
+        }
 
         public SpawnList<T> GetSpawnList(int level)
         {
@@ -188,6 +223,11 @@ namespace RogueElements
             this.Insert(index, (T)spawn, range, rate);
         }
 
+        bool ICollection<SpawnRange>.Contains(SpawnRange item)
+        {
+            return this.spawns.Contains(item);
+        }
+
         object ISpawnRangeList.GetSpawn(int index)
         {
             return this.GetSpawn(index);
@@ -208,7 +248,7 @@ namespace RogueElements
         }
 
         [Serializable]
-        private struct SpawnRange
+        public struct SpawnRange
         {
             public T Spawn;
             public int Rate;
