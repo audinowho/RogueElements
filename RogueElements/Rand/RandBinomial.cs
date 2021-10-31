@@ -59,13 +59,11 @@ namespace RogueElements
 
         public IRandPicker<int> CopyState() => new RandBinomial(this);
 
-        public IEnumerator<int> GetEnumerator()
+        public IEnumerable<int> EnumerateOutcomes()
         {
             for (int ii = 0; ii < this.Trials; ii++)
                 yield return ii;
         }
-
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public int Pick(IRandom rand)
         {

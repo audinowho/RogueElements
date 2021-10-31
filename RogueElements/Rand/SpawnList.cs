@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class SpawnList<T> : IRandPicker<T>, ISpawnList<T>, ISpawnList
+    public class SpawnList<T> : IRandPicker<T>, ISpawnList<T>, ICollection<SpawnList<T>.SpawnRate>, ISpawnList
     {
         private readonly List<SpawnRate> spawns;
         private int spawnTotal;
@@ -34,6 +34,8 @@ namespace RogueElements
 
         public int Count => this.spawns.Count;
 
+        bool ICollection<SpawnRate>.IsReadOnly => false;
+
         public int SpawnTotal => this.spawnTotal;
 
         public bool CanPick => this.spawnTotal > 0;
@@ -45,6 +47,19 @@ namespace RogueElements
         /// </summary>
         /// <returns></returns>
         public IRandPicker<T> CopyState() => new SpawnList<T>(this);
+
+        void ICollection<SpawnRate>.Add(SpawnRate spawnRate)
+        {
+            if (spawnRate.Rate < 0)
+                throw new ArgumentException("Spawn rate must be 0 or higher.");
+            this.spawns.Add(spawnRate);
+            this.spawnTotal += spawnRate.Rate;
+        }
+
+        bool ICollection<SpawnRate>.Contains(SpawnRate item)
+        {
+            return this.spawns.Contains(item);
+        }
 
         public void Add(T spawn, int rate)
         {
@@ -68,10 +83,25 @@ namespace RogueElements
             this.spawnTotal = 0;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerable<T> EnumerateOutcomes()
         {
             foreach (SpawnRate element in this.spawns)
                 yield return element.Spawn;
+        }
+
+        public IEnumerator<SpawnRate> GetEnumerator()
+        {
+            foreach (SpawnRate element in this.spawns)
+                yield return element;
+        }
+
+        void ICollection<SpawnRate>.CopyTo(SpawnRate[] array, int arrayIndex)
+        {
+            foreach (SpawnRate element in this.spawns)
+            {
+                array[arrayIndex] = element;
+                arrayIndex++;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
@@ -139,6 +169,11 @@ namespace RogueElements
             this.spawns.RemoveAt(index);
         }
 
+        bool ICollection<SpawnRate>.Remove(SpawnRate spawnRate)
+        {
+            return this.spawns.Remove(spawnRate);
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is SpawnList<T> other))
@@ -190,7 +225,7 @@ namespace RogueElements
         }
 
         [Serializable]
-        private struct SpawnRate
+        public struct SpawnRate
         {
             public T Spawn;
             public int Rate;

@@ -38,12 +38,10 @@ namespace RogueElements
 
         public IRandPicker<T> CopyState() => new PresetPicker<T>(this);
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerable<T> EnumerateOutcomes()
         {
             yield return this.ToSpawn;
         }
-
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         public T Pick(IRandom rand) => this.ToSpawn;
 

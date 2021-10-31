@@ -13,7 +13,7 @@ namespace RogueElements
     /// A random generator of a single item.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IRandPicker<T> : IEnumerable<T>, IRandPicker
+    public interface IRandPicker<T> : IRandPicker
     {
         /// <summary>
         /// Randomly generates an item of type T.
@@ -28,9 +28,11 @@ namespace RogueElements
         /// </summary>
         /// <returns></returns>
         IRandPicker<T> CopyState();
+
+        IEnumerable<T> EnumerateOutcomes();
     }
 
-    public interface IRandPicker : IEnumerable
+    public interface IRandPicker
     {
         /// <summary>
         /// Determines if this object changes after a call to Pick().

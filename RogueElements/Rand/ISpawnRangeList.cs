@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface ISpawnRangeList<T> : IEnumerable<T>, IEnumerable
+    public interface ISpawnRangeList<T>
     {
         int Count { get; }
 
@@ -34,7 +34,7 @@ namespace RogueElements
         void RemoveAt(int index);
     }
 
-    public interface ISpawnRangeList : IEnumerable
+    public interface ISpawnRangeList
     {
         int Count { get; }
 

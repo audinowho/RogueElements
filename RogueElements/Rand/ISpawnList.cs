@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface ISpawnList<T> : IEnumerable<T>, IEnumerable
+    public interface ISpawnList<T> : IEnumerable
     {
         int Count { get; }
 
