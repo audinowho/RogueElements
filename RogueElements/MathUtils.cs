@@ -11,11 +11,12 @@ namespace RogueElements
 {
     public static class MathUtils
     {
-        private static ReRandom rand = new ReRandom();
+        private static IRandom rand = new ReRandom();
+        private static INoise noise = new ReNoise();
 
         public delegate int CompareFunction<T>(T a, T b);
 
-        public static ReRandom Rand
+        public static IRandom Rand
         {
             get
             {
@@ -23,9 +24,18 @@ namespace RogueElements
             }
         }
 
+        public static INoise Noise
+        {
+            get
+            {
+                return noise;
+            }
+        }
+
         public static void ReSeedRand(ulong seed)
         {
             rand = new ReRandom(seed);
+            noise = new ReNoise(seed);
         }
 
         /// <summary>
