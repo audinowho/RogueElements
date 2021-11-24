@@ -43,6 +43,14 @@ namespace RogueElements
             byte[] data = BitConverter.GetBytes(position);
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(data);
+            return this.Hash(data)[0];
+        }
+
+        public ulong[] GetTwoUInt64(ulong position)
+        {
+            byte[] data = BitConverter.GetBytes(position);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(data);
             return this.Hash(data);
         }
 
@@ -59,7 +67,7 @@ namespace RogueElements
             byte[] data = new byte[sizeof(ulong) * 2];
             Array.Copy(data1, 0, data, 0, sizeof(ulong));
             Array.Copy(data2, 0, data, sizeof(ulong), sizeof(ulong));
-            return this.Hash(data);
+            return this.Hash(data)[0];
         }
 
         public int GetInt(ulong position)
@@ -128,7 +136,7 @@ namespace RogueElements
             }
         }
 
-        private ulong Hash(byte[] data)
+        private ulong[] Hash(byte[] data)
         {
             ulong h1 = this.FirstSeed;
             ulong h2 = this.FirstSeed;
@@ -196,10 +204,7 @@ namespace RogueElements
             h1 += h2;
             h2 += h1;
 
-            // Just return the first half I guess?
-            return h1;
-
-            // return new ulong[2] { h1, h2 };
+            return new ulong[2] { h1, h2 };
         }
     }
 }
