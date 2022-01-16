@@ -7,6 +7,10 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Clamps the floor plan to at least a minimum size, at most a maximum size. If roomplan draw rects exceed the intended bounds, the size will extend to include them.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ClampFloorStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
@@ -15,25 +19,29 @@ namespace RogueElements
         {
         }
 
-        public ClampFloorStep(Loc minSize, Loc maxSize, Dir8 expandDir, Dir8 dir)
+        public ClampFloorStep(Loc minSize, Loc maxSize)
         {
             this.MinSize = minSize;
             this.MaxSize = maxSize;
-            this.ExpandDir = expandDir;
-            this.AnchorDir = dir;
         }
 
         public Loc MinSize { get; set; }
 
         public Loc MaxSize { get; set; }
 
-        public Dir8 ExpandDir { get; set; }
-
-        public Dir8 AnchorDir { get; set; }
-
         public override void Apply(T map)
         {
-            map.RoomPlan.Resize(new Loc(Math.Max(this.MinSize.X, Math.Min(map.RoomPlan.Size.X, this.MaxSize.X)), Math.Max(this.MinSize.Y, Math.Min(map.RoomPlan.Size.Y, this.MaxSize.Y))), this.ExpandDir, this.AnchorDir);
+            Loc start = map.RoomPlan.Size;
+            Loc end = Loc.Zero;
+            foreach (IRoomPlan plan in map.RoomPlan.GetAllPlans())
+            {
+                Rect roomRect = plan.RoomGen.Draw;
+                start = new Loc(Math.Min(start.X, roomRect.Start.X), Math.Min(start.Y, roomRect.Start.Y));
+                end = new Loc(Math.Max(end.X, roomRect.End.X), Math.Max(end.Y, roomRect.End.Y));
+            }
+
+            map.RoomPlan.Resize(end, Dir8.DownRight, Dir8.UpLeft);
+            map.RoomPlan.Resize(end, Dir8.UpLeft, Dir8.DownRight);
             GenContextDebug.DebugProgress("Clamped Floor");
         }
     }
