@@ -7,6 +7,10 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Merges blobs of terrain that touch diagonally.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class DropDiagonalBlockStep<T> : GenStep<T>
         where T : class, ITiledGenContext

@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Erases blobs of terrain that do not touch walkable ground.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class EraseIsolatedStep<T> : GenStep<T>
         where T : class, ITiledGenContext
