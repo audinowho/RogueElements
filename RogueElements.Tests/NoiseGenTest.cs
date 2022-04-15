@@ -234,5 +234,12 @@ namespace RogueElements.Tests
         {
             throw new NotImplementedException();
         }
+
+        [Test]
+        [Ignore("TODO")]
+        public void Shuffle()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -208,23 +208,19 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Creates an array of random numbers where each number appears once.  Fisher-Yates shuffle.
+        /// Permutes an array of objects in-place.  Fisher-Yates shuffle.
         /// </summary>
-        /// <param name="amt">Size of array</param>
         /// <param name="rand">Random object</param>
-        /// <returns>Array of numbers</returns>
-        public static int[] Shuffle(IRandom rand, int amt)
+        /// <param name="arr">Array to permute</param>
+        public static void Shuffle(IRandom rand, Array arr)
         {
-            int[] result = new int[amt];
-            for (int ii = 0; ii < amt; ii++)
+            for (int ii = arr.Length - 1; ii > 1; ii--)
             {
                 int jj = rand.Next(0, ii + 1);
-                if (jj != ii)
-                    result[ii] = result[jj];
-                result[jj] = ii;
+                object tmp = arr.GetValue(jj);
+                arr.SetValue(arr.GetValue(ii), jj);
+                arr.SetValue(tmp, ii);
             }
-
-            return result;
         }
 
         private static bool CheckGrid(int x, int y, bool[][] grid)

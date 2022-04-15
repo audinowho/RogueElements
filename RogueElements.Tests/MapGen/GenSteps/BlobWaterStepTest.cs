@@ -24,6 +24,16 @@ namespace RogueElements.Tests
 
         [Test]
         [Ignore("TODO")]
+        public void IntrudingBlobWater()
+        {
+            // 0 water
+            // 100% water
+            // something in between?
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        [Ignore("TODO")]
         public void PerlinWater()
         {
             // 0 water

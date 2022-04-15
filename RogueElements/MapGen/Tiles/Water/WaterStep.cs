@@ -16,9 +16,10 @@ namespace RogueElements
         {
         }
 
-        protected WaterStep(ITile terrain)
+        protected WaterStep(ITile terrain, ITerrainStencil<T> check)
         {
             this.Terrain = terrain;
+            this.TerrainStencil = check;
         }
 
         /// <summary>
@@ -26,7 +27,9 @@ namespace RogueElements
         /// </summary>
         public ITile Terrain { get; set; }
 
-        protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset, bool encroach)
+        public ITerrainStencil<T> TerrainStencil { get; set; }
+
+        protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[index];
             for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
@@ -37,15 +40,26 @@ namespace RogueElements
                     Loc srcLoc = destLoc + mapBlob.Bounds.Start - offset;
                     if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
                     {
-                        // can place anything if encroaching
-                        // otherwise, can place anything except roomterrain
-                        if (encroach || !map.GetTile(destLoc).TileEquivalent(map.RoomTerrain))
+                        // check against the stencil
+                        if (this.TerrainStencil.Test(map, offset))
                             map.TrySetTile(new Loc(xx, yy), this.Terrain.Copy());
                     }
                 }
             }
 
             GenContextDebug.DebugProgress("Draw Blob");
+        }
+
+        protected void DrawLocs(T map, Loc[] locs)
+        {
+            foreach (Loc loc in locs)
+            {
+                // check against the stencil
+                if (this.TerrainStencil.Test(map, loc))
+                    map.TrySetTile(loc, this.Terrain.Copy());
+            }
+
+            GenContextDebug.DebugProgress("Draw Locs");
         }
     }
 }
