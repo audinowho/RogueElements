@@ -207,6 +207,26 @@ namespace RogueElements
             return divides;
         }
 
+        /// <summary>
+        /// Creates an array of random numbers where each number appears once.  Fisher-Yates shuffle.
+        /// </summary>
+        /// <param name="amt">Size of array</param>
+        /// <param name="rand">Random object</param>
+        /// <returns>Array of numbers</returns>
+        public static int[] Shuffle(IRandom rand, int amt)
+        {
+            int[] result = new int[amt];
+            for (int ii = 0; ii < amt; ii++)
+            {
+                int jj = rand.Next(0, ii + 1);
+                if (jj != ii)
+                    result[ii] = result[jj];
+                result[jj] = ii;
+            }
+
+            return result;
+        }
+
         private static bool CheckGrid(int x, int y, bool[][] grid)
         {
             if (!Collision.InBounds(grid.Length, grid[0].Length, new Loc(x, y)))
