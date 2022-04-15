@@ -20,8 +20,8 @@ namespace RogueElements
         {
         }
 
-        public BlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale)
-            : base(terrain)
+        public BlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, int minScale, RandRange startScale)
+            : base(terrain, stencil)
         {
             this.Blobs = blobs;
             this.MinScale = minScale;
@@ -85,7 +85,7 @@ namespace RogueElements
             Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
             Loc offset = new Loc(map.Rand.Next(0, map.Width - blobRect.Width), map.Rand.Next(0, map.Height - blobRect.Height));
 
-            this.DrawBlob(map, blobMap, blobIdx, offset, false);
+            this.DrawBlob(map, blobMap, blobIdx, offset);
             return true;
         }
     }

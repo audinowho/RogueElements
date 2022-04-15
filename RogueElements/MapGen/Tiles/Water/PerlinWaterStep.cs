@@ -24,13 +24,12 @@ namespace RogueElements
         {
         }
 
-        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, int softness = default, bool respectFloor = default)
-            : base(terrain)
+        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, ITerrainStencil<T> stencil, int softness = default)
+            : base(terrain, stencil)
         {
             this.WaterPercent = waterPercent;
             this.OrderComplexity = complexity;
             this.OrderSoftness = softness;
-            this.RespectFloor = respectFloor;
         }
 
         /// <summary>
@@ -42,11 +41,6 @@ namespace RogueElements
         /// Determines the smallest uit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
         /// </summary>
         public int OrderSoftness { get; set; }
-
-        /// <summary>
-        /// Decides if the water can paint over floor tiles if the blob itself does not break connectivity
-        /// </summary>
-        public bool RespectFloor { get; set; }
 
         /// <summary>
         /// The percent chance of water occurring.
@@ -84,71 +78,11 @@ namespace RogueElements
                 waterMark++;
             }
 
-            if (this.RespectFloor)
-            {
-                this.DrawWhole(map, noise, depthRange, waterMark);
-                return;
-            }
-
-            while (waterMark > 0)
-            {
-                bool IsWaterValid(Loc loc)
-                {
-                    int heightPercent = Math.Min(100, Math.Min(Math.Min(loc.X * 100 / BUFFER_SIZE, loc.Y * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - loc.X) * 100 / BUFFER_SIZE, (map.Height - 1 - loc.Y) * 100 / BUFFER_SIZE)));
-                    int noiseVal = (noise[loc.X][loc.Y] * heightPercent / 100) + (depthRange * (100 - heightPercent) / 100);
-                    return noiseVal < waterMark;
-                }
-
-                BlobMap blobMap = Detection.DetectBlobs(new Rect(0, 0, map.Width, map.Height), IsWaterValid);
-
-                bool IsMapValid(Loc loc) => map.GetTile(loc).TileEquivalent(map.RoomTerrain);
-
-                int blobIdx = 0;
-                bool IsBlobValid(Loc loc)
-                {
-                    Loc srcLoc = loc + blobMap.Blobs[blobIdx].Bounds.Start;
-                    if (!map.CanSetTile(srcLoc, this.Terrain))
-                        return false;
-                    return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
-                }
-
-                for (; blobIdx < blobMap.Blobs.Count; blobIdx++)
-                {
-                    Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
-
-                    // pass this into the walkable detection function
-                    bool disconnects = Detection.DetectDisconnect(new Rect(0, 0, map.Width, map.Height), IsMapValid, blobRect.Start, blobRect.Size, IsBlobValid, true);
-
-                    // if it's a pass, draw on tile if it's a wall terrain or a room terrain
-                    if (!disconnects)
-                    {
-                        this.DrawBlob(map, blobMap, blobIdx, blobRect.Start, true);
-                    }
-                    else
-                    {
-                        // if it's a fail, draw on the tile only if wall terrain
-                        this.DrawBlob(map, blobMap, blobIdx, blobRect.Start, false);
-                    }
-                }
-
-                waterMark -= Math.Max(1, depthRange / 8);
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}: {1}% {2}", this.GetType().Name, this.WaterPercent, this.Terrain.ToString());
-        }
-
-        private void DrawWhole(T map, int[][] noise, int depthRange, int waterMark)
-        {
+            List<Loc> fillLocs = new List<Loc>();
             for (int xx = 0; xx < map.Width; xx++)
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (!map.GetTile(new Loc(xx, yy)).TileEquivalent(map.WallTerrain))
-                        continue;
-
                     // the last BUFFER_SIZE tiles near the edge gradually multiply the actual noise value by smaller numbers
                     int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
 
@@ -156,9 +90,20 @@ namespace RogueElements
                     int noiseVal = (noise[xx][yy] * heightPercent / 100) + (depthRange * (100 - heightPercent) / 100);
 
                     if (noiseVal < waterMark)
-                        map.SetTile(new Loc(xx, yy), this.Terrain.Copy());
+                        fillLocs.Add(new Loc(xx, yy));
                 }
             }
+
+            // permute the locations in case of requirement to preserve paths
+            Loc[] shuffleLocs = fillLocs.ToArray();
+            NoiseGen.Shuffle(map.Rand, shuffleLocs);
+
+            this.DrawLocs(map, shuffleLocs);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}% {2}", this.GetType().Name, this.WaterPercent, this.Terrain.ToString());
         }
     }
 }

@@ -17,8 +17,8 @@ namespace RogueElements
         {
         }
 
-        public IntrudingBlobWaterStep(RandRange blobs, ITile terrain, int minScale, RandRange startScale)
-            : base(blobs, terrain, minScale, startScale)
+        public IntrudingBlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, int minScale, RandRange startScale)
+            : base(blobs, terrain, stencil, minScale, startScale)
         {
         }
 
@@ -53,7 +53,7 @@ namespace RogueElements
                 if (disconnects)
                     continue;
 
-                this.DrawBlob(map, blobMap, blobIdx, offset, true);
+                this.DrawBlob(map, blobMap, blobIdx, offset);
                 return true;
             }
 
