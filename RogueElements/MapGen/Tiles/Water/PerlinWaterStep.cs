@@ -56,6 +56,22 @@ namespace RogueElements
             int depthRange = 0x1 << (this.OrderComplexity + this.OrderSoftness); // aka, 2 ^ degree
             int minWater = waterPercent * map.Width * map.Height / 100;
             int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, this.OrderComplexity, this.OrderSoftness);
+
+            // distort into a bowl shape
+            for (int xx = 0; xx < map.Width; xx++)
+            {
+                for (int yy = 0; yy < map.Height; yy++)
+                {
+                    // the last BUFFER_SIZE tiles near the edge gradually multiply the actual noise value by smaller numbers
+                    int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
+
+                    // interpolate UPWARDS to make it like a bowl
+                    int correctedNoise = (noise[xx][yy] * heightPercent / 100) + ((depthRange - 1) * (100 - heightPercent) / 100);
+                    noise[xx][yy] = correctedNoise;
+                }
+            }
+
+            // create histogram of water depths
             int[] depthCount = new int[depthRange];
             for (int xx = 0; xx < map.Width; xx++)
             {
@@ -63,6 +79,7 @@ namespace RogueElements
                     depthCount[noise[xx][yy]]++;
             }
 
+            // use the histogram to choose the water level that most closely resembles the percentage desired
             int waterMark = 0;
             int totalDepths = 0;
             for (int ii = 0; ii < depthCount.Length; ii++)
@@ -83,13 +100,7 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    // the last BUFFER_SIZE tiles near the edge gradually multiply the actual noise value by smaller numbers
-                    int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
-
-                    // interpolate UPWARDS to make it like a bowl
-                    int noiseVal = (noise[xx][yy] * heightPercent / 100) + (depthRange * (100 - heightPercent) / 100);
-
-                    if (noiseVal < waterMark)
+                    if (noise[xx][yy] < waterMark)
                         fillLocs.Add(new Loc(xx, yy));
                 }
             }
