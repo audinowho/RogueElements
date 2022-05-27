@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A rectangular brush for painting hallways.
+    /// </summary>
     [Serializable]
     public class SquareHallBrush : BaseHallBrush
     {
@@ -25,6 +28,9 @@ namespace RogueElements
             this.Dims = other.Dims;
         }
 
+        /// <summary>
+        /// Dimensions of the brush, in Tiles
+        /// </summary>
         public Loc Dims { get; set; }
 
         public override Loc Size { get => this.Dims; }

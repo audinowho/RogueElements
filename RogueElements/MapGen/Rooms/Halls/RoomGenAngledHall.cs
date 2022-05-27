@@ -45,12 +45,24 @@ namespace RogueElements
             this.Height = other.Height;
         }
 
+        /// <summary>
+        /// A percentage chance 0 to 100 for the hall making a turn.
+        /// </summary>
         public int HallTurnBias { get; set; }
 
+        /// <summary>
+        /// The brush to draw the hall with.
+        /// </summary>
         public BaseHallBrush Brush { get; set; }
 
+        /// <summary>
+        /// The preferred width of the area covered by the hall.
+        /// </summary>
         public RandRange Width { get; set; }
 
+        /// <summary>
+        /// The preferred height of the area covered by the hall.
+        /// </summary>
         public RandRange Height { get; set; }
 
         public override RoomGen<T> Copy() => new RoomGenAngledHall<T>(this);
