@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Adds the entrance and exit to the floor.  Is not room-conscious and only picks random tiles.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TExit"></typeparam>
     [Serializable]
     public class StairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>

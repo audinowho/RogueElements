@@ -27,6 +27,9 @@ namespace RogueElements
         /// </summary>
         public ITile Terrain { get; set; }
 
+        /// <summary>
+        /// Determines which tiles are eligible to be painted on.
+        /// </summary>
         public ITerrainStencil<T> TerrainStencil { get; set; }
 
         protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset)

@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A filter for determining the eligible tiles for an operation.
+    /// Tiles in a list of allowed tile types are eligible.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class MatchTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
@@ -17,6 +22,9 @@ namespace RogueElements
             this.MatchTiles = new List<ITile>();
         }
 
+        /// <summary>
+        /// The allowed tile types.
+        /// </summary>
         public List<ITile> MatchTiles { get; private set; }
 
         public bool Test(T map, Loc loc)

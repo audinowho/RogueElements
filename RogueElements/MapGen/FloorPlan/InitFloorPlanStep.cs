@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Initializes an empty floor plan, which is a list of rooms that keep track of their size, position, and connectivity with each other.
+    /// Gen Steps that operate on the floor plan can add rooms, delete them, or change the rooms in some way.
+    /// Once finished, apply DrawFloorToTileStep to draw the actual tiles of the rooms.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class InitFloorPlanStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext

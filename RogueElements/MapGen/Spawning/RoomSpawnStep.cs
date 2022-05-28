@@ -25,6 +25,9 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Determines the rooms eligible to spawn the objects in.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         public virtual void SpawnRandInCandRooms(TGenContext map, SpawnList<RoomHallIndex> spawningRooms, List<TSpawnable> spawns, int successPercent)

@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Populates the empty floor plan of a map by creating a path consisting of rooms on the far left and far right, with hallways connecting the two sides.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class GridPathTwoSides<T> : GridPathStartStepGeneric<T>
         where T : class, IRoomGridGenContext
@@ -17,6 +21,9 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// Choose a horizontal or vertical orientation.
+        /// </summary>
         public Axis4 GapAxis { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)

@@ -15,6 +15,10 @@ namespace RogueElements
         RandRange BranchRatio { get; set; }
     }
 
+    /// <summary>
+    /// Populates the empty grid plan of a map by creating a minimum spanning tree of connected rooms and halls.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class GridPathBranch<T> : GridPathStartStepGeneric<T>, IGridPathBranch
         where T : class, IRoomGridGenContext

@@ -10,9 +10,17 @@ namespace RogueElements
 {
     public interface IContextSpawner
     {
+        /// <summary>
+        /// The amount of spawns to roll from the spawn tables.
+        /// </summary>
         RandRange Amount { get; set; }
     }
 
+    /// <summary>
+    /// Spawns items from the map's own spawn tables.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class ContextSpawner<TGenContext, TSpawnable> : IStepSpawner<TGenContext, TSpawnable>, IContextSpawner
         where TGenContext : ISpawningGenContext<TSpawnable>

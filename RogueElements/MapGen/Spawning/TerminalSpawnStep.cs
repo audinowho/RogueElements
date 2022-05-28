@@ -9,7 +9,8 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Spawns the placeables in terminal (dead-end) rooms, falls back on normal rooms if there are some left over.
+    /// Spawns the objects in terminal (dead-end) rooms.
+    /// Falls back on normal rooms if all dead-end rooms are taken.
     /// </summary>
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>

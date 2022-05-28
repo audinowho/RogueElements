@@ -16,6 +16,10 @@ namespace RogueElements
         RandRange Amount { get; set; }
     }
 
+    /// <summary>
+    /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class AddConnectedRoomsStep<T> : FloorPlanStep<T>, IAddConnectedRoomsStep
         where T : class, IFloorPlanGenContext
@@ -38,19 +42,40 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
-
-        public ComponentCollection RoomComponents { get; set; }
-
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
-
-        public ComponentCollection HallComponents { get; set; }
-
-        public int HallPercent { get; set; }
-
+        /// <summary>
+        /// The number of rooms to add.
+        /// </summary>
         public RandRange Amount { get; set; }
 
+        /// <summary>
+        /// The chance that an added room is attached using an intermediate hallway.
+        /// </summary>
+        public int HallPercent { get; set; }
+
+        /// <summary>
+        /// Determines which rooms are eligible to have the new rooms added on.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
+
+        /// <summary>
+        /// The room types that can be used for the room being added.
+        /// </summary>
+        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
+
+        /// <summary>
+        /// Components that the newly added rooms will be labeled with.
+        /// </summary>
+        public ComponentCollection RoomComponents { get; set; }
+
+        /// <summary>
+        /// The room types that can be used as the intermediate hall.
+        /// </summary>
+        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+
+        /// <summary>
+        /// Components that the newly added halls will be labeled with.
+        /// </summary>
+        public ComponentCollection HallComponents { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {

@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Finds rooms in the floor plan that can be connected and connects them.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public abstract class ConnectStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
@@ -25,11 +29,20 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Determines which rooms are eligible to be connected.
+        /// </summary>
+        public List<BaseRoomFilter> Filters { get; set; }
+
+        /// <summary>
+        /// The room types that can be used as the hall connecting the two base rooms.
+        /// </summary>
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
+        /// <summary>
+        /// Components that the newly added halls will be labeled with.
+        /// </summary>
         public ComponentCollection Components { get; set; }
-
-        public List<BaseRoomFilter> Filters { get; set; }
 
         protected static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo)
         {

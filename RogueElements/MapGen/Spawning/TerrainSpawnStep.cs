@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns objects randomly on tiles of a specific terrain.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class TerrainSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IPlaceableGenContext<TSpawnable>, ITiledGenContext
@@ -30,6 +35,9 @@ namespace RogueElements
             this.Terrain = terrain;
         }
 
+        /// <summary>
+        /// The type of tile to spawn in.
+        /// </summary>
         public ITile Terrain { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)

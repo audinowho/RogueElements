@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Populates the empty floor plan of a map by creating a path consisting of rooms on the perimeter, with hallways creating a grid inwards.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class GridPathGrid<T> : GridPathStartStepGeneric<T>
         where T : class, IRoomGridGenContext
@@ -17,8 +21,14 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// The percentage of rooms at the perimeter that are NOT default 1-tile halls.
+        /// </summary>
         public int RoomRatio { get; set; }
 
+        /// <summary>
+        /// The amount of additional halls added to connect adjacent rooms at the perimeter.
+        /// </summary>
         public int HallRatio { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)

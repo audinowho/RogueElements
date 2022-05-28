@@ -14,6 +14,10 @@ namespace RogueElements
         RandRange Amount { get; set; }
     }
 
+    /// <summary>
+    /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class AddDisconnectedRoomsStep<T> : FloorPlanStep<T>, IAddDisconnectedRoomsStep
         where T : class, IFloorPlanGenContext
@@ -31,11 +35,20 @@ namespace RogueElements
             this.Components = new ComponentCollection();
         }
 
+        /// <summary>
+        /// The number of rooms to add.
+        /// </summary>
+        public RandRange Amount { get; set; }
+
+        /// <summary>
+        /// The room types that can be used for the room being added.
+        /// </summary>
         public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
 
+        /// <summary>
+        /// Components that the newly added rooms will be labeled with.
+        /// </summary>
         public ComponentCollection Components { get; set; }
-
-        public RandRange Amount { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {

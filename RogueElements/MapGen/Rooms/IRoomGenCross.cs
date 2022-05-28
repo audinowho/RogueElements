@@ -19,6 +19,10 @@ namespace RogueElements
         RandRange MinorWidth { get; set; }
     }
 
+    /// <summary>
+    /// Generates a room composed of two rectangles, one vertical and one horizontal.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenCross<T> : RoomGen<T>, IRoomGenCross
         where T : ITiledGenContext
@@ -55,12 +59,24 @@ namespace RogueElements
             this.MinorHeight = other.MinorHeight;
         }
 
+        /// <summary>
+        /// The width of the horizontal rectangle.
+        /// </summary>
         public RandRange MajorWidth { get; set; }
 
-        public RandRange MajorHeight { get; set; }
-
+        /// <summary>
+        /// The height of the horizontal rectangle.
+        /// </summary>
         public RandRange MinorHeight { get; set; }
 
+        /// <summary>
+        /// The height of the vertical rectangle.
+        /// </summary>
+        public RandRange MajorHeight { get; set; }
+
+        /// <summary>
+        /// The width of the vertical rectangle.
+        /// </summary>
         public RandRange MinorWidth { get; set; }
 
         protected int ChosenMinorWidth { get => this.chosenMinorWidth; set => this.chosenMinorWidth = value; }

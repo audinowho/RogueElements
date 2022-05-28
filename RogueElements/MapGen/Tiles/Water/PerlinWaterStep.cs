@@ -9,8 +9,8 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Generates a random spread of water on the map. This is achieved by generating a heighTContext using Perlin Noise,
-    /// then converting all tiles with a height value below a certain threshold to water.
+    /// Generates a random spread of water on the map. This is achieved by generating a heightContext using Perlin Noise,
+    /// then converting all tiles with a height value below the specified threshold to water.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
@@ -38,7 +38,7 @@ namespace RogueElements
         public int OrderComplexity { get; set; }
 
         /// <summary>
-        /// Determines the smallest uit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
+        /// Determines the smallest unit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
         /// </summary>
         public int OrderSoftness { get; set; }
 

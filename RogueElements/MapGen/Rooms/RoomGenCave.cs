@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Generates a cave-like room.
+    /// Generates a cave-like room using cellular automata.
     /// Will generate a square if asked to generate for a size it did not propose.
     /// For square-looking rooms, check to make sure the room was not cut down.
     /// </summary>
@@ -41,8 +41,14 @@ namespace RogueElements
             this.Height = other.Height;
         }
 
+        /// <summary>
+        /// The max width of the room.  The actual cave will tend to be smaller.
+        /// </summary>
         public RandRange Width { get; set; }
 
+        /// <summary>
+        /// The max height of the room.  The actual cave will tend to be smaller.
+        /// </summary>
         public RandRange Height { get; set; }
 
         protected bool[][] Tiles { get => this.tiles; set => this.tiles = value; }

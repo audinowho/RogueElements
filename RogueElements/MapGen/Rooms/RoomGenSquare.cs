@@ -7,6 +7,10 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a rectangular room with the specified width and height.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenSquare<T> : PermissiveRoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
@@ -27,8 +31,14 @@ namespace RogueElements
             this.Height = other.Height;
         }
 
+        /// <summary>
+        /// Width of the room.
+        /// </summary>
         public RandRange Width { get; set; }
 
+        /// <summary>
+        /// Height of the room.
+        /// </summary>
         public RandRange Height { get; set; }
 
         public override RoomGen<T> Copy() => new RoomGenSquare<T>(this);

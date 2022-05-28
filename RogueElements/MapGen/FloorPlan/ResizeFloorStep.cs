@@ -7,6 +7,10 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Resizes the floor plan.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ResizeFloorStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
@@ -22,8 +26,14 @@ namespace RogueElements
             this.AnchorDir = dir;
         }
 
+        /// <summary>
+        /// The number of tiles to add to each dimension.
+        /// </summary>
         public Loc AddedSize { get; set; }
 
+        /// <summary>
+        /// The direction in which to expand.
+        /// </summary>
         public Dir8 ExpandDir { get; set; }
 
         public Dir8 AnchorDir { get; set; }

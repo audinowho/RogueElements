@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a rectangular room with the specified width and height, and with the tiles at the perimeter randomly blocked.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenBump<T> : PermissiveRoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
@@ -30,10 +34,19 @@ namespace RogueElements
             this.BumpPercent = other.BumpPercent;
         }
 
+        /// <summary>
+        /// Width of the room.
+        /// </summary>
         public RandRange Width { get; set; }
 
+        /// <summary>
+        /// Height of the room.
+        /// </summary>
         public RandRange Height { get; set; }
 
+        /// <summary>
+        /// Chance of a block tile at the room's perimeter.
+        /// </summary>
         public RandRange BumpPercent { get; set; }
 
         public override RoomGen<T> Copy() => new RoomGenBump<T>(this);

@@ -38,6 +38,9 @@ namespace RogueElements
         /// </summary>
         public int SuccessPercent { get; set; }
 
+        /// <summary>
+        /// Makes halls eligible for spawn.
+        /// </summary>
         public bool IncludeHalls { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)

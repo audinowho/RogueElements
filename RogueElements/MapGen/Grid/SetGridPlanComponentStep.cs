@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes all rooms in the map's grid plan and gives them a specified component.
+    /// These components can be used to identify the room in some way for future filtering.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SetGridPlanComponentStep<T> : GenStep<T>
         where T : class, IRoomGridGenContext

@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a room with specific tiles and borders.
+    /// EDITOR UNFRIENDLY
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenSpecific<T> : RoomGen<T>
         where T : ITiledGenContext

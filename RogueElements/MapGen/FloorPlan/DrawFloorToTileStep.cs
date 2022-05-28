@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes the floor plan of the map and draws all tiles in all rooms to the actual map.
+    /// This is typically done once per floor generation.  It must only be done after the floor plan itself is complete.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class DrawFloorToTileStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
@@ -21,6 +26,9 @@ namespace RogueElements
             this.Padding = padding;
         }
 
+        /// <summary>
+        /// Adds the specified number of tiles to the border of the map as wall terrain.
+        /// </summary>
         public int Padding { get; set; }
 
         public override void Apply(T map)

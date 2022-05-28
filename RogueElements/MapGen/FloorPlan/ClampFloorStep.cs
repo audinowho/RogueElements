@@ -8,7 +8,8 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// Clamps the floor plan to at least a minimum size, at most a maximum size. If roomplan draw rects exceed the intended bounds, the size will extend to include them.
+    /// Clamps the floor plan to at least a minimum size, at most a maximum size.
+    /// If the bounds of the current roomplan maximum, the size will increase to include them.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]

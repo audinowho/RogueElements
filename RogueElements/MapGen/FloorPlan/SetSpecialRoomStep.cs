@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes an existing floor plan and changes one of the rooms into the specified room type.
+    /// The size of the room may change because of this, and thus may also require the addition of a supporting hallway.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SetSpecialRoomStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
@@ -30,15 +35,31 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// The room to place.  It can be chosen out of several possibilities, but only one room will be placed.
+        /// </summary>
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
 
+        /// <summary>
+        /// Determines which rooms are eligible to be turned into the new room type.
+        /// </summary>
+        public List<BaseRoomFilter> Filters { get; set; }
+
+        /// <summary>
+        /// Components that the newly added room will be labeled with.
+        /// </summary>
         public ComponentCollection RoomComponents { get; set; }
 
+        /// <summary>
+        /// When changing a room to a new type, the new type may be smaller and require a supporting hallway.
+        /// This variable determines the room types that can be used as the intermediate hall.
+        /// </summary>
         public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
 
+        /// <summary>
+        /// Components that the newly added halls will be labeled with.
+        /// </summary>
         public ComponentCollection HallComponents { get; set; }
-
-        public List<BaseRoomFilter> Filters { get; set; }
 
         public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
