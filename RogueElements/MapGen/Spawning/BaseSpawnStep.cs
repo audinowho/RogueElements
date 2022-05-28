@@ -28,6 +28,9 @@ namespace RogueElements
             this.Spawn = spawn;
         }
 
+        /// <summary>
+        /// The generator that creates a list of items for the step to spawn.
+        /// </summary>
         public IStepSpawner<TGenContext, TSpawnable> Spawn { get; set; }
 
         public abstract void DistributeSpawns(TGenContext map, List<TSpawnable> spawns);

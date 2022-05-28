@@ -8,6 +8,13 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Adds the entrance and exit to the floor.  Is room-conscious.
+    /// The algorithm will try to place them far away from each other in different rooms.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TExit"></typeparam>
     [Serializable]
     public class FloorStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
@@ -35,10 +42,19 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// List of entrance objects to spawn.
+        /// </summary>
         public List<TEntrance> Entrances { get; }
 
+        /// <summary>
+        /// List of exit objects to spawn.
+        /// </summary>
         public List<TExit> Exits { get; }
 
+        /// <summary>
+        /// Used to filter out rooms that do not make suitable entrances/exits, such as boss rooms.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         public override void Apply(TGenContext map)

@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes all rooms in the map's floor plan and gives them a specified component.
+    /// These components can be used to identify the room in some way for future filtering.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SetFloorPlanComponentStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
@@ -20,6 +25,9 @@ namespace RogueElements
 
         public List<BaseRoomFilter> Filters { get; set; }
 
+        /// <summary>
+        /// Components to add.
+        /// </summary>
         public ComponentCollection Components { get; set; }
 
         public override void Apply(T map)

@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Creates blobs of water using cellular automata, and places them around the map.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class BlobWaterStep<T> : WaterStep<T>
         where T : class, ITiledGenContext
@@ -28,10 +32,19 @@ namespace RogueElements
             this.StartScale = startScale;
         }
 
-        public int MinScale { get; set; }
-
+        /// <summary>
+        /// The number of blobs to place.
+        /// </summary>
         public RandRange Blobs { get; set; }
 
+        /// <summary>
+        /// The minimum size of the area creating the blob.  It is measured in percentage of the full map size.
+        /// </summary>
+        public int MinScale { get; set; }
+
+        /// <summary>
+        /// The maximum size of the area creating the blob.  It is measured in percentage of the full map size.
+        /// </summary>
         public RandRange StartScale { get; set; }
 
         public override void Apply(T map)

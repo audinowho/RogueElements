@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a one-tile room.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenDefault<T> : PermissiveRoomGen<T>
         where T : ITiledGenContext

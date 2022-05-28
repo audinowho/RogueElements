@@ -7,6 +7,12 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A debug step that can be used to generate an error if the map generator created a map with unreachable walkable tiles.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TExit"></typeparam>
     [Serializable]
     public class DetectIsolatedStep<TGenContext, TEntrance> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<IEntrance>

@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A room that connects its exits with a narrow hallway.
+    /// It is able to handle all combinations of exits from all combination of directions.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenAngledHall<T> : PermissiveRoomGen<T>
         where T : ITiledGenContext

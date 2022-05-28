@@ -16,6 +16,10 @@ namespace RogueElements
         RandRange Paths { get; set; }
     }
 
+    /// <summary>
+    /// Populates the empty grid plan of a map by creating a ring of rooms and halls at the outer cells of the grid.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class GridPathCircle<T> : GridPathStartStepGeneric<T>, IGridPathCircle
         where T : class, IRoomGridGenContext
@@ -25,8 +29,14 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// The percentage of rooms in the outer circle that are NOT treated as 1-tile halls.
+        /// </summary>
         public RandRange CircleRoomRatio { get; set; }
 
+        /// <summary>
+        /// The number of paths going to the inner circle.
+        /// </summary>
         public RandRange Paths { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)

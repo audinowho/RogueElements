@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes an existing grid plan and changes one of the rooms into the specified room type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SetGridSpecialRoomStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
@@ -19,11 +23,20 @@ namespace RogueElements
             this.RoomComponents = new ComponentCollection();
         }
 
+        /// <summary>
+        /// The type of room to place.  It can be chosen out of several possibilities, but only one room will be placed.
+        /// </summary>
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
 
-        public ComponentCollection RoomComponents { get; set; }
-
+        /// <summary>
+        /// Determines which rooms are eligible to be turned into the new room type.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
+
+        /// <summary>
+        /// Components that the newly added room will be labeled with.
+        /// </summary>
+        public ComponentCollection RoomComponents { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {

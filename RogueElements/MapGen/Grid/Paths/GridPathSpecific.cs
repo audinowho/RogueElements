@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Populates an empty grid plan of a map by creating a specific path of rooms and hallways.
+    /// VERY EDITOR UNFRIENDLY
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class GridPathSpecific<T> : GridPathStartStep<T>
         where T : class, IRoomGridGenContext
@@ -19,12 +24,24 @@ namespace RogueElements
             this.HallComponents = new ComponentCollection();
         }
 
+        /// <summary>
+        /// The rooms to place, and where they go.
+        /// </summary>
         public List<SpecificGridRoomPlan<T>> SpecificRooms { get; set; }
 
+        /// <summary>
+        /// The full array of vertical halls.
+        /// </summary>
         public PermissiveRoomGen<T>[][] SpecificVHalls { get; set; }
 
+        /// <summary>
+        /// The full array of horizontal halls.
+        /// </summary>
         public PermissiveRoomGen<T>[][] SpecificHHalls { get; set; }
 
+        /// <summary>
+        /// Components that the halls will be labeled with.
+        /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
         public static void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, ComponentCollection components)

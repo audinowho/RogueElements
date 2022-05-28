@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes the grid plan of the map and draws all cells and halls into rooms of a floor plan.
+    /// This is typically done once per floor generation.  It must only be done after the grid plan itself is complete.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class DrawGridToFloorStep<T> : GenStep<T>
         where T : class, IRoomGridGenContext

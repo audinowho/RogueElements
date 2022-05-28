@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns objects on randomly chosen tiles.
+    /// The tile is chosen from the set of tiles where the object is allowed to be placed.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class RandomSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IPlaceableGenContext<TSpawnable>

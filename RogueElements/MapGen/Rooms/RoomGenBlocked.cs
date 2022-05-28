@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Generates a rectangular room with the specified width and height, and with a rectangular block with specified width and height.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class RoomGenBlocked<T> : PermissiveRoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
@@ -34,14 +38,29 @@ namespace RogueElements
             this.BlockHeight = other.BlockHeight;
         }
 
+        /// <summary>
+        /// Width of the room.
+        /// </summary>
         public RandRange Width { get; set; }
 
+        /// <summary>
+        /// Height of the room.
+        /// </summary>
         public RandRange Height { get; set; }
 
+        /// <summary>
+        /// Width of the block.
+        /// </summary>
         public RandRange BlockWidth { get; set; }
 
+        /// <summary>
+        /// Height of the block.
+        /// </summary>
         public RandRange BlockHeight { get; set; }
 
+        /// <summary>
+        /// The terrain used for the block.
+        /// </summary>
         public ITile BlockTerrain { get; set; }
 
         public override RoomGen<T> Copy() => new RoomGenBlocked<T>(this);

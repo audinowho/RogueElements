@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Creates a map out of specific tiles.
+    /// Not very editor-friendly.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SpecificTilesStep<T> : GenStep<T>
         where T : class, ITiledGenContext

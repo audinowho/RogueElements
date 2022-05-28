@@ -17,6 +17,10 @@ namespace RogueElements
         RandRange BranchRatio { get; set; }
     }
 
+    /// <summary>
+    /// Populates the empty floor plan of a map by creating a minimum spanning tree of connected rooms and halls.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>, IFloorPathBranch
         where T : class, IFloorPlanGenContext
@@ -33,12 +37,28 @@ namespace RogueElements
 
         public delegate RoomGen<T> RoomPrep(IRandom rand, FloorPlan floorPlan, bool isHall);
 
+        /// <summary>
+        /// The amount of space in the floor plan that the step aims to fill with rooms.
+        /// </summary>
         public RandRange FillPercent { get; set; }
 
+        /// <summary>
+        /// The chance that rooms are attached ot each other using an intermediate hallway.
+        /// </summary>
         public int HallPercent { get; set; }
 
+        /// <summary>
+        /// The percent amount of branching paths the layout will have in relation to its straight paths.
+        /// 0 = A layout without branches. (Worm)
+        /// 50 = A layout that branches once for every two extensions. (Tree)
+        /// 100 = A layout that branches once for every extension. (Branchier Tree)
+        /// 200 = A layout that branches twice for every extension. (Fuzzy Worm)
+        /// </summary>
         public RandRange BranchRatio { get; set; }
 
+        /// <summary>
+        /// Prevents the step from making branches in the path, even if it's necessary to make the space-fill quota.
+        /// </summary>
         public bool NoForcedBranches { get; set; }
 
         /// <summary>

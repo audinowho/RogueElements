@@ -13,6 +13,10 @@ namespace RogueElements
         RandRange ConnectFactor { get; set; }
     }
 
+    /// <summary>
+    /// Takes the current floor plan and connects its rooms with other rooms.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ConnectRoomStep<T> : ConnectStep<T>, IConnectRoomStep
         where T : class, IFloorPlanGenContext
@@ -27,6 +31,13 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// Determines the number of connections to make.
+        /// 0 = No Connections
+        /// 50 = Half of all rooms connected
+        /// 100 = All rooms connected
+        /// 200 = All rooms connected twice over
+        /// </summary>
         public RandRange ConnectFactor { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)

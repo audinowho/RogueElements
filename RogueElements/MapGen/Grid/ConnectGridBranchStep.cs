@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes the current grid plan and connects the ends of its branches to other rooms.
+    /// A room is considered the end of a branch when it is connected to only one other room.
+    /// ie, a dead end.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ConnectGridBranchStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
@@ -25,13 +31,25 @@ namespace RogueElements
             this.ConnectPercent = connectPercent;
         }
 
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+        /// <summary>
+        /// The percentage of eligible branches to connect.
+        /// </summary>
+        public int ConnectPercent { get; set; }
 
+        /// <summary>
+        /// Determines which rooms are eligible to be connected.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
-        public ComponentCollection HallComponents { get; set; }
+        /// <summary>
+        /// The room types that can be used as the hall connecting the two base rooms.
+        /// </summary>
+        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
-        public int ConnectPercent { get; set; }
+        /// <summary>
+        /// Components that the newly added halls will be labeled with.
+        /// </summary>
+        public ComponentCollection HallComponents { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {

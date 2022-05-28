@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Initializes a map of Width x Height tiles.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class InitTilesStep<T> : GenStep<T>
         where T : class, ITiledGenContext

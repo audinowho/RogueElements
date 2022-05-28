@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns objects in randoly chosen rooms.
+    /// Large rooms have the same probability as small rooms.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class RandomRoomSpawnStep<TGenContext, TSpawnable> : RoomSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
@@ -24,6 +30,9 @@ namespace RogueElements
             this.IncludeHalls = includeHalls;
         }
 
+        /// <summary>
+        /// Makes halls eligible for spawn.
+        /// </summary>
         public bool IncludeHalls { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)

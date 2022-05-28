@@ -8,6 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes the current floor plan and connects the ends of its branches to other rooms.
+    /// A room is considered the end of a branch when it is connected to only one other room.
+    /// ie, a dead end.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class ConnectBranchStep<T> : ConnectStep<T>
         where T : class, IFloorPlanGenContext
@@ -22,6 +28,9 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// The percentage of eligible branches to connect.
+        /// </summary>
         public int ConnectPercent { get; set; }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)

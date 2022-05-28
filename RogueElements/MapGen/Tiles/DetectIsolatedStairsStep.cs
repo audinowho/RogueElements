@@ -7,6 +7,12 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A debug step that can be used to generate an error if the map generator created an unreachable stairs.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TExit"></typeparam>
     [Serializable]
     public class DetectIsolatedStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>

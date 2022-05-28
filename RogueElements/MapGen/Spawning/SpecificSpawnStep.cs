@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Spawns objects on specific locations.
+    /// </summary>
+    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
     public class SpecificSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
         where TGenContext : class, IPlaceableGenContext<TSpawnable>
@@ -25,6 +30,9 @@ namespace RogueElements
             this.SpawnLocs = spawnLocs;
         }
 
+        /// <summary>
+        /// The locations to spawn the objects.
+        /// </summary>
         public List<Loc> SpawnLocs { get; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)

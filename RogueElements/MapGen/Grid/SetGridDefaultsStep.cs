@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Takes an existing grid plan and changes one of the rooms into the default room type.
+    /// The default room is a single tile in size and effectively acts as a hallway.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class SetGridDefaultsStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
@@ -23,8 +28,14 @@ namespace RogueElements
             this.Filters = filter;
         }
 
+        /// <summary>
+        /// Determines the percentage of eligible rooms that will be turned into default.
+        /// </summary>
         public RandRange DefaultRatio { get; set; }
 
+        /// <summary>
+        /// Determines which rooms are eligible to be turned into default.
+        /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
