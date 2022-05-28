@@ -28,10 +28,23 @@ namespace RogueElements
         {
         }
 
+        /// <summary>
+        /// The percentage of total rooms in the grid plan that the step aims to fill.
+        /// </summary>
         public RandRange RoomRatio { get; set; }
 
+        /// <summary>
+        /// The percent amount of branching paths the layout will have in relation to its straight paths.
+        /// 0 = A layout without branches. (Worm)
+        /// 50 = A layout that branches once for every two extensions. (Tree)
+        /// 100 = A layout that branches once for every extension. (Branchier Tree)
+        /// 200 = A layout that branches twice for every extension. (Fuzzy Worm)
+        /// </summary>
         public RandRange BranchRatio { get; set; }
 
+        /// <summary>
+        /// Prevents the step from making branches in the path, even if it would fail the space-fill quota.
+        /// </summary>
         public bool NoForcedBranches { get; set; }
 
         public static List<LocRay4> GetPossibleExpansions(GridPlan floorPlan, bool branch)

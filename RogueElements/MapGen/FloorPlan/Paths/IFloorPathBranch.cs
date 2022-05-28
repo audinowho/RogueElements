@@ -38,7 +38,7 @@ namespace RogueElements
         public delegate RoomGen<T> RoomPrep(IRandom rand, FloorPlan floorPlan, bool isHall);
 
         /// <summary>
-        /// The amount of space in the floor plan that the step aims to fill with rooms.
+        /// The percentage of total space in the floor plan that the step aims to fill with rooms.
         /// </summary>
         public RandRange FillPercent { get; set; }
 
@@ -57,7 +57,7 @@ namespace RogueElements
         public RandRange BranchRatio { get; set; }
 
         /// <summary>
-        /// Prevents the step from making branches in the path, even if it's necessary to make the space-fill quota.
+        /// Prevents the step from making branches in the path, even if it would fail the space-fill quota.
         /// </summary>
         public bool NoForcedBranches { get; set; }
 
