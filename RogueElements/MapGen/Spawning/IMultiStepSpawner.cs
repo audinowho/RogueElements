@@ -14,7 +14,7 @@ namespace RogueElements
     }
 
     /// <summary>
-    /// Chooses an IStepSpawner from a specifically defined IMultiRandPicker, then generates the Spawnables from that IStepSpawner.
+    /// Randomly chooses an IStepSpawner from a spawner of spawners, then generates the objects from the chosen IStepSpawner.
     /// </summary>
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
@@ -32,6 +32,9 @@ namespace RogueElements
             this.Picker = picker;
         }
 
+        /// <summary>
+        /// The spawner of spawners.
+        /// </summary>
         public IMultiRandPicker<IStepSpawner<TGenContext, TSpawnable>> Picker { get; set; }
 
         IMultiRandPicker IMultiStepSpawner.Picker

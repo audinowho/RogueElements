@@ -32,6 +32,9 @@ namespace RogueElements
             this.Picker = picker;
         }
 
+        /// <summary>
+        /// The IMultiRandPicker that decides the objects to spawn.
+        /// </summary>
         public IMultiRandPicker<TSpawnable> Picker { get; set; }
 
         IMultiRandPicker IPickerSpawner.Picker
