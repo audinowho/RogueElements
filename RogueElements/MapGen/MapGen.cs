@@ -50,7 +50,16 @@ namespace RogueElements
             {
                 IGenStep postProc = queue.Dequeue();
                 GenContextDebug.StepIn(postProc.ToString());
-                postProc.Apply(map);
+
+                try
+                {
+                    postProc.Apply(map);
+                }
+                catch (Exception ex)
+                {
+                    GenContextDebug.DebugError(ex);
+                }
+
                 GenContextDebug.StepOut();
             }
         }

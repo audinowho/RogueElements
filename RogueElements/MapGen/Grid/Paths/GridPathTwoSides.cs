@@ -38,66 +38,80 @@ namespace RogueElements
 
             GenContextDebug.StepIn("Initial Rooms");
 
-            for (int ii = 0; ii < orth; ii++)
+            try
             {
-                // place the rooms at the edge
-                floorPlan.AddRoom(this.GapAxis.CreateLoc(0, ii), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
-                GenContextDebug.DebugProgress("Room");
-                floorPlan.AddRoom(this.GapAxis.CreateLoc(scalar - 1, ii), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
-                GenContextDebug.DebugProgress("Room");
-
-                if (scalar > 2)
+                for (int ii = 0; ii < orth; ii++)
                 {
-                    // place hall rooms
-                    Loc loc = this.GapAxis.CreateLoc(1, ii);
-                    Loc size = this.GapAxis.CreateLoc(scalar - 2, 1);
-                    floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), this.HallComponents.Clone(), true);
-                    GenContextDebug.DebugProgress("Mid Room");
+                    // place the rooms at the edge
+                    floorPlan.AddRoom(this.GapAxis.CreateLoc(0, ii), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    GenContextDebug.DebugProgress("Room");
+                    floorPlan.AddRoom(this.GapAxis.CreateLoc(scalar - 1, ii), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+                    GenContextDebug.DebugProgress("Room");
+
+                    if (scalar > 2)
+                    {
+                        // place hall rooms
+                        Loc loc = this.GapAxis.CreateLoc(1, ii);
+                        Loc size = this.GapAxis.CreateLoc(scalar - 2, 1);
+                        floorPlan.AddRoom(new Rect(loc, size), this.GetDefaultGen(), this.HallComponents.Clone(), true);
+                        GenContextDebug.DebugProgress("Mid Room");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();
 
             GenContextDebug.StepIn("Connecting Sides");
 
-            // halls connecting two tiers of the same side
-            bool[][] connections = new bool[orth - 1][];
-            for (int ii = 0; ii < orth - 1; ii++)
-                connections[ii] = new bool[2];
-
-            // add crosses
-            for (int ii = 0; ii < orth - 1; ii++)
+            try
             {
-                if (rand.Next(2) == 0)
-                    connections[ii][0] = true;
-                else
-                    connections[ii][1] = true;
-            }
+                // halls connecting two tiers of the same side
+                bool[][] connections = new bool[orth - 1][];
+                for (int ii = 0; ii < orth - 1; ii++)
+                    connections[ii] = new bool[2];
 
-            // paint hallways
-            for (int ii = 0; ii < orth; ii++)
-            {
-                // place the halls at the sides
-                if (ii < orth - 1)
+                // add crosses
+                for (int ii = 0; ii < orth - 1; ii++)
                 {
-                    if (connections[ii][0])
-                    {
-                        this.PlaceOrientedHall(this.GapAxis.Orth(), 0, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
-                        GenContextDebug.DebugProgress("Side Connection");
-                    }
-
-                    if (connections[ii][1])
-                    {
-                        this.PlaceOrientedHall(this.GapAxis.Orth(), scalar - 1, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
-                        GenContextDebug.DebugProgress("Side Connection");
-                    }
+                    if (rand.Next(2) == 0)
+                        connections[ii][0] = true;
+                    else
+                        connections[ii][1] = true;
                 }
 
-                // place halls to bridge the gap
-                this.PlaceOrientedHall(this.GapAxis, 0, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
-                if (scalar > 2)
-                    this.PlaceOrientedHall(this.GapAxis, scalar - 1, ii, -1, floorPlan, this.GenericHalls.Pick(rand));
-                GenContextDebug.DebugProgress("Bridge");
+                // paint hallways
+                for (int ii = 0; ii < orth; ii++)
+                {
+                    // place the halls at the sides
+                    if (ii < orth - 1)
+                    {
+                        if (connections[ii][0])
+                        {
+                            this.PlaceOrientedHall(this.GapAxis.Orth(), 0, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
+                            GenContextDebug.DebugProgress("Side Connection");
+                        }
+
+                        if (connections[ii][1])
+                        {
+                            this.PlaceOrientedHall(this.GapAxis.Orth(), scalar - 1, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
+                            GenContextDebug.DebugProgress("Side Connection");
+                        }
+                    }
+
+                    // place halls to bridge the gap
+                    this.PlaceOrientedHall(this.GapAxis, 0, ii, 1, floorPlan, this.GenericHalls.Pick(rand));
+                    if (scalar > 2)
+                        this.PlaceOrientedHall(this.GapAxis, scalar - 1, ii, -1, floorPlan, this.GenericHalls.Pick(rand));
+                    GenContextDebug.DebugProgress("Bridge");
+                }
+            }
+            catch (Exception ex)
+            {
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();

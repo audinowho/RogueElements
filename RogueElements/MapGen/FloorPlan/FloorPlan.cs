@@ -353,43 +353,57 @@ namespace RogueElements
         public void DrawOnMap(ITiledGenContext map)
         {
             GenContextDebug.StepIn("Main Rooms");
-            for (int ii = 0; ii < this.Rooms.Count; ii++)
+            try
             {
-                // take in the broad fulfillables from adjacent rooms that have not yet drawn
-                IFloorRoomPlan plan = this.Rooms[ii];
-                foreach (RoomHallIndex adj in plan.Adjacents)
+                for (int ii = 0; ii < this.Rooms.Count; ii++)
                 {
-                    if (adj.IsHall || adj.Index > ii)
+                    // take in the broad fulfillables from adjacent rooms that have not yet drawn
+                    IFloorRoomPlan plan = this.Rooms[ii];
+                    foreach (RoomHallIndex adj in plan.Adjacents)
                     {
-                        IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
-                        plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                        if (adj.IsHall || adj.Index > ii)
+                        {
+                            IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                        }
                     }
-                }
 
-                plan.RoomGen.DrawOnMap(map);
-                this.TransferBorderToAdjacents(new RoomHallIndex(ii, false));
-                GenContextDebug.DebugProgress("Draw Room");
+                    plan.RoomGen.DrawOnMap(map);
+                    this.TransferBorderToAdjacents(new RoomHallIndex(ii, false));
+                    GenContextDebug.DebugProgress("Draw Room");
+                }
+            }
+            catch (Exception ex)
+            {
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();
 
             GenContextDebug.StepIn("Connecting Halls");
-            for (int ii = 0; ii < this.Halls.Count; ii++)
+            try
             {
-                // take in the broad fulfillables from adjacent rooms that have not yet drawn
-                IFloorRoomPlan plan = this.Halls[ii];
-                foreach (RoomHallIndex adj in plan.Adjacents)
+                for (int ii = 0; ii < this.Halls.Count; ii++)
                 {
-                    if (adj.IsHall && adj.Index > ii)
+                    // take in the broad fulfillables from adjacent rooms that have not yet drawn
+                    IFloorRoomPlan plan = this.Halls[ii];
+                    foreach (RoomHallIndex adj in plan.Adjacents)
                     {
-                        IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
-                        plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                        if (adj.IsHall && adj.Index > ii)
+                        {
+                            IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                        }
                     }
-                }
 
-                plan.RoomGen.DrawOnMap(map);
-                this.TransferBorderToAdjacents(new RoomHallIndex(ii, true));
-                GenContextDebug.DebugProgress("Draw Hall");
+                    plan.RoomGen.DrawOnMap(map);
+                    this.TransferBorderToAdjacents(new RoomHallIndex(ii, true));
+                    GenContextDebug.DebugProgress("Draw Hall");
+                }
+            }
+            catch (Exception ex)
+            {
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();

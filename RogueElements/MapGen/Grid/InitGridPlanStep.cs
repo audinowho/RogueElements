@@ -53,7 +53,6 @@ namespace RogueElements
         /// </summary>
         public int CellWall { get; set; }
 
-
         public override void Apply(T map)
         {
             // initialize grid
