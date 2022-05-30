@@ -51,7 +51,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Detects if an added blob disconnects the map's existing connectivity.
+        /// Detects if an added blob of tiles disconnects the map's existing connectivity.
         /// </summary>
         /// <param name="mapBounds"></param>
         /// <param name="isMapValid">Checks for a valid path tile.</param>

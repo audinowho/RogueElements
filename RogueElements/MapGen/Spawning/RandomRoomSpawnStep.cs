@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Spawns objects in randoly chosen rooms.
+    /// Spawns objects in randomly chosen rooms.
     /// Large rooms have the same probability as small rooms.
     /// </summary>
     /// <typeparam name="TGenContext"></typeparam>

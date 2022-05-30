@@ -8,6 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Creates blobs of water using cellular automata, and places them around the map.
+    /// It will allow itself to be placed in locations that overlap walkable area, but never in a way that disconnects it.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class IntrudingBlobWaterStep<T> : BlobWaterStep<T>
         where T : class, ITiledGenContext
