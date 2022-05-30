@@ -132,89 +132,104 @@ namespace RogueElements
             GenContextDebug.StepIn("Main Rooms");
 
             List<RoomHallIndex> roomToHall = new List<RoomHallIndex>();
-            foreach (var plan in this.ArrayRooms)
+
+            try
             {
-                if (plan.PreferHall)
+                foreach (var plan in this.ArrayRooms)
                 {
-                    roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
-                    map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen, plan.Components);
-                    GenContextDebug.DebugProgress("Add Hall Room");
+                    if (plan.PreferHall)
+                    {
+                        roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
+                        map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen, plan.Components);
+                        GenContextDebug.DebugProgress("Add Hall Room");
+                    }
+                    else
+                    {
+                        roomToHall.Add(new RoomHallIndex(map.RoomPlan.RoomCount, false));
+                        map.RoomPlan.AddRoom(plan.RoomGen, plan.Components);
+                        GenContextDebug.DebugProgress("Added Room");
+                    }
                 }
-                else
-                {
-                    roomToHall.Add(new RoomHallIndex(map.RoomPlan.RoomCount, false));
-                    map.RoomPlan.AddRoom(plan.RoomGen, plan.Components);
-                    GenContextDebug.DebugProgress("Added Room");
-                }
+            }
+            catch (Exception ex)
+            {
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();
 
             GenContextDebug.StepIn("Connecting Halls");
 
-            for (int xx = 0; xx < this.VHalls.Length; xx++)
+            try
             {
-                for (int yy = 0; yy < this.VHalls[xx].Length; yy++)
+                for (int xx = 0; xx < this.VHalls.Length; xx++)
                 {
-                    GridHallGroup hallGroup = this.VHalls[xx][yy];
-                    for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
+                    for (int yy = 0; yy < this.VHalls[xx].Length; yy++)
                     {
-                        List<RoomHallIndex> adj = new List<RoomHallIndex>();
-                        if (ii == 0)
+                        GridHallGroup hallGroup = this.VHalls[xx][yy];
+                        for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
                         {
-                            int upRoom = this.Rooms[xx][yy];
-                            if (upRoom > -1)
-                                adj.Add(roomToHall[upRoom]);
-                        }
-                        else
-                        {
-                            adj.Add(new RoomHallIndex(map.RoomPlan.HallCount - 1, true));
-                        }
+                            List<RoomHallIndex> adj = new List<RoomHallIndex>();
+                            if (ii == 0)
+                            {
+                                int upRoom = this.Rooms[xx][yy];
+                                if (upRoom > -1)
+                                    adj.Add(roomToHall[upRoom]);
+                            }
+                            else
+                            {
+                                adj.Add(new RoomHallIndex(map.RoomPlan.HallCount - 1, true));
+                            }
 
-                        if (ii == hallGroup.HallParts.Count - 1)
-                        {
-                            int downRoom = this.Rooms[xx][yy + 1];
-                            if (downRoom > -1)
-                                adj.Add(roomToHall[downRoom]);
-                        }
+                            if (ii == hallGroup.HallParts.Count - 1)
+                            {
+                                int downRoom = this.Rooms[xx][yy + 1];
+                                if (downRoom > -1)
+                                    adj.Add(roomToHall[downRoom]);
+                            }
 
-                        map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
-                        GenContextDebug.DebugProgress("Add Hall");
+                            map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
+                            GenContextDebug.DebugProgress("Add Hall");
+                        }
+                    }
+                }
+
+                for (int xx = 0; xx < this.HHalls.Length; xx++)
+                {
+                    for (int yy = 0; yy < this.HHalls[xx].Length; yy++)
+                    {
+                        GridHallGroup hallGroup = this.HHalls[xx][yy];
+
+                        for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
+                        {
+                            List<RoomHallIndex> adj = new List<RoomHallIndex>();
+                            if (ii == 0)
+                            {
+                                int leftRoom = this.Rooms[xx][yy];
+                                if (leftRoom > -1)
+                                    adj.Add(roomToHall[leftRoom]);
+                            }
+                            else
+                            {
+                                adj.Add(new RoomHallIndex(map.RoomPlan.HallCount - 1, true));
+                            }
+
+                            if (ii == hallGroup.HallParts.Count - 1)
+                            {
+                                int rightRoom = this.Rooms[xx + 1][yy];
+                                if (rightRoom > -1)
+                                    adj.Add(roomToHall[rightRoom]);
+                            }
+
+                            map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
+                            GenContextDebug.DebugProgress("Add Hall");
+                        }
                     }
                 }
             }
-
-            for (int xx = 0; xx < this.HHalls.Length; xx++)
+            catch (Exception ex)
             {
-                for (int yy = 0; yy < this.HHalls[xx].Length; yy++)
-                {
-                    GridHallGroup hallGroup = this.HHalls[xx][yy];
-
-                    for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
-                    {
-                        List<RoomHallIndex> adj = new List<RoomHallIndex>();
-                        if (ii == 0)
-                        {
-                            int leftRoom = this.Rooms[xx][yy];
-                            if (leftRoom > -1)
-                                adj.Add(roomToHall[leftRoom]);
-                        }
-                        else
-                        {
-                            adj.Add(new RoomHallIndex(map.RoomPlan.HallCount - 1, true));
-                        }
-
-                        if (ii == hallGroup.HallParts.Count - 1)
-                        {
-                            int rightRoom = this.Rooms[xx + 1][yy];
-                            if (rightRoom > -1)
-                                adj.Add(roomToHall[rightRoom]);
-                        }
-
-                        map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
-                        GenContextDebug.DebugProgress("Add Hall");
-                    }
-                }
+                GenContextDebug.DebugError(ex);
             }
 
             GenContextDebug.StepOut();

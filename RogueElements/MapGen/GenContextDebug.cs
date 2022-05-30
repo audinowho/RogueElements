@@ -12,30 +12,24 @@ namespace RogueElements
 {
     public static class GenContextDebug
     {
-        public delegate void InitTrack(IGenContext map);
+        public static event Action<IGenContext> OnInit;
 
-        public delegate void ProgressTrack(string msg);
+        public static event Action<string> OnStep;
 
-        public delegate void DebugStepIn(string msg);
-
-        public static event InitTrack OnInit;
-
-        public static event ProgressTrack OnStep;
-
-        public static event DebugStepIn OnStepIn;
+        public static event Action<string> OnStepIn;
 
         public static event Action OnStepOut;
 
-        [Conditional("DEBUG")]
+        public static event Action<Exception> OnError;
+
         public static void StepIn(string msg) => OnStepIn?.Invoke(msg);
 
-        [Conditional("DEBUG")]
         public static void StepOut() => OnStepOut?.Invoke();
 
-        [Conditional("DEBUG")]
         public static void DebugInit(IGenContext map) => OnInit?.Invoke(map);
 
-        [Conditional("DEBUG")]
         public static void DebugProgress(string msg) => OnStep?.Invoke(msg);
+
+        public static void DebugError(Exception ex) => OnError?.Invoke(ex);
     }
 }
