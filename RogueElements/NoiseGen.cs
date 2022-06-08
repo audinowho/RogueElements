@@ -65,8 +65,8 @@ namespace RogueElements
             int[][] noise = null;
             for (int ii = degrees + expandDegrees - 1; ii >= 0; ii--)
             {
-                int gridWidth = ((width - 1) / (int)Math.Pow(2, ii)) + 1;
-                int gridHeight = ((height - 1) / (int)Math.Pow(2, ii)) + 1;
+                int gridWidth = MathUtils.DivUp(width, MathUtils.IntPow(2, ii));
+                int gridHeight = MathUtils.DivUp(height, MathUtils.IntPow(2, ii));
 
                 noise = new int[gridWidth][];
                 for (int xx = 0; xx < gridWidth; xx++)

@@ -25,5 +25,68 @@ namespace RogueElements.Tests
         {
             throw new NotImplementedException();
         }
+
+        [Test]
+        [TestCase(0, 0, 1)]
+        [TestCase(1, 0, 1)]
+        [TestCase(0, 1, 0)]
+        [TestCase(0, 2, 0)]
+        [TestCase(1, 1, 1)]
+        [TestCase(1, 2, 1)]
+        [TestCase(2, 1, 2)]
+        [TestCase(2, 2, 4)]
+        [TestCase(2, 3, 8)]
+        public void IntPow(int a, int b, int result)
+        {
+            Assert.That(MathUtils.IntPow(a, b), Is.EqualTo(result));
+        }
+
+        [Test]
+        [TestCase(0, 3, 0)]
+        [TestCase(1, 3, 0)]
+        [TestCase(2, 3, 0)]
+        [TestCase(3, 3, 1)]
+        [TestCase(4, 3, 1)]
+        [TestCase(-1, 3, -1)]
+        [TestCase(-2, 3, -1)]
+        [TestCase(-3, 3, -1)]
+        [TestCase(-4, 3, -2)]
+        [TestCase(0, -3, 0)]
+        [TestCase(1, -3, -1)]
+        [TestCase(2, -3, -1)]
+        [TestCase(3, -3, -1)]
+        [TestCase(4, -3, -2)]
+        [TestCase(-1, -3, 0)]
+        [TestCase(-2, -3, 0)]
+        [TestCase(-3, -3, 1)]
+        [TestCase(-4, -3, 1)]
+        public void DivDown(int num, int den, int result)
+        {
+            Assert.That(MathUtils.DivDown(num, den), Is.EqualTo(result));
+        }
+
+        [Test]
+        [TestCase(0, 3, 0)]
+        [TestCase(1, 3, 1)]
+        [TestCase(2, 3, 1)]
+        [TestCase(3, 3, 1)]
+        [TestCase(4, 3, 2)]
+        [TestCase(-1, 3, 0)]
+        [TestCase(-2, 3, 0)]
+        [TestCase(-3, 3, -1)]
+        [TestCase(-4, 3, -1)]
+        [TestCase(0, -3, 0)]
+        [TestCase(1, -3, 0)]
+        [TestCase(2, -3, 0)]
+        [TestCase(3, -3, -1)]
+        [TestCase(4, -3, -1)]
+        [TestCase(-1, -3, 1)]
+        [TestCase(-2, -3, 1)]
+        [TestCase(-3, -3, 1)]
+        [TestCase(-4, -3, 2)]
+        public void DivUp(int num, int den, int result)
+        {
+            Assert.That(MathUtils.DivUp(num, den), Is.EqualTo(result));
+        }
     }
 }
