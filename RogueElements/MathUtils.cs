@@ -71,5 +71,47 @@ namespace RogueElements
         {
             return ((a * (total - degree)) + (b * degree)) / total;
         }
+
+        public static int IntPow(int num, int factor)
+        {
+            int result = 1;
+
+            for (int ii = 0; ii < factor; ii++)
+                result *= num;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Division with round down.
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="den"></param>
+        /// <returns></returns>
+        public static int DivDown(int num, int den)
+        {
+            if (num < 0 && den > 0)
+                return ((num + 1) / den) - 1;
+            else if (num > 0 && den < 0)
+                return ((num - 1) / den) - 1;
+            else
+                return num / den;
+        }
+
+        /// <summary>
+        /// Division with round up.
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="den"></param>
+        /// <returns></returns>
+        public static int DivUp(int num, int den)
+        {
+            if (num > 0 && den > 0)
+                return ((num - 1) / den) + 1;
+            else if (num < 0 && den < 0)
+                return ((num + 1) / den) + 1;
+            else
+                return num / den;
+        }
     }
 }
