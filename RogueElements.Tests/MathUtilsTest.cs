@@ -88,5 +88,22 @@ namespace RogueElements.Tests
         {
             Assert.That(MathUtils.DivUp(num, den), Is.EqualTo(result));
         }
+
+        [Test]
+        [TestCase(0, 3, 0)]
+        [TestCase(1, 3, 1)]
+        [TestCase(2, 3, 2)]
+        [TestCase(3, 3, 0)]
+        [TestCase(4, 3, 1)]
+        [TestCase(7, 3, 1)]
+        [TestCase(-1, 3, 2)]
+        [TestCase(-2, 3, 1)]
+        [TestCase(-3, 3, 0)]
+        [TestCase(-4, 3, 2)]
+        [TestCase(-7, 3, 2)]
+        public void Wrap(int num, int size, int result)
+        {
+            Assert.That(MathUtils.Wrap(num, size), Is.EqualTo(result));
+        }
     }
 }
