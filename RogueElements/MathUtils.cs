@@ -113,5 +113,10 @@ namespace RogueElements
             else
                 return num / den;
         }
+
+        public static int Wrap(int num, int size)
+        {
+            return ((num % size) + size) % size;
+        }
     }
 }

@@ -135,6 +135,11 @@ namespace RogueElements
                 value1.Y > value2.Y ? value1.Y : value2.Y);
         }
 
+        public static Loc Wrap(Loc value, Loc size)
+        {
+            return ((value % size) + size) % size;
+        }
+
         /// <summary>
         /// Gets the square of the total distance of the loc from (0,0), in Euclidean distance.
         /// </summary>
