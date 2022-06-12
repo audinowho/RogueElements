@@ -110,7 +110,7 @@ namespace RogueElements.Examples.Ex7_Special
             where T : class, ITiledGenContext
         {
 #pragma warning disable CC0008 // Use object initializer
-            RoomGenSpecific<T> roomGen = new RoomGenSpecific<T>(level[0].Length, level.Length, new Tile(BaseMap.ROOM_TERRAIN_ID), false);
+            RoomGenSpecific<T> roomGen = new RoomGenSpecific<T>(level[0].Length, level.Length, new Tile(BaseMap.ROOM_TERRAIN_ID));
 #pragma warning restore CC0008 // Use object initializer
             roomGen.Tiles = new Tile[level[0].Length][];
             for (int xx = 0; xx < level[0].Length; xx++)
