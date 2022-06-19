@@ -232,10 +232,10 @@ namespace RogueElements
         /// <summary>
         /// Traverses a grid. Does not internally handle the state of traversed/untraversed nodes.
         /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="checkBlock"></param>
-        /// <param name="checkDiagBlock"></param>
-        /// <param name="fillOp"></param>
+        /// <param name="rect">Bounds of the area to fill.</param>
+        /// <param name="checkBlock">The operation determining if a tile is nontraversible.</param>
+        /// <param name="checkDiagBlock">The operation determining if a tile is nontraversible, diagonally.</param>
+        /// <param name="fillOp">The fill operation.</param>
         /// <param name="loc"></param>
         public static void FloodFill(Rect rect, LocTest checkBlock, LocTest checkDiagBlock, LocAction fillOp, Loc loc)
         {
@@ -566,7 +566,10 @@ namespace RogueElements
             int sub = (range_min > rect.Start.X) ? 1 : 0;
             int add = (range_max < rect.Start.X + rect.Size.X - 1) ? 1 : 0;
 
-            int line_start = -1;
+            // start x - 2 needs to be initialized to an "invalid" value.
+            // use rect.X - 2 because it is 1 less than the minimum of what x can be.
+            int invalid_x = rect.X - 2;
+            int line_start = invalid_x;
             int x = range_min - sub;
             for (; x <= range_max + add; x++)
             {
@@ -581,24 +584,24 @@ namespace RogueElements
                 // skip testing, if testing previous line within previous range
                 bool empty = (isNext || (x < min || x > max)) && unblocked;
 
-                if (line_start == -1 && empty)
+                if (line_start == invalid_x && empty)
                 {
                     line_start = x;
                 }
-                else if (line_start > -1 && !empty)
+                else if (line_start > invalid_x && !empty)
                 {
                     stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, x > range_max));
-                    line_start = -1;
+                    line_start = invalid_x;
                 }
 
-                if (line_start > -1)
+                if (line_start > invalid_x)
                     fillOp(new Loc(x, new_y));
 
                 if (!isNext && x == min)
                     x = max;
             }
 
-            if (line_start > -1)
+            if (line_start > invalid_x)
                 stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, true));
         }
 

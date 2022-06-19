@@ -558,6 +558,50 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        public void FloodFillNegative()
+        {
+            // filling a sub-rectangle of the main map
+            // in which the sub-rectangle crosses negative
+            // a 3x3 in 7x7
+            string[] inGrid =
+            {
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+                ".......",
+            };
+
+            string[] outGrid =
+            {
+                ".......",
+                ".......",
+                "~~.....",
+                "~~.....",
+                "~~.....",
+                "~~.....",
+                ".......",
+            };
+
+            char[][] map = InitGrid(inGrid);
+            char[][] result_map = InitGrid(outGrid);
+
+            // nothing is blocked
+            bool CheckBlock(Loc testLoc) => false;
+            bool CheckDiag(Loc testLoc) => false;
+            void Fill(Loc fillLoc)
+            {
+                if (fillLoc.X >= 0)
+                    map[fillLoc.X][fillLoc.Y] = '~';
+            }
+
+            Grid.FloodFill(new Rect(new Loc(-2, 2), new Loc(4)), CheckBlock, CheckDiag, Fill, new Loc(-2, 2));
+            Assert.That(map, Is.EqualTo(result_map));
+        }
+
+        [Test]
         [TestCase(6, 3)]
         [TestCase(6, 9)]
         [TestCase(3, 6)]
