@@ -70,5 +70,36 @@ namespace RogueElements
 
             return Collision.InBounds(size, pt - start) || Collision.InBounds(size, pt + wrapSize - start);
         }
+
+        /// <summary>
+        /// Gets the shortest distance between two points in a wrapped area.
+        /// </summary>
+        /// <param name="wrapSize"></param>
+        /// <param name="pt1"></param>
+        /// <param name="pt2"></param>
+        /// <returns></returns>
+        public static int GetDist8(Loc wrapSize, Loc pt1, Loc pt2)
+        {
+            return Math.Max(GetDist(wrapSize.X, pt1.X, pt2.X), GetDist(wrapSize.Y, pt1.Y, pt2.Y));
+        }
+
+        /// <summary>
+        /// Gets the shortest distance between two points in a wrapped area.
+        /// </summary>
+        /// <param name="wrapSize"></param>
+        /// <param name="pt1"></param>
+        /// <param name="pt2"></param>
+        /// <returns></returns>
+        public static int GetDist(int wrapSize, int pt1, int pt2)
+        {
+            pt1 = MathUtils.Wrap(pt1, wrapSize);
+            pt2 = MathUtils.Wrap(pt2, wrapSize);
+
+            int diff1 = Math.Abs(pt2 - pt1);
+            if (pt1 < pt2)
+                return Math.Min(diff1, Math.Abs(pt2 - (pt1 + wrapSize)));
+            else
+                return Math.Min(diff1, Math.Abs((pt2 + wrapSize) - pt1));
+        }
     }
 }
