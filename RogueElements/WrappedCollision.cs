@@ -72,34 +72,44 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets the shortest distance between two points in a wrapped area.
+        /// Gets the unwrapped version of pt2 that is closest to pt1.
         /// </summary>
         /// <param name="wrapSize"></param>
         /// <param name="pt1"></param>
         /// <param name="pt2"></param>
         /// <returns></returns>
-        public static int GetDist8(Loc wrapSize, Loc pt1, Loc pt2)
+        public static Loc GetClosestWrap(Loc wrapSize, Loc pt1, Loc pt2)
         {
-            return Math.Max(GetDist(wrapSize.X, pt1.X, pt2.X), GetDist(wrapSize.Y, pt1.Y, pt2.Y));
+            return new Loc(GetClosestWrap(wrapSize.X, pt1.X, pt2.X), GetClosestWrap(wrapSize.Y, pt1.Y, pt2.Y));
         }
 
         /// <summary>
-        /// Gets the shortest distance between two points in a wrapped area.
+        /// Gets the unwrapped version of pt2 that is closest to pt1.
         /// </summary>
         /// <param name="wrapSize"></param>
         /// <param name="pt1"></param>
         /// <param name="pt2"></param>
         /// <returns></returns>
-        public static int GetDist(int wrapSize, int pt1, int pt2)
+        public static int GetClosestWrap(int wrapSize, int pt1, int pt2)
         {
             pt1 = MathUtils.Wrap(pt1, wrapSize);
             pt2 = MathUtils.Wrap(pt2, wrapSize);
 
             int diff1 = Math.Abs(pt2 - pt1);
             if (pt1 < pt2)
-                return Math.Min(diff1, Math.Abs(pt2 - (pt1 + wrapSize)));
+            {
+                int diff2 = Math.Abs((pt2 - wrapSize) - pt1);
+                if (diff2 < diff1)
+                    return pt2 - wrapSize;
+            }
             else
-                return Math.Min(diff1, Math.Abs((pt2 + wrapSize) - pt1));
+            {
+                int diff2 = Math.Abs((pt2 + wrapSize) - pt1);
+                if (diff2 < diff1)
+                    return pt2 + wrapSize;
+            }
+
+            return pt2;
         }
     }
 }
