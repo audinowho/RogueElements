@@ -72,7 +72,7 @@ namespace RogueElements
                         noise[xx][yy] = rand.Next(100) < AUTOMATA_CHANCE;
                 }
 
-                noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
+                noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS, false);
 
                 bool IsValid(Loc loc) => noise[loc.X][loc.Y];
 

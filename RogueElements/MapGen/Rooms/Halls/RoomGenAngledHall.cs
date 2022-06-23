@@ -428,7 +428,7 @@ namespace RogueElements
                         Loc endLoc = startLoc;
 
                         // the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
+                        while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                             endLoc += forwardDir.Reverse().GetLoc();
                         this.DrawHall(map, startLoc, endLoc, vertical);
                     }
@@ -440,7 +440,7 @@ namespace RogueElements
                         Loc endLoc = startLoc;
 
                         // the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
+                        while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                             endLoc += forwardDir.GetLoc();
                         this.DrawHall(map, startLoc, endLoc, vertical);
                     }
@@ -463,7 +463,7 @@ namespace RogueElements
                                 Loc endLoc = startLoc;
 
                                 // the assumption is that there is already roomterrain to cross over at another point in this room
-                                while (!map.GetTile(endLoc).TileEquivalent(map.RoomTerrain))
+                                while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                                     endLoc += dir.Reverse().GetLoc();
 
                                 this.DrawHall(map, startLoc, endLoc, vertical);

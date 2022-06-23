@@ -95,14 +95,14 @@ namespace RogueElements
             {
                 for (int ii = 0; ii < this.Draw.Width; ii++)
                 {
-                    this.FulfillableBorder[Dir4.Up][ii] = this.Tiles[ii][0].TileEquivalent(this.RoomTerrain);
-                    this.FulfillableBorder[Dir4.Down][ii] = this.Tiles[ii][this.Draw.Height - 1].TileEquivalent(this.RoomTerrain);
+                    this.FulfillableBorder[Dir4.Up][ii] = this.RoomTerrain.TileEquivalent(this.Tiles[ii][0]);
+                    this.FulfillableBorder[Dir4.Down][ii] = this.RoomTerrain.TileEquivalent(this.Tiles[ii][this.Draw.Height - 1]);
                 }
 
                 for (int ii = 0; ii < this.Draw.Height; ii++)
                 {
-                    this.FulfillableBorder[Dir4.Left][ii] = this.Tiles[0][ii].TileEquivalent(this.RoomTerrain);
-                    this.FulfillableBorder[Dir4.Right][ii] = this.Tiles[this.Draw.Width - 1][ii].TileEquivalent(this.RoomTerrain);
+                    this.FulfillableBorder[Dir4.Left][ii] = this.RoomTerrain.TileEquivalent(this.Tiles[0][ii]);
+                    this.FulfillableBorder[Dir4.Right][ii] = this.RoomTerrain.TileEquivalent(this.Tiles[this.Draw.Width - 1][ii]);
                 }
             }
         }

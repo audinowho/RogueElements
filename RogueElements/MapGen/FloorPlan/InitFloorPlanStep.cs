@@ -32,10 +32,15 @@ namespace RogueElements
 
         public int Height { get; set; }
 
+        /// <summary>
+        /// Determines if the map is wrapped around.
+        /// </summary>
+        public bool Wrap { get; set; }
+
         public override void Apply(T map)
         {
             var floorPlan = new FloorPlan();
-            floorPlan.InitSize(new Loc(this.Width, this.Height));
+            floorPlan.InitSize(new Loc(this.Width, this.Height), this.Wrap);
 
             map.InitPlan(floorPlan);
         }

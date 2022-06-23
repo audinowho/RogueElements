@@ -37,6 +37,8 @@ namespace RogueElements
             }
         }
 
+        public bool Wrap { get; set; }
+
         public int RoomCount => this.ArrayRooms.Count;
 
         protected int[][] Rooms { get; set; }
@@ -49,7 +51,7 @@ namespace RogueElements
         // each entry is a different room, guaranteed
         protected List<GridRoomPlan> ArrayRooms { get; set; }
 
-        public void InitSize(int width, int height, int widthPerCell, int heightPerCell, int cellWall = 1)
+        public void InitSize(int width, int height, int widthPerCell, int heightPerCell, int cellWall = 1, bool wrap = false)
         {
             this.Rooms = new int[width][];
             this.VHalls = new GridHallGroup[width][];
@@ -77,6 +79,7 @@ namespace RogueElements
             if (cellWall < 1)
                 throw new ArgumentException("Cannot init a grid with cell wall < 1");
             this.CellWall = cellWall;
+            this.Wrap = wrap;
         }
 
         public void Clear()
@@ -172,7 +175,7 @@ namespace RogueElements
                             List<RoomHallIndex> adj = new List<RoomHallIndex>();
                             if (ii == 0)
                             {
-                                int upRoom = this.Rooms[xx][yy];
+                                int upRoom = this.GetRoomIndex(new Loc(xx, yy));
                                 if (upRoom > -1)
                                     adj.Add(roomToHall[upRoom]);
                             }
@@ -183,13 +186,13 @@ namespace RogueElements
 
                             if (ii == hallGroup.HallParts.Count - 1)
                             {
-                                int downRoom = this.Rooms[xx][yy + 1];
+                                int downRoom = this.GetRoomIndex(new Loc(xx, yy + 1));
                                 if (downRoom > -1)
                                     adj.Add(roomToHall[downRoom]);
                             }
 
                             map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
-                            GenContextDebug.DebugProgress("Add Hall");
+                            GenContextDebug.DebugProgress("Add VHall");
                         }
                     }
                 }
@@ -205,7 +208,7 @@ namespace RogueElements
                             List<RoomHallIndex> adj = new List<RoomHallIndex>();
                             if (ii == 0)
                             {
-                                int leftRoom = this.Rooms[xx][yy];
+                                int leftRoom = this.GetRoomIndex(new Loc(xx, yy));
                                 if (leftRoom > -1)
                                     adj.Add(roomToHall[leftRoom]);
                             }
@@ -216,13 +219,13 @@ namespace RogueElements
 
                             if (ii == hallGroup.HallParts.Count - 1)
                             {
-                                int rightRoom = this.Rooms[xx + 1][yy];
+                                int rightRoom = this.GetRoomIndex(new Loc(xx + 1, yy));
                                 if (rightRoom > -1)
                                     adj.Add(roomToHall[rightRoom]);
                             }
 
                             map.RoomPlan.AddHall(hallGroup.HallParts[ii].RoomGen, hallGroup.HallParts[ii].Components, adj.ToArray());
-                            GenContextDebug.DebugProgress("Add Hall");
+                            GenContextDebug.DebugProgress("Add HHall");
                         }
                     }
                 }
@@ -293,6 +296,27 @@ namespace RogueElements
             }
         }
 
+        public Loc WrapRoom(Loc loc)
+        {
+            return Loc.Wrap(loc, new Loc(GridWidth, GridHeight));
+        }
+
+        public bool Collides(Rect rect1, Rect rect2)
+        {
+            if (this.Wrap)
+                return WrappedCollision.Collides(this.Size, rect1, rect2);
+            else
+                return Collision.Collides(rect1, rect2);
+        }
+
+        public bool InBounds(Rect rect, Loc loc)
+        {
+            if (this.Wrap)
+                return WrappedCollision.InBounds(this.Size, rect, loc);
+            else
+                return Collision.InBounds(rect, loc);
+        }
+
         public IRoomGen GetRoom(int index)
         {
             return this.ArrayRooms[index].RoomGen;
@@ -305,11 +329,19 @@ namespace RogueElements
 
         public GridRoomPlan GetRoomPlan(Loc loc)
         {
-            return this.Rooms[loc.X][loc.Y] > -1 ? this.ArrayRooms[this.Rooms[loc.X][loc.Y]] : null;
+            int index = this.GetRoomIndex(loc);
+            if (index > -1)
+                return this.ArrayRooms[index];
+            return null;
         }
 
         public int GetRoomIndex(Loc loc)
         {
+            if (this.Wrap)
+                loc = this.WrapRoom(loc);
+            else if (!Collision.InBounds(this.GridWidth, this.GridHeight, loc))
+                return -1;
+
             return this.Rooms[loc.X][loc.Y];
         }
 
@@ -448,7 +480,7 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Decides on the room bounds for each room.
+        /// Decides on the room bounds for each room.  Results will be out of bounds and unwrapped in wrapped floor scenarios.
         /// </summary>
         /// <param name="rand"></param>
         /// <param name="roomIndex"></param>
@@ -590,12 +622,12 @@ namespace RogueElements
             for (int ii = 0; ii < room.Bounds.Size.X; ii++)
             {
                 // above
-                int up = this.GetRoomNum(new LocRay4(room.Bounds.X + ii, room.Bounds.Y, Dir4.Up));
+                int up = this.GetRoomIndex(new LocRay4(room.Bounds.X + ii, room.Bounds.Y, Dir4.Up));
                 if (up > -1 && !returnList.Contains(up))
                     returnList.Add(up);
 
                 // below
-                int down = this.GetRoomNum(new LocRay4(room.Bounds.X + ii, room.Bounds.End.Y - 1, Dir4.Down));
+                int down = this.GetRoomIndex(new LocRay4(room.Bounds.X + ii, room.Bounds.End.Y - 1, Dir4.Down));
                 if (down > -1 && !returnList.Contains(down))
                     returnList.Add(down);
             }
@@ -603,12 +635,12 @@ namespace RogueElements
             for (int ii = 0; ii < room.Bounds.Size.Y; ii++)
             {
                 // left
-                int left = this.GetRoomNum(new LocRay4(room.Bounds.X, room.Bounds.Y + ii, Dir4.Left));
+                int left = this.GetRoomIndex(new LocRay4(room.Bounds.X, room.Bounds.Y + ii, Dir4.Left));
                 if (left > -1 && !returnList.Contains(left))
                     returnList.Add(left);
 
                 // right
-                int right = this.GetRoomNum(new LocRay4(room.Bounds.End.X - 1, room.Bounds.Y + ii, Dir4.Right));
+                int right = this.GetRoomIndex(new LocRay4(room.Bounds.End.X - 1, room.Bounds.Y + ii, Dir4.Right));
                 if (right > -1 && !returnList.Contains(right))
                     returnList.Add(right);
             }
@@ -616,13 +648,13 @@ namespace RogueElements
             return returnList;
         }
 
-        public int GetRoomNum(LocRay4 locRay)
+        public int GetRoomIndex(LocRay4 locRay)
         {
             GridHallPlan hall = this.GetHall(locRay);
             if (hall != null)
             {
                 Loc moveLoc = locRay.Traverse(1);
-                return this.Rooms[moveLoc.X][moveLoc.Y];
+                return this.GetRoomIndex(moveLoc);
             }
 
             return -1;

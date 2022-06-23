@@ -66,7 +66,7 @@ namespace RogueElements
                             noise[xx][yy] = map.Rand.Next(100) < AUTOMATA_CHANCE;
                     }
 
-                    noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS);
+                    noise = NoiseGen.IterateAutomata(noise, CellRule.Gte5, CellRule.Gte4, AUTOMATA_ROUNDS, false);
 
                     bool IsWaterValid(Loc loc) => noise[loc.X][loc.Y];
 

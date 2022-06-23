@@ -159,8 +159,8 @@ namespace RogueElements
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 Loc endLoc = loc + dir.GetLoc();
-                if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, endLoc)
-                    && floorPlan.GetRoomPlan(endLoc) == null)
+                if ((floorPlan.Wrap || Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, endLoc))
+                    && floorPlan.GetRoomIndex(endLoc) == -1)
                     yield return dir;
             }
         }

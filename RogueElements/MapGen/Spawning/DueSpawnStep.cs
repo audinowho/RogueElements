@@ -55,7 +55,7 @@ namespace RogueElements
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
-                if (Collision.InBounds(room.RoomGen.Draw, map.GetLoc(0)))
+                if (map.RoomPlan.InBounds(room.RoomGen.Draw, map.GetLoc(0)))
                 {
                     startRoom = ii;
                     break;

@@ -44,7 +44,7 @@ namespace RogueElements
                 Loc stairLoc = ((IViewPlaceableGenContext<TEntrance>)map).GetLoc(ii);
                 Grid.FloodFill(
                     new Rect(offX, offY, lX, lY),
-                    (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.GetTile(testLoc).TileEquivalent(map.RoomTerrain)),
+                    (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.RoomTerrain.TileEquivalent(map.GetTile(testLoc))),
                     (Loc testLoc) => true,
                     (Loc fillLoc) =>
                     {

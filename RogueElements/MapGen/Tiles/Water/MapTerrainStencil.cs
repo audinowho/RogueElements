@@ -46,9 +46,9 @@ namespace RogueElements
         public bool Test(T map, Loc loc)
         {
             bool result = false;
-            if (this.Room && map.GetTile(loc).TileEquivalent(map.RoomTerrain))
+            if (this.Room && map.RoomTerrain.TileEquivalent(map.GetTile(loc)))
                 result = true;
-            if (this.Wall && map.GetTile(loc).TileEquivalent(map.WallTerrain))
+            if (this.Wall && map.WallTerrain.TileEquivalent(map.GetTile(loc)))
                 result = true;
 
             if (this.Not)

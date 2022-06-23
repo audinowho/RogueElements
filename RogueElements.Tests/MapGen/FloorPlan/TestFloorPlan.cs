@@ -63,7 +63,7 @@ namespace RogueElements.Tests
 
         private static void InitFloorToContext(TestFloorPlan floorPlan, Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
         {
-            floorPlan.InitRect(rect);
+            floorPlan.InitRect(rect, false);
 
             // a quick way to set up rooms, halls, and connections
             // a list of rects for rooms, a list of rects for halls

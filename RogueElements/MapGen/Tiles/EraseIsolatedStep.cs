@@ -42,14 +42,14 @@ namespace RogueElements
                 for (int yy = 0; yy < map.Height; yy++)
                 {
                     // upon detecting an unmarked room area, fill with connected marks
-                    if (map.GetTile(new Loc(xx, yy)).TileEquivalent(map.RoomTerrain) && !connectionGrid[xx][yy])
+                    if (map.RoomTerrain.TileEquivalent(map.GetTile(new Loc(xx, yy))) && !connectionGrid[xx][yy])
                     {
                         Grid.FloodFill(
                             new Rect(0, 0, map.Width, map.Height),
                             (Loc testLoc) =>
                             {
                                 bool blocked = map.TileBlocked(testLoc);
-                                blocked &= !map.GetTile(testLoc).TileEquivalent(this.Terrain);
+                                blocked &= !this.Terrain.TileEquivalent(map.GetTile(testLoc));
                                 return connectionGrid[testLoc.X][testLoc.Y] || blocked;
                             },
                             (Loc testLoc) => true,
@@ -63,7 +63,7 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    if (map.GetTile(new Loc(xx, yy)).TileEquivalent(this.Terrain) && !connectionGrid[xx][yy])
+                    if (this.Terrain.TileEquivalent(map.GetTile(new Loc(xx, yy))) && !connectionGrid[xx][yy])
                         map.SetTile(new Loc(xx, yy), map.WallTerrain.Copy());
                 }
             }

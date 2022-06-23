@@ -38,14 +38,14 @@ namespace RogueElements
                     ITile b2 = map.GetTile(new Loc(xx + 1, yy + 1));
 
                     int dropType = map.Rand.Next(3);
-                    if (a1.TileEquivalent(this.Terrain) && b1.TileEquivalent(map.WallTerrain) && a2.TileEquivalent(map.WallTerrain) && b2.TileEquivalent(this.Terrain))
+                    if (this.Terrain.TileEquivalent(a1) && map.WallTerrain.TileEquivalent(b1) && map.WallTerrain.TileEquivalent(a2) && this.Terrain.TileEquivalent(b2))
                     {
                         if (dropType % 2 == 0)
                             map.TrySetTile(new Loc(xx + 1, yy), this.Terrain.Copy());
                         if (dropType < 2)
                             map.TrySetTile(new Loc(xx, yy + 1), this.Terrain.Copy());
                     }
-                    else if (a1.TileEquivalent(map.WallTerrain) && b1.TileEquivalent(this.Terrain) && a2.TileEquivalent(this.Terrain) && b2.TileEquivalent(map.WallTerrain))
+                    else if (map.WallTerrain.TileEquivalent(a1) && this.Terrain.TileEquivalent(b1) && this.Terrain.TileEquivalent(a2) && map.WallTerrain.TileEquivalent(b2))
                     {
                         if (dropType % 2 == 0)
                             map.TrySetTile(new Loc(xx, yy), this.Terrain.Copy());

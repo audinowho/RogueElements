@@ -89,8 +89,7 @@ namespace RogueElements
                             else
                             {
                                 Loc loc = chosenBranch.Loc + dir.GetLoc();
-                                if (Collision.InBounds(floorPlan.GridWidth, floorPlan.GridHeight, loc)
-                                    && floorPlan.GetRoomIndex(loc) > -1)
+                                if (floorPlan.GetRoomIndex(loc) > -1)
                                     candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
                             }
                         }

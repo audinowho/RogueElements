@@ -342,6 +342,17 @@ namespace RogueElements
             return null;
         }
 
+        /// <summary>
+        /// Unwrapped but consistent.
+        /// </summary>
+        /// <param name="rectStart"></param>
+        /// <param name="rectSize"></param>
+        /// <param name="checkFree"></param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <param name="loc"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         public static IEnumerable<Loc> FindClosestConnectedTiles(Loc rectStart, Loc rectSize, LocTest checkFree, LocTest checkBlock, LocTest checkDiagBlock, Loc loc, int amount)
         {
             if (checkFree == null)
@@ -605,6 +616,18 @@ namespace RogueElements
                 stack.Push(new ScanLineTile(new IntRange(line_start, x - 1), new_y, dir, line_start <= range_min, true));
         }
 
+        /// <summary>
+        /// Unwrapped but consistent.
+        /// </summary>
+        /// <param name="rectStart"></param>
+        /// <param name="rectSize"></param>
+        /// <param name="start"></param>
+        /// <param name="ends"></param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <param name="eval"></param>
+        /// <param name="fallback"></param>
+        /// <returns></returns>
         private static List<Loc>[] FindMultiPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock, EvalPaths eval, EvalFallback fallback)
         {
             if (ends.Length == 0)
