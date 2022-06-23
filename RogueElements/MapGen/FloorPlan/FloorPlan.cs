@@ -18,6 +18,8 @@ namespace RogueElements
 
         public Loc Start { get; private set; }
 
+        public bool Wrap { get; private set; }
+
         public Rect DrawRect => new Rect(this.Start, this.Size);
 
         public virtual int RoomCount => this.Rooms.Count;
@@ -30,6 +32,7 @@ namespace RogueElements
 
         public static Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
         {
+            // TODO: wrapping needed here?
             Dir4 result = Dir4.None;
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
@@ -45,11 +48,20 @@ namespace RogueElements
             return result;
         }
 
+        /// <summary>
+        /// Gets the amount of tiles that overlap when connecting two rooms?
+        /// </summary>
+        /// <param name="roomFrom"></param>
+        /// <param name="room"></param>
+        /// <param name="candLoc"></param>
+        /// <param name="expandTo"></param>
+        /// <returns></returns>
         public static int GetBorderMatch(IRoomGen roomFrom, IRoomGen room, Loc candLoc, Dir4 expandTo)
         {
             int totalMatch = 0;
 
             Loc diff = roomFrom.Draw.Start - candLoc; // how far ahead the start of source is to dest
+            // TODO: wrapping needed here?
             int offset = diff.GetScalar(expandTo.ToAxis().Orth());
 
             // Traverse the region that both borders touch
@@ -66,15 +78,16 @@ namespace RogueElements
             return totalMatch;
         }
 
-        public void InitSize(Loc size)
+        public void InitSize(Loc size, bool wrap = false)
         {
-            this.InitRect(new Rect(Loc.Zero, size));
+            this.InitRect(new Rect(Loc.Zero, size), wrap);
         }
 
-        public void InitRect(Rect rect)
+        public void InitRect(Rect rect, bool wrap)
         {
             this.Start = rect.Start;
             this.Size = rect.Size;
+            this.Wrap = wrap;
             this.Rooms = new List<FloorRoomPlan>();
             this.Halls = new List<FloorHallPlan>();
         }
@@ -118,18 +131,18 @@ namespace RogueElements
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
             {
-                if (Collision.Collides(room.RoomGen.Draw, gen.Draw))
+                if (Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
 
             foreach (var hall in this.Halls)
             {
-                if (Collision.Collides(hall.RoomGen.Draw, gen.Draw))
+                if (Collides(hall.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing hall!");
             }
 
             // check against rooms that go out of bounds
-            if (!this.DrawRect.Contains(gen.Draw))
+            if (!this.Wrap && !this.DrawRect.Contains(gen.Draw))
                 throw new InvalidOperationException("Tried to add out of range!");
 
             // we expect that the room has already been given a size
@@ -153,12 +166,12 @@ namespace RogueElements
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
             {
-                if (Collision.Collides(room.RoomGen.Draw, gen.Draw))
+                if (Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
 
             // check against rooms that go out of bounds
-            if (!this.DrawRect.Contains(gen.Draw))
+            if (!this.Wrap && !this.DrawRect.Contains(gen.Draw))
                 throw new InvalidOperationException("Tried to add out of range!");
             var plan = new FloorHallPlan(gen, components);
 
@@ -364,6 +377,7 @@ namespace RogueElements
                         if (adj.IsHall || adj.Index > ii)
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            // TODO: wrapping needed here?
                             plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
                         }
                     }
@@ -392,6 +406,7 @@ namespace RogueElements
                         if (adj.IsHall && adj.Index > ii)
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            // TODO: wrapping needed here?
                             plan.RoomGen.ReceiveFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
                         }
                     }
@@ -409,6 +424,10 @@ namespace RogueElements
             GenContextDebug.StepOut();
         }
 
+        /// <summary>
+        /// A room's draw has been completed.  It must now signal to its adjacent rooms which of its borders are open.
+        /// </summary>
+        /// <param name="from"></param>
         public void TransferBorderToAdjacents(RoomHallIndex from)
         {
             IFloorRoomPlan basePlan = this.GetRoomHall(from);
@@ -421,8 +440,37 @@ namespace RogueElements
                     (from.IsHall == adjacent.IsHall && from.Index < adjacent.Index))
                 {
                     IRoomGen adjacentGen = this.GetRoomHall(adjacent).RoomGen;
+                    // TODO: wrapping needed here?
                     adjacentGen.ReceiveOpenedBorder(roomGen, GetDirAdjacent(adjacentGen, roomGen));
                 }
+            }
+        }
+
+        public bool Collides(Rect rect1, Rect rect2)
+        {
+            if (this.Wrap)
+            {
+                rect1 = new Rect(rect1.Start - this.Start, rect1.Size);
+                rect2 = new Rect(rect2.Start - this.Start, rect2.Size);
+                return WrappedCollision.Collides(this.Size, rect1, rect2);
+            }
+            else
+            {
+                return Collision.Collides(rect1, rect2);
+            }
+        }
+
+        public bool InBounds(Rect rect, Loc loc)
+        {
+            if (this.Wrap)
+            {
+                rect = new Rect(rect.Start - this.Start, rect.Size);
+                loc = loc - this.Start;
+                return WrappedCollision.InBounds(this.Size, rect, loc);
+            }
+            else
+            {
+                return Collision.InBounds(rect, loc);
             }
         }
 
@@ -433,14 +481,14 @@ namespace RogueElements
             for (int ii = 0; ii < this.Rooms.Count; ii++)
             {
                 FloorRoomPlan room = this.Rooms[ii];
-                if (Collision.Collides(room.RoomGen.Draw, rect))
+                if (Collides(room.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, false));
             }
 
             for (int ii = 0; ii < this.Halls.Count; ii++)
             {
                 FloorHallPlan hall = this.Halls[ii];
-                if (Collision.Collides(hall.RoomGen.Draw, rect))
+                if (Collides(hall.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, true));
             }
 

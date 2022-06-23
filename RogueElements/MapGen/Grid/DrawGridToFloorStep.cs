@@ -24,7 +24,7 @@ namespace RogueElements
         public override void Apply(T map)
         {
             var floorPlan = new FloorPlan();
-            floorPlan.InitSize(map.GridPlan.Size);
+            floorPlan.InitSize(map.GridPlan.Size, map.GridPlan.Wrap);
             map.InitPlan(floorPlan);
 
             map.GridPlan.PlaceRoomsOnFloor(map);

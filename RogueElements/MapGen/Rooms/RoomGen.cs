@@ -145,7 +145,7 @@ namespace RogueElements
             this.Draw = currDraw;
         }
 
-       /// <summary>
+        /// <summary>
         /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder
         /// </summary>
         /// <param name="sourceRoom">The target room</param>

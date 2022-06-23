@@ -53,11 +53,16 @@ namespace RogueElements
         /// </summary>
         public int CellWall { get; set; }
 
+        /// <summary>
+        /// Determines if the map is wrapped around.
+        /// </summary>
+        public bool Wrap { get; set; }
+
         public override void Apply(T map)
         {
             // initialize grid
             var floorPlan = new GridPlan();
-            floorPlan.InitSize(this.CellX, this.CellY, this.CellWidth, this.CellHeight, this.CellWall);
+            floorPlan.InitSize(this.CellX, this.CellY, this.CellWidth, this.CellHeight, this.CellWall, this.Wrap);
 
             map.InitGrid(floorPlan);
         }

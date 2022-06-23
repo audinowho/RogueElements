@@ -50,7 +50,7 @@ namespace RogueElements
                 {
                     ITile tile = map.GetTile(new Loc(xx, yy));
 
-                    if (tile.TileEquivalent(this.Terrain))
+                    if (this.Terrain.TileEquivalent(tile))
                         freeTiles.Add(new Loc(xx, yy));
                 }
             }

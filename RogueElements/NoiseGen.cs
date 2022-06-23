@@ -49,6 +49,7 @@ namespace RogueElements
     {
         /// <summary>
         /// Generates Nth degree perlin noise.
+        /// Wrapped by default.
         /// </summary>
         /// <param name="rand"></param>
         /// <param name="width"></param>
@@ -105,7 +106,7 @@ namespace RogueElements
             return noise;
         }
 
-        public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations)
+        public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations, bool wrap = false)
         {
             int width = startGrid.Length;
             int height = startGrid[0].Length;
@@ -121,21 +122,21 @@ namespace RogueElements
                     for (int yy = 0; yy < height; yy++)
                     {
                         int rating = 0;
-                        if (CheckGrid(xx - 1, yy - 1, startGrid))
+                        if (CheckGrid(xx - 1, yy - 1, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx + 1, yy - 1, startGrid))
+                        if (CheckGrid(xx + 1, yy - 1, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx - 1, yy + 1, startGrid))
+                        if (CheckGrid(xx - 1, yy + 1, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx + 1, yy + 1, startGrid))
+                        if (CheckGrid(xx + 1, yy + 1, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx - 1, yy, startGrid))
+                        if (CheckGrid(xx - 1, yy, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx + 1, yy, startGrid))
+                        if (CheckGrid(xx + 1, yy, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx, yy - 1, startGrid))
+                        if (CheckGrid(xx, yy - 1, startGrid, wrap))
                             rating++;
-                        if (CheckGrid(xx, yy + 1, startGrid))
+                        if (CheckGrid(xx, yy + 1, startGrid, wrap))
                             rating++;
 
                         rating = 0x1 << rating;
@@ -223,10 +224,18 @@ namespace RogueElements
             }
         }
 
-        private static bool CheckGrid(int x, int y, bool[][] grid)
+        private static bool CheckGrid(int x, int y, bool[][] grid, bool wrap)
         {
-            if (!Collision.InBounds(grid.Length, grid[0].Length, new Loc(x, y)))
+            if (wrap)
+            {
+                x = MathUtils.Wrap(x, grid.Length);
+                y = MathUtils.Wrap(y, grid[0].Length);
+            }
+            else if (!Collision.InBounds(grid.Length, grid[0].Length, new Loc(x, y)))
+            {
                 return false;
+            }
+
             return grid[x][y];
         }
     }
