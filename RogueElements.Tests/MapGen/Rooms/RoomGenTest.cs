@@ -107,11 +107,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, dir); });
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, dir); });
             }
             else
             {
-                roomGenTo.ReceiveOpenedBorder(roomGenFrom, dir);
+                roomGenTo.AskWithOpenedBorder(roomGenFrom, dir);
                 IntRange newRange = roomGenTo.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
@@ -138,11 +138,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down); });
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down); });
             }
             else
             {
-                roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down);
+                roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down);
                 var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
                 {
                     [Dir4.Down] = new bool[] { true, true, false },
@@ -175,11 +175,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveFulfillableBorder(roomGenFrom, Dir4.Down); });
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithFulfillableBorder(roomGenFrom, Dir4.Down); });
             }
             else
             {
-                roomGenTo.ReceiveFulfillableBorder(roomGenFrom, Dir4.Down);
+                roomGenTo.AskWithFulfillableBorder(roomGenFrom, Dir4.Down);
                 var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
                 {
                     [Dir4.Down] = new bool[] { true, true, false },
@@ -207,7 +207,7 @@ namespace RogueElements.Tests
             roomGenTo.PublicBorderToFulfill[Dir4.Down][0] = true;
             roomGenTo.PublicBorderToFulfill[Dir4.Down][1] = true;
 
-            Assert.Throws<ArgumentException>(() => { roomGenTo.ReceiveOpenedBorder(roomGenFrom, Dir4.Down); });
+            Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down); });
         }
 
         [Test]
@@ -239,11 +239,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
+                Assert.Throws<ArgumentException>(() => { roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
             }
             else
             {
-                roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir);
+                roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), dir);
                 IntRange newRange = roomGen.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
@@ -271,11 +271,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
+                Assert.Throws<ArgumentException>(() => { roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), dir); });
             }
             else
             {
-                roomGen.ReceiveBorderRange(new IntRange(rangeStart, rangeEnd), dir);
+                roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), dir);
                 IntRange newRange = roomGen.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
@@ -290,7 +290,7 @@ namespace RogueElements.Tests
             roomGen.PrepareSize(testRand.Object, new Loc(5, 7));
             roomGen.SetLoc(new Loc(2, 3));
 
-            roomGen.ReceiveBorderRange(new IntRange(1, 6), Dir4.Right);
+            roomGen.AskBorderRange(new IntRange(1, 6), Dir4.Right);
             var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
             {
                 [Dir4.Down] = new bool[] { false, false, false, false, false },
@@ -481,13 +481,13 @@ namespace RogueElements.Tests
 
             // find where the class chose to dig
             if (reqDown)
-                roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Down);
+                roomGen.Object.AskBorderRange(new IntRange(2, 7), Dir4.Down);
             if (reqLeft)
-                roomGen.Object.ReceiveBorderRange(new IntRange(1, 5), Dir4.Left);
+                roomGen.Object.AskBorderRange(new IntRange(1, 5), Dir4.Left);
             if (reqUp)
-                roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Up);
+                roomGen.Object.AskBorderRange(new IntRange(2, 7), Dir4.Up);
             if (reqRight)
-                roomGen.Object.ReceiveBorderRange(new IntRange(1, 5), Dir4.Right);
+                roomGen.Object.AskBorderRange(new IntRange(1, 5), Dir4.Right);
 
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
@@ -518,8 +518,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new IntRange(4, 7), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new IntRange(2, 5), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(4, 7), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(2, 5), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
@@ -556,7 +556,7 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new IntRange(3, 7), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(3, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expectedX), Times.Once());
@@ -592,8 +592,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new IntRange(3, 6), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new IntRange(4, 7), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(3, 6), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(4, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 4), Times.Once());
@@ -627,7 +627,7 @@ namespace RogueElements.Tests
             roomGen.Object.PublicFulfillableBorder[Dir4.Down][3] = false;
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new IntRange(2, 7), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(2, 7), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, true);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, 2), Times.Once());
@@ -668,8 +668,8 @@ namespace RogueElements.Tests
             roomGen.Object.SetLoc(new Loc(2, 1));
 
             // find where the class chose to dig
-            roomGen.Object.ReceiveBorderRange(new IntRange(3, 7), Dir4.Down);
-            roomGen.Object.ReceiveBorderRange(new IntRange(2, 5), Dir4.Right);
+            roomGen.Object.AskBorderRange(new IntRange(3, 7), Dir4.Down);
+            roomGen.Object.AskBorderRange(new IntRange(2, 5), Dir4.Right);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
             roomGen.Verify(p => p.DigAtBorder(testContext, Dir4.Down, expected1), Times.Once());

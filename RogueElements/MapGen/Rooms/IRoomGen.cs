@@ -9,11 +9,11 @@ namespace RogueElements
     {
         Rect Draw { get; }
 
-        void ReceiveOpenedBorder(IRoomGen sourceRoom, Dir4 dir);
+        void AskWithOpenedBorder(IRoomGen sourceRoom, Dir4 dir);
 
-        void ReceiveFulfillableBorder(IRoomGen sourceRoom, Dir4 dir);
+        void AskWithFulfillableBorder(IRoomGen sourceRoom, Dir4 dir);
 
-        void ReceiveBorderRange(IntRange range, Dir4 dir);
+        void AskBorderRange(IntRange range, Dir4 dir);
 
         bool GetOpenedBorder(Dir4 dir, int index);
 

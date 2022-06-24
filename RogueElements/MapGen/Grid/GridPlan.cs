@@ -55,20 +55,17 @@ namespace RogueElements
         {
             this.Rooms = new int[width][];
             this.VHalls = new GridHallGroup[width][];
-            this.HHalls = new GridHallGroup[width - 1][];
+            this.HHalls = new GridHallGroup[width][];
             for (int xx = 0; xx < width; xx++)
             {
                 this.Rooms[xx] = new int[height];
-                this.VHalls[xx] = new GridHallGroup[height - 1];
-                if (xx < width - 1)
-                    this.HHalls[xx] = new GridHallGroup[height];
+                this.VHalls[xx] = new GridHallGroup[height];
+                this.HHalls[xx] = new GridHallGroup[height];
                 for (int yy = 0; yy < height; yy++)
                 {
                     this.Rooms[xx][yy] = -1;
-                    if (yy < height - 1)
-                        this.VHalls[xx][yy] = new GridHallGroup();
-                    if (xx < width - 1)
-                        this.HHalls[xx][yy] = new GridHallGroup();
+                    this.VHalls[xx][yy] = new GridHallGroup();
+                    this.HHalls[xx][yy] = new GridHallGroup();
                 }
             }
 
@@ -89,20 +86,17 @@ namespace RogueElements
 
             this.Rooms = new int[width][];
             this.VHalls = new GridHallGroup[width][];
-            this.HHalls = new GridHallGroup[width - 1][];
+            this.HHalls = new GridHallGroup[width][];
             for (int xx = 0; xx < width; xx++)
             {
                 this.Rooms[xx] = new int[height];
-                this.VHalls[xx] = new GridHallGroup[height - 1];
-                if (xx < width - 1)
-                    this.HHalls[xx] = new GridHallGroup[height];
+                this.VHalls[xx] = new GridHallGroup[height];
+                this.HHalls[xx] = new GridHallGroup[height];
                 for (int yy = 0; yy < height; yy++)
                 {
                     this.Rooms[xx][yy] = -1;
-                    if (yy < height - 1)
-                        this.VHalls[xx][yy] = new GridHallGroup();
-                    if (xx < width - 1)
-                        this.HHalls[xx][yy] = new GridHallGroup();
+                    this.VHalls[xx][yy] = new GridHallGroup();
+                    this.HHalls[xx][yy] = new GridHallGroup();
                 }
             }
 
@@ -245,29 +239,37 @@ namespace RogueElements
         /// <returns></returns>
         public GridHallPlan GetHall(LocRay4 locRay)
         {
+            GridHallGroup[][] hallGroup;
+            Loc endLoc;
             switch (locRay.Dir)
             {
                 case Dir4.Down:
-                    if (locRay.Loc.Y < this.GridHeight - 1)
-                        return this.VHalls[locRay.Loc.X][locRay.Loc.Y].MainHall;
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Loc;
                     break;
                 case Dir4.Left:
-                    if (locRay.Loc.X > 0)
-                        return this.HHalls[locRay.Loc.X - 1][locRay.Loc.Y].MainHall;
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Traverse(1);
                     break;
                 case Dir4.Up:
-                    if (locRay.Loc.Y > 0)
-                        return this.VHalls[locRay.Loc.X][locRay.Loc.Y - 1].MainHall;
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Traverse(1);
                     break;
                 case Dir4.Right:
-                    if (locRay.Loc.X < this.GridWidth - 1)
-                        return this.HHalls[locRay.Loc.X][locRay.Loc.Y].MainHall;
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Loc;
                     break;
                 case Dir4.None:
-                    break;
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
             }
+
+            if (this.Wrap)
+                endLoc = this.WrapRoom(endLoc);
+
+            if (this.Wrap || Collision.InBounds(this.GridWidth - 1, this.GridHeight - 1, endLoc))
+                return hallGroup[endLoc.X][endLoc.Y].MainHall;
 
             return null;
         }
@@ -347,13 +349,20 @@ namespace RogueElements
 
         public void EraseRoom(Loc loc)
         {
+            if (this.Wrap)
+                loc = this.WrapRoom(loc);
             int roomIndex = this.Rooms[loc.X][loc.Y];
             GridRoomPlan room = this.ArrayRooms[roomIndex];
             this.ArrayRooms.RemoveAt(roomIndex);
             for (int xx = room.Bounds.Start.X; xx < room.Bounds.End.X; xx++)
             {
                 for (int yy = room.Bounds.Start.Y; yy < room.Bounds.End.Y; yy++)
-                    this.Rooms[xx][yy] = -1;
+                {
+                    Loc subLoc = new Loc(xx, yy);
+                    if (this.Wrap)
+                        subLoc = this.WrapRoom(subLoc);
+                    this.Rooms[subLoc.X][subLoc.Y] = -1;
+                }
             }
 
             for (int xx = 0; xx < this.GridWidth; xx++)
@@ -384,18 +393,22 @@ namespace RogueElements
         public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components, bool preferHall)
         {
             Rect floorRect = new Rect(0, 0, this.GridWidth, this.GridHeight);
-            if (!floorRect.Contains(rect))
+            if (!this.Wrap && !floorRect.Contains(rect))
                 throw new ArgumentOutOfRangeException(nameof(rect), "Cannot add room out of bounds!");
 
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
                 {
-                    if (this.Rooms[xx][yy] != -1)
+                    Loc subLoc = new Loc(xx, yy);
+                    if (this.Wrap)
+                        subLoc = this.WrapRoom(subLoc);
+
+                    if (this.Rooms[subLoc.X][subLoc.Y] != -1)
                         throw new InvalidOperationException("Tried to add on top of an existing room!");
-                    if (xx > rect.Start.X && this.HHalls[xx - 1][yy].MainHall != null)
+                    if (xx > rect.Start.X && this.HHalls[subLoc.X - 1][subLoc.Y].MainHall != null)
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
-                    if (yy > rect.Start.Y && this.VHalls[xx][yy - 1].MainHall != null)
+                    if (yy > rect.Start.Y && this.VHalls[subLoc.X][subLoc.Y - 1].MainHall != null)
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
                 }
             }
@@ -411,25 +424,35 @@ namespace RogueElements
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
-                    this.Rooms[xx][yy] = this.ArrayRooms.Count - 1;
+                {
+                    Loc subLoc = new Loc(xx, yy);
+                    if (this.Wrap)
+                        subLoc = this.WrapRoom(subLoc);
+
+                    this.Rooms[subLoc.X][subLoc.Y] = this.ArrayRooms.Count - 1;
+                }
             }
         }
 
         public bool CanAddRoom(Rect rect)
         {
             Rect floorRect = new Rect(0, 0, this.GridWidth, this.GridHeight);
-            if (!floorRect.Contains(rect))
+            if (!this.Wrap && !floorRect.Contains(rect))
                 return false;
 
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
                 {
-                    if (this.Rooms[xx][yy] != -1)
+                    Loc subLoc = new Loc(xx, yy);
+                    if (this.Wrap)
+                        subLoc = this.WrapRoom(subLoc);
+
+                    if (this.Rooms[subLoc.X][subLoc.Y] != -1)
                         return false;
-                    if (xx > rect.Start.X && this.HHalls[xx - 1][yy].MainHall != null)
+                    if (xx > rect.Start.X && this.HHalls[subLoc.X - 1][subLoc.Y].MainHall != null)
                         return false;
-                    if (yy > rect.Start.Y && this.VHalls[xx][yy - 1].MainHall != null)
+                    if (yy > rect.Start.Y && this.VHalls[subLoc.X][subLoc.Y - 1].MainHall != null)
                         return false;
                 }
             }
@@ -454,29 +477,37 @@ namespace RogueElements
             if (hallGen != null)
                 plan = new GridHallPlan((IPermissiveRoomGen)hallGen.Copy(), components);
 
+            GridHallGroup[][] hallGroup;
+            Loc endLoc;
             switch (locRay.Dir)
             {
                 case Dir4.Down:
-                    if (locRay.Loc.Y < this.GridHeight - 1)
-                        this.VHalls[locRay.Loc.X][locRay.Loc.Y].SetHall(plan);
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Loc;
                     break;
                 case Dir4.Left:
-                    if (locRay.Loc.X > 0)
-                        this.HHalls[locRay.Loc.X - 1][locRay.Loc.Y].SetHall(plan);
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Traverse(1);
                     break;
                 case Dir4.Up:
-                    if (locRay.Loc.Y > 0)
-                        this.VHalls[locRay.Loc.X][locRay.Loc.Y - 1].SetHall(plan);
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Traverse(1);
                     break;
                 case Dir4.Right:
-                    if (locRay.Loc.X < this.GridWidth - 1)
-                        this.HHalls[locRay.Loc.X][locRay.Loc.Y].SetHall(plan);
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Loc;
                     break;
                 case Dir4.None:
                     throw new ArgumentException($"No hall for dir {nameof(Dir4.None)}");
                 default:
                     throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
             }
+
+            if (this.Wrap)
+                endLoc = this.WrapRoom(endLoc);
+
+            if (this.Wrap || Collision.InBounds(this.GridWidth - 1, this.GridHeight - 1, endLoc))
+                hallGroup[endLoc.X][endLoc.Y].SetHall(plan);
         }
 
         /// <summary>
