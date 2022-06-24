@@ -574,7 +574,7 @@ namespace RogueElements.Tests
                 roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
                 if (ii == 1 || ii == 3)
                 {
-                    roomGen.Setup(p => p.AskWithOpenedBorder(It.IsAny<IRoomGen>(), It.IsAny<Dir4>()));
+                    roomGen.Setup(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()));
                     roomGenTarget.Add(roomGen);
                 }
 
@@ -592,7 +592,7 @@ namespace RogueElements.Tests
                 roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
                 if (ii == 1 || ii == 3)
                 {
-                    roomGen.Setup(p => p.AskWithOpenedBorder(It.IsAny<IRoomGen>(), It.IsAny<Dir4>()));
+                    roomGen.Setup(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()));
                     hallGenTarget.Add(roomGen);
                 }
 
@@ -611,17 +611,17 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < roomGenTarget.Count; ii++)
             {
                 if (ii >= roomGenTarget.Count - expectedRoom)
-                    roomGenTarget[ii].Verify(p => p.AskWithOpenedBorder(from, It.IsAny<Dir4>()), Times.Exactly(1));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    roomGenTarget[ii].Verify(p => p.AskWithOpenedBorder(from, It.IsAny<Dir4>()), Times.Exactly(0));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
             }
 
             for (int ii = 0; ii < hallGenTarget.Count; ii++)
             {
                 if (ii >= hallGenTarget.Count - expectedHall)
-                    hallGenTarget[ii].Verify(p => p.AskWithOpenedBorder(from, It.IsAny<Dir4>()), Times.Exactly(1));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    hallGenTarget[ii].Verify(p => p.AskWithOpenedBorder(from, It.IsAny<Dir4>()), Times.Exactly(0));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
             }
         }
 

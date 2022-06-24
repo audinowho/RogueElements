@@ -353,26 +353,6 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder
-        /// </summary>
-        /// <param name="sourceRoom">The target room</param>
-        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
-        public virtual void AskWithOpenedBorder(IRoomGen sourceRoom, Dir4 dir)
-        {
-            this.AskBorderFromRoom(sourceRoom, dir, false);
-        }
-
-        /// <summary>
-        /// Transfers the opened tiles of one direction's FulfillableBorder to the adjacent room's PermittedBorder
-        /// </summary>
-        /// <param name="sourceRoom">The target room</param>
-        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
-        public virtual void AskWithFulfillableBorder(IRoomGen sourceRoom, Dir4 dir)
-        {
-            this.AskBorderFromRoom(sourceRoom, dir, true);
-        }
-
-        /// <summary>
         /// Requests that a given range of tiles be fulfilled by this room.
         /// Will add a sidereq and consider all tiles in the range as eligible for fulfillment of that sidereq.
         /// Assumes that the borders are touching.  Unwrapped.
@@ -394,29 +374,27 @@ namespace RogueElements
                 destBorder[ii + offset] = true;
         }
 
-        protected abstract void PrepareFulfillableBorders(IRandom rand);
-
         /// <summary>
         /// Requests that a given set of border tiles be fulfilled by this room.
         /// The request is created using the edge loc of the room ordering this one.
         /// Will add a sidereq and use fulfillable (or opened) tiles in the range as eligible for fulfillment of that sidereq.
         /// Room must be touching.  Unwrapped.
         /// </summary>
-        /// <param name="sourceRoom"></param>
+        /// <param name="sourceDraw"></param>
+        /// <param name="borderQuery"></param>
         /// <param name="dir"></param>
-        /// <param name="fulfillable"></param>
-        protected void AskBorderFromRoom(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
+        public virtual void AskBorderFromRoom(Rect sourceDraw, Func<Dir4, int, bool> borderQuery, Dir4 dir)
         {
             Loc startLoc = this.Draw.GetEdgeLoc(dir, 0);
-            Loc endLoc = sourceRoom.Draw.GetEdgeLoc(dir.Reverse(), 0);
+            Loc endLoc = sourceDraw.GetEdgeLoc(dir.Reverse(), 0);
             if (startLoc + dir.GetLoc() != endLoc)
                 throw new ArgumentException("Rooms must touch each other in the specified direction.");
 
             // compute the starting index in otherBorder to start transferring
-            IntRange sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
+            IntRange sourceSide = sourceDraw.GetSide(dir.ToAxis());
             this.AskSideReq(sourceSide, dir);
             bool[] destBorder = this.BorderToFulfill[dir];
-            Loc diff = sourceRoom.Draw.Start - this.Draw.Start; // how far ahead the start of source is to dest
+            Loc diff = sourceDraw.Start - this.Draw.Start; // how far ahead the start of source is to dest
 
             // compute the starting index in otherBorder to start transferring
             int offset = diff.GetScalar(dir.ToAxis().Orth());
@@ -424,14 +402,10 @@ namespace RogueElements
             // Traverse the region that both borders touch
             // make this room's opened borders into the other room's permitted borders
             bool hasOpening = false;
-            int sourceLength = sourceRoom.Draw.GetBorderLength(dir.Reverse());
+            int sourceLength = sourceDraw.GetBorderLength(dir.Reverse());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
             {
-                bool sourceOpened;
-                if (fulfillable)
-                    sourceOpened = sourceRoom.GetFulfillableBorder(dir.Reverse(), ii - offset);
-                else
-                    sourceOpened = sourceRoom.GetOpenedBorder(dir.Reverse(), ii - offset);
+                bool sourceOpened = borderQuery(dir.Reverse(), ii - offset);
 
                 destBorder[ii] = sourceOpened || destBorder[ii];
                 hasOpening |= sourceOpened;
@@ -440,6 +414,8 @@ namespace RogueElements
             if (!hasOpening)
                 throw new ArgumentException("Permitted borders needs at least one open tile for each sideReq!");
         }
+
+        protected abstract void PrepareFulfillableBorders(IRandom rand);
 
         protected void DrawMapDefault(T map)
         {

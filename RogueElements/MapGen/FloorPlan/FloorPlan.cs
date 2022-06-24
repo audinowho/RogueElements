@@ -378,7 +378,7 @@ namespace RogueElements
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
                             // TODO: wrapping needed here?
-                            plan.RoomGen.AskWithFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                            plan.RoomGen.AskBorderFromRoom(adjacentGen.Draw, adjacentGen.GetFulfillableBorder, GetDirAdjacent(plan.RoomGen, adjacentGen));
                         }
                     }
 
@@ -407,7 +407,7 @@ namespace RogueElements
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
                             // TODO: wrapping needed here?
-                            plan.RoomGen.AskWithFulfillableBorder(adjacentGen, GetDirAdjacent(plan.RoomGen, adjacentGen));
+                            plan.RoomGen.AskBorderFromRoom(adjacentGen.Draw, adjacentGen.GetFulfillableBorder, GetDirAdjacent(plan.RoomGen, adjacentGen));
                         }
                     }
 
@@ -441,7 +441,7 @@ namespace RogueElements
                 {
                     IRoomGen adjacentGen = this.GetRoomHall(adjacent).RoomGen;
                     // TODO: wrapping needed here?
-                    adjacentGen.AskWithOpenedBorder(roomGen, GetDirAdjacent(adjacentGen, roomGen));
+                    adjacentGen.AskBorderFromRoom(roomGen.Draw, adjacentGen.GetOpenedBorder, GetDirAdjacent(adjacentGen, roomGen));
                 }
             }
         }

@@ -94,11 +94,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, dir); });
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, dir); });
             }
             else
             {
-                roomGenTo.AskWithOpenedBorder(roomGenFrom, dir);
+                roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, dir);
                 IntRange newRange = roomGenTo.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
             }
@@ -125,48 +125,11 @@ namespace RogueElements.Tests
 
             if (exception)
             {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down); });
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, Dir4.Down); });
             }
             else
             {
-                roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down);
-                var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
-                {
-                    [Dir4.Down] = new bool[] { true, true, false },
-                    [Dir4.Left] = new bool[] { false, false },
-                    [Dir4.Up] = new bool[] { false, false, false },
-                    [Dir4.Right] = new bool[] { false, false },
-                };
-                Assert.That(roomGenTo.PublicBorderToFulfill, Is.EqualTo(expectedBorderToFulfill));
-            }
-        }
-
-        [Test]
-        [TestCase(false, true, false)]
-        [TestCase(true, false, true)]
-        public void ReceiveFulfillableBorderToFulfill(bool firstHalf, bool secondHalf, bool exception)
-        {
-            // test with offset, proving previous openedborders are properly transferred
-            // test error case, in which no bordertofulfill is opened
-            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGenTo = new TestRoomGen<ITiledGenContext>();
-            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
-            roomGenTo.PrepareSize(testRand.Object, new Loc(3, 2));
-            roomGenTo.SetLoc(new Loc(2, 0));
-            roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
-            roomGenFrom.SetLoc(new Loc(0, 2));
-            roomGenFrom.PublicFulfillableBorder[Dir4.Up][0] = firstHalf;
-            roomGenFrom.PublicFulfillableBorder[Dir4.Up][1] = firstHalf;
-            roomGenFrom.PublicFulfillableBorder[Dir4.Up][2] = secondHalf;
-            roomGenFrom.PublicFulfillableBorder[Dir4.Up][3] = secondHalf;
-
-            if (exception)
-            {
-                Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithFulfillableBorder(roomGenFrom, Dir4.Down); });
-            }
-            else
-            {
-                roomGenTo.AskWithFulfillableBorder(roomGenFrom, Dir4.Down);
+                roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, Dir4.Down);
                 var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
                 {
                     [Dir4.Down] = new bool[] { true, true, false },
@@ -194,7 +157,7 @@ namespace RogueElements.Tests
             roomGenTo.PublicBorderToFulfill[Dir4.Down][0] = true;
             roomGenTo.PublicBorderToFulfill[Dir4.Down][1] = true;
 
-            Assert.Throws<ArgumentException>(() => { roomGenTo.AskWithOpenedBorder(roomGenFrom, Dir4.Down); });
+            Assert.Throws<ArgumentException>(() => { roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, Dir4.Down); });
         }
 
         [Test]
