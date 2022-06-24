@@ -50,7 +50,7 @@ namespace RogueElements
             int offset = diff.GetScalar(expandTo.ToAxis().Orth());
 
             // Traverse the region that both borders touch
-            int sourceLength = roomFrom.GetBorderLength(expandTo);
+            int sourceLength = roomFrom.Draw.GetBorderLength(expandTo);
             int destLength = rectTo.Size.GetScalar(expandTo.ToAxis().Orth());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destLength; ii++)
             {

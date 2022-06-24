@@ -65,8 +65,8 @@ namespace RogueElements
             int offset = diff.GetScalar(expandTo.ToAxis().Orth());
 
             // Traverse the region that both borders touch
-            int sourceLength = roomFrom.GetBorderLength(expandTo);
-            int destLength = room.GetBorderLength(expandTo.Reverse());
+            int sourceLength = roomFrom.Draw.GetBorderLength(expandTo);
+            int destLength = room.Draw.GetBorderLength(expandTo.Reverse());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destLength; ii++)
             {
                 bool sourceFulfill = roomFrom.GetFulfillableBorder(expandTo, ii - offset);
@@ -131,13 +131,13 @@ namespace RogueElements
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
             {
-                if (Collides(room.RoomGen.Draw, gen.Draw))
+                if (this.Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
 
             foreach (var hall in this.Halls)
             {
-                if (Collides(hall.RoomGen.Draw, gen.Draw))
+                if (this.Collides(hall.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing hall!");
             }
 
@@ -166,7 +166,7 @@ namespace RogueElements
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
             {
-                if (Collides(room.RoomGen.Draw, gen.Draw))
+                if (this.Collides(room.RoomGen.Draw, gen.Draw))
                     throw new InvalidOperationException("Tried to add on top of an existing room!");
             }
 
