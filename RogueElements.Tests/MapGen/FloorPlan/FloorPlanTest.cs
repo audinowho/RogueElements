@@ -692,11 +692,9 @@ namespace RogueElements.Tests
             const Dir4 expandTo = Dir4.Up;
             Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 4, 2));
-            mockFrom.Setup(p => p.GetBorderLength(expandTo)).Returns(4);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 1, 2, 3))).Returns(true);
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 2));
-            mockTo.Setup(p => p.GetBorderLength(expandTo.Reverse())).Returns(3);
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(0, 1, 2))).Returns(true);
 
             int totalMatch = TestFloorPlan.GetBorderMatch(mockFrom.Object, mockTo.Object, new Loc(x, 0), expandTo);
@@ -718,12 +716,10 @@ namespace RogueElements.Tests
             const Dir4 expandTo = Dir4.Up;
             Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 4, 2));
-            mockFrom.Setup(p => p.GetBorderLength(expandTo)).Returns(4);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 2))).Returns(true);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(1, 3))).Returns(false);
             Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 2));
-            mockTo.Setup(p => p.GetBorderLength(expandTo.Reverse())).Returns(3);
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(0, 2))).Returns(true);
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(1))).Returns(false);
 

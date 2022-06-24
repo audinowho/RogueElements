@@ -102,8 +102,6 @@ namespace RogueElements
         /// <returns></returns>
         public bool GetOpenedBorder(Dir4 dir, int index) => this.OpenedBorder[dir][index];
 
-        public int GetBorderLength(Dir4 dir) => this.Draw.GetSide(dir.ToAxis()).Length;
-
         /// <summary>
         /// Creates a copy of the object, to be placed in the generated layout.
         /// </summary>
@@ -138,9 +136,9 @@ namespace RogueElements
             // set all border tile classes to the correct length
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                this.OpenedBorder[dir] = new bool[this.GetBorderLength(dir)];
-                this.FulfillableBorder[dir] = new bool[this.GetBorderLength(dir)];
-                this.BorderToFulfill[dir] = new bool[this.GetBorderLength(dir)];
+                this.OpenedBorder[dir] = new bool[this.Draw.GetBorderLength(dir)];
+                this.FulfillableBorder[dir] = new bool[this.Draw.GetBorderLength(dir)];
+                this.BorderToFulfill[dir] = new bool[this.Draw.GetBorderLength(dir)];
             }
 
             this.PrepareFulfillableBorders(rand);
@@ -173,6 +171,7 @@ namespace RogueElements
         /// <summary>
         /// Returns a list of tile-collections, the whole of which would cover all sidereqs.
         /// The sets are all mutually exclusive to each other, and the minimum amount is always chosen.
+        /// Unwrapped.
         /// </summary>
         /// <param name="rand">todo: describe rand parameter on ChoosePossibleStartRanges</param>
         /// <param name="scalarStart">todo: describe scalarStart parameter on ChoosePossibleStartRanges</param>
@@ -228,52 +227,6 @@ namespace RogueElements
             }
 
             return resultStarts;
-        }
-
-        /// <summary>
-        /// Gets the loc just inside the room, from the specified direction, with the specified scalar.  The scalar determines X if it's a vertical, and Y if it's a horizontal side.
-        /// </summary>
-        /// <param name="dir">todo: describe dir parameter on GetEdgeLoc</param>
-        /// <param name="scalar">todo: describe scalar parameter on GetEdgeLoc</param>
-        /// <returns></returns>
-        public Loc GetEdgeLoc(Dir4 dir, int scalar)
-        {
-            switch (dir)
-            {
-                case Dir4.Down:
-                    return new Loc(scalar, this.Draw.End.Y - 1);
-                case Dir4.Left:
-                    return new Loc(this.Draw.X, scalar);
-                case Dir4.Up:
-                    return new Loc(scalar, this.Draw.Y);
-                case Dir4.Right:
-                    return new Loc(this.Draw.End.X - 1, scalar);
-                case Dir4.None:
-                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
-            }
-        }
-
-        public Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar)
-        {
-            switch (dir)
-            {
-                case Dir4.Down:
-                    return new Loc(scalar, this.Draw.End.Y);
-                case Dir4.Left:
-                    return new Loc(this.Draw.X - size.X, scalar);
-                case Dir4.Up:
-                    return new Loc(scalar, this.Draw.Y - size.Y);
-                case Dir4.Right:
-                    return new Loc(this.Draw.End.X, scalar);
-                case Dir4.None:
-                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
-            }
-
-            throw new ArgumentException("Must specify a valid direction!");
         }
 
         public abstract void DrawOnMap(T map);
@@ -380,7 +333,7 @@ namespace RogueElements
         /// <param name="scalar"></param>
         public virtual void DigAtBorder(ITiledGenContext map, Dir4 dir, int scalar)
         {
-            Loc curLoc = this.GetEdgeLoc(dir, scalar);
+            Loc curLoc = this.Draw.GetEdgeLoc(dir, scalar);
             int length = dir.ToAxis() == Axis4.Vert ? this.Draw.Height : this.Draw.Width;
             bool foundTile = false;
             for (int kk = 0; kk < length; kk++)
@@ -422,7 +375,7 @@ namespace RogueElements
         /// <summary>
         /// Requests that a given range of tiles be fulfilled by this room.
         /// Will add a sidereq and consider all tiles in the range as eligible for fulfillment of that sidereq.
-        /// Assumes that the borders are touching.
+        /// Assumes that the borders are touching.  Unwrapped.
         /// </summary>
         /// <param name="range"></param>
         /// <param name="dir"></param>
@@ -447,14 +400,15 @@ namespace RogueElements
         /// Requests that a given set of border tiles be fulfilled by this room.
         /// The request is created using the edge loc of the room ordering this one.
         /// Will add a sidereq and use fulfillable (or opened) tiles in the range as eligible for fulfillment of that sidereq.
+        /// Room must be touching.  Unwrapped.
         /// </summary>
         /// <param name="sourceRoom"></param>
         /// <param name="dir"></param>
         /// <param name="fulfillable"></param>
         protected void AskBorderFromRoom(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
         {
-            Loc startLoc = this.GetEdgeLoc(dir, 0);
-            Loc endLoc = sourceRoom.GetEdgeLoc(dir.Reverse(), 0);
+            Loc startLoc = this.Draw.GetEdgeLoc(dir, 0);
+            Loc endLoc = sourceRoom.Draw.GetEdgeLoc(dir.Reverse(), 0);
             if (startLoc + dir.GetLoc() != endLoc)
                 throw new ArgumentException("Rooms must touch each other in the specified direction.");
 
@@ -470,7 +424,7 @@ namespace RogueElements
             // Traverse the region that both borders touch
             // make this room's opened borders into the other room's permitted borders
             bool hasOpening = false;
-            int sourceLength = sourceRoom.GetBorderLength(dir.Reverse());
+            int sourceLength = sourceRoom.Draw.GetBorderLength(dir.Reverse());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
             {
                 bool sourceOpened;

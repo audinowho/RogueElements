@@ -268,7 +268,6 @@ namespace RogueElements.Tests
             const Dir4 expandTo = Dir4.Up;
             Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 6, 2));
-            mockFrom.Setup(p => p.GetBorderLength(expandTo)).Returns(6);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 1, 4))).Returns(true);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(2, 3, 5))).Returns(false);
             Rect rectTo = new Rect(x, 0, 2, 2);

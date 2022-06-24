@@ -46,8 +46,8 @@ namespace RogueElements.Tests
             this.Draw = rect;
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
-                this.OpenedBorder[dir] = new bool[this.GetBorderLength(dir)];
-                this.FulfillableBorder[dir] = new bool[this.GetBorderLength(dir)];
+                this.OpenedBorder[dir] = new bool[this.Draw.GetBorderLength(dir)];
+                this.FulfillableBorder[dir] = new bool[this.Draw.GetBorderLength(dir)];
                 for (int jj = 0; jj < this.FulfillableBorder[dir].Length; jj++)
                     this.FulfillableBorder[dir][jj] = true;
             }

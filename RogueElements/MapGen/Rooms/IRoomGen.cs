@@ -19,8 +19,6 @@ namespace RogueElements
 
         bool GetFulfillableBorder(Dir4 dir, int index);
 
-        int GetBorderLength(Dir4 dir);
-
         Loc ProposeSize(IRandom rand);
 
         void PrepareSize(IRandom rand, Loc size);
@@ -28,10 +26,6 @@ namespace RogueElements
         void SetLoc(Loc loc);
 
         void DrawOnMap(ITiledGenContext map);
-
-        Loc GetEdgeLoc(Dir4 dir, int scalar);
-
-        Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar);
 
         IRoomGen Copy();
     }

@@ -110,7 +110,7 @@ namespace RogueElements
             while (currentScalar < side.Max)
             {
                 // compute the location
-                Loc trialLoc = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
+                Loc trialLoc = roomFrom.Draw.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
                 tryRect.Start = trialLoc + new Loc(-1, -1);
 
                 // check for collisions (not counting the rectangle from)
@@ -135,7 +135,7 @@ namespace RogueElements
                 // if no collisions were hit, do final checks and add the room
                 if (!collided)
                 {
-                    Loc locTo = roomFrom.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
+                    Loc locTo = roomFrom.Draw.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
 
                     // must be within the borders of the floor!
                     if (floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
