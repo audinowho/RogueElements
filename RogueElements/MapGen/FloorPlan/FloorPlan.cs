@@ -30,22 +30,75 @@ namespace RogueElements
 
         protected List<FloorHallPlan> Halls { get; private set; }
 
-        public static Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
+        /// <summary>
+        /// Given two rectangles that are meant to be adjacent to each other, with a valid direction of adjacency,
+        /// Gets the unwrapped version of the second rectangle that is adjacent to the first.
+        /// </summary>
+        /// <param name="rectFrom"></param>
+        /// <param name="rectTo"></param>
+        /// <param name="dir"></param>
+        /// <returns></returns>
+        public Rect? GetAdjacentRect(Rect rectFrom, Rect rectTo, Dir4 dir)
         {
-            // TODO: wrapping needed here?
-            Dir4 result = Dir4.None;
-            foreach (Dir4 dir in DirExt.VALID_DIR4)
+            if (dir == Dir4.None)
+                throw new ArgumentException("Invalid direction.");
+            int scalarFrom = rectFrom.GetScalar(dir);
+            int scalarTo = rectTo.GetScalar(dir.Reverse());
+            Axis4 orth = dir.ToAxis().Orth();
+            if (this.Wrap)
             {
-                if (roomGenFrom.Draw.GetScalar(dir) == roomGenTo.Draw.GetScalar(dir.Reverse()))
+                int newTo = WrappedCollision.GetClosestWrap(this.Size.GetScalar(dir.ToAxis()), scalarFrom, scalarTo);
+                int diff = newTo - scalarTo;
+
+                Loc newStart = rectTo.Start + DirExt.CreateLoc(dir.ToAxis(), diff, 0);
+                rectTo = new Rect(newStart, rectTo.Size);
+                scalarTo = newTo;
+
+                // also get the correct orthogonal dimension using IterateRegionsColliding
+                int startOrth = rectTo.Start.GetScalar(orth);
+                IntRange? workingRange = null;
+                foreach (IntRange range in WrappedCollision.IterateRegionsColliding(this.Size.GetScalar(orth), rectFrom.Start.GetScalar(orth), rectFrom.Size.GetScalar(orth), rectTo.Start.GetScalar(orth), rectTo.Size.GetScalar(orth)))
                 {
-                    if (result == Dir4.None)
-                        result = dir;
-                    else
-                        return Dir4.None;
+                    workingRange = range;
+                    if (range.Min == startOrth)
+                        break;
                 }
+
+                // The rectangles are touching in-direction, however they are not aligned to each other in the orthogonal direction.
+                if (!workingRange.HasValue)
+                    return null;
+
+                int orthDiff = workingRange.Value.Min - startOrth;
+                Loc orthStart = rectTo.Start + DirExt.CreateLoc(orth, orthDiff, 0);
+                rectTo = new Rect(orthStart, rectTo.Size);
+            }
+            else
+            {
+                if (!Collision.Collides(rectFrom.Start.GetScalar(orth), rectFrom.Size.GetScalar(orth), rectTo.Start.GetScalar(orth), rectTo.Size.GetScalar(orth)))
+                    return null;
             }
 
-            return result;
+            if (scalarFrom == scalarTo)
+                return rectTo;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the direction of adjacency.
+        /// </summary>
+        /// <param name="roomGenFrom"></param>
+        /// <param name="roomGenTo"></param>
+        /// <returns></returns>
+        public Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
+        {
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+            {
+                if (this.GetAdjacentRect(roomGenFrom.Draw, roomGenTo.Draw, dir) != null)
+                    return dir;
+            }
+
+            return Dir4.None;
         }
 
         /// <summary>
@@ -377,8 +430,10 @@ namespace RogueElements
                         if (adj.IsHall || adj.Index > ii)
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
-                            // TODO: wrapping needed here?
-                            plan.RoomGen.AskBorderFromRoom(adjacentGen.Draw, adjacentGen.GetFulfillableBorder, GetDirAdjacent(plan.RoomGen, adjacentGen));
+
+                            Dir4 adjDir = this.GetDirAdjacent(plan.RoomGen, adjacentGen);
+                            Rect wrapRect = this.GetAdjacentRect(plan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
+                            plan.RoomGen.AskBorderFromRoom(wrapRect, adjacentGen.GetFulfillableBorder, adjDir);
                         }
                     }
 
@@ -406,8 +461,10 @@ namespace RogueElements
                         if (adj.IsHall && adj.Index > ii)
                         {
                             IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
-                            // TODO: wrapping needed here?
-                            plan.RoomGen.AskBorderFromRoom(adjacentGen.Draw, adjacentGen.GetFulfillableBorder, GetDirAdjacent(plan.RoomGen, adjacentGen));
+
+                            Dir4 adjDir = this.GetDirAdjacent(plan.RoomGen, adjacentGen);
+                            Rect wrapRect = this.GetAdjacentRect(plan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
+                            plan.RoomGen.AskBorderFromRoom(wrapRect, adjacentGen.GetFulfillableBorder, adjDir);
                         }
                     }
 
@@ -440,8 +497,10 @@ namespace RogueElements
                     (from.IsHall == adjacent.IsHall && from.Index < adjacent.Index))
                 {
                     IRoomGen adjacentGen = this.GetRoomHall(adjacent).RoomGen;
-                    // TODO: wrapping needed here?
-                    adjacentGen.AskBorderFromRoom(roomGen.Draw, adjacentGen.GetOpenedBorder, GetDirAdjacent(adjacentGen, roomGen));
+
+                    Dir4 adjDir = this.GetDirAdjacent(roomGen, adjacentGen);
+                    Rect wrapRect = this.GetAdjacentRect(basePlan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
+                    adjacentGen.AskBorderFromRoom(wrapRect, adjacentGen.GetOpenedBorder, adjDir);
                 }
             }
         }

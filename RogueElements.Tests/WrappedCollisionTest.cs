@@ -65,7 +65,7 @@ namespace RogueElements.Tests
         [TestCase(2, 2, 4, 8, 4, -2)]
         [TestCase(2, 2, 8, 4, -2, 4)]
         [TestCase(2, 2, 9, 9, -1, -1)]
-        public void GetDist8(int pt1x, int pt1y, int pt2x, int pt2y, int expectedx, int expectedy)
+        public void GetClosestWrapLoc(int pt1x, int pt1y, int pt2x, int pt2y, int expectedx, int expectedy)
         {
             Assert.That(WrappedCollision.GetClosestWrap(new Loc(10), new Loc(pt1x, pt1y), new Loc(pt2x, pt2y)), Is.EqualTo(new Loc(expectedx, expectedy)));
         }
@@ -73,16 +73,19 @@ namespace RogueElements.Tests
         [Test]
         [TestCase(10, 0, 0, 0)]
         [TestCase(10, 5, 5, 5)]
+        [TestCase(10, 10, 10, 10)]
+        [TestCase(10, 0, 10, 0)]
+        [TestCase(10, 10, 0, 10)]
         [TestCase(10, 1, 3, 3)]
         [TestCase(10, 1, 5, 5)]
         [TestCase(10, 1, 6, 6)]
         [TestCase(10, 1, 7, -3)]
-        public void GetDist(int wrapSize, int pt1, int pt2, int expected)
+        public void GetClosestWrap(int wrapSize, int pt1, int pt2, int expected)
         {
             for (int ii = -1; ii <= 1; ii++)
             {
                 for (int jj = -1; jj <= 1; jj++)
-                    Assert.That(WrappedCollision.GetClosestWrap(wrapSize, pt1 + (ii * wrapSize), pt2 + (jj * wrapSize)), Is.EqualTo(expected));
+                    Assert.That(WrappedCollision.GetClosestWrap(wrapSize, pt1 + (ii * wrapSize), pt2 + (jj * wrapSize)), Is.EqualTo(expected + (ii * wrapSize)));
             }
         }
 

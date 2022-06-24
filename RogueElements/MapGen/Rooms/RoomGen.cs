@@ -382,7 +382,7 @@ namespace RogueElements
         /// </summary>
         /// <param name="sourceDraw"></param>
         /// <param name="borderQuery"></param>
-        /// <param name="dir"></param>
+        /// <param name="dir">Direction from this room to the source room.</param>
         public virtual void AskBorderFromRoom(Rect sourceDraw, Func<Dir4, int, bool> borderQuery, Dir4 dir)
         {
             Loc startLoc = this.Draw.GetEdgeLoc(dir, 0);
