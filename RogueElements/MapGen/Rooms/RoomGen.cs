@@ -13,35 +13,32 @@ namespace RogueElements
     /// </summary>
     /// <remarks>
     /// RoomGens obey the following rules:
-    /// 1. All RoomGens must generate a solvable room.  Aka, one where it is possible to get to any opening in its 4 sides, to any other opening in its 4 sides.
-    /// * This means, it is okay if some generated rooms can be “cheesed” out of any self-contained puzzle they’re trying to make.A cheesable room is better than a wholly unsolvable.
+    /// 1. All RoomGens must generate a solvable room.  Aka, one where it is possible to get from any opening in its 4 sides, to any other opening in its 4 sides.
+    /// * This means, it is okay if some generated rooms can be “cheesed” out of any self-contained puzzle they’re trying to make. A cheesable room is better than a wholly unsolvable room.
     /// 2. All RoomGens must be capable of taking any Size, and generate without throwing an exception.
     /// * So if you have a RoomGen that is meant to make a complicated self contained maze, and the calling code says "No, you only get 2x2 tiles of space to work with, deal with it", it will have to comply. (Usually by just making a blank square)
-    /// * But, you can ask a RoomGen what dimensions it would like to be, and then pass it those dimensions to play nice with it.This is the usual case.
+    /// * But, you can ask a RoomGen what dimensions it would like to be, and then pass it those dimensions to play nice with it. This is the usual case.
     /// 3. A RoomGen must be able to produce at least one opening for each of the four cardinal directions, if asked.
-    /// * For example, a simple square room has openings on all four sides regardless of how it’s generated.Certain styles of rooms do not want to have any walkable tiles on the North border unless mandated.
+    /// * For example, a simple square room has openings on all four sides regardless of how it’s generated. Certain styles of rooms do not want to have any walkable tiles on the North border unless mandated.
     /// * Another example would be if the algorithm from above placed this RoomGen between two rooms: one above and one below.It wants to connect them from above and below.The RoomGen must provide an opening somewhere for its north and south borders.
-    /// * The keyword is somewhere.Somewhere that the RoomGen gets to pick and the calling code cannot.
+    /// * The keyword is somewhere. Somewhere that the RoomGen gets to pick and the calling code cannot.
     /// </remarks>
     /// <typeparam name="T">The MapGenContext to apply the room to.</typeparam>
     [Serializable]
     public abstract class RoomGen<T> : IRoomGen
         where T : ITiledGenContext
     {
-        // Ranges that must have at least one of their permitted tiles touched
         [NonSerialized]
         private Dictionary<Dir4, List<IntRange>> roomSideReqs;
 
         [NonSerialized]
-        private Dictionary<Dir4, bool[]> openedBorder;
+        private Dictionary<Dir4, bool[]> borderToFulfill;
 
         [NonSerialized]
         private Dictionary<Dir4, bool[]> fulfillableBorder;
 
-        // tiles that, if touched during this room's gen, signify that the req has been filled
-        // "the req" refers to the side reqs for that side.
         [NonSerialized]
-        private Dictionary<Dir4, bool[]> borderToFulfill;
+        private Dictionary<Dir4, bool[]> openedBorder;
 
         [NonSerialized]
         private Rect draw;
@@ -63,19 +60,47 @@ namespace RogueElements
         /// </summary>
         public virtual Rect Draw { get => this.draw; protected set => this.draw = value; }
 
+        /// <summary>
+        /// Ranges that must have at least one of their permitted tiles touched.
+        /// There can potentially be multiple required ranges.
+        /// </summary>
         protected Dictionary<Dir4, List<IntRange>> RoomSideReqs { get => this.roomSideReqs; set => this.roomSideReqs = value; }
 
-        protected Dictionary<Dir4, bool[]> OpenedBorder { get => this.openedBorder; set => this.openedBorder = value; }
-
-        protected Dictionary<Dir4, bool[]> FulfillableBorder { get => this.fulfillableBorder; set => this.fulfillableBorder = value; }
-
+        /// <summary>
+        /// Tiles that, if touched during this room's gen, signify that the req has been filled
+        /// "the req" refers to the roomSideReqs for that side.
+        /// </summary>
         protected Dictionary<Dir4, bool[]> BorderToFulfill { get => this.borderToFulfill; set => this.borderToFulfill = value; }
 
-        // tiles that have been touched during room gen
-        public bool GetOpenedBorder(Dir4 dir, int index) => this.OpenedBorder[dir][index];
+        /// <summary>
+        /// Tiles that this room can take as incoming paths.
+        /// These are the tiles that are allowed to be opened (turned on in openedBorder).
+        /// This is distinct from openedBorder in that fulfillableBorder has not been opened, but is able to open if asked.
+        /// </summary>
+        protected Dictionary<Dir4, bool[]> FulfillableBorder { get => this.fulfillableBorder; set => this.fulfillableBorder = value; }
 
-        // tiles that this room can take as incoming paths
+        /// <summary>
+        /// The tiles that this room has opened, which can be used to inform other rooms where to connect.
+        /// </summary>
+        protected Dictionary<Dir4, bool[]> OpenedBorder { get => this.openedBorder; set => this.openedBorder = value; }
+
+        /// <summary>
+        /// Gets the tiles that this room can take as incoming paths.
+        /// These are the tiles that are allowed to be opened (turned on in openedBorder).
+        /// Unlike openedBorder, fulfillableBorder has not been opened, but has signalled it is able to open if asked.
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public bool GetFulfillableBorder(Dir4 dir, int index) => this.FulfillableBorder[dir][index];
+
+        /// <summary>
+        /// Gets rhe tiles that this room has opened, which can be used to inform other rooms where to connect.
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public bool GetOpenedBorder(Dir4 dir, int index) => this.OpenedBorder[dir][index];
 
         public int GetBorderLength(Dir4 dir) => this.Draw.GetSide(dir.ToAxis()).Length;
 
@@ -146,45 +171,111 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder
+        /// Returns a list of tile-collections, the whole of which would cover all sidereqs.
+        /// The sets are all mutually exclusive to each other, and the minimum amount is always chosen.
         /// </summary>
-        /// <param name="sourceRoom">The target room</param>
-        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
-        public virtual void ReceiveOpenedBorder(IRoomGen sourceRoom, Dir4 dir)
+        /// <param name="rand">todo: describe rand parameter on ChoosePossibleStartRanges</param>
+        /// <param name="scalarStart">todo: describe scalarStart parameter on ChoosePossibleStartRanges</param>
+        /// <param name="permittedRange">todo: describe permittedRange parameter on ChoosePossibleStartRanges</param>
+        /// <param name="origSideReqs">todo: describe origSideReqs parameter on ChoosePossibleStartRanges</param>
+        /// <returns></returns>
+        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
         {
-            this.ReceiveBorder(sourceRoom, dir, false);
+            // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
+            List<IntRange> sideReqs = new List<IntRange>();
+            sideReqs.AddRange(origSideReqs);
+
+            List<HashSet<int>> resultStarts = new List<HashSet<int>>();
+            while (sideReqs.Count > 0)
+            {
+                // choose a random sidereq
+                int chosenIndex = rand.Next(sideReqs.Count);
+                HashSet<int> tiles = new HashSet<int>();
+
+                // add all included bordertiles to its set
+                for (int ii = 0; ii < permittedRange.Length; ii++)
+                {
+                    if (permittedRange[ii] && sideReqs[chosenIndex].Contains(ii + scalarStart))
+                        tiles.Add(ii + scalarStart);
+                }
+
+                bool overlap = false;
+                for (int ii = 0; ii < resultStarts.Count; ii++)
+                {
+                    // does its bordertiles overlap? superset? subset? with an existing set?
+                    if (tiles.IsSupersetOf(resultStarts[ii]))
+                    {
+                        // if superset, do nothing
+                        overlap = true;
+                        break;
+                    }
+                    else if (tiles.Overlaps(resultStarts[ii]))
+                    {
+                        // if subset, narrow the tiles to that set
+                        // if intersect, narrow the tiles to that set
+                        resultStarts[ii].IntersectWith(tiles);
+                        overlap = true;
+                        break;
+                    }
+                }
+
+                // if nothing, just add the new set
+                if (!overlap)
+                    resultStarts.Add(tiles);
+
+                // continue for all sidereqs
+                sideReqs.RemoveAt(chosenIndex);
+            }
+
+            return resultStarts;
         }
 
         /// <summary>
-        /// Transfers the opened tiles of one direction's FulfillableBorder to the adjacent room's PermittedBorder
+        /// Gets the loc just inside the room, from the specified direction, with the specified scalar.  The scalar determines X if it's a vertical, and Y if it's a horizontal side.
         /// </summary>
-        /// <param name="sourceRoom">The target room</param>
-        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
-        public virtual void ReceiveFulfillableBorder(IRoomGen sourceRoom, Dir4 dir)
+        /// <param name="dir">todo: describe dir parameter on GetEdgeLoc</param>
+        /// <param name="scalar">todo: describe scalar parameter on GetEdgeLoc</param>
+        /// <returns></returns>
+        public Loc GetEdgeLoc(Dir4 dir, int scalar)
         {
-            this.ReceiveBorder(sourceRoom, dir, true);
+            switch (dir)
+            {
+                case Dir4.Down:
+                    return new Loc(scalar, this.Draw.End.Y - 1);
+                case Dir4.Left:
+                    return new Loc(this.Draw.X, scalar);
+                case Dir4.Up:
+                    return new Loc(scalar, this.Draw.Y);
+                case Dir4.Right:
+                    return new Loc(this.Draw.End.X - 1, scalar);
+                case Dir4.None:
+                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
+            }
         }
 
-        // assumes that the borders are touching.
-        public virtual void ReceiveBorderRange(IntRange range, Dir4 dir)
+        public Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar)
         {
-            this.FillSideReq(range, dir);
+            switch (dir)
+            {
+                case Dir4.Down:
+                    return new Loc(scalar, this.Draw.End.Y);
+                case Dir4.Left:
+                    return new Loc(this.Draw.X - size.X, scalar);
+                case Dir4.Up:
+                    return new Loc(scalar, this.Draw.Y - size.Y);
+                case Dir4.Right:
+                    return new Loc(this.Draw.End.X, scalar);
+                case Dir4.None:
+                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
+            }
 
-            bool[] destBorder = this.BorderToFulfill[dir];
-
-            // compute the starting index in otherBorder to start transferring
-            int offset = range.Min - this.Draw.Start.GetScalar(dir.ToAxis().Orth());
-
-            // Traverse the region that both borders touch
-            // make this room's opened borders into the other room's permitted borders
-            for (int ii = Math.Max(0, -offset); ii < range.Length && ii + offset < destBorder.Length; ii++)
-                destBorder[ii + offset] = true;
+            throw new ArgumentException("Must specify a valid direction!");
         }
 
-        // needs to pass in cell size
-        // just return the map itself?
-        // also needs to return offset
-        // can pass in item/mob lists via map
         public abstract void DrawOnMap(T map);
 
         void IRoomGen.DrawOnMap(ITiledGenContext map) => this.DrawOnMap((T)map);
@@ -309,114 +400,58 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets the loc just inside the room, from the specified direction, with the specified scalar.  The scalar determines X if it's a vertical, and Y if it's a horizontal side.
+        /// Transfers the opened tiles of one direction's OpenedBorder to the adjacent room's PermittedBorder
         /// </summary>
-        /// <param name="dir">todo: describe dir parameter on GetEdgeLoc</param>
-        /// <param name="scalar">todo: describe scalar parameter on GetEdgeLoc</param>
-        /// <returns></returns>
-        public Loc GetEdgeLoc(Dir4 dir, int scalar)
+        /// <param name="sourceRoom">The target room</param>
+        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
+        public virtual void AskWithOpenedBorder(IRoomGen sourceRoom, Dir4 dir)
         {
-            switch (dir)
-            {
-                case Dir4.Down:
-                    return new Loc(scalar, this.Draw.End.Y - 1);
-                case Dir4.Left:
-                    return new Loc(this.Draw.X, scalar);
-                case Dir4.Up:
-                    return new Loc(scalar, this.Draw.Y);
-                case Dir4.Right:
-                    return new Loc(this.Draw.End.X - 1, scalar);
-                case Dir4.None:
-                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
-            }
-        }
-
-        public Loc GetEdgeRectLoc(Dir4 dir, Loc size, int scalar)
-        {
-            switch (dir)
-            {
-                case Dir4.Down:
-                    return new Loc(scalar, this.Draw.End.Y);
-                case Dir4.Left:
-                    return new Loc(this.Draw.X - size.X, scalar);
-                case Dir4.Up:
-                    return new Loc(scalar, this.Draw.Y - size.Y);
-                case Dir4.Right:
-                    return new Loc(this.Draw.End.X, scalar);
-                case Dir4.None:
-                    throw new ArgumentException($"No edge for dir {nameof(Dir4.None)}");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), "Invalid enum value.");
-            }
-
-            throw new ArgumentException("Must specify a valid direction!");
+            this.AskBorderFromRoom(sourceRoom, dir, false);
         }
 
         /// <summary>
-        /// Returns a list of tile-collections, the whole of which would cover all sidereqs.
-        /// The sets are all mutually exclusive to each other, and the minimum amount is always chosen.
+        /// Transfers the opened tiles of one direction's FulfillableBorder to the adjacent room's PermittedBorder
         /// </summary>
-        /// <param name="rand">todo: describe rand parameter on ChoosePossibleStartRanges</param>
-        /// <param name="scalarStart">todo: describe scalarStart parameter on ChoosePossibleStartRanges</param>
-        /// <param name="permittedRange">todo: describe permittedRange parameter on ChoosePossibleStartRanges</param>
-        /// <param name="origSideReqs">todo: describe origSideReqs parameter on ChoosePossibleStartRanges</param>
-        /// <returns></returns>
-        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
+        /// <param name="sourceRoom">The target room</param>
+        /// <param name="dir">The direction that the target room lies, relative to this room.</param>
+        public virtual void AskWithFulfillableBorder(IRoomGen sourceRoom, Dir4 dir)
         {
-            // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
-            List<IntRange> sideReqs = new List<IntRange>();
-            sideReqs.AddRange(origSideReqs);
+            this.AskBorderFromRoom(sourceRoom, dir, true);
+        }
 
-            List<HashSet<int>> resultStarts = new List<HashSet<int>>();
-            while (sideReqs.Count > 0)
-            {
-                // choose a random sidereq
-                int chosenIndex = rand.Next(sideReqs.Count);
-                HashSet<int> tiles = new HashSet<int>();
+        /// <summary>
+        /// Requests that a given range of tiles be fulfilled by this room.
+        /// Will add a sidereq and consider all tiles in the range as eligible for fulfillment of that sidereq.
+        /// Assumes that the borders are touching.
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="dir"></param>
+        public virtual void AskBorderRange(IntRange range, Dir4 dir)
+        {
+            this.AskSideReq(range, dir);
 
-                // add all included bordertiles to its set
-                for (int ii = 0; ii < permittedRange.Length; ii++)
-                {
-                    if (permittedRange[ii] && sideReqs[chosenIndex].Contains(ii + scalarStart))
-                        tiles.Add(ii + scalarStart);
-                }
+            bool[] destBorder = this.BorderToFulfill[dir];
 
-                bool overlap = false;
-                for (int ii = 0; ii < resultStarts.Count; ii++)
-                {
-                    // does its bordertiles overlap? superset? subset? with an existing set?
-                    if (tiles.IsSupersetOf(resultStarts[ii]))
-                    {
-                        // if superset, do nothing
-                        overlap = true;
-                        break;
-                    }
-                    else if (tiles.Overlaps(resultStarts[ii]))
-                    {
-                        // if subset, narrow the tiles to that set
-                        // if intersect, narrow the tiles to that set
-                        resultStarts[ii].IntersectWith(tiles);
-                        overlap = true;
-                        break;
-                    }
-                }
+            // compute the starting index in otherBorder to start transferring
+            int offset = range.Min - this.Draw.Start.GetScalar(dir.ToAxis().Orth());
 
-                // if nothing, just add the new set
-                if (!overlap)
-                    resultStarts.Add(tiles);
-
-                // continue for all sidereqs
-                sideReqs.RemoveAt(chosenIndex);
-            }
-
-            return resultStarts;
+            // Traverse the region that both borders touch
+            // make this room's opened borders into the other room's permitted borders
+            for (int ii = Math.Max(0, -offset); ii < range.Length && ii + offset < destBorder.Length; ii++)
+                destBorder[ii + offset] = true;
         }
 
         protected abstract void PrepareFulfillableBorders(IRandom rand);
 
-        protected void ReceiveBorder(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
+        /// <summary>
+        /// Requests that a given set of border tiles be fulfilled by this room.
+        /// The request is created using the edge loc of the room ordering this one.
+        /// Will add a sidereq and use fulfillable (or opened) tiles in the range as eligible for fulfillment of that sidereq.
+        /// </summary>
+        /// <param name="sourceRoom"></param>
+        /// <param name="dir"></param>
+        /// <param name="fulfillable"></param>
+        protected void AskBorderFromRoom(IRoomGen sourceRoom, Dir4 dir, bool fulfillable)
         {
             Loc startLoc = this.GetEdgeLoc(dir, 0);
             Loc endLoc = sourceRoom.GetEdgeLoc(dir.Reverse(), 0);
@@ -425,7 +460,7 @@ namespace RogueElements
 
             // compute the starting index in otherBorder to start transferring
             IntRange sourceSide = sourceRoom.Draw.GetSide(dir.ToAxis());
-            this.FillSideReq(sourceSide, dir);
+            this.AskSideReq(sourceSide, dir);
             bool[] destBorder = this.BorderToFulfill[dir];
             Loc diff = sourceRoom.Draw.Start - this.Draw.Start; // how far ahead the start of source is to dest
 
@@ -473,7 +508,13 @@ namespace RogueElements
             }
         }
 
-        private void FillSideReq(IntRange range, Dir4 dir)
+        /// <summary>
+        /// Adds a tile range to the room's sidereq in a specified direction.
+        /// The range will be checked to see if it's possible.
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="dir"></param>
+        private void AskSideReq(IntRange range, Dir4 dir)
         {
             if (range.Length <= 0)
                 throw new ArgumentException("Range must have a positive length.");
