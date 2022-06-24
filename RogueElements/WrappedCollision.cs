@@ -87,29 +87,29 @@ namespace RogueElements
         /// Gets the unwrapped version of pt2 that is closest to pt1.
         /// </summary>
         /// <param name="wrapSize"></param>
-        /// <param name="pt1"></param>
-        /// <param name="pt2"></param>
+        /// <param name="pt1">The point to get close to.  Unwrapped.</param>
+        /// <param name="pt2">The point to get a close version of.  Unwrapped.</param>
         /// <returns></returns>
         public static int GetClosestWrap(int wrapSize, int pt1, int pt2)
         {
-            pt1 = MathUtils.Wrap(pt1, wrapSize);
-            pt2 = MathUtils.Wrap(pt2, wrapSize);
+            int wrapPt1 = MathUtils.Wrap(pt1, wrapSize);
+            int wrapPt2 = MathUtils.Wrap(pt2, wrapSize);
 
-            int diff1 = Math.Abs(pt2 - pt1);
-            if (pt1 < pt2)
+            int diff1 = wrapPt2 - wrapPt1;
+            if (wrapPt1 < wrapPt2)
             {
-                int diff2 = Math.Abs((pt2 - wrapSize) - pt1);
-                if (diff2 < diff1)
-                    return pt2 - wrapSize;
+                int diff2 = (wrapPt2 - wrapSize) - wrapPt1;
+                if (Math.Abs(diff2) < Math.Abs(diff1))
+                    return pt1 + diff2;
             }
-            else
+            else if (wrapPt1 > wrapPt2)
             {
-                int diff2 = Math.Abs((pt2 + wrapSize) - pt1);
-                if (diff2 < diff1)
-                    return pt2 + wrapSize;
+                int diff2 = (wrapPt2 + wrapSize) - wrapPt1;
+                if (Math.Abs(diff2) < Math.Abs(diff1))
+                    return pt1 + diff2;
             }
 
-            return pt2;
+            return pt1 + diff1;
         }
 
         public static IEnumerable<Loc> IteratePointsInBounds(Loc wrapSize, Rect rect, Loc pt)

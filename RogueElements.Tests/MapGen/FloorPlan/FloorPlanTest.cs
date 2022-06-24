@@ -571,18 +571,32 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 5; ii++)
             {
                 Mock<IRoomGen> roomGen = new Mock<IRoomGen>(MockBehavior.Strict);
-                roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
-                if (ii == 1 || ii == 3)
+                if (!isHall && index == ii)
                 {
+                    roomGen.SetupGet(p => p.Draw).Returns(new Rect(new Loc(1, 5), new Loc(4, 2)));
+                }
+                else if (ii == 1 || ii == 3)
+                {
+                    roomGen.SetupGet(p => p.Draw).Returns(new Rect(new Loc(ii, 3), new Loc(2, 2)));
                     roomGen.Setup(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()));
                     roomGenTarget.Add(roomGen);
                 }
+                else
+                {
+                    roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
+                }
 
                 var roomPlan = new FloorRoomPlan(roomGen.Object, new ComponentCollection());
-                roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
-                roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
-                roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
-                roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
+
+                // only the room under test should get adjacents
+                if (!isHall && index == ii)
+                {
+                    roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
+                }
+
                 floorPlan.PublicRooms.Add(roomPlan);
             }
 
@@ -590,17 +604,30 @@ namespace RogueElements.Tests
             {
                 Mock<IPermissiveRoomGen> roomGen = new Mock<IPermissiveRoomGen>(MockBehavior.Strict);
                 roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
-                if (ii == 1 || ii == 3)
+                if (isHall && index == ii)
                 {
+                    roomGen.SetupGet(p => p.Draw).Returns(new Rect(new Loc(1, 5), new Loc(4, 2)));
+                }
+                else if (ii == 1 || ii == 3)
+                {
+                    roomGen.SetupGet(p => p.Draw).Returns(new Rect(new Loc(ii, 7), new Loc(2, 2)));
                     roomGen.Setup(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()));
                     hallGenTarget.Add(roomGen);
                 }
+                else
+                {
+                    roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
+                }
 
                 var roomPlan = new FloorHallPlan(roomGen.Object, new ComponentCollection());
-                roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
-                roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
-                roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
-                roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
+
+                if (isHall && index == ii)
+                {
+                    roomPlan.Adjacents.Add(new RoomHallIndex(1, false));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(3, false));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
+                    roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
+                }
                 floorPlan.PublicHalls.Add(roomPlan);
             }
 
@@ -611,17 +638,17 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < roomGenTarget.Count; ii++)
             {
                 if (ii >= roomGenTarget.Count - expectedRoom)
-                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
             }
 
             for (int ii = 0; ii < hallGenTarget.Count; ii++)
             {
                 if (ii >= hallGenTarget.Count - expectedHall)
-                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
             }
         }
 
@@ -643,8 +670,113 @@ namespace RogueElements.Tests
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(dx, dy, 2, 2));
 
             var testFloorPlan = new TestFloorPlan();
-            Dir4 dir = TestFloorPlan.GetDirAdjacent(mockFrom.Object, mockTo.Object);
+            Dir4 dir = testFloorPlan.GetDirAdjacent(mockFrom.Object, mockTo.Object);
             Assert.That(dir, Is.EqualTo(expectedDir));
+        }
+
+        [Test]
+        public void GetRectAdjacentError()
+        {
+            // transfers based on location; requires EXACT contact
+            var testFloorPlan = new TestFloorPlan();
+            Assert.Throws<ArgumentException>(() => { testFloorPlan.GetAdjacentRect(new Rect(0, 0, 2, 2), new Rect(0, 2, 2, 2), Dir4.None); });
+        }
+
+        // base cases
+        [Test]
+        [TestCase(0, 0, Dir4.Down, false)] // none
+        [TestCase(0, 0, Dir4.Left, false)] // none
+        [TestCase(0, 0, Dir4.Up, false)] // none
+        [TestCase(0, 0, Dir4.Right, false)] // none
+        [TestCase(0, 1, Dir4.Down, false)] // collided at bottom
+        [TestCase(0, 1, Dir4.Left, false)] // collided at bottom
+        [TestCase(0, 1, Dir4.Up, false)] // collided at bottom
+        [TestCase(0, 1, Dir4.Right, false)] // collided at bottom
+        [TestCase(0, 2, Dir4.Down, true)] // joined at bottom
+        [TestCase(0, 2, Dir4.Left, false)] // joined at bottom, incorrect angle
+        [TestCase(0, 2, Dir4.Up, false)] // joined at bottom, incorrect angle
+        [TestCase(0, 2, Dir4.Right, false)] // joined at bottom, incorrect angle
+        [TestCase(0, 3, Dir4.Down, false)] // not joined at bottom
+        [TestCase(0, 3, Dir4.Left, false)] // not joined at bottom
+        [TestCase(0, 3, Dir4.Up, false)] // not joined at bottom
+        [TestCase(0, 3, Dir4.Right, false)] // not joined at bottom
+        [TestCase(-2, 0, Dir4.Left, true)] // joined at left
+        [TestCase(-2, 0, Dir4.Up, false)] // joined at left, incorrect angle
+        [TestCase(-2, 0, Dir4.Right, false)] // joined at left, incorrect angle
+        [TestCase(-2, 0, Dir4.Down, false)] // joined at left, incorrect angle
+        [TestCase(0, -2, Dir4.Up, true)] // joined at top
+        [TestCase(2, 0, Dir4.Right, true)] // joined at right
+        [TestCase(2, 2, Dir4.Down, false)] // joined at right-down diagonal
+        [TestCase(2, 2, Dir4.Left, false)] // joined at right-down diagonal
+        [TestCase(2, 2, Dir4.Up, false)] // joined at right-down diagonal
+        [TestCase(2, 2, Dir4.Right, false)] // joined at right-down diagonal
+        public void GetRectAdjacent(int dx, int dy, Dir4 dir, bool result)
+        {
+            // transfers based on location; requires EXACT contact
+            var testFloorPlan = new TestFloorPlan();
+            Rect? rect = testFloorPlan.GetAdjacentRect(new Rect(0, 0, 2, 2), new Rect(dx, dy, 2, 2), dir);
+            if (result)
+                Assert.That(rect.Value, Is.EqualTo(new Rect(dx, dy, 2, 2)));
+            else
+                Assert.That(rect.HasValue, Is.EqualTo(false));
+        }
+
+        // wrapped
+        [Test]
+        [TestCase(0, 0, 10, 20, Dir4.Down, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Left, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Up, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Right, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 8, 0, Dir4.Left, true, -2, 0)] // joined left exactly at border
+        [TestCase(1, 0, 9, 0, Dir4.Left, true, -1, 0)] // joined left over border
+        [TestCase(8, 0, 0, 0, Dir4.Right, true, 10, 0)] // joined right exactly at border
+        [TestCase(9, 0, 1, 0, Dir4.Right, true, 11, 0)] // joined right over border
+        [TestCase(4, 0, 2, 19, Dir4.Left, true, 2, -1)] // joined left over orth border
+        [TestCase(0, 0, 0, 18, Dir4.Up, true, 0, -2)] // joined up exactly at border
+        [TestCase(0, 1, 0, 19, Dir4.Up, true, 0, -1)] // joined up over border
+        [TestCase(0, 0, 8, 20, Dir4.Left, true, -2, 0)] // joined left exactly at two borders
+        [TestCase(1, 0, 9, 19, Dir4.Left, true, -1, -1)] // joined left over two border
+        public void GetRectAdjacentWrap(int dx1, int dy1, int dx2, int dy2, Dir4 dir, bool result, int rx, int ry)
+        {
+            // transfers based on location; requires EXACT contact
+            var testFloorPlan = new TestFloorPlan();
+            testFloorPlan.InitRect(new Rect(0, 0, 10, 20), true);
+            Rect? rect = testFloorPlan.GetAdjacentRect(new Rect(dx1, dy1, 2, 2), new Rect(dx2, dy2, 2, 2), dir);
+            if (result)
+                Assert.That(rect.Value, Is.EqualTo(new Rect(rx, ry, 2, 2)));
+            else
+                Assert.That(rect.HasValue, Is.EqualTo(false));
+
+            // also test this with offset
+        }
+
+        [Test]
+        [TestCase(0, 0, 10, 20, Dir4.Down, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Left, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Up, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 10, 20, Dir4.Right, false, 0, 0)] // full overlap
+        [TestCase(0, 0, 8, 0, Dir4.Left, true, -2, 0)] // joined left exactly at border
+        [TestCase(1, 0, 9, 0, Dir4.Left, true, -1, 0)] // joined left over border
+        [TestCase(8, 0, 0, 0, Dir4.Right, true, 10, 0)] // joined right exactly at border
+        [TestCase(9, 0, 1, 0, Dir4.Right, true, 11, 0)] // joined right over border
+        [TestCase(4, 0, 2, 19, Dir4.Left, true, 2, -1)] // joined left over orth border
+        [TestCase(0, 0, 0, 18, Dir4.Up, true, 0, -2)] // joined up exactly at border
+        [TestCase(0, 1, 0, 19, Dir4.Up, true, 0, -1)] // joined up over border
+        [TestCase(0, 0, 8, 20, Dir4.Left, true, -2, 0)] // joined left exactly at two borders
+        [TestCase(1, 0, 9, 19, Dir4.Left, true, -1, -1)] // joined left over two border
+        public void GetRectAdjacentWrapOffset(int dx1, int dy1, int dx2, int dy2, Dir4 dir, bool result, int rx, int ry)
+        {
+            // transfers based on location; requires EXACT contact
+            Loc offset = new Loc(2, 3);
+            var testFloorPlan = new TestFloorPlan();
+            testFloorPlan.InitRect(new Rect(offset.X, offset.Y, 10, 20), true);
+            Rect rect1 = new Rect(new Loc(dx1, dy1) + offset, new Loc(2));
+            Rect rect2 = new Rect(new Loc(dx2, dy2) + offset, new Loc(2));
+            Rect? rect = testFloorPlan.GetAdjacentRect(rect1, rect2, dir);
+            if (result)
+                Assert.That(rect.Value, Is.EqualTo(new Rect(new Loc(rx, ry) + offset, new Loc(2))));
+            else
+                Assert.That(rect.HasValue, Is.EqualTo(false));
         }
 
         [Test]
