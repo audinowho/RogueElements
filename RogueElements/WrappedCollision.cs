@@ -111,5 +111,82 @@ namespace RogueElements
 
             return pt2;
         }
+
+        public static IEnumerable<Loc> IteratePointsInBounds(Loc wrapSize, Rect rect, Loc pt)
+        {
+            foreach (int xx in IteratePointsInBounds(wrapSize.X, rect.X, rect.Size.X, pt.X))
+            {
+                foreach (int yy in IteratePointsInBounds(wrapSize.Y, rect.Y, rect.Size.Y, pt.Y))
+                    yield return new Loc(xx, yy);
+            }
+        }
+
+        /// <summary>
+        /// Returns all unwrapped versions of a point that exist within a region.
+        /// </summary>
+        /// <param name="wrapSize">Size of the wrapped area</param>
+        /// <param name="start">Unwrapped start of the region</param>
+        /// <param name="size">Size of the region</param>
+        /// <param name="pt">The point to find unwrapped versions.</param>
+        /// <returns></returns>
+        public static IEnumerable<int> IteratePointsInBounds(int wrapSize, int start, int size, int pt)
+        {
+            // take the start of the region, round down to the lowest whole map.  this is the earliest map to check
+            // take the end of the region, round up to the highest whole map.  this is the bottom-most (exclusive) map to check
+            int startBounds = MathUtils.DivDown(start, wrapSize);
+            int endBounds = MathUtils.DivUp(start + size, wrapSize);
+            int wrapPt = MathUtils.Wrap(pt, wrapSize);
+
+            for (int xx = startBounds; xx < endBounds; xx++)
+            {
+                int mapStart = xx * wrapSize;
+                int testPt = mapStart + wrapPt;
+                if (Collision.InBounds(start, size, testPt))
+                    yield return testPt;
+            }
+        }
+
+        /// <summary>
+        /// Returns all unwrapped versions of a rect that collides with another rect.
+        /// </summary>
+        /// <param name="wrapSize"></param>
+        /// <param name="rect1">The unwrapped reference region</param>
+        /// <param name="rect2">The region to find unwrapped versions of</param>
+        /// <returns></returns>
+        public static IEnumerable<Rect> IterateRegionsColliding(Loc wrapSize, Rect rect1, Rect rect2)
+        {
+            foreach (IntRange xx in IterateRegionsColliding(wrapSize.X, rect1.X, rect1.Size.X, rect2.X, rect2.Size.X))
+            {
+                foreach (IntRange yy in IterateRegionsColliding(wrapSize.Y, rect1.Y, rect1.Size.Y, rect2.Y, rect2.Size.Y))
+                    yield return new Rect(new Loc(xx.Min, yy.Min), new Loc(xx.Length, yy.Length));
+            }
+        }
+
+        /// <summary>
+        /// Returns all unwrapped versions of a region that collides with another region.
+        /// </summary>
+        /// <param name="wrapSize">Size of the wrapped area</param>
+        /// <param name="start1">The unwrapped start of the reference region</param>
+        /// <param name="size1">The size of the reference region</param>
+        /// <param name="start2">The start of the region to find the unwrapped versions of</param>
+        /// <param name="size2">The size of the region to find the unwrapped versions of</param>
+        /// <returns></returns>
+        public static IEnumerable<IntRange> IterateRegionsColliding(int wrapSize, int start1, int size1, int start2, int size2)
+        {
+            // take the start of the region, round down to the lowest whole map.  this is the earliest map to check
+            // take the end of the region, round up to the highest whole map.  this is the bottom-most (exclusive) map to check
+
+            int startBounds = MathUtils.DivDown(start1 - size2, wrapSize);
+            int endBounds = MathUtils.DivUp(start1 + size1, wrapSize);
+            int wrapPt = MathUtils.Wrap(start2, wrapSize);
+
+            for (int xx = startBounds; xx < endBounds; xx++)
+            {
+                int mapStart = xx * wrapSize;
+                int testStart = mapStart + wrapPt;
+                if (Collision.Collides(testStart, size2, start1, size1))
+                    yield return new IntRange(testStart, testStart + size2);
+            }
+        }
     }
 }
