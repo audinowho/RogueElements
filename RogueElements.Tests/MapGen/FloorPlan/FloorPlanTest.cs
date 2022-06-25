@@ -638,17 +638,17 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < roomGenTarget.Count; ii++)
             {
                 if (ii >= roomGenTarget.Count - expectedRoom)
-                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, from.GetOpenedBorder, It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
+                    roomGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, from.GetOpenedBorder, It.IsAny<Dir4>()), Times.Exactly(0));
             }
 
             for (int ii = 0; ii < hallGenTarget.Count; ii++)
             {
                 if (ii >= hallGenTarget.Count - expectedHall)
-                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(1));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, from.GetOpenedBorder, It.IsAny<Dir4>()), Times.Exactly(1));
                 else
-                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(It.IsAny<Rect>(), It.IsAny<Func<Dir4, int, bool>>(), It.IsAny<Dir4>()), Times.Exactly(0));
+                    hallGenTarget[ii].Verify(p => p.AskBorderFromRoom(from.Draw, from.GetOpenedBorder, It.IsAny<Dir4>()), Times.Exactly(0));
             }
         }
 
