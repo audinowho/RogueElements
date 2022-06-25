@@ -497,9 +497,9 @@ namespace RogueElements
                 {
                     IRoomGen adjacentGen = this.GetRoomHall(adjacent).RoomGen;
 
-                    Dir4 adjDir = this.GetDirAdjacent(roomGen, adjacentGen);
-                    Rect wrapRect = this.GetAdjacentRect(basePlan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
-                    adjacentGen.AskBorderFromRoom(wrapRect, adjacentGen.GetOpenedBorder, adjDir);
+                    Dir4 adjDir = this.GetDirAdjacent(adjacentGen, roomGen);
+                    Rect wrapRect = this.GetAdjacentRect(adjacentGen.Draw, basePlan.RoomGen.Draw, adjDir).Value;
+                    adjacentGen.AskBorderFromRoom(wrapRect, roomGen.GetOpenedBorder, adjDir);
                 }
             }
         }
