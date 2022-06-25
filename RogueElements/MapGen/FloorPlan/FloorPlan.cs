@@ -31,6 +31,35 @@ namespace RogueElements
         protected List<FloorHallPlan> Halls { get; private set; }
 
         /// <summary>
+        /// Gets the amount of tiles that overlap when adding a new room adjacent to an existing room.
+        /// </summary>
+        /// <param name="roomFrom">The room to have the new room added to.</param>
+        /// <param name="room">The new room to add. Its current position is not final.</param>
+        /// <param name="candLoc">The proposed location of the new room. Assumes this loc is indeed adjacent to the roomFrom, even in wrapped scenarios.</param>
+        /// <param name="expandTo">The direction to expand from the old room to new room.</param>
+        /// <returns></returns>
+        public static int GetBorderMatch(IRoomGen roomFrom, IRoomGen room, Loc candLoc, Dir4 expandTo)
+        {
+            Loc diff = roomFrom.Draw.Start - candLoc; // how far ahead the start of source is to dest
+            int offset = diff.GetScalar(expandTo.ToAxis().Orth());
+
+            // Traverse the region that both borders touch
+            int sourceLength = roomFrom.Draw.GetBorderLength(expandTo);
+            int destLength = room.Draw.GetBorderLength(expandTo.Reverse());
+
+            int totalMatch = 0;
+            for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destLength; ii++)
+            {
+                bool sourceFulfill = roomFrom.GetFulfillableBorder(expandTo, ii - offset);
+                bool destFulfill = room.GetFulfillableBorder(expandTo.Reverse(), ii);
+                if (sourceFulfill && destFulfill)
+                    totalMatch++;
+            }
+
+            return totalMatch;
+        }
+
+        /// <summary>
         /// Given two rectangles that are meant to be adjacent to each other, with a valid direction of adjacency,
         /// Gets the unwrapped version of the second rectangle that is adjacent to the first.
         /// </summary>
@@ -99,36 +128,6 @@ namespace RogueElements
             }
 
             return Dir4.None;
-        }
-
-        /// <summary>
-        /// Gets the amount of tiles that overlap when connecting two rooms?
-        /// </summary>
-        /// <param name="roomFrom"></param>
-        /// <param name="room"></param>
-        /// <param name="candLoc"></param>
-        /// <param name="expandTo"></param>
-        /// <returns></returns>
-        public static int GetBorderMatch(IRoomGen roomFrom, IRoomGen room, Loc candLoc, Dir4 expandTo)
-        {
-            int totalMatch = 0;
-
-            Loc diff = roomFrom.Draw.Start - candLoc; // how far ahead the start of source is to dest
-            // TODO: wrapping needed here?
-            int offset = diff.GetScalar(expandTo.ToAxis().Orth());
-
-            // Traverse the region that both borders touch
-            int sourceLength = roomFrom.Draw.GetBorderLength(expandTo);
-            int destLength = room.Draw.GetBorderLength(expandTo.Reverse());
-            for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destLength; ii++)
-            {
-                bool sourceFulfill = roomFrom.GetFulfillableBorder(expandTo, ii - offset);
-                bool destFulfill = room.GetFulfillableBorder(expandTo.Reverse(), ii);
-                if (sourceFulfill && destFulfill)
-                    totalMatch++;
-            }
-
-            return totalMatch;
         }
 
         public void InitSize(Loc size, bool wrap = false)

@@ -330,17 +330,13 @@ namespace RogueElements
             var adjacentsByDir = new Dictionary<Dir4, List<RoomHallIndex>>();
             IFloorRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-            {
                 adjacentsByDir[dir] = new List<RoomHallIndex>();
-                foreach (RoomHallIndex adjacent in oldPlan.Adjacents)
-                {
-                    IFloorRoomPlan adjPlan = floorPlan.GetRoomHall(adjacent);
-                    if (oldPlan.RoomGen.Draw.GetScalar(dir) ==
-                        adjPlan.RoomGen.Draw.GetScalar(dir.Reverse()))
-                    {
-                        adjacentsByDir[dir].Add(adjacent);
-                    }
-                }
+
+            foreach (RoomHallIndex adjacent in oldPlan.Adjacents)
+            {
+                IFloorRoomPlan adjPlan = floorPlan.GetRoomHall(adjacent);
+                Dir4 dir = floorPlan.GetDirAdjacent(oldPlan.RoomGen, adjPlan.RoomGen);
+                adjacentsByDir[dir].Add(adjacent);
             }
 
             return adjacentsByDir;
