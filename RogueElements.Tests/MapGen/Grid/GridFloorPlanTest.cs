@@ -698,8 +698,8 @@ namespace RogueElements.Tests
             mockHall.Setup(p => p.PrepareSize(mockRand.Object, new Loc(5, 6)));
             floorPlan.Object.PublicVHalls[1][1].SetHall(new GridHallPlan(mockHall.Object, new ComponentCollection()));
 
-            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom1.Object, Dir4.Down, 1)).Returns(new IntRange(6, 9));
-            floorPlan.Setup(p => p.GetHallTouchRange(mockRoom2.Object, Dir4.Up, 1)).Returns(new IntRange(8, 11));
+            floorPlan.Setup(p => p.GetHallTouchRange(new Rect(6, 6, 3, 2), mockRoom1.Object.GetFulfillableBorder, Dir4.Down, 1)).Returns(new IntRange(6, 9));
+            floorPlan.Setup(p => p.GetHallTouchRange(new Rect(8, 14, 3, 2), mockRoom2.Object.GetFulfillableBorder, Dir4.Up, 1)).Returns(new IntRange(8, 11));
 
             floorPlan.Object.ChooseHallBounds(mockRand.Object, 1, 1, true);
 
@@ -748,7 +748,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -801,7 +801,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -857,7 +857,54 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
+
+            Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
+            mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
+            mockMap.SetupGet(p => p.RoomPlan).Returns(floorPlan);
+
+            gridPlan.PlaceRoomsOnFloor(mockMap.Object);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void PlaceLargeRoomOnFloor()
+        {
+            // place two rooms connected by a hall
+            string[] inGrid =
+            {
+                "A.A",
+                ". .",
+                "A.A",
+            };
+
+            TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
+            for (int ii = 0; ii < gridPlan.RoomCount; ii++)
+            {
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(11, 11),
+                };
+                gridPlan.PublicArrayRooms[ii].RoomGen = gen;
+            }
+
+            TestFloorPlan compareFloorPlan;
+            {
+                var links = new Tuple<char, char>[]
+                { };
+                compareFloorPlan = TestFloorPlan.InitFloorToContext(
+                    gridPlan.Size,
+                    new Rect[] { new Rect(0, 0, 11, 11) },
+                    new Rect[] { },
+                    links);
+            }
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var floorPlan = new TestFloorPlan();
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -883,10 +930,22 @@ namespace RogueElements.Tests
             TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
             for (int ii = 0; ii < gridPlan.RoomCount; ii++)
             {
-                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                TestFloorPlanGen gen;
+                if (ii == 0)
                 {
-                    ProposedSize = new Loc(5, 5),
-                };
+                    gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                    {
+                        ProposedSize = new Loc(11, 5),
+                    };
+                }
+                else
+                {
+                    gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                    {
+                        ProposedSize = new Loc(5, 5),
+                    };
+                }
+
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
 
@@ -902,7 +961,7 @@ namespace RogueElements.Tests
                 compareFloorPlan = TestFloorPlan.InitFloorToContext(
                     gridPlan.Size,
                     new Rect[] { new Rect(12, 0, 11, 5), new Rect(6, 0, 5, 5) },
-                    new Rect[] { new Rect(5, 0, 1, 5) },
+                    new Rect[] { new Rect(23, 0, 1, 5) },
                     links);
             }
 
@@ -910,7 +969,62 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
+
+            Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
+            mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
+            mockMap.SetupGet(p => p.RoomPlan).Returns(floorPlan);
+
+            gridPlan.PlaceRoomsOnFloor(mockMap.Object);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void PlaceConnectedLargeRoomOnFloor()
+        {
+            // place two rooms connected by a hall
+            string[] inGrid =
+            {
+                "A#B",
+                ". .",
+                "A#B",
+            };
+
+            TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
+            for (int ii = 0; ii < gridPlan.RoomCount; ii++)
+            {
+                var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
+                {
+                    ProposedSize = new Loc(5, 11),
+                };
+                gridPlan.PublicArrayRooms[ii].RoomGen = gen;
+            }
+
+            gridPlan.PublicHHalls[0][0].SetHall(new GridHallPlan(new TestFloorPlanGen('a'), new ComponentCollection()));
+            gridPlan.PublicHHalls[0][1].SetHall(new GridHallPlan(new TestFloorPlanGen('b'), new ComponentCollection()));
+
+            TestFloorPlan compareFloorPlan;
+            {
+                var links = new Tuple<char, char>[]
+                {
+                    Tuple.Create('A', 'a'),
+                    Tuple.Create('a', 'B'),
+                    Tuple.Create('A', 'b'),
+                    Tuple.Create('b', 'B'),
+                };
+                compareFloorPlan = TestFloorPlan.InitFloorToContext(
+                    gridPlan.Size,
+                    new Rect[] { new Rect(0, 0, 5, 11), new Rect(6, 0, 5, 11) },
+                    new Rect[] { new Rect(5, 0, 1, 5), new Rect(5, 6, 1, 5) },
+                    links);
+            }
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var floorPlan = new TestFloorPlan();
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -940,7 +1054,7 @@ namespace RogueElements.Tests
             {
                 var gen = new TestFloorPlanGen(((TestGridRoomGen)gridPlan.GetRoom(ii)).Identifier)
                 {
-                    ProposedSize = new Loc(5, 5),
+                    ProposedSize = new Loc(5, 11),
                 };
                 gridPlan.PublicArrayRooms[ii].RoomGen = gen;
             }
@@ -959,8 +1073,8 @@ namespace RogueElements.Tests
                 };
                 compareFloorPlan = TestFloorPlan.InitFloorToContext(
                     gridPlan.Size,
-                    new Rect[] { new Rect(6, 0, 5, 11), new Rect(11, 0, 5, 11) },
-                    new Rect[] { new Rect(11, 0, 1, 5), new Rect(11, 11, 1, 5) },
+                    new Rect[] { new Rect(6, 12, 5, 11), new Rect(12, 12, 5, 11) },
+                    new Rect[] { new Rect(11, 18, 1, 5), new Rect(11, 12, 1, 5) },
                     links);
             }
 
@@ -968,7 +1082,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1029,7 +1143,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1080,7 +1194,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1160,7 +1274,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(9);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1212,7 +1326,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1264,7 +1378,7 @@ namespace RogueElements.Tests
             seq = seq.Returns(9);
 
             var floorPlan = new TestFloorPlan();
-            floorPlan.InitSize(gridPlan.Size);
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
 
             Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
             mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
@@ -1428,7 +1542,7 @@ namespace RogueElements.Tests
             IRoomGen testGen = floorPlan.PublicArrayRooms[0].RoomGen;
             testGen.PrepareSize(testRand.Object, new Loc(4, 2));
             testGen.SetLoc(new Loc(8, 6));
-            IntRange bounds = floorPlan.GetHallTouchRange(testGen, dir, 1);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen.Draw, testGen.GetFulfillableBorder, dir, 1);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
@@ -1462,7 +1576,7 @@ namespace RogueElements.Tests
             IRoomGen testGen = floorPlan.PublicArrayRooms[0].RoomGen;
             testGen.PrepareSize(testRand.Object, new Loc(5, 10));
             testGen.SetLoc(new Loc(1, 2));
-            IntRange bounds = floorPlan.GetHallTouchRange(testGen, dir, tier);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen.Draw, testGen.GetFulfillableBorder, dir, tier);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
@@ -1500,7 +1614,7 @@ namespace RogueElements.Tests
             testGen.PrepareSize(testRand.Object, new Loc(width, 6));
             testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
             testGen.SetLoc(new Loc(2, 1));
-            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, 0);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen.Draw, testGen.GetFulfillableBorder, Dir4.Down, 0);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
@@ -1528,7 +1642,7 @@ namespace RogueElements.Tests
             testGen.PrepareSize(testRand.Object, new Loc(width, 6));
             testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
             testGen.SetLoc(new Loc(7, 1));
-            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, tier);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen.Draw, testGen.GetFulfillableBorder, Dir4.Down, tier);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
@@ -1575,7 +1689,7 @@ namespace RogueElements.Tests
             testGen.PrepareSize(testRand.Object, new Loc(width, 6));
             testGen.PrepareFulfillableBorder(Dir4.Down, fulfillable);
             testGen.SetLoc(new Loc(2, 1));
-            IntRange bounds = floorPlan.GetHallTouchRange(testGen, Dir4.Down, 1);
+            IntRange bounds = floorPlan.GetHallTouchRange(testGen.Draw, testGen.GetFulfillableBorder, Dir4.Down, 1);
             IntRange compareBounds = new IntRange(rangeMin, rangeMax);
             Assert.That(bounds, Is.EqualTo(compareBounds));
         }
