@@ -260,27 +260,19 @@ namespace RogueElements.Tests
         public void AddRoomOutOfRangeWrapped(int x, int y, int w, int h)
         {
             // out of range, but wrapped
-            string[] inGrid =
-            {
-                "0.0.0.0",
-                ". . . .",
-                "0.0.0.0",
-                ". . . .",
-                "0.0.0.0",
-            };
+            // can't create this using visual grid; do it manually
+            TestGridFloorPlan floorPlan = new TestGridFloorPlan();
+            floorPlan.InitSize(4, 3, 0, 0, 1, true);
 
-            string[] outGrid =
-            {
-                "A.A.0.0",
-                ". . . .",
-                "0.0.0.0",
-                ". . . .",
-                "A.A.0.0",
-            };
+            TestGridFloorPlan resultFloorPlan = new TestGridFloorPlan();
+            resultFloorPlan.InitSize(4, 3, 0, 0, 1, true);
 
-            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            TestGridFloorPlan resultFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
-            floorPlan.Wrap = true;
+            resultFloorPlan.PublicRooms[0][0] = 0;
+            resultFloorPlan.PublicRooms[1][0] = 0;
+            resultFloorPlan.PublicRooms[0][2] = 0;
+            resultFloorPlan.PublicRooms[1][2] = 0;
+            resultFloorPlan.PublicArrayRooms.Add(new GridRoomPlan(new Rect(x, y, w, h), new TestGridRoomGen('A'), new ComponentCollection()));
+
             var gen = new TestGridRoomGen('A');
             floorPlan.AddRoom(new Rect(x, y, w, h), gen, new ComponentCollection());
             TestGridFloorPlan.CompareFloorPlans(floorPlan, resultFloorPlan);
@@ -444,22 +436,25 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        [TestCase(2, 3, Dir4.Right, -1)]
-        [TestCase(3, 3, Dir4.Left, -1)]
-        [TestCase(4, 1, Dir4.Down, -1)]
-        [TestCase(4, 2, Dir4.Up, -1)]
-        [TestCase(3, 2, Dir4.Right, -1)]
-        [TestCase(3, 2, Dir4.Down, -1)]
+        [TestCase(2, 3, Dir4.Right, 0)]
+        [TestCase(3, 3, Dir4.Left, 0)]
+        [TestCase(4, 1, Dir4.Down, 1)]
+        [TestCase(4, 2, Dir4.Up, 1)]
+        [TestCase(3, 2, Dir4.Right, 2)]
+        [TestCase(0, 2, Dir4.Left, 2)]
+        [TestCase(3, 2, Dir4.Down, 3)]
+        [TestCase(3, 0, Dir4.Up, 3)]
         public void SetHallOnBorderWrapped(int dx, int dy, Dir4 dir, int expectedOut)
         {
             // valid/invalid dir
             string[] inGrid =
             {
-                "0.0.0.0",
-                ". . . .",
-                "0.0.0.0",
-                ". . . .",
-                "0.0.0.0",
+                "0.0.0.0.",
+                ". . . . ",
+                "0.0.0.0.",
+                ". . . . ",
+                "0.0.0.0.",
+                ". . . . ",
             };
 
             string[] outGrid = null;
@@ -469,21 +464,45 @@ namespace RogueElements.Tests
                 case 0:
                     outGrid = new string[]
                     {
-                        "0.0.0.0",
-                        ". . . .",
-                        "0.0.0.0",
-                        ". . . .",
-                        "0.0.0#0",
+                        "0.0.0#0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        ". . . . ",
                     };
                     break;
                 case 1:
                     outGrid = new string[]
                     {
-                        "0.0.0.0",
-                        ". . . .",
-                        "0.0.0.0",
-                        ". . . #",
-                        "0.0.0.0",
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        "# . . . ",
+                        "0.0.0.0.",
+                        ". . . . ",
+                    };
+                    break;
+                case 2:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0#",
+                        ". . . . ",
+                    };
+                    break;
+                case 3:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        ". . . . ",
+                        "0.0.0.0.",
+                        ". . . # ",
                     };
                     break;
                 default:
@@ -492,7 +511,6 @@ namespace RogueElements.Tests
             }
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            floorPlan.Wrap = true;
             var gen = new TestGridRoomGen((char)0);
             if (exception)
             {
