@@ -40,6 +40,7 @@ namespace RogueElements.Tests
                 Assert.That(floorPlan.PublicVHalls[xx].Length, Is.EqualTo(compareFloorPlan.PublicVHalls[xx].Length));
                 for (int yy = 0; yy < floorPlan.PublicVHalls[xx].Length; yy++)
                 {
+                    Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts.Count, Is.EqualTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts.Count));
                     for (int nn = 0; nn < floorPlan.PublicVHalls[xx][yy].HallParts.Count; nn++)
                     {
                         Assert.That(floorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicVHalls[xx][yy].HallParts[nn].RoomGen));
@@ -54,6 +55,7 @@ namespace RogueElements.Tests
                 Assert.That(floorPlan.PublicHHalls[xx].Length, Is.EqualTo(compareFloorPlan.PublicHHalls[xx].Length));
                 for (int yy = 0; yy < floorPlan.PublicVHalls[xx].Length; yy++)
                 {
+                    Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts.Count, Is.EqualTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts.Count));
                     for (int nn = 0; nn < floorPlan.PublicHHalls[xx][yy].HallParts.Count; nn++)
                     {
                         Assert.That(floorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen, Is.EqualTo(compareFloorPlan.PublicHHalls[xx][yy].HallParts[nn].RoomGen));
