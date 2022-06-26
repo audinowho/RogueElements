@@ -369,14 +369,20 @@ namespace RogueElements
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
                 {
                     Loc subLoc = new Loc(xx, yy);
+                    Loc subLocLeft = new Loc(xx - 1, yy);
+                    Loc subLocUp = new Loc(xx, yy - 1);
                     if (this.Wrap)
+                    {
                         subLoc = this.WrapRoom(subLoc);
+                        subLocLeft = this.WrapRoom(subLocLeft);
+                        subLocUp = this.WrapRoom(subLocUp);
+                    }
 
                     if (this.Rooms[subLoc.X][subLoc.Y] != -1)
                         throw new InvalidOperationException("Tried to add on top of an existing room!");
-                    if (xx > rect.Start.X && this.HHalls[subLoc.X - 1][subLoc.Y].MainHall != null)
+                    if (xx > rect.Start.X && this.HHalls[subLocLeft.X][subLocLeft.Y].MainHall != null)
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
-                    if (yy > rect.Start.Y && this.VHalls[subLoc.X][subLoc.Y - 1].MainHall != null)
+                    if (yy > rect.Start.Y && this.VHalls[subLocUp.X][subLocUp.Y].MainHall != null)
                         throw new InvalidOperationException("Tried to add on top of an existing hall!");
                 }
             }
@@ -413,14 +419,20 @@ namespace RogueElements
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
                 {
                     Loc subLoc = new Loc(xx, yy);
+                    Loc subLocLeft = new Loc(xx - 1, yy);
+                    Loc subLocUp = new Loc(xx, yy - 1);
                     if (this.Wrap)
+                    {
                         subLoc = this.WrapRoom(subLoc);
+                        subLocLeft = this.WrapRoom(subLocLeft);
+                        subLocUp = this.WrapRoom(subLocUp);
+                    }
 
                     if (this.Rooms[subLoc.X][subLoc.Y] != -1)
                         return false;
-                    if (xx > rect.Start.X && this.HHalls[subLoc.X - 1][subLoc.Y].MainHall != null)
+                    if (xx > rect.Start.X && this.HHalls[subLocLeft.X][subLocLeft.Y].MainHall != null)
                         return false;
-                    if (yy > rect.Start.Y && this.VHalls[subLoc.X][subLoc.Y - 1].MainHall != null)
+                    if (yy > rect.Start.Y && this.VHalls[subLocUp.X][subLocUp.Y].MainHall != null)
                         return false;
                 }
             }

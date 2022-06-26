@@ -73,10 +73,15 @@ namespace RogueElements.Tests
         public static TestGridFloorPlan InitGridToContext(string[] inGrid, int widthPerCell, int heightPerCell)
         {
             // transposes
-            if (inGrid.Length % 2 == 0 || inGrid[0].Length % 2 == 0)
+            bool wrap;
+            if (inGrid.Length % 2 == 0 && inGrid[0].Length % 2 == 0)
+                wrap = true;
+            else if (inGrid.Length % 2 == 1 && inGrid[0].Length % 2 == 1)
+                wrap = false;
+            else
                 throw new ArgumentException("Bad input grid!");
             var floorPlan = new TestGridFloorPlan();
-            floorPlan.InitSize((inGrid[0].Length / 2) + 1, (inGrid.Length / 2) + 1, widthPerCell, heightPerCell);
+            floorPlan.InitSize((inGrid[0].Length + 1) / 2, (inGrid.Length + 1) / 2, widthPerCell, heightPerCell, 1, wrap);
             GridRoomPlan[] addedRooms = new GridRoomPlan[26];
 
             for (int xx = 0; xx < inGrid[0].Length; xx++)
