@@ -32,8 +32,8 @@ namespace RogueElements
             get
             {
                 return new Loc(
-                    (this.GridWidth * (this.WidthPerCell + this.CellWall)) - this.CellWall,
-                    (this.GridHeight * (this.HeightPerCell + this.CellWall)) - this.CellWall);
+                    (this.GridWidth * (this.WidthPerCell + this.CellWall)) - (this.Wrap ? 0 : this.CellWall),
+                    (this.GridHeight * (this.HeightPerCell + this.CellWall)) - (this.Wrap ? 0 : this.CellWall));
             }
         }
 
@@ -488,6 +488,8 @@ namespace RogueElements
         public void ChooseHallBounds(IRandom rand, int x, int y, bool vertical)
         {
             GridRoomPlan startRoom = this.GetRoomPlan(new Loc(x, y));
+
+            // always down or left of the original
             GridRoomPlan endRoom = this.GetRoomPlan(new Loc(x + (vertical ? 0 : 1), y + (vertical ? 1 : 0)));
 
             GridHallGroup hallGroup = vertical ? this.VHalls[x][y] : this.HHalls[x][y];

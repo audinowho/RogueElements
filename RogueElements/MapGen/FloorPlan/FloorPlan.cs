@@ -539,14 +539,14 @@ namespace RogueElements
             for (int ii = 0; ii < this.Rooms.Count; ii++)
             {
                 FloorRoomPlan room = this.Rooms[ii];
-                if (Collides(room.RoomGen.Draw, rect))
+                if (this.Collides(room.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, false));
             }
 
             for (int ii = 0; ii < this.Halls.Count; ii++)
             {
                 FloorHallPlan hall = this.Halls[ii];
-                if (Collides(hall.RoomGen.Draw, rect))
+                if (this.Collides(hall.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, true));
             }
 

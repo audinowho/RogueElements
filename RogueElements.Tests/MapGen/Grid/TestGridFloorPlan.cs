@@ -100,7 +100,17 @@ namespace RogueElements.Tests
                             floorPlan.Rooms[x][y] = val - 'A';
                             if (addedRooms[val - 'A'] == null)
                                 addedRooms[val - 'A'] = new GridRoomPlan(new Rect(x, y, 1, 1), new TestGridRoomGen(val), new ComponentCollection());
-                            addedRooms[val - 'A'].Bounds = Rect.IncludeLoc(addedRooms[val - 'A'].Bounds, new Loc(x, y));
+                            GridRoomPlan roomPlan = addedRooms[val - 'A'];
+
+                            if (roomPlan.Bounds.End.X < x)
+                                roomPlan.Bounds = new Rect(new Loc(x, roomPlan.Bounds.Y), new Loc(floorPlan.GridWidth - x + roomPlan.Bounds.Size.X, roomPlan.Bounds.Size.Y));
+                            else if (roomPlan.Bounds.End.X == x)
+                                roomPlan.Bounds = new Rect(roomPlan.Bounds.Start, roomPlan.Bounds.Size + new Loc(1, 0));
+
+                            if (roomPlan.Bounds.End.Y < y)
+                                roomPlan.Bounds = new Rect(new Loc(roomPlan.Bounds.X, y), new Loc(roomPlan.Bounds.Size.X, floorPlan.GridHeight - y + roomPlan.Bounds.Size.Y));
+                            else if (roomPlan.Bounds.End.Y == y)
+                                roomPlan.Bounds = new Rect(roomPlan.Bounds.Start, roomPlan.Bounds.Size + new Loc(0, 1));
                         }
                         else if (val == '0')
                         {
