@@ -239,39 +239,7 @@ namespace RogueElements
         /// <returns></returns>
         public GridHallPlan GetHall(LocRay4 locRay)
         {
-            GridHallGroup[][] hallGroup;
-            Loc endLoc;
-            switch (locRay.Dir)
-            {
-                case Dir4.Down:
-                    hallGroup = this.VHalls;
-                    endLoc = locRay.Loc;
-                    break;
-                case Dir4.Left:
-                    hallGroup = this.HHalls;
-                    endLoc = locRay.Traverse(1);
-                    break;
-                case Dir4.Up:
-                    hallGroup = this.VHalls;
-                    endLoc = locRay.Traverse(1);
-                    break;
-                case Dir4.Right:
-                    hallGroup = this.HHalls;
-                    endLoc = locRay.Loc;
-                    break;
-                case Dir4.None:
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
-            }
-
-            if (this.Wrap)
-                endLoc = this.WrapRoom(endLoc);
-
-            if (this.Wrap || Collision.InBounds(this.GridWidth - 1, this.GridHeight - 1, endLoc))
-                return hallGroup[endLoc.X][endLoc.Y].MainHall;
-
-            return null;
+            return this.GetHallGroup(locRay)?.MainHall;
         }
 
         public IEnumerable<IRoomPlan> GetAllPlans()
@@ -300,7 +268,7 @@ namespace RogueElements
 
         public Loc WrapRoom(Loc loc)
         {
-            return Loc.Wrap(loc, new Loc(GridWidth, GridHeight));
+            return Loc.Wrap(loc, new Loc(this.GridWidth, this.GridHeight));
         }
 
         public bool Collides(Rect rect1, Rect rect2)
@@ -468,46 +436,15 @@ namespace RogueElements
         /// <param name="components">components to include in the hall</param>
         public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen, ComponentCollection components)
         {
-            if (locRay.Dir == Dir4.None)
-                throw new ArgumentException("Invalid direction.");
-            else if (!locRay.Dir.Validate())
-                throw new ArgumentOutOfRangeException("Invalid enum value.");
-
             GridHallPlan plan = null;
             if (hallGen != null)
                 plan = new GridHallPlan((IPermissiveRoomGen)hallGen.Copy(), components);
 
-            GridHallGroup[][] hallGroup;
-            Loc endLoc;
-            switch (locRay.Dir)
-            {
-                case Dir4.Down:
-                    hallGroup = this.VHalls;
-                    endLoc = locRay.Loc;
-                    break;
-                case Dir4.Left:
-                    hallGroup = this.HHalls;
-                    endLoc = locRay.Traverse(1);
-                    break;
-                case Dir4.Up:
-                    hallGroup = this.VHalls;
-                    endLoc = locRay.Traverse(1);
-                    break;
-                case Dir4.Right:
-                    hallGroup = this.HHalls;
-                    endLoc = locRay.Loc;
-                    break;
-                case Dir4.None:
-                    throw new ArgumentException($"No hall for dir {nameof(Dir4.None)}");
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
-            }
-
-            if (this.Wrap)
-                endLoc = this.WrapRoom(endLoc);
-
-            if (this.Wrap || Collision.InBounds(this.GridWidth - 1, this.GridHeight - 1, endLoc))
-                hallGroup[endLoc.X][endLoc.Y].SetHall(plan);
+            GridHallGroup group = this.GetHallGroup(locRay);
+            if (group != null)
+                group.SetHall(plan);
+            else
+                throw new ArgumentOutOfRangeException("Invalid position for hall.");
         }
 
         /// <summary>
@@ -781,6 +718,52 @@ namespace RogueElements
             if (chooseStart)
                 return startRange;
             return endRange;
+        }
+
+        private GridHallGroup GetHallGroup(LocRay4 locRay)
+        {
+            if (!locRay.Dir.Validate())
+                throw new ArgumentOutOfRangeException("Invalid enum value.");
+
+            GridHallGroup[][] hallGroup;
+            Loc endLoc;
+            switch (locRay.Dir)
+            {
+                case Dir4.Down:
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Loc;
+                    break;
+                case Dir4.Left:
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Traverse(1);
+                    break;
+                case Dir4.Up:
+                    hallGroup = this.VHalls;
+                    endLoc = locRay.Traverse(1);
+                    break;
+                case Dir4.Right:
+                    hallGroup = this.HHalls;
+                    endLoc = locRay.Loc;
+                    break;
+                case Dir4.None:
+                    throw new ArgumentException("Invalid direction.");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(locRay.Dir), "Invalid enum value.");
+            }
+
+            int arrayWidth = this.GridWidth;
+            int arrayHeight = this.GridHeight;
+            if (hallGroup == this.HHalls)
+                arrayWidth -= 1;
+            else if (hallGroup == this.VHalls)
+                arrayHeight -= 1;
+
+            if (this.Wrap)
+                endLoc = this.WrapRoom(endLoc);
+            else if (!Collision.InBounds(arrayWidth, arrayHeight, endLoc))
+                return null;
+
+            return hallGroup[endLoc.X][endLoc.Y];
         }
     }
 }

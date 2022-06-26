@@ -255,6 +255,38 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        [TestCase(0, -1, 2, 2)]
+        [TestCase(0, 2, 2, 2)]
+        public void AddRoomOutOfRangeWrapped(int x, int y, int w, int h)
+        {
+            // out of range, but wrapped
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "A.A.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "A.A.0.0",
+            };
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            TestGridFloorPlan resultFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+            floorPlan.Wrap = true;
+            var gen = new TestGridRoomGen('A');
+            floorPlan.AddRoom(new Rect(x, y, w, h), gen, new ComponentCollection());
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, resultFloorPlan);
+        }
+
+        [Test]
         [TestCase(Dir4.Down, 0)]
         [TestCase(Dir4.Left, 1)]
         [TestCase(Dir4.Up, 2)]
@@ -340,8 +372,141 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
 
-            // set existing hall to null
+        [Test]
+        [TestCase(2, 2, Dir4.Right, 0)]
+        [TestCase(3, 2, Dir4.Left, 0)]
+        [TestCase(3, 1, Dir4.Down, 1)]
+        [TestCase(3, 2, Dir4.Up, 1)]
+        [TestCase(2, 3, Dir4.Right, -1)]
+        [TestCase(3, 3, Dir4.Left, -1)]
+        [TestCase(4, 1, Dir4.Down, -1)]
+        [TestCase(4, 2, Dir4.Up, -1)]
+        [TestCase(3, 2, Dir4.Right, -1)]
+        [TestCase(3, 2, Dir4.Down, -1)]
+        public void SetHallOnBorder(int dx, int dy, Dir4 dir, int expectedOut)
+        {
+            // valid/invalid dir
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid = null;
+            bool exception = false;
+            switch (expectedOut)
+            {
+                case 0:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0#0",
+                    };
+                    break;
+                case 1:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0.0",
+                        ". . . #",
+                        "0.0.0.0",
+                    };
+                    break;
+                default:
+                    exception = true;
+                    break;
+            }
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            var gen = new TestGridRoomGen((char)0);
+            if (exception)
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.SetHall(new LocRay4(dx, dy, dir), gen, new ComponentCollection()); });
+                return;
+            }
+            else
+            {
+                floorPlan.SetHall(new LocRay4(dx, dy, dir), gen, new ComponentCollection());
+            }
+
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        [TestCase(2, 3, Dir4.Right, -1)]
+        [TestCase(3, 3, Dir4.Left, -1)]
+        [TestCase(4, 1, Dir4.Down, -1)]
+        [TestCase(4, 2, Dir4.Up, -1)]
+        [TestCase(3, 2, Dir4.Right, -1)]
+        [TestCase(3, 2, Dir4.Down, -1)]
+        public void SetHallOnBorderWrapped(int dx, int dy, Dir4 dir, int expectedOut)
+        {
+            // valid/invalid dir
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid = null;
+            bool exception = false;
+            switch (expectedOut)
+            {
+                case 0:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0#0",
+                    };
+                    break;
+                case 1:
+                    outGrid = new string[]
+                    {
+                        "0.0.0.0",
+                        ". . . .",
+                        "0.0.0.0",
+                        ". . . #",
+                        "0.0.0.0",
+                    };
+                    break;
+                default:
+                    exception = true;
+                    break;
+            }
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            floorPlan.Wrap = true;
+            var gen = new TestGridRoomGen((char)0);
+            if (exception)
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.SetHall(new LocRay4(dx, dy, dir), gen, new ComponentCollection()); });
+                return;
+            }
+            else
+            {
+                floorPlan.SetHall(new LocRay4(dx, dy, dir), gen, new ComponentCollection());
+            }
+
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
         }
 
         [Test]
