@@ -554,9 +554,9 @@ namespace RogueElements.Tests
         }
 
         [Test]
-        [TestCase(0, false, 2, 2)] // start of rooms
-        [TestCase(2, false, 1, 2)] // mid of rooms
-        [TestCase(4, false, 0, 2)] // end of rooms
+        [TestCase(0, false, 2, 2)] // start of room list; will affect all other rooms and halls
+        [TestCase(2, false, 1, 2)] // mid of room list; will affect all rooms after and halls
+        [TestCase(4, false, 0, 2)] // end of room list; will affect only halls
         [TestCase(0, true, 0, 2)] // repeat with halls
         [TestCase(2, true, 0, 1)]
         [TestCase(4, true, 0, 0)]
@@ -628,6 +628,7 @@ namespace RogueElements.Tests
                     roomPlan.Adjacents.Add(new RoomHallIndex(1, true));
                     roomPlan.Adjacents.Add(new RoomHallIndex(3, true));
                 }
+
                 floorPlan.PublicHalls.Add(roomPlan);
             }
 
