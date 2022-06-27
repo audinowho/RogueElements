@@ -503,16 +503,19 @@ namespace RogueElements
             // in the case of wrapped rooms, we must push the end room position forward by one whole map size
             Rect wrappedEndDraw = endRoom.RoomGen.Draw;
             Rect wrappedEndBounds = endRoom.Bounds;
-            if (wrappedEndBounds.X < startRoom.Bounds.X)
+            if (this.Wrap)
             {
-                wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(this.Size.X, 0);
-                wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(this.GridWidth, 0);
-            }
+                if (!vertical && wrappedEndBounds.End.X <= startRoom.Bounds.X)
+                {
+                    wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(this.Size.X, 0);
+                    wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(this.GridWidth, 0);
+                }
 
-            if (wrappedEndBounds.Y < startRoom.Bounds.Y)
-            {
-                wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(0, this.Size.Y);
-                wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(0, this.GridHeight);
+                if (vertical && wrappedEndBounds.End.Y <= startRoom.Bounds.Y)
+                {
+                    wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(0, this.Size.Y);
+                    wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(0, this.GridHeight);
+                }
             }
 
             // also sets the sidereqs
