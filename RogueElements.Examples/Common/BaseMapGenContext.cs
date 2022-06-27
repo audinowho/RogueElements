@@ -30,6 +30,8 @@ namespace RogueElements.Examples
 
         public int Height => this.Map.Height;
 
+        public bool Wrap => false;
+
         public IRandom Rand => this.Map.Rand;
 
         public ITile GetTile(Loc loc) => this.Map.Tiles[loc.X][loc.Y];
@@ -65,7 +67,7 @@ namespace RogueElements.Examples
             return this.Map.Tiles[loc.X][loc.Y].ID == BaseMap.WALL_TERRAIN_ID;
         }
 
-        public virtual void CreateNew(int width, int height)
+        public virtual void CreateNew(int width, int height, bool wrap = false)
         {
             this.Map.InitializeTiles(width, height);
         }

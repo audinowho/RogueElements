@@ -29,6 +29,8 @@ namespace RogueElements.Examples.Ex8_Integration
 
         public int Height => this.Map.Height;
 
+        public bool Wrap => false;
+
         public ITile RoomTerrain => new CellTile(0, 0, true, true, false);
 
         public ITile WallTerrain => new CellTile(0, 0, false, false, false);
@@ -67,7 +69,7 @@ namespace RogueElements.Examples.Ex8_Integration
             return !this.Map.IsWalkable(loc.X, loc.Y);
         }
 
-        public virtual void CreateNew(int width, int height)
+        public virtual void CreateNew(int width, int height, bool wrap = false)
         {
             this.Map.Initialize(width, height);
         }

@@ -36,7 +36,9 @@ namespace RogueElements
             // draw on map
             map.CreateNew(
                 map.RoomPlan.DrawRect.Width + (2 * this.Padding),
-                map.RoomPlan.DrawRect.Height + (2 * this.Padding));
+                map.RoomPlan.DrawRect.Height + (2 * this.Padding),
+                map.RoomPlan.Wrap);
+
             for (int ii = 0; ii < map.Width; ii++)
             {
                 for (int jj = 0; jj < map.Height; jj++)
