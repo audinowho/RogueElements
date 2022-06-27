@@ -21,6 +21,8 @@ namespace RogueElements.Tests
 
         public int Height => this.Tiles[0].Length;
 
+        public bool Wrap => false;
+
         public static TestGenContext InitGridToContext(string[] inGrid)
         {
             // transposes
@@ -63,7 +65,7 @@ namespace RogueElements.Tests
 
         public bool CanSetTile(Loc loc, ITile tile) => true;
 
-        public void CreateNew(int tileWidth, int tileHeight)
+        public void CreateNew(int tileWidth, int tileHeight, bool wrap = false)
         {
             this.Tiles = new ITile[tileWidth][];
             for (int ii = 0; ii < tileWidth; ii++)

@@ -18,6 +18,8 @@ namespace RogueElements
 
         int Height { get; }
 
+        bool Wrap { get; }
+
         bool TilesInitialized { get; }
 
         bool TileBlocked(Loc loc);
@@ -32,6 +34,6 @@ namespace RogueElements
 
         void SetTile(Loc loc, ITile tile);
 
-        void CreateNew(int tileWidth, int tileHeight);
+        void CreateNew(int tileWidth, int tileHeight, bool wrap = false);
     }
 }
