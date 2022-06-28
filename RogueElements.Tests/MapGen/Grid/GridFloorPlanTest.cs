@@ -255,7 +255,29 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        [TestCase(0, 0, 2, 4)]
+        [TestCase(0, 0, 5, 2)]
+        public void AddRoomTooLargeWrapped(int x, int y, int w, int h)
+        {
+            // out of range
+            string[] inGrid =
+            {
+                "0.0.0.0.",
+                ". . . . ",
+                "0.0.0.0.",
+                ". . . . ",
+                "0.0.0.0.",
+                ". . . . ",
+            };
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            var gen = new TestGridRoomGen('A');
+            Assert.Throws<ArgumentOutOfRangeException>(() => { floorPlan.AddRoom(new Rect(x, y, w, h), gen, new ComponentCollection()); });
+        }
+
+        [Test]
         [TestCase(0, 2, 0)]
+        [TestCase(0, -1, 0)]
         [TestCase(3, 0, 1)]
         [TestCase(3, 2, 2)]
         [TestCase(2, 2, -1)]
