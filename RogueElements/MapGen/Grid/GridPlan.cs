@@ -364,6 +364,9 @@ namespace RogueElements
             if (!this.Wrap && !floorRect.Contains(rect))
                 throw new ArgumentOutOfRangeException(nameof(rect), "Cannot add room out of bounds!");
 
+            if (rect.Size.X > this.GridWidth || rect.Size.Y > this.GridHeight)
+                throw new ArgumentOutOfRangeException(nameof(rect), "Cannot add room larger than bounds!");
+
             for (int xx = rect.Start.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Start.Y; yy < rect.End.Y; yy++)
@@ -389,6 +392,9 @@ namespace RogueElements
 
             if (preferHall && !(gen is IPermissiveRoomGen))
                 throw new InvalidOperationException("Cannot prefer hall for a non-permissive gen!");
+
+            if (this.Wrap)
+                rect = new Rect(this.WrapRoom(rect.Start), rect.Size);
 
             var room = new GridRoomPlan(rect, gen.Copy(), components)
             {
