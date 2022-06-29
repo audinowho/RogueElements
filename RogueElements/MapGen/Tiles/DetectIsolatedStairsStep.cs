@@ -25,8 +25,6 @@ namespace RogueElements
 
         public override void Apply(TGenContext map)
         {
-            const int offX = 0;
-            const int offY = 0;
             int lX = map.Width;
             int lY = map.Height;
             bool[][] connectionGrid = new bool[lX][];
@@ -37,24 +35,37 @@ namespace RogueElements
                     connectionGrid[xx][yy] = false;
             }
 
+            Rect searchOut = new Rect(0, 0, lX, lY);
+
+            // if the map is wrapped, we have to extend the search rectangle tremendously
+            // this doesn't increase memory too much since it is bounded up by the total tiles of the map
+            if (map.Wrap)
+                searchOut = new Rect(-lX * lY, -lY * lX, lX * ((lY * 2) + 1), lY * ((lX * 2) + 1));
+
             // find out if the every entrance can access at least one exit
             for (int ii = 0; ii < ((IViewPlaceableGenContext<TEntrance>)map).Count; ii++)
             {
                 bool foundExit = false;
                 Loc stairLoc = ((IViewPlaceableGenContext<TEntrance>)map).GetLoc(ii);
                 Grid.FloodFill(
-                    new Rect(offX, offY, lX, lY),
-                    (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.RoomTerrain.TileEquivalent(map.GetTile(testLoc))),
+                    searchOut,
+                    (Loc testLoc) =>
+                    {
+                        testLoc = Loc.Wrap(testLoc, new Loc(lX, lY));
+                        return connectionGrid[testLoc.X][testLoc.Y] || !map.RoomTerrain.TileEquivalent(map.GetTile(testLoc));
+                    },
                     (Loc testLoc) => true,
                     (Loc fillLoc) =>
                     {
+                        fillLoc = Loc.Wrap(fillLoc, new Loc(lX, lY));
+
                         for (int nn = 0; nn < ((IViewPlaceableGenContext<TExit>)map).Count; nn++)
                         {
                             if (((IViewPlaceableGenContext<TExit>)map).GetLoc(nn) == fillLoc)
                                 foundExit = true;
                         }
 
-                        connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true;
+                        connectionGrid[fillLoc.X][fillLoc.Y] = true;
                     },
                     stairLoc);
 

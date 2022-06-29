@@ -67,12 +67,16 @@ namespace RogueElements
                     size.Y = floorPlan.DrawRect.Height;
                 room.PrepareSize(rand, size);
 
+                Rect allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End - room.Draw.Size + new Loc(1));
+                if (floorPlan.Wrap)
+                    allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End);
+
                 for (int jj = 0; jj < 30; jj++)
                 {
                     // place in a random location
                     Loc testStart = new Loc(
-                       rand.Next(floorPlan.DrawRect.Left, floorPlan.DrawRect.Right - room.Draw.Width + 1),
-                       rand.Next(floorPlan.DrawRect.Top, floorPlan.DrawRect.Bottom - room.Draw.Height + 1));
+                       rand.Next(allowedRange.Start.X, allowedRange.End.X),
+                       rand.Next(allowedRange.Start.Y, allowedRange.End.Y));
 
                     Rect tryRect = new Rect(testStart, room.Draw.Size);
 

@@ -175,7 +175,6 @@ namespace RogueElements
         {
             // take the start of the region, round down to the lowest whole map.  this is the earliest map to check
             // take the end of the region, round up to the highest whole map.  this is the bottom-most (exclusive) map to check
-
             int startBounds = MathUtils.DivDown(start1 - size2, wrapSize);
             int endBounds = MathUtils.DivUp(start1 + size1, wrapSize);
             int wrapPt = MathUtils.Wrap(start2, wrapSize);
