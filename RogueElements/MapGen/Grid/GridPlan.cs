@@ -511,16 +511,17 @@ namespace RogueElements
             Rect wrappedEndBounds = endRoom.Bounds;
             if (this.Wrap)
             {
-                if (!vertical && wrappedEndBounds.End.X <= startRoom.Bounds.X)
-                {
-                    wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(this.Size.X, 0);
-                    wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(this.GridWidth, 0);
-                }
+                // get the unwrapped location of the hall start
+                Loc unwrappedGridLoc = Loc.Zero;
+                foreach (Loc wrapLoc in WrappedCollision.IteratePointsInBounds(new Loc(this.GridWidth, this.GridHeight), startRoom.Bounds, loc))
+                    unwrappedGridLoc = wrapLoc;
 
-                if (vertical && wrappedEndBounds.End.Y <= startRoom.Bounds.Y)
+                // use it to find the unwrapped rectangles
+                Loc multUnit = new Loc(this.WidthPerCell + this.CellWall, this.HeightPerCell + this.CellWall);
+                foreach (Rect wrapRect in WrappedCollision.IterateRegionsColliding(new Loc(this.GridWidth, this.GridHeight), new Rect(unwrappedGridLoc + dir.GetLoc(), Loc.One), endRoom.Bounds))
                 {
-                    wrappedEndDraw.Start = wrappedEndDraw.Start + new Loc(0, this.Size.Y);
-                    wrappedEndBounds.Start = wrappedEndBounds.Start + new Loc(0, this.GridHeight);
+                    wrappedEndDraw.Start = endRoom.RoomGen.Draw.Start + ((wrapRect.Start - endRoom.Bounds.Start) * multUnit);
+                    wrappedEndBounds = wrapRect;
                 }
             }
 
