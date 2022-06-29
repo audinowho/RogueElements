@@ -24,12 +24,13 @@ namespace RogueElements
         {
         }
 
-        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, ITerrainStencil<T> stencil, int softness = default)
+        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, ITerrainStencil<T> stencil, int softness = default, bool bowl = true)
             : base(terrain, stencil)
         {
             this.WaterPercent = waterPercent;
             this.OrderComplexity = complexity;
             this.OrderSoftness = softness;
+            this.Bowl = bowl;
         }
 
         /// <summary>
@@ -47,6 +48,11 @@ namespace RogueElements
         /// </summary>
         public RandRange WaterPercent { get; set; }
 
+        /// <summary>
+        /// Distorts the water such that it becomes like a bowl-shape, preventing awkward cutoffs at the edge of the map.
+        /// </summary>
+        public bool Bowl { get; set; }
+
         public override void Apply(T map)
         {
             int waterPercent = this.WaterPercent.Pick(map.Rand);
@@ -57,17 +63,20 @@ namespace RogueElements
             int minWater = waterPercent * map.Width * map.Height / 100;
             int[][] noise = NoiseGen.PerlinNoise(map.Rand, map.Width, map.Height, this.OrderComplexity, this.OrderSoftness);
 
-            // distort into a bowl shape
-            for (int xx = 0; xx < map.Width; xx++)
+            if (this.Bowl)
             {
-                for (int yy = 0; yy < map.Height; yy++)
+                // distort into a bowl shape
+                for (int xx = 0; xx < map.Width; xx++)
                 {
-                    // the last BUFFER_SIZE tiles near the edge gradually multiply the actual noise value by smaller numbers
-                    int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
+                    for (int yy = 0; yy < map.Height; yy++)
+                    {
+                        // the last BUFFER_SIZE tiles near the edge gradually multiply the actual noise value by smaller numbers
+                        int heightPercent = Math.Min(100, Math.Min(Math.Min(xx * 100 / BUFFER_SIZE, yy * 100 / BUFFER_SIZE), Math.Min((map.Width - 1 - xx) * 100 / BUFFER_SIZE, (map.Height - 1 - yy) * 100 / BUFFER_SIZE)));
 
-                    // interpolate UPWARDS to make it like a bowl
-                    int correctedNoise = (noise[xx][yy] * heightPercent / 100) + ((depthRange - 1) * (100 - heightPercent) / 100);
-                    noise[xx][yy] = correctedNoise;
+                        // interpolate UPWARDS to make it like a bowl
+                        int correctedNoise = (noise[xx][yy] * heightPercent / 100) + ((depthRange - 1) * (100 - heightPercent) / 100);
+                        noise[xx][yy] = correctedNoise;
+                    }
                 }
             }
 

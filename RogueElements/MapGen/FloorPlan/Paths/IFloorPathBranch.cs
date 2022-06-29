@@ -138,7 +138,7 @@ namespace RogueElements
                     Loc locTo = roomFrom.Draw.GetEdgeRectLoc(expandTo, room.Draw.Size, currentScalar);
 
                     // must be within the borders of the floor!
-                    if (floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
+                    if (floorPlan.Wrap || floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
                     {
                         // check the border match and if add to possible placements
                         int chanceTo = FloorPlan.GetBorderMatch(roomFrom, room, locTo, expandTo);
