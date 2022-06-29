@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes an existing grid plan and changes one of the rooms into the default room type.
+    /// Takes an existing grid plan and changes some of the rooms into the default room type.
     /// The default room is a single tile in size and effectively acts as a hallway.
     /// </summary>
     /// <typeparam name="T"></typeparam>

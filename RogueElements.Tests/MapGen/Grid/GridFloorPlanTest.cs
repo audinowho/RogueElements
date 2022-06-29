@@ -914,7 +914,8 @@ namespace RogueElements.Tests
             TestFloorPlan compareFloorPlan;
             {
                 var links = new Tuple<char, char>[]
-                { };
+                {
+                };
                 compareFloorPlan = TestFloorPlan.InitFloorToContext(
                     gridPlan.Size,
                     new Rect[] { new Rect(0, 0, 11, 11) },
@@ -1038,6 +1039,66 @@ namespace RogueElements.Tests
                     gridPlan.Size,
                     new Rect[] { new Rect(12, 0, 11, 5), new Rect(6, 0, 5, 5) },
                     new Rect[] { new Rect(23, 0, 1, 5) },
+                    links);
+            }
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var floorPlan = new TestFloorPlan();
+            floorPlan.InitSize(gridPlan.Size, gridPlan.Wrap);
+
+            Mock<IFloorPlanTestContext> mockMap = new Mock<IFloorPlanTestContext>(MockBehavior.Strict);
+            mockMap.SetupGet(p => p.Rand).Returns(testRand.Object);
+            mockMap.SetupGet(p => p.RoomPlan).Returns(floorPlan);
+
+            gridPlan.PlaceRoomsOnFloor(mockMap.Object);
+
+            TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void PlaceLargeRoomOnFloorWrappedOrth()
+        {
+            // place two rooms connected by a hall
+            string[] inGrid =
+            {
+                "A.0.A.",
+                "# . . ",
+                "B.0.0.",
+                ". . . ",
+            };
+
+            TestGridFloorPlan gridPlan = TestGridFloorPlan.InitGridToContext(inGrid, 5, 5);
+            {
+                TestFloorPlanGen gen = new TestFloorPlanGen('A')
+                {
+                    ProposedSize = new Loc(11, 5),
+                };
+                gridPlan.PublicArrayRooms[0].RoomGen = gen;
+            }
+
+            {
+                TestFloorPlanGen gen = new TestFloorPlanGen('B')
+                {
+                    ProposedSize = new Loc(5, 5),
+                };
+                gridPlan.PublicArrayRooms[1].RoomGen = gen;
+            }
+
+            gridPlan.PublicVHalls[0][0].SetHall(new GridHallPlan(new TestFloorPlanGen('a'), new ComponentCollection()));
+
+            TestFloorPlan compareFloorPlan;
+            {
+                var links = new Tuple<char, char>[]
+                {
+                    Tuple.Create('A', 'a'),
+                    Tuple.Create('a', 'B'),
+                };
+                compareFloorPlan = TestFloorPlan.InitFloorToContext(
+                    gridPlan.Size,
+                    new Rect[] { new Rect(12, 0, 11, 5), new Rect(0, 6, 5, 5) },
+                    new Rect[] { new Rect(18, 5, 5, 1) },
                     links);
             }
 
