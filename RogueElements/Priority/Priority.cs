@@ -13,6 +13,8 @@ namespace RogueElements
     {
         public static Priority Invalid = new Priority(null);
 
+        public static Priority Zero = new Priority(0);
+
         private readonly int[] str;
 
         public Priority(params int[] vals)
