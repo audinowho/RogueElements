@@ -39,7 +39,7 @@ namespace RogueElements
                 checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
             }
 
-            return Detection.DetectDisconnect(checkArea, IsMapValid, rect.Start, rect.Size, IsBlobValid, true);
+            return !Detection.DetectDisconnect(checkArea, IsMapValid, rect.Start, rect.Size, IsBlobValid, true);
         }
     }
 }
