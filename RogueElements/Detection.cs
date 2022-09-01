@@ -54,10 +54,10 @@ namespace RogueElements
         /// Detects if an added blob of tiles disconnects the map's existing connectivity.
         /// </summary>
         /// <param name="mapBounds"></param>
-        /// <param name="isMapValid">Checks for a valid path tile.</param>
+        /// <param name="isMapValid">Checks for a valid path tile.  Returns true if the tile is unblocked.</param>
         /// <param name="blobDest">Position to draw the blob at.</param>
         /// <param name="blobSize"></param>
-        /// <param name="isBlobValid">Checks for a valid blob tile. Loc is with respect to the top right of the blob rect.</param>
+        /// <param name="isBlobValid">Checks for a valid blob tile. Loc is with respect to the top right of the blob rect.  Returns true if the tile will be made blocked.</param>
         /// <param name="countErasures">Whether a completely erased graph counts as disconnected or not.</param>
         /// <returns></returns>
         public static bool DetectDisconnect(Rect mapBounds, Grid.LocTest isMapValid, Loc blobDest, Loc blobSize, Grid.LocTest isBlobValid, bool countErasures)

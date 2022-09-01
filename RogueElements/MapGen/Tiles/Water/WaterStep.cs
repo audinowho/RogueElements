@@ -35,6 +35,9 @@ namespace RogueElements
         protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[index];
+            if (!this.TerrainStencil.Test(map, new Rect(offset, mapBlob.Bounds.Size)))
+                return;
+
             for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
             {
                 for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Height); yy++)
@@ -42,11 +45,7 @@ namespace RogueElements
                     Loc destLoc = new Loc(xx, yy);
                     Loc srcLoc = destLoc + mapBlob.Bounds.Start - offset;
                     if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
-                    {
-                        // check against the stencil
-                        if (this.TerrainStencil.Test(map, offset))
-                            map.TrySetTile(new Loc(xx, yy), this.Terrain.Copy());
-                    }
+                        map.TrySetTile(new Loc(xx, yy), this.Terrain.Copy());
                 }
             }
 
@@ -58,7 +57,7 @@ namespace RogueElements
             foreach (Loc loc in locs)
             {
                 // check against the stencil
-                if (this.TerrainStencil.Test(map, loc))
+                if (this.TerrainStencil.Test(map, new Rect(loc, Loc.One)))
                     map.TrySetTile(loc, this.Terrain.Copy());
             }
 

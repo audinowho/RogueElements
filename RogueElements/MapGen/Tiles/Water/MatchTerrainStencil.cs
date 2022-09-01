@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class MatchTerrainStencil<T> : ITerrainStencil<T>
+    public class MatchTerrainStencil<T> : TileStencil<T>
         where T : class, ITiledGenContext
     {
         public MatchTerrainStencil()
@@ -27,7 +27,7 @@ namespace RogueElements
         /// </summary>
         public List<ITile> MatchTiles { get; private set; }
 
-        public bool Test(T map, Loc loc)
+        protected override bool TestTile(T map, Loc loc)
         {
             ITile checkTile = map.GetTile(loc);
             foreach (ITile tile in this.MatchTiles)
