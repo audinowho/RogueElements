@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class MapTerrainStencil<T> : ITerrainStencil<T>
+    public class MapTerrainStencil<T> : TileStencil<T>
         where T : class, ITiledGenContext
     {
         public MapTerrainStencil()
@@ -43,7 +43,7 @@ namespace RogueElements
         /// </summary>
         public bool Not { get; private set; }
 
-        public bool Test(T map, Loc loc)
+        protected override bool TestTile(T map, Loc loc)
         {
             bool result = false;
             if (this.Room && map.RoomTerrain.TileEquivalent(map.GetTile(loc)))
