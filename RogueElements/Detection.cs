@@ -87,12 +87,12 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < mapBounds.Height; yy++)
                 {
-                    if (isMapValid(new Loc(xx, yy)) && fullGrid[xx][yy] == -1)
+                    if (isMapValid(mapBounds.Start + new Loc(xx, yy)) && fullGrid[xx][yy] == -1)
                     {
                         int totalFill = 0;
                         Grid.FloodFill(
                             new Rect(0, 0, mapBounds.Width, mapBounds.Height),
-                            (Loc testLoc) => (fullGrid[testLoc.X][testLoc.Y] == mapBlobCounts.Count) || !isMapValid(testLoc),
+                            (Loc testLoc) => (fullGrid[testLoc.X][testLoc.Y] == mapBlobCounts.Count) || !isMapValid(mapBounds.Start + testLoc),
                             (Loc testLoc) => true,
                             (Loc fillLoc) =>
                             {
@@ -106,15 +106,16 @@ namespace RogueElements
             }
 
             // we've passed in a boolean grid containing a blob, with an offset of where to render it to
-            for (int xx = Math.Max(0, blobDest.X); xx < Math.Min(mapBounds.Width, blobDest.X + blobSize.X); xx++)
+            for (int xx = Math.Max(mapBounds.X, blobDest.X); xx < Math.Min(mapBounds.End.X, blobDest.X + blobSize.X); xx++)
             {
-                for (int yy = Math.Max(0, blobDest.Y); yy < Math.Min(mapBounds.Height, blobDest.Y + blobSize.Y); yy++)
+                for (int yy = Math.Max(mapBounds.Y, blobDest.Y); yy < Math.Min(mapBounds.End.Y, blobDest.Y + blobSize.Y); yy++)
                 {
-                    int blobIndex = fullGrid[xx][yy];
+                    Loc mapLoc = new Loc(xx, yy) - mapBounds.Start;
+                    int blobIndex = fullGrid[mapLoc.X][mapLoc.Y];
                     if (blobIndex > -1 && isBlobValid(new Loc(xx, yy) - blobDest))
                     {
                         mapBlobCounts[blobIndex] = mapBlobCounts[blobIndex] - 1;
-                        fullGrid[xx][yy] = -1;
+                        fullGrid[mapLoc.X][mapLoc.Y] = -1;
                     }
                 }
             }
