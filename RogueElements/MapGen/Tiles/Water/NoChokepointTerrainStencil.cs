@@ -1,4 +1,4 @@
-﻿// <copyright file="NoChokepointStencil.cs" company="Audino">
+﻿// <copyright file="NoChokepointTerrainStencil.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -14,15 +14,15 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class NoChokepointStencil<T> : IBlobStencil<T>
+    public class NoChokepointTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
-        public NoChokepointStencil()
+        public NoChokepointTerrainStencil()
         {
             this.TileStencil = new DefaultTerrainStencil<T>();
         }
 
-        public NoChokepointStencil(ITerrainStencil<T> tileStencil)
+        public NoChokepointTerrainStencil(ITerrainStencil<T> tileStencil)
         {
             this.TileStencil = tileStencil;
         }
@@ -36,7 +36,7 @@ namespace RogueElements
 
         public bool Negate { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Loc testLoc)
         {
             bool IsMapValid(Loc loc) => this.TileStencil.Test(map, loc);
             bool IsBlobValid(Loc loc) => true;
@@ -48,12 +48,12 @@ namespace RogueElements
             }
             else
             {
-                checkArea = rect;
+                checkArea = new Rect(testLoc, Loc.One);
                 checkArea.Inflate(1, 1);
                 checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
             }
 
-            return this.Negate == Detection.DetectDisconnect(checkArea, IsMapValid, rect.Start, rect.Size, IsBlobValid, true);
+            return this.Negate == Detection.DetectDisconnect(checkArea, IsMapValid, testLoc, Loc.One, IsBlobValid, true);
         }
     }
 }
