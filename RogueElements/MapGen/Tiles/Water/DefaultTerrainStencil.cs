@@ -17,7 +17,7 @@ namespace RogueElements
     public class DefaultTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Loc loc)
         {
             return true;
         }

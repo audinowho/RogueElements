@@ -22,14 +22,16 @@ namespace RogueElements
         public BlobWaterStep()
             : base()
         {
+            this.BlobStencil = new DefaultBlobStencil<T>();
         }
 
-        public BlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, int minScale, RandRange startScale)
+        public BlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, IBlobStencil<T> blobStencil, IntRange areaScale, IntRange generateScale)
             : base(terrain, stencil)
         {
             this.Blobs = blobs;
-            this.MinScale = minScale;
-            this.StartScale = startScale;
+            this.BlobStencil = blobStencil;
+            this.AreaScale = areaScale;
+            this.GenerateScale = generateScale;
         }
 
         /// <summary>
@@ -38,25 +40,30 @@ namespace RogueElements
         public RandRange Blobs { get; set; }
 
         /// <summary>
-        /// The minimum size of the area creating the blob.  It is measured in percentage of the full map size.
+        /// The minimum size of the area creating the blob.  It is measured in tiles.
         /// </summary>
-        public int MinScale { get; set; }
+        public IntRange AreaScale { get; set; }
 
         /// <summary>
-        /// The maximum size of the area creating the blob.  It is measured in percentage of the full map size.
+        /// The maximum size of the area creating the blob.  It is measured in tiles.
         /// </summary>
-        public RandRange StartScale { get; set; }
+        public IntRange GenerateScale { get; set; }
+
+        /// <summary>
+        /// Blob-wide stencil.  All-or-nothing: If the blob position passes this stencil, it is drawn.  Otherwise it is not.
+        /// </summary>
+        public IBlobStencil<T> BlobStencil { get; set; }
 
         public override void Apply(T map)
         {
             int blobs = this.Blobs.Pick(map.Rand);
-            int startScale = Math.Max(this.MinScale, this.StartScale.Pick(map.Rand));
+            int startScale = this.GenerateScale.Max - 1;
             for (int ii = 0; ii < blobs; ii++)
             {
-                Loc size = new Loc(map.Width * startScale / 100, map.Height * startScale / 100);
+                Loc size = new Loc(startScale, startScale);
                 int area = size.X * size.Y;
                 bool placed = false;
-                while (area > 0 && area >= this.MinScale * map.Width / 100 * this.MinScale * map.Height / 100)
+                while (area > 0 && area >= this.GenerateScale.Min * this.GenerateScale.Min)
                 {
                     bool[][] noise = new bool[size.X][];
                     for (int xx = 0; xx < size.X; xx++)
@@ -77,26 +84,37 @@ namespace RogueElements
                         int blobIdx = 0;
                         for (int bb = 1; bb < blobMap.Blobs.Count; bb++)
                         {
-                            if (blobMap.Blobs[bb].Area > blobMap.Blobs[blobIdx].Area)
+                            if (this.AreaScale.Min <= blobMap.Blobs[bb].Area && blobMap.Blobs[bb].Area < this.AreaScale.Max)
                                 blobIdx = bb;
                         }
 
-                        placed = this.AttemptBlob(map, blobMap, blobIdx);
+                        BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
+
+                        // attempt to place in 20 locations
+                        for (int jj = 0; jj < 20; jj++)
+                        {
+                            Loc offset = new Loc(map.Rand.Next(0, map.Width - mapBlob.Bounds.Width), map.Rand.Next(0, map.Height - mapBlob.Bounds.Height));
+                            placed = this.AttemptBlob(map, blobMap, blobIdx, offset);
+
+                            if (placed)
+                                break;
+                        }
                     }
 
                     if (placed)
                         break;
 
-                    size = size * 7 / 10;
+                    size = size * 3 / 4;
                     area = size.X * size.Y;
                 }
             }
         }
 
-        protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx)
+        protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
         {
-            Rect blobRect = blobMap.Blobs[blobIdx].Bounds;
-            Loc offset = new Loc(map.Rand.Next(0, map.Width - blobRect.Width), map.Rand.Next(0, map.Height - blobRect.Height));
+            BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
+            if (!this.BlobStencil.Test(map, new Rect(offset, mapBlob.Bounds.Size)))
+                return false;
 
             this.DrawBlob(map, blobMap, blobIdx, offset);
             return true;

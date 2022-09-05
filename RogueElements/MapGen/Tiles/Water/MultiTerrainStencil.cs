@@ -1,4 +1,4 @@
-﻿// <copyright file="MultiStencil.cs" company="Audino">
+﻿// <copyright file="MultiTerrainStencil.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -14,12 +14,19 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class MultiStencil<T> : ITerrainStencil<T>
+    public class MultiTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
-        public MultiStencil()
+        public MultiTerrainStencil()
         {
             this.List = new List<ITerrainStencil<T>>();
+        }
+
+        public MultiTerrainStencil(bool requireAny, params ITerrainStencil<T>[] stencils)
+        {
+            this.RequireAny = requireAny;
+            this.List = new List<ITerrainStencil<T>>();
+            this.List.AddRange(stencils);
         }
 
         /// <summary>
@@ -27,25 +34,25 @@ namespace RogueElements
         /// </summary>
         public List<ITerrainStencil<T>> List { get; set; }
 
-        public bool RequireAll { get; set; }
+        public bool RequireAny { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Loc loc)
         {
             foreach (ITerrainStencil<T> subReq in this.List)
             {
-                if (this.RequireAll)
+                if (this.RequireAny)
                 {
-                    if (!subReq.Test(map, rect))
-                        return false;
+                    if (subReq.Test(map, loc))
+                        return true;
                 }
                 else
                 {
-                    if (subReq.Test(map, rect))
-                        return true;
+                    if (!subReq.Test(map, loc))
+                        return false;
                 }
             }
 
-            return this.RequireAll;
+            return !this.RequireAny;
         }
     }
 }
