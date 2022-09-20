@@ -225,6 +225,17 @@ namespace RogueElements
             return new Rect(point.X, point.Y, 1, 1);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="Rect"/> from a point and radius.  Will always be an odd number in width/height.
+        /// </summary>
+        /// <param name="point">The point to be used as the center of the rect</param>
+        /// <param name="radius">The radius of the rectangle</param>
+        /// <returns></returns>
+        public static Rect FromPointRadius(Loc point, int radius)
+        {
+            return new Rect(point - new Loc(radius), new Loc((radius * 2) + 1));
+        }
+
         // TODO: test this; one point from every quadrant
         public static Rect IncludeLoc(Rect bounds, Loc point)
         {
