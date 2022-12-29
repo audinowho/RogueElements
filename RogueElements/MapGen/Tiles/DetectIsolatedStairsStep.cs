@@ -52,7 +52,7 @@ namespace RogueElements
                     (Loc testLoc) =>
                     {
                         testLoc = Loc.Wrap(testLoc, new Loc(lX, lY));
-                        return connectionGrid[testLoc.X][testLoc.Y] || !map.RoomTerrain.TileEquivalent(map.GetTile(testLoc));
+                        return connectionGrid[testLoc.X][testLoc.Y] || map.TileBlocked(testLoc);
                     },
                     (Loc testLoc) => true,
                     (Loc fillLoc) =>
