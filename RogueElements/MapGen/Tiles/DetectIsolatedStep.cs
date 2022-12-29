@@ -37,7 +37,7 @@ namespace RogueElements
 
             Grid.FloodFill(
                 new Rect(offX, offY, lX, lY),
-                (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || !map.RoomTerrain.TileEquivalent(map.GetTile(testLoc))),
+                (Loc testLoc) => (connectionGrid[testLoc.X - offX][testLoc.Y - offY] || map.TileBlocked(testLoc)),
                 (Loc testLoc) => true,
                 (Loc fillLoc) => connectionGrid[fillLoc.X - offX][fillLoc.Y - offY] = true,
                 map.GetLoc(0));
@@ -46,7 +46,7 @@ namespace RogueElements
             {
                 for (int yy = offY; yy < offY + lY; yy++)
                 {
-                    if (map.RoomTerrain.TileEquivalent(map.GetTile(new Loc(xx, yy))) && !connectionGrid[xx - offX][yy - offY])
+                    if (!map.TileBlocked(new Loc(xx, yy)) && !connectionGrid[xx - offX][yy - offY])
                     {
 #if DEBUG
                         PrintGrid(connectionGrid);
