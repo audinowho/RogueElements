@@ -93,7 +93,8 @@ namespace RogueElements
                         // attempt to place in 20 locations
                         for (int jj = 0; jj < 20; jj++)
                         {
-                            Loc offset = new Loc(map.Rand.Next(0, map.Width - mapBlob.Bounds.Width), map.Rand.Next(0, map.Height - mapBlob.Bounds.Height));
+                            Loc offset = new Loc(map.Rand.Next(0, Math.Max(1, map.Width - mapBlob.Bounds.Width)),
+                                map.Rand.Next(0, Math.Max(1, map.Height - mapBlob.Bounds.Height)));
                             placed = this.AttemptBlob(map, blobMap, blobIdx, offset);
 
                             if (placed)
