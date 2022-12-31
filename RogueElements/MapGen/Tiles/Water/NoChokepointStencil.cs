@@ -36,10 +36,10 @@ namespace RogueElements
 
         public bool Negate { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             bool IsMapValid(Loc loc) => this.TileStencil.Test(map, loc);
-            bool IsBlobValid(Loc loc) => true;
+            bool IsBlobValid(Loc loc) => blobTest(loc + rect.Start);
 
             Rect checkArea;
             if (this.Global)
@@ -50,7 +50,8 @@ namespace RogueElements
             {
                 checkArea = rect;
                 checkArea.Inflate(1, 1);
-                checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
+                if (!map.Wrap)
+                    checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
             }
 
             return this.Negate == Detection.DetectDisconnect(checkArea, IsMapValid, rect.Start, rect.Size, IsBlobValid, true);

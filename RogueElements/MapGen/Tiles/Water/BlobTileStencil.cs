@@ -27,25 +27,35 @@ namespace RogueElements
             this.TileStencil = tileStencil;
         }
 
+        public BlobTileStencil(ITerrainStencil<T> tileStencil, bool requireAny)
+        {
+            this.TileStencil = tileStencil;
+            this.RequireAny = requireAny;
+        }
+
         public ITerrainStencil<T> TileStencil { get; set; }
 
         public bool RequireAny { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             for (int xx = rect.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Y; yy < rect.End.Y; yy++)
                 {
-                    if (this.RequireAny)
+                    Loc testLoc = new Loc(xx, yy);
+                    if (blobTest(testLoc))
                     {
-                        if (this.TileStencil.Test(map, new Loc(xx, yy)))
-                            return true;
-                    }
-                    else
-                    {
-                        if (!this.TileStencil.Test(map, new Loc(xx, yy)))
-                            return false;
+                        if (this.RequireAny)
+                        {
+                            if (this.TileStencil.Test(map, testLoc))
+                                return true;
+                        }
+                        else
+                        {
+                            if (!this.TileStencil.Test(map, testLoc))
+                                return false;
+                        }
                     }
                 }
             }

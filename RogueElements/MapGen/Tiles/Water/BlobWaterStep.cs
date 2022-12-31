@@ -118,7 +118,16 @@ namespace RogueElements
         protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
-            if (!this.BlobStencil.Test(map, new Rect(offset, mapBlob.Bounds.Size)))
+
+            bool IsBlobValid(Loc loc)
+            {
+                Loc srcLoc = loc - offset + mapBlob.Bounds.Start;
+                if (Collision.InBounds(mapBlob.Bounds, srcLoc))
+                    return blobMap.Map[srcLoc.X][srcLoc.Y] == blobIdx;
+                return false;
+            }
+
+            if (!this.BlobStencil.Test(map, new Rect(offset, mapBlob.Bounds.Size), IsBlobValid))
                 return false;
 
             this.DrawBlob(map, blobMap, blobIdx, offset);

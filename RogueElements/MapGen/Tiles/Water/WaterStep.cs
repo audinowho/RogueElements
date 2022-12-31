@@ -41,7 +41,7 @@ namespace RogueElements
                 for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Height); yy++)
                 {
                     Loc destLoc = new Loc(xx, yy);
-                    Loc srcLoc = destLoc + mapBlob.Bounds.Start - offset;
+                    Loc srcLoc = destLoc - offset + mapBlob.Bounds.Start;
                     if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
                     {
                         if (this.TerrainStencil.Test(map, destLoc))

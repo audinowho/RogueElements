@@ -36,18 +36,18 @@ namespace RogueElements
 
         public bool RequireAny { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             foreach (IBlobStencil<T> subReq in this.List)
             {
                 if (this.RequireAny)
                 {
-                    if (subReq.Test(map, rect))
+                    if (subReq.Test(map, rect, blobTest))
                         return true;
                 }
                 else
                 {
-                    if (!subReq.Test(map, rect))
+                    if (!subReq.Test(map, rect, blobTest))
                         return false;
                 }
             }
