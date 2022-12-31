@@ -40,12 +40,12 @@ namespace RogueElements
         public RandRange Blobs { get; set; }
 
         /// <summary>
-        /// The minimum size of the area creating the blob.  It is measured in tiles.
+        /// The NxN size range of the acceptable area the blob takes.  It is measured in tiles.
         /// </summary>
         public IntRange AreaScale { get; set; }
 
         /// <summary>
-        /// The maximum size of the area creating the blob.  It is measured in tiles.
+        /// The NxN size range of the area creating the blob.  It is measured in tiles.
         /// </summary>
         public IntRange GenerateScale { get; set; }
 
@@ -81,24 +81,28 @@ namespace RogueElements
 
                     if (blobMap.Blobs.Count > 0)
                     {
-                        int blobIdx = 0;
-                        for (int bb = 1; bb < blobMap.Blobs.Count; bb++)
+                        int blobIdx = -1;
+                        for (int bb = 0; bb < blobMap.Blobs.Count; bb++)
                         {
-                            if (this.AreaScale.Min <= blobMap.Blobs[bb].Area && blobMap.Blobs[bb].Area < this.AreaScale.Max)
+                            if (this.AreaScale.Min * this.AreaScale.Min <= blobMap.Blobs[bb].Area && blobMap.Blobs[bb].Area < this.AreaScale.Max * this.AreaScale.Max)
                                 blobIdx = bb;
                         }
 
-                        BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
-
-                        // attempt to place in 20 locations
-                        for (int jj = 0; jj < 20; jj++)
+                        if (blobIdx > -1)
                         {
-                            Loc offset = new Loc(map.Rand.Next(0, Math.Max(1, map.Width - mapBlob.Bounds.Width)),
-                                map.Rand.Next(0, Math.Max(1, map.Height - mapBlob.Bounds.Height)));
-                            placed = this.AttemptBlob(map, blobMap, blobIdx, offset);
+                            BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
 
-                            if (placed)
-                                break;
+                            // attempt to place in 20 locations
+                            for (int jj = 0; jj < 20; jj++)
+                            {
+                                int maxWidth = Math.Max(1, map.Width - mapBlob.Bounds.Width);
+                                int maxHeight = Math.Max(1, map.Height - mapBlob.Bounds.Height);
+                                Loc offset = new Loc(map.Rand.Next(0, maxWidth), map.Rand.Next(0, maxHeight));
+                                placed = this.AttemptBlob(map, blobMap, blobIdx, offset);
+
+                                if (placed)
+                                    break;
+                            }
                         }
                     }
 
