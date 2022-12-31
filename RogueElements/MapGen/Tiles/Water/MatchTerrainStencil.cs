@@ -22,10 +22,19 @@ namespace RogueElements
             this.MatchTiles = new List<ITile>();
         }
 
+        public MatchTerrainStencil(bool negate, params ITile[] tiles)
+            : this()
+        {
+            this.Negate = negate;
+            this.MatchTiles.AddRange(tiles);
+        }
+
         /// <summary>
         /// The allowed tile types.
         /// </summary>
         public List<ITile> MatchTiles { get; private set; }
+
+        public bool Negate { get; set; }
 
         public bool Test(T map, Loc loc)
         {
@@ -33,10 +42,10 @@ namespace RogueElements
             foreach (ITile tile in this.MatchTiles)
             {
                 if (checkTile.TileEquivalent(tile))
-                    return true;
+                    return !this.Negate;
             }
 
-            return false;
+            return this.Negate;
         }
     }
 }
