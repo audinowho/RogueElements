@@ -87,7 +87,7 @@ namespace RogueElements
 
         public static Loc ClampToBounds(Rect rect, Loc point)
         {
-            return ClampToBounds(rect.Size.X, rect.Size.Y, point - rect.Start);
+            return ClampToBounds(rect.Start, rect.Size, point);
         }
 
         public static Loc ClampToBounds(Loc start, Loc size, Loc point)

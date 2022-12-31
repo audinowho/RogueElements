@@ -71,5 +71,17 @@ namespace RogueElements.Tests
         {
             Assert.That(Collision.ClampToBounds(sizeX, sizeY, new Loc(ptX, ptY)), Is.EqualTo(new Loc(expectedX, expectedY)));
         }
+
+        [Test]
+        [TestCase(9, 11, 2, 3, 9, 11, 9, 11)]
+        [TestCase(9, 11, 2, 3, 8, 10, 9, 11)]
+        [TestCase(9, 11, 2, 3, 11, 14, 10, 13)]
+        [TestCase(9, 11, 2, 3, 8, 14, 9, 13)]
+        [TestCase(9, 11, 2, 3, 11, 10, 10, 11)]
+        [TestCase(9, 11, 2, 3, 10, 13, 10, 13)]
+        public void ClampToBoundsOffset(int startX, int startY, int sizeX, int sizeY, int ptX, int ptY, int expectedX, int expectedY)
+        {
+            Assert.That(Collision.ClampToBounds(new Loc(startX, startY), new Loc(sizeX, sizeY), new Loc(ptX, ptY)), Is.EqualTo(new Loc(expectedX, expectedY)));
+        }
     }
 }
