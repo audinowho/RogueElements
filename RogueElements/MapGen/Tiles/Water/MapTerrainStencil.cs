@@ -21,10 +21,11 @@ namespace RogueElements
         {
         }
 
-        public MapTerrainStencil(bool room, bool wall, bool not)
+        public MapTerrainStencil(bool room, bool wall, bool blocked, bool not)
         {
             this.Room = room;
             this.Wall = wall;
+            this.Blocked = blocked;
             this.Not = not;
         }
 
@@ -39,6 +40,11 @@ namespace RogueElements
         public bool Wall { get; private set; }
 
         /// <summary>
+        /// Allows tiles specified as the blocked terrain.  This relies on the map's own definition of TileBlocked.
+        /// </summary>
+        public bool Blocked { get; private set; }
+
+        /// <summary>
         /// Reverses the policy, allowing all tiles EXCEPT the ones selected above.
         /// </summary>
         public bool Not { get; private set; }
@@ -49,6 +55,8 @@ namespace RogueElements
             if (this.Room && map.RoomTerrain.TileEquivalent(map.GetTile(loc)))
                 result = true;
             if (this.Wall && map.WallTerrain.TileEquivalent(map.GetTile(loc)))
+                result = true;
+            if (this.Blocked && map.TileBlocked(loc))
                 result = true;
 
             if (this.Not)

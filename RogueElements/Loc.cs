@@ -176,6 +176,15 @@ namespace RogueElements
             return Math.Abs(this.X) + Math.Abs(this.Y);
         }
 
+        /// <summary>
+        /// Returns the transposed coordinates.
+        /// </summary>
+        /// <returns></returns>
+        public Loc Transpose()
+        {
+            return new Loc(this.Y, this.X);
+        }
+
         public override string ToString()
         {
             return $"X:{this.X} Y:{this.Y}";
