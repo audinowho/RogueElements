@@ -11,6 +11,6 @@ namespace RogueElements
     public interface IBlobStencil<T>
         where T : class, ITiledGenContext
     {
-        bool Test(T map, Rect rect);
+        bool Test(T map, Rect rect, Grid.LocTest blobTest);
     }
 }

@@ -32,14 +32,15 @@ namespace RogueElements
 
         public int Percent { get; set; }
 
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             int amount = 0;
             for (int xx = rect.X; xx < rect.End.X; xx++)
             {
                 for (int yy = rect.Y; yy < rect.End.Y; yy++)
                 {
-                    if (this.TileStencil.Test(map, new Loc(xx, yy)))
+                    Loc testLoc = new Loc(xx, yy);
+                    if (blobTest(testLoc) && this.TileStencil.Test(map, testLoc))
                         amount++;
                 }
             }

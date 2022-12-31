@@ -17,7 +17,7 @@ namespace RogueElements
     public class DefaultBlobStencil<T> : IBlobStencil<T>
         where T : class, ITiledGenContext
     {
-        public bool Test(T map, Rect rect)
+        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             return true;
         }
