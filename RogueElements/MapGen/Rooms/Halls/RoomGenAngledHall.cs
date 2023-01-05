@@ -163,7 +163,9 @@ namespace RogueElements
                         if (possibleStarts[dir].Count > 0)
                         {
                             IntRange side = this.Draw.GetSide(dir.ToAxis().Orth());
-                            int forwardEnd = map.Rand.Next(side.Min + 1, side.Max - 1);
+                            int forwardEnd = side.Min;
+                            if (side.Length > 2)
+                                forwardEnd = map.Rand.Next(side.Min + 1, side.Max - 1);
 
                             // choose the starts
                             int[] starts = new int[possibleStarts[dir].Count];
