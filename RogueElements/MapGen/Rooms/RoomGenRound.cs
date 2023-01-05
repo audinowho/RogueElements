@@ -102,12 +102,16 @@ namespace RogueElements
             {
                 if (y < diameter)
                 {
-                    if (((diameter - x) * (diameter - x)) + ((diameter - y) * (diameter - y)) < diameter * diameter)
+                    int xdiff = diameter - x;
+                    int ydiff = diameter - y;
+                    if ((xdiff * xdiff) + (ydiff * ydiff) < diameter * diameter)
                         return true;
                 }
                 else if (y > sizeX2.Y - diameter)
                 {
-                    if (((diameter - x) * (diameter - x)) + ((y - (sizeX2.Y - diameter)) * (y - (sizeX2.Y - diameter))) < diameter * diameter)
+                    int xdiff = diameter - x;
+                    int ydiff = y - (sizeX2.Y - diameter);
+                    if ((xdiff * xdiff) + (ydiff * ydiff) < diameter * diameter)
                         return true;
                 }
                 else
@@ -119,12 +123,16 @@ namespace RogueElements
             {
                 if (y < diameter)
                 {
-                    if (((x - (sizeX2.X - diameter)) * (x - (sizeX2.X - diameter))) + ((diameter - y) * (diameter - y)) < diameter * diameter)
+                    int xdiff = x - (sizeX2.X - diameter);
+                    int ydiff = diameter - y;
+                    if ((xdiff * xdiff) + (ydiff * ydiff) < diameter * diameter)
                         return true;
                 }
                 else if (y > sizeX2.Y - diameter)
                 {
-                    if (((x - (sizeX2.X - diameter)) * (x - (sizeX2.X - diameter))) + ((y - (sizeX2.Y - diameter)) * (y - (sizeX2.Y - diameter))) < diameter * diameter)
+                    int xdiff = x - (sizeX2.X - diameter);
+                    int ydiff = y - (sizeX2.Y - diameter);
+                    if ((xdiff * xdiff) + (ydiff * ydiff) < diameter * diameter)
                         return true;
                 }
                 else

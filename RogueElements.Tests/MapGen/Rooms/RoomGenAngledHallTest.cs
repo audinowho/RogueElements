@@ -1588,6 +1588,77 @@ namespace RogueElements.Tests
             testRand.Verify(p => p.Next(2, 8), Times.Exactly(1));
         }
 
+
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(100)]
+        public void DrawOnMap1CrossClose(int bias)
+        {
+            // many to many
+            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            string[] inGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XX..X.X.XX",
+            };
+
+            string[] outGrid =
+            {
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXXXXXXXXX",
+                "XXX.....XX",
+                "XX..X.X.XX",
+            };
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+
+            // selected sidereqs
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            seq = seq.Returns(0);
+            seq = testRand.SetupSequence(p => p.Next(2));
+            seq = seq.Returns(0);
+
+            // start points
+            seq = seq.Returns(1);
+            seq = testRand.SetupSequence(p => p.Next(1));
+            seq = seq.Returns(0);
+
+            // start points
+            seq = seq.Returns(0);
+            seq = seq.Returns(0);
+
+            // where to bend the halls
+            seq = seq.Returns(3);
+            TestGenContext testContext = TestGenContext.InitGridToContext(inGrid);
+            testContext.SetTestRand(testRand.Object);
+            TestGenContext resultContext = TestGenContext.InitGridToContext(outGrid);
+            roomGen.PrepareSize(testContext.Rand, new Loc(8, 1));
+            roomGen.SetLoc(new Loc(1, 8));
+            SetBorderInfo(roomGen, inGrid);
+
+            roomGen.DrawOnMap(testContext);
+
+            Assert.That(testContext.Tiles, Is.EqualTo(resultContext.Tiles));
+            testRand.Verify(p => p.Next(3), Times.Exactly(1));
+            testRand.Verify(p => p.Next(2), Times.Exactly(2));
+            testRand.Verify(p => p.Next(1), Times.Exactly(3));
+        }
+
         [Test]
         public void DrawOnMapNone()
         {
