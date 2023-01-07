@@ -664,7 +664,26 @@ namespace RogueElements.Tests
             var set = new HashSet<int> { 5, 6, 7 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
+
+            Assert.That(result, Is.EqualTo(compare));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public void ChoosePossibleStartsLargeReqEdge()
+        {
+            // one sidereq, 3 tiles
+            var testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(1)).Returns(0);
+            var roomGen = new TestRoomGen<ITiledGenContext>();
+            bool[] permittedRange = { true, false, false, true, true };
+            var sideReqs = new List<IntRange> { new IntRange(5, 7) };
+            var compare = new List<HashSet<int>>();
+            var set = new HashSet<int> { 6 };
+            compare.Add(set);
+
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 2);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(1));
@@ -682,7 +701,7 @@ namespace RogueElements.Tests
             List<HashSet<int>> compare = new List<HashSet<int>>();
             HashSet<int> set = new HashSet<int> { 6 };
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
             compare.Add(set);
 
             Assert.That(result, Is.EqualTo(compare));
@@ -709,7 +728,7 @@ namespace RogueElements.Tests
             set = new HashSet<int> { 4, 5 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(2), Times.Exactly(1));
@@ -736,7 +755,7 @@ namespace RogueElements.Tests
             HashSet<int> set = new HashSet<int> { 5, 6 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(2), Times.Exactly(1));
@@ -763,7 +782,7 @@ namespace RogueElements.Tests
             HashSet<int> set = new HashSet<int> { 6, 7 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(2), Times.Exactly(1));
@@ -790,7 +809,7 @@ namespace RogueElements.Tests
             set = new HashSet<int> { 7 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(2), Times.Exactly(1));
@@ -822,7 +841,7 @@ namespace RogueElements.Tests
             set = new HashSet<int> { 7, 8 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
@@ -855,7 +874,7 @@ namespace RogueElements.Tests
             set = new HashSet<int> { 4, 5 };
             compare.Add(set);
 
-            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs);
+            List<HashSet<int>> result = roomGen.PublicChoosePossibleStarts(testRand.Object, 4, permittedRange, sideReqs, 1);
 
             Assert.That(result, Is.EqualTo(compare));
             testRand.Verify(p => p.Next(3), Times.Exactly(1));
@@ -902,9 +921,9 @@ namespace RogueElements.Tests
             {
             }
 
-            public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
+            public List<HashSet<int>> PublicChoosePossibleStarts(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs, int reqWidth)
             {
-                return this.ChoosePossibleStartRanges(rand, scalarStart, permittedRange, origSideReqs);
+                return this.ChoosePossibleStartRanges(rand, scalarStart, permittedRange, origSideReqs, reqWidth);
             }
 
             protected override void PrepareFulfillableBorders(IRandom rand)

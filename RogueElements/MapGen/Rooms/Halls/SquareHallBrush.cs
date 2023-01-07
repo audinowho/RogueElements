@@ -45,19 +45,14 @@ namespace RogueElements
         public override void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical)
         {
             Rect brushRect = new Rect(point, this.Dims);
-            if (bounds.Contains(brushRect))
+            for (int xx = brushRect.X; xx < brushRect.Right; xx++)
             {
-                for (int xx = brushRect.X; xx < brushRect.Right; xx++)
+                for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
                 {
-                    for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
-                    {
-                        map.SetTile(new Loc(xx, yy), map.RoomTerrain.Copy());
-                    }
+                    Loc dest = new Loc(xx, yy);
+                    if (Collision.InBounds(map.Width, map.Height, dest))
+                        map.SetTile(dest, map.RoomTerrain.Copy());
                 }
-            }
-            else
-            {
-                map.SetTile(point, map.RoomTerrain.Copy());
             }
         }
     }

@@ -100,7 +100,7 @@ namespace RogueElements
                     moddedReqs.Add(newRange);
                 }
 
-                possibleStarts[dir] = this.ChoosePossibleStartRanges(map.Rand, scalarStart, this.BorderToFulfill[dir], moddedReqs);
+                possibleStarts[dir] = this.ChoosePossibleStartRanges(map.Rand, scalarStart, this.BorderToFulfill[dir], moddedReqs, width);
             }
 
             if ((possibleStarts[Dir4.Down].Count == 0) != (possibleStarts[Dir4.Up].Count == 0) &&
