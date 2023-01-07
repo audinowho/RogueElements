@@ -177,9 +177,10 @@ namespace RogueElements
         /// <param name="scalarStart">The starting X/Y of the room side.</param>
         /// <param name="permittedRange">The tiles that can be used to cover sidereqs, as a boolean array.</param>
         /// <param name="origSideReqs">The required X/Y positions that must be touched.</param>
-        /// <param name="reqWidth">The width that each chosen tile would cover. Starts from the original tile location.</param>
+        /// <param name="reqWidth">The width that each chosen tile would cover. Starts from the center.</param>
+        /// <param name="reqCenter">center of width.</param>
         /// <returns></returns>
-        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs, int reqWidth)
+        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs, int reqWidth, int reqCenter)
         {
             // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
             List<IntRange> sideReqs = new List<IntRange>();
@@ -195,7 +196,8 @@ namespace RogueElements
                 // add all included bordertiles to its set
                 for (int ii = sideReqs[chosenIndex].Min; ii < sideReqs[chosenIndex].Max; ii++)
                 {
-                    IntRange testRange = new IntRange(ii, ii + reqWidth);
+                    // every coordinate must have its entire breadth searched for at least one permitted tile
+                    IntRange testRange = new IntRange(Math.Max(ii - reqCenter, scalarStart), Math.Min(ii - reqCenter + reqWidth, scalarStart + permittedRange.Length));
                     for (int jj = testRange.Min; jj < testRange.Max; jj++)
                     {
                         if (permittedRange[jj - scalarStart])
@@ -302,7 +304,7 @@ namespace RogueElements
 
                 if (!openAll)
                 {
-                    List<HashSet<int>> candidateEntrances = this.ChoosePossibleStartRanges(map.Rand, side.Min, this.BorderToFulfill[dir], unfulfilled[dir], 1);
+                    List<HashSet<int>> candidateEntrances = this.ChoosePossibleStartRanges(map.Rand, side.Min, this.BorderToFulfill[dir], unfulfilled[dir], 1, 0);
 
                     // randomly roll them
                     List<int> resultEntrances = new List<int>();

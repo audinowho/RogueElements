@@ -42,16 +42,20 @@ namespace RogueElements
             return new SquareHallBrush(this);
         }
 
-        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical)
+        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length)
         {
-            Rect brushRect = new Rect(point, this.Dims);
-            for (int xx = brushRect.X; xx < brushRect.Right; xx++)
+            for (int ii = 0; ii < length; ii++)
             {
-                for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
+                Loc point = ray.Traverse(ii);
+                Rect brushRect = new Rect(point, this.Dims);
+                for (int xx = brushRect.X; xx < brushRect.Right; xx++)
                 {
-                    Loc dest = new Loc(xx, yy);
-                    if (Collision.InBounds(map.Width, map.Height, dest))
-                        map.SetTile(dest, map.RoomTerrain.Copy());
+                    for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
+                    {
+                        Loc dest = new Loc(xx, yy);
+                        if (Collision.InBounds(map.Width, map.Height, dest))
+                            map.SetTile(dest, map.RoomTerrain.Copy());
+                    }
                 }
             }
         }
