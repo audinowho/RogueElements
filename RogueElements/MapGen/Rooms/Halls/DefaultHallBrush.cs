@@ -20,9 +20,13 @@ namespace RogueElements
             return new DefaultHallBrush();
         }
 
-        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, Loc point, bool vertical)
+        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length)
         {
-            map.SetTile(point, map.RoomTerrain.Copy());
+            for (int ii = 0; ii < length; ii++)
+            {
+                Loc point = ray.Traverse(ii);
+                map.SetTile(point, map.RoomTerrain.Copy());
+            }
         }
     }
 }

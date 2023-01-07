@@ -100,7 +100,7 @@ namespace RogueElements
                     moddedReqs.Add(newRange);
                 }
 
-                possibleStarts[dir] = this.ChoosePossibleStartRanges(map.Rand, scalarStart, this.BorderToFulfill[dir], moddedReqs, width);
+                possibleStarts[dir] = this.ChoosePossibleStartRanges(map.Rand, scalarStart, this.BorderToFulfill[dir], moddedReqs, width, center);
             }
 
             if ((possibleStarts[Dir4.Down].Count == 0) != (possibleStarts[Dir4.Up].Count == 0) &&
@@ -268,13 +268,13 @@ namespace RogueElements
 
                 Loc startLoc = new Loc(vertical ? starts[jj] : forwardStartLoc.X, vertical ? forwardStartLoc.Y : starts[jj]);
                 Loc endLoc = new Loc(vertical ? starts[jj] : forwardEnd, vertical ? forwardEnd : starts[jj]);
-                this.DrawHall(map, startLoc, endLoc, vertical);
+                this.DrawHall(map, startLoc, endLoc, dir.Reverse());
             }
 
             // combine the halls
             Loc combineStart = new Loc(vertical ? start.Min : forwardEnd, vertical ? forwardEnd : start.Min);
             Loc combineEnd = new Loc(vertical ? start.Max : forwardEnd, vertical ? forwardEnd : start.Max);
-            this.DrawHall(map, combineStart, combineEnd, !vertical);
+            this.DrawHall(map, combineStart, combineEnd, vertical ? Dir4.Right : Dir4.Down);
         }
 
         public override string ToString()
@@ -357,37 +357,41 @@ namespace RogueElements
         /// <param name="map"></param>
         /// <param name="point1"></param>
         /// <param name="point2"></param>
-        /// <param name="vertical"></param>
-        private void DrawHall(ITiledGenContext map, Loc point1, Loc point2, bool vertical)
+        /// <param name="dir"></param>
+        private void DrawHall(ITiledGenContext map, Loc point1, Loc point2, Dir4 dir)
         {
             if (point1 == point2)
             {
-                this.Brush.DrawHallBrush(map, this.Draw, point1, vertical);
+                this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), 1);
             }
             else if (point1.X == point2.X)
             {
                 if (point2.Y > point1.Y)
                 {
-                    for (int ii = point1.Y; ii <= point2.Y; ii++)
-                        this.Brush.DrawHallBrush(map, this.Draw, new Loc(point1.X, ii), vertical);
+                    if (dir != Dir4.Down)
+                        throw new ArgumentException("Invalid hall direction.");
+                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point2.Y - point1.Y + 1);
                 }
                 else if (point2.Y < point1.Y)
                 {
-                    for (int ii = point1.Y; ii >= point2.Y; ii--)
-                        this.Brush.DrawHallBrush(map, this.Draw, new Loc(point1.X, ii), vertical);
+                    if (dir != Dir4.Up)
+                        throw new ArgumentException("Invalid hall direction.");
+                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point1.Y - point2.Y + 1);
                 }
             }
             else if (point1.Y == point2.Y)
             {
                 if (point2.X > point1.X)
                 {
-                    for (int ii = point1.X; ii <= point2.X; ii++)
-                        this.Brush.DrawHallBrush(map, this.Draw, new Loc(ii, point1.Y), vertical);
+                    if (dir != Dir4.Right)
+                        throw new ArgumentException("Invalid hall direction.");
+                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point2.X - point1.X + 1);
                 }
                 else if (point2.X < point1.X)
                 {
-                    for (int ii = point1.X; ii >= point2.X; ii--)
-                        this.Brush.DrawHallBrush(map, this.Draw, new Loc(ii, point1.Y), vertical);
+                    if (dir != Dir4.Left)
+                        throw new ArgumentException("Invalid hall direction.");
+                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point1.X - point2.X + 1);
                 }
             }
 
@@ -432,7 +436,7 @@ namespace RogueElements
                         // the assumption is that there is already roomterrain to cross over at another point in this room
                         while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                             endLoc += forwardDir.Reverse().GetLoc();
-                        this.DrawHall(map, startLoc, endLoc, vertical);
+                        this.DrawHall(map, startLoc, endLoc, forwardDir.Reverse());
                     }
 
                     // backward until hit
@@ -444,7 +448,7 @@ namespace RogueElements
                         // the assumption is that there is already roomterrain to cross over at another point in this room
                         while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                             endLoc += forwardDir.GetLoc();
-                        this.DrawHall(map, startLoc, endLoc, vertical);
+                        this.DrawHall(map, startLoc, endLoc, forwardDir);
                     }
                 }
                 else
@@ -468,7 +472,7 @@ namespace RogueElements
                                 while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
                                     endLoc += dir.Reverse().GetLoc();
 
-                                this.DrawHall(map, startLoc, endLoc, vertical);
+                                this.DrawHall(map, startLoc, endLoc, dir.Reverse());
                             }
                         }
                     }
@@ -545,7 +549,7 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, startTiles[ii]);
                     Loc startLoc = new Loc(vertical ? startTiles[ii] : this.Draw.X, vertical ? this.Draw.Y : startTiles[ii]);
                     Loc endLoc = new Loc(vertical ? startTiles[ii] : forwardTurn, vertical ? forwardTurn : startTiles[ii]);
-                    this.DrawHall(map, startLoc, endLoc, vertical);
+                    this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
                 }
 
                 for (int ii = 0; ii < endTiles.Length; ii++)
@@ -554,12 +558,12 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, endTiles[ii]);
                     Loc startLoc = new Loc(vertical ? endTiles[ii] : this.Draw.End.X - 1, vertical ? this.Draw.End.Y - 1 : endTiles[ii]);
                     Loc endLoc = new Loc(vertical ? endTiles[ii] : forwardTurn, vertical ? forwardTurn : endTiles[ii]);
-                    this.DrawHall(map, startLoc, endLoc, vertical);
+                    this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Up : Dir4.Left);
                 }
 
                 Loc startMid = new Loc(vertical ? globalMin : forwardTurn, vertical ? forwardTurn : globalMin);
                 Loc endMid = new Loc(vertical ? globalMax : forwardTurn, vertical ? forwardTurn : globalMax);
-                this.DrawHall(map, startMid, endMid, !vertical);
+                this.DrawHall(map, startMid, endMid, vertical ? Dir4.Right : Dir4.Down);
             }
         }
 
@@ -574,7 +578,7 @@ namespace RogueElements
             int startSideDist = MathUtils.ChooseFromHash(cross, map.Rand);
             Loc startLoc = new Loc(vertical ? startSideDist : this.Draw.X, vertical ? this.Draw.Y : startSideDist);
             Loc endLoc = new Loc(vertical ? startSideDist : this.Draw.End.X - 1, vertical ? this.Draw.End.Y - 1 : startSideDist);
-            this.DrawHall(map, startLoc, endLoc, vertical);
+            this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
         }
     }
 }

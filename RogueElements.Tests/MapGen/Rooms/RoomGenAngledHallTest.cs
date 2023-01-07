@@ -427,7 +427,7 @@ namespace RogueElements.Tests
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
                 "..........",
-                "X........X",
+                "X.........",
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
@@ -485,7 +485,7 @@ namespace RogueElements.Tests
                 "XXXXXXXXXX",
                 "XXXXXXXXXX",
                 "..........",
-                "XXXXXXXXXX",
+                "X.........",
             };
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
