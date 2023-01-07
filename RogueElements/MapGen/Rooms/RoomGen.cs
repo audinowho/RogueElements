@@ -173,12 +173,13 @@ namespace RogueElements
         /// The sets are all mutually exclusive to each other, and the minimum amount is always chosen.
         /// Unwrapped.
         /// </summary>
-        /// <param name="rand">todo: describe rand parameter on ChoosePossibleStartRanges</param>
-        /// <param name="scalarStart">todo: describe scalarStart parameter on ChoosePossibleStartRanges</param>
-        /// <param name="permittedRange">todo: describe permittedRange parameter on ChoosePossibleStartRanges</param>
-        /// <param name="origSideReqs">todo: describe origSideReqs parameter on ChoosePossibleStartRanges</param>
+        /// <param name="rand">Random object</param>
+        /// <param name="scalarStart">The starting X/Y of the room side.</param>
+        /// <param name="permittedRange">The tiles that can be used to cover sidereqs, as a boolean array.</param>
+        /// <param name="origSideReqs">The required X/Y positions that must be touched.</param>
+        /// <param name="reqWidth">The width that each chosen tile would cover. Starts from the original tile location.</param>
         /// <returns></returns>
-        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs)
+        public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs, int reqWidth)
         {
             // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
             List<IntRange> sideReqs = new List<IntRange>();
@@ -192,10 +193,17 @@ namespace RogueElements
                 HashSet<int> tiles = new HashSet<int>();
 
                 // add all included bordertiles to its set
-                for (int ii = 0; ii < permittedRange.Length; ii++)
+                for (int ii = sideReqs[chosenIndex].Min; ii < sideReqs[chosenIndex].Max; ii++)
                 {
-                    if (permittedRange[ii] && sideReqs[chosenIndex].Contains(ii + scalarStart))
-                        tiles.Add(ii + scalarStart);
+                    IntRange testRange = new IntRange(ii, ii + reqWidth);
+                    for (int jj = testRange.Min; jj < testRange.Max; jj++)
+                    {
+                        if (permittedRange[jj - scalarStart])
+                        {
+                            tiles.Add(ii);
+                            break;
+                        }
+                    }
                 }
 
                 bool overlap = false;
@@ -294,7 +302,7 @@ namespace RogueElements
 
                 if (!openAll)
                 {
-                    List<HashSet<int>> candidateEntrances = this.ChoosePossibleStartRanges(map.Rand, side.Min, this.BorderToFulfill[dir], unfulfilled[dir]);
+                    List<HashSet<int>> candidateEntrances = this.ChoosePossibleStartRanges(map.Rand, side.Min, this.BorderToFulfill[dir], unfulfilled[dir], 1);
 
                     // randomly roll them
                     List<int> resultEntrances = new List<int>();
