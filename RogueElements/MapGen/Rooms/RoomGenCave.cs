@@ -59,6 +59,7 @@ namespace RogueElements
         {
             BlobMap largestMap = null;
             int blobIdx = -1;
+            bool foundMap = false;
 
             for (int ii = 0; ii < 10; ii++)
             {
@@ -86,26 +87,23 @@ namespace RogueElements
                         {
                             if (largestMap == null || blobMap.Blobs[bb].Bounds.Area > largestMap.Blobs[blobIdx].Bounds.Area)
                             {
-                                largestMap = blobMap;
-                                blobIdx = bb;
-
-                                if (largestMap.Blobs[blobIdx].Bounds.Width >= this.Width.Min && largestMap.Blobs[blobIdx].Bounds.Height >= this.Height.Min)
+                                if (blobMap.Blobs[bb].Bounds.Width < this.Width.Max && blobMap.Blobs[bb].Bounds.Height < this.Height.Max)
                                 {
-                                    Rect blobRect = largestMap.Blobs[blobIdx].Bounds;
-                                    this.Tiles = new bool[blobRect.Width][];
-                                    for (int xx = 0; xx < blobRect.Width; xx++)
-                                    {
-                                        this.Tiles[xx] = new bool[blobRect.Height];
-                                        for (int yy = 0; yy < blobRect.Height; yy++)
-                                            this.Tiles[xx][yy] = largestMap.Map[xx + blobRect.X][yy + blobRect.Y] == blobIdx;
-                                    }
+                                    largestMap = blobMap;
+                                    blobIdx = bb;
 
-                                    return new Loc(this.Tiles.Length, this.Tiles[0].Length);
+                                    if (blobMap.Blobs[bb].Bounds.Width >= this.Width.Min && blobMap.Blobs[bb].Bounds.Height >= this.Height.Min)
+                                    {
+                                        foundMap = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                if (foundMap)
+                    break;
             }
 
             if (largestMap != null)
