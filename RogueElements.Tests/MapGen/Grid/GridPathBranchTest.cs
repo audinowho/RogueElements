@@ -374,25 +374,32 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
+            seq = seq.Returns(0); // 0,0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 1,0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 2,0
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 2,1
+            seq = seq.Returns(1); // Left
+            seq = seq.Returns(1); // 1,1
+            seq = seq.Returns(1); // Left
+            seq = seq.Returns(1); // 0,1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 0,2
+            seq = seq.Returns(0); // Right
+            seq = seq.Returns(1); // 1,2
+            seq = seq.Returns(0); // Right
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Left));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Left));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 2), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 2), Dir4.Right));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -414,8 +421,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(2));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(8));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(18));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(8));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(9));
         }
@@ -445,20 +451,22 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
+            seq = seq.Returns(0); // 0,0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 1,0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 2,0
+            seq = seq.Returns(0); // Down
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(50);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Down));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -475,8 +483,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(2));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(3));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(8));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(3));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(4));
         }
@@ -504,25 +511,28 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
-            seq = testRand.SetupSequence(p => p.Next(2));
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
+            seq = seq.Returns(0); // 0, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 1, 0
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 1, 1
+            seq = seq.Returns(0); // Left
+            seq = seq.Returns(1); // 0, 1
+            seq = seq.Returns(0); // 0, 0
+            seq = seq.Returns(0); // 1, 0
+            seq = seq.Returns(0); // Right
+            seq = seq.Returns(0); // 2, 0
+            seq = seq.Returns(0); // Down
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            Moq.Language.ISetupSequentialResult<LocRay4> branchSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Left));
-            pathSeq = pathSeq.Returns(new LocRay4(Dir4.None));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Down));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -541,10 +551,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(2), Times.Exactly(1));
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(5));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(1));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(14));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(5));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(6));
         }
@@ -571,23 +578,29 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            testRand.Setup(p => p.Next(3)).Returns(0);
-            testRand.Setup(p => p.Next(2)).Returns(0);
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
+            for (int ii = 0; ii < 10; ii++)
+            {
+                // start coords
+                seq = seq.Returns(0);
+                seq = seq.Returns(0);
+
+                seq = seq.Returns(0); // 0, 0
+                seq = seq.Returns(1); // Right
+                seq = seq.Returns(1); // 1, 0
+                seq = seq.Returns(0); // Down
+                seq = seq.Returns(1); // 1, 1
+                seq = seq.Returns(0); // Left
+                seq = seq.Returns(1); // 0, 1
+                seq = seq.Returns(0); // 0, 0
+            }
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(100);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = true;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            for (int ii = 0; ii < 10; ii++)
-            {
-                pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-                pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Down));
-                pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Left));
-                pathSeq = pathSeq.Returns(new LocRay4(Dir4.None));
-            }
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -608,10 +621,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(2), Times.Exactly(10));
-            testRand.Verify(p => p.Next(3), Times.Exactly(10));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(40));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(0));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(100));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(30));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(40));
         }
@@ -641,25 +651,30 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
-            seq = testRand.SetupSequence(p => p.Next(8));
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
             testRand.Setup(p => p.Next(34, 34)).Returns(34);
+            seq = seq.Returns(0); // 0, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 1, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 2, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 3, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 4, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 5, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 6, 0
+            seq = seq.Returns(1); // Right
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(34);
             pathGen.Object.BranchRatio = new RandRange(0);
             pathGen.Object.NoForcedBranches = false;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 0), Dir4.Right));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -680,9 +695,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            testRand.Verify(p => p.Next(8), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(7));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(16));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(7));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(8));
         }
@@ -712,29 +725,36 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
-            seq = seq.Returns(1);
-            seq = testRand.SetupSequence(p => p.Next(8));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
+            seq = seq.Returns(1);
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
             testRand.Setup(p => p.Next(46, 46)).Returns(46);
+            seq = seq.Returns(0); // 0, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 1, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 2, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 1, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 3, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(2); // 4, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 2, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(2); // 5, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(3); // 6, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 3, 1
+            seq = seq.Returns(0); // Down
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(46);
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = true;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            Moq.Language.ISetupSequentialResult<LocRay4> branchSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -758,10 +778,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            testRand.Verify(p => p.Next(8), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(7));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(3));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(22));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(10));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(11));
         }
@@ -792,29 +809,37 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
-            seq = testRand.SetupSequence(p => p.Next(8));
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(50, 50)).Returns(50);
+            seq = seq.Returns(0); // 0, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 1, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 2, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(0); // 1, 0
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(2); // 1, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 3, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(0); // 2, 0
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(3); // 2, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(2); // 4, 0
+            seq = seq.Returns(1); // Right
+            seq = seq.Returns(1); // 3, 0
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(4); // 3, 1
+            seq = seq.Returns(0); // Down
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(50);
             pathGen.Object.BranchRatio = new RandRange(50);
             pathGen.Object.NoForcedBranches = true;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            Moq.Language.ISetupSequentialResult<LocRay4> branchSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 0), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 0), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(2, 0), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 0), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 0), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -839,10 +864,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            testRand.Verify(p => p.Next(8), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(8));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(3));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(24));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(11));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(12));
         }
@@ -872,32 +894,42 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
-            seq = seq.Returns(1);
-            seq = testRand.SetupSequence(p => p.Next(8));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
+            seq = seq.Returns(1);
             testRand.Setup(p => p.Next(59, 59)).Returns(59);
             testRand.Setup(p => p.Next(100, 100)).Returns(100);
+            seq = seq.Returns(0); // 0, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 1, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 1, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(1); // 2, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 2, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(2); // 3, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(2); // 3, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(3); // 4, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(3); // 4, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(4); // 5, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(4); // 5, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(5); // 6, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(5); // 6, 1
+            seq = seq.Returns(0); // Down
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(59);
             pathGen.Object.BranchRatio = new RandRange(100);
             pathGen.Object.NoForcedBranches = true;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            Moq.Language.ISetupSequentialResult<LocRay4> branchSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Down));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Down));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -924,10 +956,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            testRand.Verify(p => p.Next(8), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(7));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(6));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(28));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(13));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(14));
         }
@@ -957,38 +986,54 @@ namespace RogueElements.Tests
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(3));
-            seq = seq.Returns(1);
-            seq = testRand.SetupSequence(p => p.Next(8));
+            Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(It.IsAny<int>()));
             seq = seq.Returns(0);
+            seq = seq.Returns(1);
             testRand.Setup(p => p.Next(84, 84)).Returns(84);
             testRand.Setup(p => p.Next(200, 200)).Returns(200);
+            seq = seq.Returns(0); // 0, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(1); // 1, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 1, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 1, 1
+            seq = seq.Returns(0); // Up
+            seq = seq.Returns(1); // 2, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 2, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 2, 1
+            seq = seq.Returns(0); // Up
+            seq = seq.Returns(3); // 3, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 3, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 3, 1
+            seq = seq.Returns(0); // Up
+            seq = seq.Returns(5); // 4, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 4, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 4, 1
+            seq = seq.Returns(0); // Up
+            seq = seq.Returns(7); // 5, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 5, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 5, 1
+            seq = seq.Returns(0); // Up
+            seq = seq.Returns(9); // 6, 1
+            seq = seq.Returns(2); // Right
+            seq = seq.Returns(0); // 6, 1
+            seq = seq.Returns(0); // Down
+            seq = seq.Returns(0); // 6, 1
+            seq = seq.Returns(0); // Up
 
             Mock<GridPathBranch<IGridPathTestContext>> pathGen = new Mock<GridPathBranch<IGridPathTestContext>> { CallBase = true };
             pathGen.Object.RoomRatio = new RandRange(84);
             pathGen.Object.BranchRatio = new RandRange(200);
             pathGen.Object.NoForcedBranches = true;
-            Moq.Language.ISetupSequentialResult<LocRay4> pathSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false));
-            Moq.Language.ISetupSequentialResult<LocRay4> branchSeq = pathGen.SetupSequence(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(0, 1), Dir4.Right));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(1, 1), Dir4.Up));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(2, 1), Dir4.Up));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(3, 1), Dir4.Up));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(4, 1), Dir4.Up));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(5, 1), Dir4.Up));
-            pathSeq = pathSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Right));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Down));
-            branchSeq = branchSeq.Returns(new LocRay4(new Loc(6, 1), Dir4.Up));
 
             Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
@@ -1021,10 +1066,7 @@ namespace RogueElements.Tests
 
             TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
 
-            testRand.Verify(p => p.Next(3), Times.Exactly(1));
-            testRand.Verify(p => p.Next(8), Times.Exactly(1));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, false), Times.Exactly(7));
-            pathGen.Verify(p => p.ChooseRoomExpansion(testRand.Object, floorPlan, true), Times.Exactly(12));
+            testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(40));
             mockHalls.Verify(p => p.Pick(testRand.Object), Times.Exactly(19));
             mockRooms.Verify(p => p.Pick(testRand.Object), Times.Exactly(20));
         }
