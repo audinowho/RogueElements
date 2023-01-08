@@ -127,7 +127,7 @@ namespace RogueElements
                             pendingBranch = 100;
                     }
 
-                    while (pendingBranch >= 100 && roomsLeft > 0)
+                    while (pendingBranch >= 100 && roomsLeft > 0 && branchables.Count > 0)
                     {
                         // pop a random loc from the branchables list
                         Loc newBranch = PopRandomLoc(rand, branchables);
@@ -151,10 +151,6 @@ namespace RogueElements
                                 branchables.Add(newBranch);
 
                             pendingBranch -= 100;
-                        }
-                        else if (branchables.Count == 0)
-                        {
-                            break;
                         }
                     }
 
