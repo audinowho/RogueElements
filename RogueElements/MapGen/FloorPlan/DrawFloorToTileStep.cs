@@ -39,12 +39,15 @@ namespace RogueElements
                 map.RoomPlan.DrawRect.Height + (2 * this.Padding),
                 map.RoomPlan.Wrap);
 
+            GenContextDebug.DebugProgress("Initialized Map");
+
             for (int ii = 0; ii < map.Width; ii++)
             {
                 for (int jj = 0; jj < map.Height; jj++)
                     map.SetTile(new Loc(ii, jj), map.WallTerrain.Copy());
             }
 
+            GenContextDebug.DebugProgress("Set Walls");
             map.RoomPlan.MoveStart(new Loc(this.Padding));
             GenContextDebug.DebugProgress("Moved Floor");
             map.RoomPlan.DrawOnMap(map);

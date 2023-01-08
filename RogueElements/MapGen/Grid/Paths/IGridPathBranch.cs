@@ -73,11 +73,19 @@ namespace RogueElements
                 int roomsToOpen = floorPlan.GridWidth * floorPlan.GridHeight * this.RoomRatio.Pick(rand) / 100;
                 if (roomsToOpen < 1)
                     roomsToOpen = 1;
+
                 int addBranch = this.BranchRatio.Pick(rand);
                 int roomsLeft = roomsToOpen;
+                List<Loc> terminals = new List<Loc>();
+                List<Loc> branchables = new List<Loc>();
 
+                // place first room
                 Loc sourceRoom = new Loc(rand.Next(floorPlan.GridWidth), rand.Next(floorPlan.GridHeight)); // randomly determine start room
                 floorPlan.AddRoom(sourceRoom, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+
+                // add the room to a terminals list twice
+                terminals.Add(sourceRoom);
+                terminals.Add(sourceRoom);
 
                 GenContextDebug.DebugProgress("Start Room");
 
@@ -85,33 +93,72 @@ namespace RogueElements
                 int pendingBranch = 0;
                 while (roomsLeft > 0)
                 {
-                    bool terminalSuccess = this.ExpandPath(rand, floorPlan, false);
-                    bool branchSuccess = false;
-                    if (terminalSuccess)
+                    // pop a random loc from the terminals list
+                    Loc newTerminal = PopRandomLoc(rand, terminals);
+
+                    // find the directions to extend to
+                    List<LocRay4> availableRays = new List<LocRay4>();
+                    foreach (Dir4 dir in GetRoomExpandDirs(floorPlan, newTerminal))
+                        availableRays.Add(new LocRay4(newTerminal, dir));
+
+                    if (availableRays.Count > 0)
                     {
+                        // extend the path a random direction
+                        LocRay4 terminalRay = availableRays[rand.Next(availableRays.Count)];
+                        this.ExpandPath(rand, floorPlan, terminalRay);
+                        Loc newRoomLoc = terminalRay.Traverse(1);
                         roomsLeft--;
+
+                        // add the new terminal location to the terminals list
+                        terminals.Add(newRoomLoc);
                         if (floorPlan.RoomCount > 2)
+                        {
+                            if (availableRays.Count > 1)
+                                branchables.Add(newTerminal);
+
                             pendingBranch += addBranch;
+                        }
                     }
-                    else if (this.NoForcedBranches)
+                    else if (terminals.Count == 0)
                     {
-                        break;
-                    }
-                    else
-                    {
-                        pendingBranch = 100;
+                        if (this.NoForcedBranches)
+                            break;
+                        else
+                            pendingBranch = 100;
                     }
 
                     while (pendingBranch >= 100 && roomsLeft > 0)
                     {
-                        branchSuccess = this.ExpandPath(rand, floorPlan, true);
-                        if (!branchSuccess)
+                        // pop a random loc from the branchables list
+                        Loc newBranch = PopRandomLoc(rand, branchables);
+
+                        // find the directions to extend to
+                        List<LocRay4> availableBranchRays = new List<LocRay4>();
+                        foreach (Dir4 dir in GetRoomExpandDirs(floorPlan, newBranch))
+                            availableBranchRays.Add(new LocRay4(newBranch, dir));
+
+                        if (availableBranchRays.Count > 0)
+                        {
+                            // extend the path a random direction
+                            LocRay4 branchRay = availableBranchRays[rand.Next(availableBranchRays.Count)];
+                            this.ExpandPath(rand, floorPlan, branchRay);
+                            Loc newRoomLoc = branchRay.Traverse(1);
+                            roomsLeft--;
+
+                            // add the new terminal location to the terminals list
+                            terminals.Add(newRoomLoc);
+                            if (availableBranchRays.Count > 1)
+                                branchables.Add(newBranch);
+
+                            pendingBranch -= 100;
+                        }
+                        else if (branchables.Count == 0)
+                        {
                             break;
-                        pendingBranch -= 100;
-                        roomsLeft--;
+                        }
                     }
 
-                    if (!terminalSuccess && !branchSuccess)
+                    if (terminals.Count == 0 && branchables.Count == 0)
                         break;
                 }
 
@@ -120,31 +167,17 @@ namespace RogueElements
             }
         }
 
-        public virtual LocRay4 ChooseRoomExpansion(IRandom rand, GridPlan floorPlan, bool branch)
-        {
-            List<LocRay4> availableRays = GetPossibleExpansions(floorPlan, branch);
-
-            if (availableRays.Count == 0)
-                return new LocRay4(Dir4.None);
-
-            LocRay4 chosenRay = availableRays[rand.Next(availableRays.Count)];
-            return chosenRay;
-        }
-
         public override string ToString()
         {
             return string.Format("{0}: Fill:{1}% Branch:{2}%", this.GetType().Name, this.RoomRatio, this.BranchRatio);
         }
 
-        protected bool ExpandPath(IRandom rand, GridPlan floorPlan, bool branch)
+        protected bool ExpandPath(IRandom rand, GridPlan floorPlan, LocRay4 chosenRay)
         {
-            LocRay4 chosenRay = this.ChooseRoomExpansion(rand, floorPlan, branch);
-            if (chosenRay.Dir == Dir4.None)
-                return false;
             floorPlan.SetHall(chosenRay, this.GenericHalls.Pick(rand), this.HallComponents.Clone());
             floorPlan.AddRoom(chosenRay.Traverse(1), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
 
-            GenContextDebug.DebugProgress(branch ? "Branched Path" : "Extended Path");
+            GenContextDebug.DebugProgress("Added Path");
             return true;
         }
 
@@ -163,6 +196,14 @@ namespace RogueElements
                     && floorPlan.GetRoomIndex(endLoc) == -1)
                     yield return dir;
             }
+        }
+
+        private static Loc PopRandomLoc(IRandom rand, List<Loc> locs)
+        {
+            int branchIdx = rand.Next(locs.Count);
+            Loc newBranch = locs[branchIdx];
+            locs.RemoveAt(branchIdx);
+            return newBranch;
         }
     }
 }
