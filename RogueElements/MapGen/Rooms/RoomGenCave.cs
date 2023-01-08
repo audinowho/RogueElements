@@ -102,6 +102,7 @@ namespace RogueElements
                         }
                     }
                 }
+
                 if (foundMap)
                     break;
             }
