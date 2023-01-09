@@ -50,7 +50,8 @@ namespace RogueElements
             {
                 checkArea = new Rect(testLoc, Loc.One);
                 checkArea.Inflate(1, 1);
-                checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
+                if (!map.Wrap)
+                    checkArea = Rect.Intersect(checkArea, new Rect(0, 0, map.Width, map.Height));
             }
 
             return this.Negate == Detection.DetectDisconnect(checkArea, IsMapValid, testLoc, Loc.One, IsBlobValid, true);
