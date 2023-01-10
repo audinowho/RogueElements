@@ -603,8 +603,9 @@ namespace RogueElements.Tests
             roomGen.PrepareSize(testContext.Rand, new Loc(10, 5));
             roomGen.SetLoc(new Loc(0, 0));
             SetBorderInfo(roomGen, inGrid);
+            List<(LocRay4, int)> drawnRays = new List<(LocRay4, int)>();
 
-            roomGen.DrawCombinedHall(testContext, Dir4.Down, 3, new int[] { 5 });
+            roomGen.DrawCombinedHall(testContext, drawnRays, Dir4.Down, 3, new int[] { 5 });
 
             Assert.That(testContext.Tiles, Is.EqualTo(resultContext.Tiles));
         }

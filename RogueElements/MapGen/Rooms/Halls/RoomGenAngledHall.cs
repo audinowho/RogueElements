@@ -81,6 +81,7 @@ namespace RogueElements
         {
             // check if there are any sides that have intersections such that straight lines are possible
             var possibleStarts = new Dictionary<Dir4, List<HashSet<int>>>();
+            List<(LocRay4, int)> drawnRays = new List<(LocRay4, int)>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 int scalarStart = this.Draw.Start.GetScalar(dir.ToAxis().Orth());
@@ -132,9 +133,9 @@ namespace RogueElements
                 // flip a coin to see which gets which
                 bool extendFar = map.Rand.Next(2) == 0;
                 int minMax1 = GetHallMinMax(dirStarts[1], dirs[0].Reverse(), extendFar);
-                this.DrawCombinedHall(map, dirs[0], minMax1, dirStarts[0]);
+                this.DrawCombinedHall(map, drawnRays, dirs[0], minMax1, dirStarts[0]);
                 int minMax2 = GetHallMinMax(dirStarts[0], dirs[1].Reverse(), !extendFar);
-                this.DrawCombinedHall(map, dirs[1], minMax2, dirStarts[1]);
+                this.DrawCombinedHall(map, drawnRays, dirs[1], minMax2, dirStarts[1]);
 
                 // TODO: a better way to resolve right-angle multi-halls
                 // if there are NO opposite sides of sideReqs at all, we have a right angle situation
@@ -175,7 +176,7 @@ namespace RogueElements
                                 starts[jj] = MathUtils.ChooseFromHash(possibleStarts[dir][jj], map.Rand);
                             }
 
-                            this.DrawCombinedHall(map, dir, forwardEnd, starts);
+                            this.DrawCombinedHall(map, drawnRays, dir, forwardEnd, starts);
                         }
                     }
 
@@ -210,13 +211,13 @@ namespace RogueElements
                     // in the case where one hall is crossed and another hall isn't, draw the crossed hall first
                     if (horiz && !vert)
                     {
-                        this.DrawPrimaryHall(map, horizCross, possibleStarts, false, horizTurn);
-                        this.DrawSecondaryHall(map, vertCross, possibleStarts, true, vertTurn);
+                        this.DrawPrimaryHall(map, drawnRays, horizCross, possibleStarts, false, horizTurn);
+                        this.DrawSecondaryHall(map, drawnRays, vertCross, possibleStarts, true, vertTurn);
                     }
                     else if (!horiz && vert)
                     {
-                        this.DrawPrimaryHall(map, vertCross, possibleStarts, true, vertTurn);
-                        this.DrawSecondaryHall(map, horizCross, possibleStarts, false, horizTurn);
+                        this.DrawPrimaryHall(map, drawnRays, vertCross, possibleStarts, true, vertTurn);
+                        this.DrawSecondaryHall(map, drawnRays, horizCross, possibleStarts, false, horizTurn);
                     }
                     else
                     {
@@ -227,13 +228,13 @@ namespace RogueElements
                         // if vert is straight and horiz is angled, draw vert first
                         if (!vertTurn && horizTurn)
                         {
-                            this.DrawPrimaryHall(map, vertCross, possibleStarts, true, vertTurn);
-                            this.DrawSecondaryHall(map, horizCross, possibleStarts, false, horizTurn);
+                            this.DrawPrimaryHall(map, drawnRays, vertCross, possibleStarts, true, vertTurn);
+                            this.DrawSecondaryHall(map, drawnRays, horizCross, possibleStarts, false, horizTurn);
                         }
                         else
                         {
-                            this.DrawPrimaryHall(map, horizCross, possibleStarts, false, horizTurn);
-                            this.DrawSecondaryHall(map, vertCross, possibleStarts, true, vertTurn);
+                            this.DrawPrimaryHall(map, drawnRays, horizCross, possibleStarts, false, horizTurn);
+                            this.DrawSecondaryHall(map, drawnRays, vertCross, possibleStarts, true, vertTurn);
                         }
                     }
                 }
@@ -249,7 +250,8 @@ namespace RogueElements
         /// <param name="dir"></param>
         /// <param name="forwardEnd"></param>
         /// <param name="starts"></param>
-        public void DrawCombinedHall(ITiledGenContext map, Dir4 dir, int forwardEnd, int[] starts)
+        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawCombinedHall</param>
+        public void DrawCombinedHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Dir4 dir, int forwardEnd, int[] starts)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
 
@@ -268,13 +270,13 @@ namespace RogueElements
 
                 Loc startLoc = new Loc(vertical ? starts[jj] : forwardStartLoc.X, vertical ? forwardStartLoc.Y : starts[jj]);
                 Loc endLoc = new Loc(vertical ? starts[jj] : forwardEnd, vertical ? forwardEnd : starts[jj]);
-                this.DrawHall(map, startLoc, endLoc, dir.Reverse());
+                this.DrawHall(map, drawnRays, startLoc, endLoc, dir.Reverse());
             }
 
             // combine the halls
             Loc combineStart = new Loc(vertical ? start.Min : forwardEnd, vertical ? forwardEnd : start.Min);
             Loc combineEnd = new Loc(vertical ? start.Max : forwardEnd, vertical ? forwardEnd : start.Max);
-            this.DrawHall(map, combineStart, combineEnd, vertical ? Dir4.Right : Dir4.Down);
+            this.DrawHall(map, drawnRays, combineStart, combineEnd, vertical ? Dir4.Right : Dir4.Down);
         }
 
         public override string ToString()
@@ -355,14 +357,17 @@ namespace RogueElements
         /// Draws a hall in a straight cardinal direction, starting with one point and ending with another (inclusive).
         /// </summary>
         /// <param name="map"></param>
+        /// <param name="drawnRays"></param>
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="dir"></param>
-        private void DrawHall(ITiledGenContext map, Loc point1, Loc point2, Dir4 dir)
+        private void DrawHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Loc point1, Loc point2, Dir4 dir)
         {
+            LocRay4 ray = new LocRay4(point1, dir);
+            int range = 0;
             if (point1 == point2)
             {
-                this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), 1);
+                // keep range 0
             }
             else if (point1.X == point2.X)
             {
@@ -370,13 +375,13 @@ namespace RogueElements
                 {
                     if (dir != Dir4.Down)
                         throw new ArgumentException("Invalid hall direction.");
-                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point2.Y - point1.Y + 1);
+                    range = point2.Y - point1.Y;
                 }
                 else if (point2.Y < point1.Y)
                 {
                     if (dir != Dir4.Up)
                         throw new ArgumentException("Invalid hall direction.");
-                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point1.Y - point2.Y + 1);
+                    range = point1.Y - point2.Y;
                 }
             }
             else if (point1.Y == point2.Y)
@@ -385,15 +390,18 @@ namespace RogueElements
                 {
                     if (dir != Dir4.Right)
                         throw new ArgumentException("Invalid hall direction.");
-                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point2.X - point1.X + 1);
+                    range = point2.X - point1.X;
                 }
                 else if (point2.X < point1.X)
                 {
                     if (dir != Dir4.Left)
                         throw new ArgumentException("Invalid hall direction.");
-                    this.Brush.DrawHallBrush(map, this.Draw, new LocRay4(point1, dir), point1.X - point2.X + 1);
+                    range = point1.X - point2.X;
                 }
             }
+
+            this.Brush.DrawHallBrush(map, this.Draw, ray, range + 1);
+            drawnRays.Add((ray, range));
 
             GenContextDebug.DebugProgress("Hall Line");
         }
@@ -406,12 +414,13 @@ namespace RogueElements
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
-        private void DrawSecondaryHall(T map, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
+        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawSecondaryHall</param>
+        private void DrawSecondaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
                 // if not turning, use the cross variables
-                this.DrawStraightHall(map, cross, vertical);
+                this.DrawStraightHall(map, drawnRays, cross, vertical);
             }
             else
             {
@@ -433,10 +442,9 @@ namespace RogueElements
                         Loc startLoc = new Loc(vertical ? startTiles[0] : forwardStart.X, vertical ? forwardStart.Y : startTiles[0]);
                         Loc endLoc = startLoc;
 
-                        // the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
+                        while (!CollidesWithHall(drawnRays, endLoc))
                             endLoc += forwardDir.Reverse().GetLoc();
-                        this.DrawHall(map, startLoc, endLoc, forwardDir.Reverse());
+                        this.DrawHall(map, drawnRays, startLoc, endLoc, forwardDir.Reverse());
                     }
 
                     // backward until hit
@@ -445,10 +453,9 @@ namespace RogueElements
                         Loc startLoc = new Loc(vertical ? endTiles[0] : backwardStart.X, vertical ? backwardStart.Y : endTiles[0]);
                         Loc endLoc = startLoc;
 
-                        // the assumption is that there is already roomterrain to cross over at another point in this room
-                        while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
+                        while (!CollidesWithHall(drawnRays, endLoc))
                             endLoc += forwardDir.GetLoc();
-                        this.DrawHall(map, startLoc, endLoc, forwardDir);
+                        this.DrawHall(map, drawnRays, startLoc, endLoc, forwardDir);
                     }
                 }
                 else
@@ -468,11 +475,10 @@ namespace RogueElements
                                 Loc startLoc = new Loc(vertical ? startSideDist : forwardStart.X, vertical ? forwardStart.Y : startSideDist);
                                 Loc endLoc = startLoc;
 
-                                // the assumption is that there is already roomterrain to cross over at another point in this room
-                                while (!map.RoomTerrain.TileEquivalent(map.GetTile(endLoc)))
+                                while (!CollidesWithHall(drawnRays, endLoc))
                                     endLoc += dir.Reverse().GetLoc();
 
-                                this.DrawHall(map, startLoc, endLoc, dir.Reverse());
+                                this.DrawHall(map, drawnRays, startLoc, endLoc, dir.Reverse());
                             }
                         }
                     }
@@ -490,12 +496,13 @@ namespace RogueElements
         /// <param name="possibleStarts"></param>
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
-        private void DrawPrimaryHall(T map, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
+        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawPrimaryHall</param>
+        private void DrawPrimaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
                 // if not turning, use the cross variables
-                this.DrawStraightHall(map, cross, vertical);
+                this.DrawStraightHall(map, drawnRays, cross, vertical);
             }
             else
             {
@@ -549,7 +556,7 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, startTiles[ii]);
                     Loc startLoc = new Loc(vertical ? startTiles[ii] : this.Draw.X, vertical ? this.Draw.Y : startTiles[ii]);
                     Loc endLoc = new Loc(vertical ? startTiles[ii] : forwardTurn, vertical ? forwardTurn : startTiles[ii]);
-                    this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
+                    this.DrawHall(map, drawnRays, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
                 }
 
                 for (int ii = 0; ii < endTiles.Length; ii++)
@@ -558,12 +565,12 @@ namespace RogueElements
                     globalMax = Math.Max(globalMax, endTiles[ii]);
                     Loc startLoc = new Loc(vertical ? endTiles[ii] : this.Draw.End.X - 1, vertical ? this.Draw.End.Y - 1 : endTiles[ii]);
                     Loc endLoc = new Loc(vertical ? endTiles[ii] : forwardTurn, vertical ? forwardTurn : endTiles[ii]);
-                    this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Up : Dir4.Left);
+                    this.DrawHall(map, drawnRays, startLoc, endLoc, vertical ? Dir4.Up : Dir4.Left);
                 }
 
                 Loc startMid = new Loc(vertical ? globalMin : forwardTurn, vertical ? forwardTurn : globalMin);
                 Loc endMid = new Loc(vertical ? globalMax : forwardTurn, vertical ? forwardTurn : globalMax);
-                this.DrawHall(map, startMid, endMid, vertical ? Dir4.Right : Dir4.Down);
+                this.DrawHall(map, drawnRays, startMid, endMid, vertical ? Dir4.Right : Dir4.Down);
             }
         }
 
@@ -573,12 +580,23 @@ namespace RogueElements
         /// <param name="map"></param>
         /// <param name="cross"></param>
         /// <param name="vertical"></param>
-        private void DrawStraightHall(T map, HashSet<int> cross, bool vertical)
+        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawStraightHall</param>
+        private void DrawStraightHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, bool vertical)
         {
             int startSideDist = MathUtils.ChooseFromHash(cross, map.Rand);
             Loc startLoc = new Loc(vertical ? startSideDist : this.Draw.X, vertical ? this.Draw.Y : startSideDist);
             Loc endLoc = new Loc(vertical ? startSideDist : this.Draw.End.X - 1, vertical ? this.Draw.End.Y - 1 : startSideDist);
-            this.DrawHall(map, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
+            this.DrawHall(map, drawnRays, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
+        }
+
+        private static bool CollidesWithHall(List<(LocRay4, int)> drawnRays, Loc endLoc)
+        {
+            foreach ((LocRay4 ray, int range) drawn in drawnRays)
+            {
+                if (Collision.InFront(drawn.ray.Loc, endLoc, drawn.ray.Dir.ToDir8(), drawn.range))
+                    return true;
+            }
+            return false;
         }
     }
 }
