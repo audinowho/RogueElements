@@ -1,4 +1,4 @@
-﻿// <copyright file="RoomGenDefault.cs" company="Audino">
+﻿// <copyright file="IRoomGenDefault.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,12 +8,16 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IRoomGenDefault
+    {
+    }
+
     /// <summary>
     /// Generates a one-tile room.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class RoomGenDefault<T> : PermissiveRoomGen<T>
+    public class RoomGenDefault<T> : PermissiveRoomGen<T>, IRoomGenDefault
         where T : ITiledGenContext
     {
         public RoomGenDefault()
