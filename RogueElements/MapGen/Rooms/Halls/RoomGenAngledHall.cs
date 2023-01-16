@@ -353,6 +353,17 @@ namespace RogueElements
             return result;
         }
 
+        private static bool CollidesWithHall(List<(LocRay4, int)> drawnRays, Loc endLoc)
+        {
+            foreach ((LocRay4 ray, int range) drawn in drawnRays)
+            {
+                if (Collision.InFront(drawn.ray.Loc, endLoc, drawn.ray.Dir.ToDir8(), drawn.range))
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Draws a hall in a straight cardinal direction, starting with one point and ending with another (inclusive).
         /// </summary>
@@ -587,16 +598,6 @@ namespace RogueElements
             Loc startLoc = new Loc(vertical ? startSideDist : this.Draw.X, vertical ? this.Draw.Y : startSideDist);
             Loc endLoc = new Loc(vertical ? startSideDist : this.Draw.End.X - 1, vertical ? this.Draw.End.Y - 1 : startSideDist);
             this.DrawHall(map, drawnRays, startLoc, endLoc, vertical ? Dir4.Down : Dir4.Right);
-        }
-
-        private static bool CollidesWithHall(List<(LocRay4, int)> drawnRays, Loc endLoc)
-        {
-            foreach ((LocRay4 ray, int range) drawn in drawnRays)
-            {
-                if (Collision.InFront(drawn.ray.Loc, endLoc, drawn.ray.Dir.ToDir8(), drawn.range))
-                    return true;
-            }
-            return false;
         }
     }
 }

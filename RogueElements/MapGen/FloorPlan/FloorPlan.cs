@@ -16,6 +16,9 @@ namespace RogueElements
 
         public Loc Size { get; private set; }
 
+        /// <summary>
+        /// Start loc of floor space.  Room coordinates are currently NOT relative to this value and their draw locs are universal.
+        /// </summary>
         public Loc Start { get; private set; }
 
         public bool Wrap { get; private set; }
@@ -400,7 +403,7 @@ namespace RogueElements
         /// Changes size without changing the start.
         /// </summary>
         /// <param name="newSize"></param>
-        /// <param name="dir"></param>
+        /// <param name="dir">The direction to expand the floor space in.</param>
         /// <param name="anchorDir">The anchor point of the initial floor rect.</param>
         public void Resize(Loc newSize, Dir8 dir, Dir8 anchorDir)
         {

@@ -10,6 +10,7 @@ namespace RogueElements
     /// <summary>
     /// Clamps the floor plan to at least a minimum size, at most a maximum size.
     /// If the bounds of the current roomplan maximum, the size will increase to include them.
+    /// Always shrinks in the BottomRight direction, which results in the TopLeft corner remaining constant.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
@@ -32,6 +33,9 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
+            int clampedX = Math.Min(Math.Max(this.MinSize.X, map.RoomPlan.Size.X), this.MaxSize.X);
+            int clampedY = Math.Min(Math.Max(this.MinSize.Y, map.RoomPlan.Size.Y), this.MaxSize.Y);
+
             Loc start = map.RoomPlan.Size;
             Loc end = Loc.Zero;
             foreach (IRoomPlan plan in map.RoomPlan.GetAllPlans())
@@ -41,8 +45,35 @@ namespace RogueElements
                 end = new Loc(Math.Max(end.X, roomRect.End.X), Math.Max(end.Y, roomRect.End.Y));
             }
 
+            // this floor size of end - start is the minimum of which the new map size is allowed
+            // increase the size by decreasing the start until 0 or the new size is reached
+            // if there is leftover space, increase the size by increasing the end until the new size is reached
+            int clampedXDiff = clampedX - (end.X - start.X);
+            if (clampedXDiff > 0)
+            {
+                start.X -= clampedXDiff;
+                if (start.X < 0)
+                {
+                    end.X -= start.X;
+                    start.X = 0;
+                }
+            }
+
+            int clampedYDiff = clampedY - (end.Y - start.Y);
+            if (clampedYDiff > 0)
+            {
+                start.Y -= clampedYDiff;
+                if (start.Y < 0)
+                {
+                    end.Y -= start.Y;
+                    start.Y = 0;
+                }
+            }
+
+            Loc roomSize = end - start;
+
             map.RoomPlan.Resize(end, Dir8.DownRight, Dir8.UpLeft);
-            map.RoomPlan.Resize(end, Dir8.UpLeft, Dir8.DownRight);
+            map.RoomPlan.Resize(roomSize, Dir8.UpLeft, Dir8.DownRight);
             GenContextDebug.DebugProgress("Clamped Floor");
         }
     }
