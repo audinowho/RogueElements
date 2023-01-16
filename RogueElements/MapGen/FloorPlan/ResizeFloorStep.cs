@@ -19,11 +19,16 @@ namespace RogueElements
         {
         }
 
-        public ResizeFloorStep(Loc addedSize, Dir8 expandDir, Dir8 dir)
+        public ResizeFloorStep(Loc addedSize, Dir8 expandDir, Dir8 spaceExpandDir)
         {
             this.AddedSize = addedSize;
             this.ExpandDir = expandDir;
-            this.AnchorDir = dir;
+            this.SpaceExpandDir = spaceExpandDir;
+        }
+
+        public ResizeFloorStep(Loc addedSize, Dir8 expandDir)
+            : this(addedSize, expandDir, Dir8.DownRight)
+        {
         }
 
         /// <summary>
@@ -32,15 +37,18 @@ namespace RogueElements
         public Loc AddedSize { get; set; }
 
         /// <summary>
-        /// The direction in which to expand.
+        /// The direction in which to expand the floor space relative to existing rooms.
         /// </summary>
         public Dir8 ExpandDir { get; set; }
 
-        public Dir8 AnchorDir { get; set; }
+        /// <summary>
+        /// The direction in which to expand the floor's draw rectangle.
+        /// </summary>
+        public Dir8 SpaceExpandDir { get; set; }
 
         public override void Apply(T map)
         {
-            map.RoomPlan.Resize(map.RoomPlan.Size + new Loc(this.AddedSize), this.ExpandDir, this.AnchorDir);
+            map.RoomPlan.Resize(map.RoomPlan.Size + new Loc(this.AddedSize), this.SpaceExpandDir, this.ExpandDir.Reverse());
             GenContextDebug.DebugProgress("Resized Floor");
         }
     }

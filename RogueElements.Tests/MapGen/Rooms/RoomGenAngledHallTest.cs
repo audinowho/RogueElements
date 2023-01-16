@@ -1589,8 +1589,6 @@ namespace RogueElements.Tests
             testRand.Verify(p => p.Next(2, 8), Times.Exactly(1));
         }
 
-
-
         [Test]
         [TestCase(0)]
         [TestCase(100)]
