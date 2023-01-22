@@ -20,6 +20,16 @@ namespace RogueElements
 
         private delegate void EvalFallback(List<Loc>[] resultPaths, PathTile[] farthestTiles);
 
+        /// <summary>
+        /// Searches for the fastest path to the end.  If multiple are tied it picks the first one.
+        /// </summary>
+        /// <param name="rectStart"></param>
+        /// <param name="rectSize"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="checkBlock"></param>
+        /// <param name="checkDiagBlock"></param>
+        /// <returns></returns>
         public static List<Loc> FindPath(Loc rectStart, Loc rectSize, Loc start, Loc end, LocTest checkBlock, LocTest checkDiagBlock)
         {
             Loc[] ends = new Loc[1];
@@ -29,6 +39,7 @@ namespace RogueElements
 
         /// <summary>
         /// Searches for the fastest path to any of the endpoints.  If multiple are tied it picks the first one.
+        /// If none are found, it returns the one that got the closest.
         /// </summary>
         /// <param name="rectStart"></param>
         /// <param name="rectSize"></param>
@@ -46,6 +57,7 @@ namespace RogueElements
                     return multiEnds[ii];
             }
 
+            // This block should never be hit because the farthest progress should appear for at least one end goal.
             throw new InvalidOperationException("Could not find a path!");
         }
 
@@ -625,9 +637,9 @@ namespace RogueElements
         /// <param name="ends"></param>
         /// <param name="checkBlock"></param>
         /// <param name="checkDiagBlock"></param>
-        /// <param name="eval"></param>
-        /// <param name="fallback"></param>
-        /// <returns></returns>
+        /// <param name="eval">The method determining if the search is complete.  Ex, complete after finding one path, finding all paths, etc.</param>
+        /// <param name="fallback">What to do with the partial progress if the search could not complete.</param>
+        /// <returns>A list of Loc objects, with the start of the path at the last index and the end of the path at the 0th index.</returns>
         private static List<Loc>[] FindMultiPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock, EvalPaths eval, EvalFallback fallback)
         {
             if (ends.Length == 0)
@@ -715,6 +727,14 @@ namespace RogueElements
             return false;
         }
 
+        /// <summary>
+        /// Needs all paths completed to return.
+        /// </summary>
+        /// <param name="ends"></param>
+        /// <param name="resultPaths"></param>
+        /// <param name="farthestTiles"></param>
+        /// <param name="currentTile"></param>
+        /// <returns></returns>
         private static bool EvalPathAll(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile)
         {
             GenericUpdateCompletePaths(ends, resultPaths, farthestTiles, currentTile);
@@ -740,6 +760,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Fills in the path that got closest to an exit.
+        /// </summary>
+        /// <param name="resultPaths"></param>
+        /// <param name="farthestTiles"></param>
         private static void EvalFallbackOne(List<Loc>[] resultPaths, PathTile[] farthestTiles)
         {
             int minHeuristicIndex = 0;
@@ -752,6 +777,11 @@ namespace RogueElements
             resultPaths[minHeuristicIndex] = GetBackreference(farthestTiles[minHeuristicIndex]);
         }
 
+        /// <summary>
+        /// Fills in the path that got closest to the exit, for every exit.
+        /// </summary>
+        /// <param name="resultPaths"></param>
+        /// <param name="farthestTiles"></param>
         private static void EvalFallbackAll(List<Loc>[] resultPaths, PathTile[] farthestTiles)
         {
             for (int ii = 0; ii < resultPaths.Length; ii++)
