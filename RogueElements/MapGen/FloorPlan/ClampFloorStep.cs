@@ -74,6 +74,7 @@ namespace RogueElements
 
             map.RoomPlan.Resize(end, Dir8.DownRight, Dir8.UpLeft);
             map.RoomPlan.Resize(roomSize, Dir8.UpLeft, Dir8.DownRight);
+            map.RoomPlan.MoveStart(Loc.Zero);
             GenContextDebug.DebugProgress("Clamped Floor");
         }
     }
