@@ -30,7 +30,14 @@ namespace RogueElements
         /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
-        public virtual void SpawnRandInCandRooms(TGenContext map, SpawnList<RoomHallIndex> spawningRooms, List<TSpawnable> spawns, int successPercent)
+        /// <summary>
+        /// Spawns the chosen spawnables into the chosen collection of rooms
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="spawningRooms"></param>
+        /// <param name="spawns"></param>
+        /// <param name="decayPercent">After spawning, the room is multiplied by this percentage to make it less likely to spawn.</param>
+        public virtual void SpawnRandInCandRooms(TGenContext map, SpawnList<RoomHallIndex> spawningRooms, List<TSpawnable> spawns, int decayPercent)
         {
             while (spawningRooms.Count > 0 && spawns.Count > 0)
             {
@@ -45,13 +52,13 @@ namespace RogueElements
                     // remove the item spawn
                     spawns.RemoveAt(spawns.Count - 1);
 
-                    if (successPercent <= 0)
+                    if (decayPercent <= 0)
                     {
                         spawningRooms.RemoveAt(randIndex);
                     }
                     else
                     {
-                        int newRate = Math.Max(1, spawningRooms.GetSpawnRate(randIndex) * successPercent / 100);
+                        int newRate = Math.Max(1, spawningRooms.GetSpawnRate(randIndex) * decayPercent / 100);
                         spawningRooms.SetSpawnRate(randIndex, newRate);
                     }
                 }
