@@ -59,12 +59,12 @@ namespace RogueElements
 
         public override void Apply(TGenContext map)
         {
-            List<int> room_indices = new List<int>();
+            List<int> free_indices = new List<int>();
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
                 if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
                     continue;
-                room_indices.Add(ii);
+                free_indices.Add(ii);
             }
 
             List<int> used_indices = new List<int>();
@@ -73,23 +73,27 @@ namespace RogueElements
 
             for (int ii = 0; ii < this.Entrances.Count; ii++)
             {
-                int startRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc start = GetOutlet<TEntrance>(map, startRoom);
-                if (start == new Loc(-1))
+                Loc? start = this.GetOutlet<TEntrance>(map, free_indices, used_indices);
+
+                if (!start.HasValue)
+                    start = this.GetOutlet<TEntrance>(map, used_indices, null);
+                if (!start.HasValue)
                     start = defaultLoc;
-                else
-                    defaultLoc = start;
-                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start, this.Entrances[ii]);
+
+                ((IPlaceableGenContext<TEntrance>)map).PlaceItem(start.Value, this.Entrances[ii]);
                 GenContextDebug.DebugProgress(nameof(this.Entrances));
             }
 
             for (int ii = 0; ii < this.Exits.Count; ii++)
             {
-                int endRoom = NextRoom(map.Rand, room_indices, used_indices);
-                Loc end = GetOutlet<TExit>(map, endRoom);
-                if (end == new Loc(-1))
+                Loc? end = this.GetOutlet<TExit>(map, free_indices, used_indices);
+
+                if (!end.HasValue)
+                    end = this.GetOutlet<TExit>(map, used_indices, null);
+                if (!end.HasValue)
                     end = defaultLoc;
-                ((IPlaceableGenContext<TExit>)map).PlaceItem(end, this.Exits[ii]);
+
+                ((IPlaceableGenContext<TExit>)map).PlaceItem(end.Value, this.Exits[ii]);
                 GenContextDebug.DebugProgress(nameof(this.Exits));
             }
         }
@@ -100,36 +104,43 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Attempt to choose a room with no entrance/exit, and updates their availability.  If none exists, default to a chosen room.
+        /// Attempt to choose an outlet in a room with no entrance/exit, and updates their availability.  If none exists, default to a chosen room.
         /// </summary>
-        /// <param name="rand">todo: describe rand parameter on NextRoom</param>
-        /// <param name="room_indices">todo: describe room_indices parameter on NextRoom</param>
-        /// <param name="used_indices">todo: describe used_indices parameter on NextRoom</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="map"></param>
+        /// <param name="free_indices"></param>
+        /// <param name="used_indices"></param>
         /// <returns></returns>
-        private static int NextRoom(IRandom rand, List<int> room_indices, List<int> used_indices)
-        {
-            if (room_indices.Count > 0)
-            {
-                int roomIndex = rand.Next() % room_indices.Count;
-                int startRoom = room_indices[roomIndex];
-                used_indices.Add(startRoom);
-                room_indices.RemoveAt(roomIndex);
-                return startRoom;
-            }
-
-            int altIndex = rand.Next() % used_indices.Count;
-            return used_indices[altIndex];
-        }
-
-        private static Loc GetOutlet<T>(TGenContext map, int index)
+        protected virtual Loc? GetOutlet<T>(TGenContext map, List<int> free_indices, List<int> used_indices)
             where T : ISpawnable
         {
-            List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetFreeTiles(new Rect(map.RoomPlan.GetRoom(index).Draw.Start, map.RoomPlan.GetRoom(index).Draw.Size));
+            while (free_indices.Count > 0)
+            {
+                int roomIndex = map.Rand.Next() % free_indices.Count;
+                int startRoom = free_indices[roomIndex];
 
-            if (tiles.Count > 0)
-                return tiles[map.Rand.Next(tiles.Count)];
+                List<Loc> tiles = ((IPlaceableGenContext<T>)map).GetFreeTiles(map.RoomPlan.GetRoom(startRoom).Draw);
 
-            return -Loc.One;
+                if (tiles.Count == 0)
+                {
+                    // this room is not suitable and never will be, remove it
+                    free_indices.RemoveAt(roomIndex);
+                    continue;
+                }
+
+                Loc start = tiles[map.Rand.Next(tiles.Count)];
+
+                // if we have a used-list, transfer the index over
+                if (used_indices != null)
+                {
+                    free_indices.RemoveAt(roomIndex);
+                    used_indices.Add(startRoom);
+                }
+
+                return start;
+            }
+
+            return null;
         }
     }
 }
