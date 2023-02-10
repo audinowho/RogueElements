@@ -57,7 +57,7 @@ namespace RogueElements
                     for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
                     {
                         Loc dest = new Loc(xx, yy);
-                        if (Collision.InBounds(map.Width, map.Height, dest))
+                        if (map.CanSetTile(dest, this.Terrain))
                             map.SetTile(dest, this.Terrain.Copy());
                     }
                 }
