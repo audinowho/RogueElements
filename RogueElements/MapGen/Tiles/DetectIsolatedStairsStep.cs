@@ -45,7 +45,7 @@ namespace RogueElements
             // find out if the every entrance can access at least one exit
             for (int ii = 0; ii < ((IViewPlaceableGenContext<TEntrance>)map).Count; ii++)
             {
-                bool foundExit = false;
+                bool[] foundExit = new bool[((IViewPlaceableGenContext<TExit>)map).Count];
                 Loc stairLoc = ((IViewPlaceableGenContext<TEntrance>)map).GetLoc(ii);
                 Grid.FloodFill(
                     searchOut,
@@ -62,22 +62,25 @@ namespace RogueElements
                         for (int nn = 0; nn < ((IViewPlaceableGenContext<TExit>)map).Count; nn++)
                         {
                             if (((IViewPlaceableGenContext<TExit>)map).GetLoc(nn) == fillLoc)
-                                foundExit = true;
+                                foundExit[nn] = true;
                         }
 
                         connectionGrid[fillLoc.X][fillLoc.Y] = true;
                     },
                     stairLoc);
 
-                if (!foundExit)
+                for (int nn = 0; nn < foundExit.Length; nn++)
                 {
+                    if (!foundExit[nn])
+                    {
 #if DEBUG
-                    PrintGrid(connectionGrid);
-                    throw new Exception("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
+                        PrintGrid(connectionGrid);
+                        throw new Exception("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
 #else
                         Console.WriteLine("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
                         return;
 #endif
+                    }
                 }
             }
         }
