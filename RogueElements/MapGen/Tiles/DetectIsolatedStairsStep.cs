@@ -54,7 +54,11 @@ namespace RogueElements
                         testLoc = Loc.Wrap(testLoc, new Loc(lX, lY));
                         return connectionGrid[testLoc.X][testLoc.Y] || map.TileBlocked(testLoc);
                     },
-                    (Loc testLoc) => true,
+                    (Loc testLoc) =>
+                    {
+                        testLoc = Loc.Wrap(testLoc, new Loc(lX, lY));
+                        return connectionGrid[testLoc.X][testLoc.Y] || map.TileBlocked(testLoc, true);
+                    },
                     (Loc fillLoc) =>
                     {
                         fillLoc = Loc.Wrap(fillLoc, new Loc(lX, lY));
@@ -75,11 +79,8 @@ namespace RogueElements
                     {
 #if DEBUG
                         PrintGrid(connectionGrid);
-                        throw new Exception("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
-#else
-                        Console.WriteLine("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!  Seed: " + map.Rand.FirstSeed);
-                        return;
 #endif
+                        throw new Exception("Detected orphaned stairs at X" + stairLoc.X + " Y" + stairLoc.Y + "!");
                     }
                 }
             }
