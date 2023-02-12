@@ -156,11 +156,11 @@ namespace RogueElements
         /// </summary>
         /// <param name="availableExpansions">todo: describe availableExpansions parameter on ChooseRoomExpansion</param>
         /// <param name="prepareRoom">todo: describe prepareRoom parameter on ChooseRoomExpansion</param>
-        /// <param name="hallPercent">todo: describe hallPercent parameter on ChooseRoomExpansion</param>
+        /// <param name="addHall">todo: describe hallPercent parameter on ChooseRoomExpansion</param>
         /// <param name="rand"></param>
         /// <param name="floorPlan"></param>
         /// <returns>A set of instructions on how to expand the path.</returns>
-        public static ListPathBranchExpansion? ChooseRoomExpansion(RoomPrep prepareRoom, int hallPercent, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        public static ListPathBranchExpansion? ChooseRandRoomExpansion(RoomPrep prepareRoom, bool addHall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
         {
             if (availableExpansions.Count == 0)
                 return null;
@@ -177,7 +177,6 @@ namespace RogueElements
                 // note: by allowing halls to be picked as extensions, we run the risk of adding dead-end halls
                 // halls should always terminate at rooms?
                 // this means... doubling up with hall+room?
-                bool addHall = rand.Next(100) < hallPercent;
                 IRoomGen hall = null;
                 if (addHall)
                 {
@@ -327,7 +326,8 @@ namespace RogueElements
         public virtual ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan, bool branch)
         {
             List<RoomHallIndex> possibles = GetPossibleExpansions(floorPlan, branch);
-            return ChooseRoomExpansion(this.PrepareRoom, this.HallPercent, rand, floorPlan, possibles);
+            bool addHall = rand.Next(100) < this.HallPercent;
+            return ChooseRandRoomExpansion(this.PrepareRoom, addHall, rand, floorPlan, possibles);
         }
 
         public override string ToString()

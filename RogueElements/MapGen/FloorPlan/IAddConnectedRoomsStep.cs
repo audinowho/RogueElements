@@ -120,7 +120,8 @@ namespace RogueElements
                 availableExpansions.Add(new RoomHallIndex(ii, true));
             }
 
-            return FloorPathBranch<T>.ChooseRoomExpansion(this.PrepareRoom, this.HallPercent, rand, floorPlan, availableExpansions);
+            bool addHall = rand.Next(100) < this.HallPercent;
+            return FloorPathBranch<T>.ChooseRandRoomExpansion(this.PrepareRoom, addHall, rand, floorPlan, availableExpansions);
         }
 
         /// <summary>

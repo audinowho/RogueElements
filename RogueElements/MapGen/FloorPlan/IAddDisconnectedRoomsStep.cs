@@ -19,16 +19,16 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class AddDisconnectedRoomsStep<T> : FloorPlanStep<T>, IAddDisconnectedRoomsStep
+    public abstract class AddDisconnectedRoomsBaseStep<T> : FloorPlanStep<T>, IAddDisconnectedRoomsStep
         where T : class, IFloorPlanGenContext
     {
-        public AddDisconnectedRoomsStep()
+        protected AddDisconnectedRoomsBaseStep()
             : base()
         {
             this.Components = new ComponentCollection();
         }
 
-        public AddDisconnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms)
+        protected AddDisconnectedRoomsBaseStep(IRandPicker<RoomGen<T>> genericRooms)
             : base()
         {
             this.GenericRooms = genericRooms;
@@ -67,30 +67,14 @@ namespace RogueElements
                     size.Y = floorPlan.DrawRect.Height;
                 room.PrepareSize(rand, size);
 
-                Rect allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End - room.Draw.Size + new Loc(1));
-                if (floorPlan.Wrap)
-                    allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End);
+                Loc? testStart = this.ChooseViableLoc(rand, floorPlan, room.Draw.Size);
 
-                for (int jj = 0; jj < 30; jj++)
-                {
-                    // place in a random location
-                    Loc testStart = new Loc(
-                       rand.Next(allowedRange.Start.X, allowedRange.End.X),
-                       rand.Next(allowedRange.Start.Y, allowedRange.End.Y));
+                if (!testStart.HasValue)
+                    continue;
 
-                    Rect tryRect = new Rect(testStart, room.Draw.Size);
-
-                    tryRect.Inflate(1, 1);
-
-                    List<RoomHallIndex> collisions = floorPlan.CheckCollision(tryRect);
-                    if (collisions.Count == 0)
-                    {
-                        room.SetLoc(testStart);
-                        floorPlan.AddRoom(room, this.Components.Clone());
-                        GenContextDebug.DebugProgress("Place Disconnected Room");
-                        break;
-                    }
-                }
+                room.SetLoc(testStart.Value);
+                floorPlan.AddRoom(room, this.Components.Clone());
+                GenContextDebug.DebugProgress("Place Disconnected Room");
             }
         }
 
@@ -98,5 +82,8 @@ namespace RogueElements
         {
             return string.Format("{0}: Add:{1}", this.GetType().Name, this.Amount);
         }
+
+        protected abstract Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize);
+
     }
 }
