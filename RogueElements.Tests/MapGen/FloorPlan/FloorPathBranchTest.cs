@@ -146,8 +146,13 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(100)).Returns(0);
 
+            var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(2, 2) };
             var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
+
+            var hallGen = new TestFloorPlanGen('a') { ProposedSize = new Loc(2, 2) };
             var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(hallGen);
 
             var pathGen = new FloorPathTestBranch(mockRooms.Object, mockHalls.Object);
             var expansionResult = pathGen.ChooseRoomExpansion(testRand.Object, floorPlan, true);
