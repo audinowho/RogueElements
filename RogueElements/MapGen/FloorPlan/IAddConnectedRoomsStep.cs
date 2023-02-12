@@ -21,10 +21,10 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class AddConnectedRoomsStep<T> : FloorPlanStep<T>, IAddConnectedRoomsStep
+    public abstract class AddConnectedRoomsBaseStep<T> : FloorPlanStep<T>, IAddConnectedRoomsStep
         where T : class, IFloorPlanGenContext
     {
-        public AddConnectedRoomsStep()
+        protected AddConnectedRoomsBaseStep()
             : base()
         {
             this.RoomComponents = new ComponentCollection();
@@ -32,7 +32,7 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public AddConnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        protected AddConnectedRoomsBaseStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base()
         {
             this.GenericRooms = genericRooms;
@@ -103,26 +103,7 @@ namespace RogueElements
             }
         }
 
-        public virtual FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan)
-        {
-            List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
-            for (int ii = 0; ii < floorPlan.RoomCount; ii++)
-            {
-                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
-                    continue;
-                availableExpansions.Add(new RoomHallIndex(ii, false));
-            }
-
-            for (int ii = 0; ii < floorPlan.HallCount; ii++)
-            {
-                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetHallPlan(ii), this.Filters))
-                    continue;
-                availableExpansions.Add(new RoomHallIndex(ii, true));
-            }
-
-            bool addHall = rand.Next(100) < this.HallPercent;
-            return FloorPathBranch<T>.ChooseRandRoomExpansion(this.PrepareRoom, addHall, rand, floorPlan, availableExpansions);
-        }
+        public abstract FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan);
 
         /// <summary>
         /// Returns a random generic room or hall that can fit in the specified floor.

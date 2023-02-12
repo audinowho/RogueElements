@@ -153,14 +153,15 @@ namespace RogueElements
 
         /// <summary>
         /// Chooses a node to expand the path from based on the specified branch setting.
+        /// Attempts 30 times.
         /// </summary>
-        /// <param name="availableExpansions">todo: describe availableExpansions parameter on ChooseRoomExpansion</param>
-        /// <param name="prepareRoom">todo: describe prepareRoom parameter on ChooseRoomExpansion</param>
-        /// <param name="addHall">todo: describe hallPercent parameter on ChooseRoomExpansion</param>
+        /// <param name="room"></param>
+        /// <param name="hall"></param>
         /// <param name="rand"></param>
         /// <param name="floorPlan"></param>
+        /// <param name="availableExpansions"></param>
         /// <returns>A set of instructions on how to expand the path.</returns>
-        public static ListPathBranchExpansion? ChooseRandRoomExpansion(RoomPrep prepareRoom, bool addHall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        public static ListPathBranchExpansion? ChooseRandRoomExpansion(IRoomGen room, IRoomGen hall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
         {
             if (availableExpansions.Count == 0)
                 return null;
@@ -172,16 +173,40 @@ namespace RogueElements
                 RoomHallIndex expandFrom = firstExpandFrom;
                 IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
 
-                // choose the next room to add
-                // choose room size/fulfillables
-                // note: by allowing halls to be picked as extensions, we run the risk of adding dead-end halls
-                // halls should always terminate at rooms?
-                // this means... doubling up with hall+room?
-                IRoomGen hall = null;
-                if (addHall)
+                // if a hall is specified, make it the connector
+                if (hall != null)
                 {
-                    hall = prepareRoom(rand, floorPlan, true);
+                    if (!ChooseRoomExpansionFromRoom(hall, rand, floorPlan, expandFrom, roomFrom))
+                        continue;
 
+                    // change the roomfrom for the upcoming room
+                    expandFrom = new RoomHallIndex(-1, false);
+                    roomFrom = hall;
+                }
+
+                if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
+                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+            }
+
+            return null;
+        }
+
+        public static ListPathBranchExpansion? ChooseRoomExpansion(IRoomGen room, IRoomGen hall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        {
+            List<RoomHallIndex> expansions = new List<RoomHallIndex>();
+            expansions.AddRange(availableExpansions);
+            while (expansions.Count > 0)
+            {
+                int expandIdx = rand.Next(expansions.Count);
+
+                // choose the next room to add to
+                RoomHallIndex firstExpandFrom = availableExpansions[expandIdx];
+                RoomHallIndex expandFrom = firstExpandFrom;
+                IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
+
+                // if a hall is specified, make it the connector
+                if (hall != null)
+                {
                     // randomly choose a perimeter to assign this to
                     SpawnList<Loc> possibleHallPlacements = new SpawnList<Loc>();
                     foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -189,41 +214,55 @@ namespace RogueElements
 
                     // at this point, all possible factors for whether a placement is legal or not is accounted for
                     // therefor just pick one
-                    if (possibleHallPlacements.Count == 0)
-                        continue;
+                    while (possibleHallPlacements.Count > 0)
+                    {
+                        // randomly choose one
+                        int candIndex = possibleHallPlacements.PickIndex(rand);
+                        Loc hallCandLoc = possibleHallPlacements.GetSpawn(candIndex);
 
-                    // randomly choose one
-                    Loc hallCandLoc = possibleHallPlacements.Pick(rand);
+                        // set location
+                        hall.SetLoc(hallCandLoc);
 
-                    // set location
-                    hall.SetLoc(hallCandLoc);
+                        // change the roomfrom for the upcoming room
+                        expandFrom = new RoomHallIndex(-1, false);
+                        roomFrom = hall;
 
-                    // change the roomfrom for the upcoming room
-                    expandFrom = new RoomHallIndex(-1, false);
-                    roomFrom = hall;
+                        if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
+                            return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+
+                        possibleHallPlacements.RemoveAt(candIndex);
+                    }
                 }
-
-                IRoomGen room = prepareRoom(rand, floorPlan, false);
-
-                // randomly choose a perimeter to assign this to
-                SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
-                foreach (Dir4 dir in DirExt.VALID_DIR4)
-                    AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, dir);
-
-                // at this point, all possible factors for whether a placement is legal or not is accounted for
-                // therefore just pick one
-                if (possiblePlacements.Count > 0)
+                else
                 {
-                    // randomly choose one
-                    Loc candLoc = possiblePlacements.Pick(rand);
-
-                    // set location
-                    room.SetLoc(candLoc);
-                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+                    if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
+                        return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
                 }
+
+                expansions.RemoveAt(expandIdx);
             }
 
             return null;
+        }
+
+        public static bool ChooseRoomExpansionFromRoom(IRoomGen room, IRandom rand, FloorPlan floorPlan, RoomHallIndex expandFrom, IRoomGen roomFrom)
+        {
+            // randomly choose a perimeter to assign this to
+            SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
+            foreach (Dir4 dir in DirExt.VALID_DIR4)
+                AddLegalPlacements(possiblePlacements, floorPlan, expandFrom, roomFrom, room, dir);
+
+            // at this point, all possible factors for whether a placement is legal or not is accounted for
+            // therefore just pick one
+            if (possiblePlacements.Count == 0)
+                return false;
+
+            // randomly choose one
+            Loc candLoc = possiblePlacements.Pick(rand);
+
+            // set location
+            room.SetLoc(candLoc);
+            return true;
         }
 
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
@@ -327,7 +366,13 @@ namespace RogueElements
         {
             List<RoomHallIndex> possibles = GetPossibleExpansions(floorPlan, branch);
             bool addHall = rand.Next(100) < this.HallPercent;
-            return ChooseRandRoomExpansion(this.PrepareRoom, addHall, rand, floorPlan, possibles);
+            IRoomGen room, hall;
+            room = this.PrepareRoom(rand, floorPlan, false);
+            if (addHall)
+                hall = this.PrepareRoom(rand, floorPlan, true);
+            else
+                hall = null;
+            return ChooseRandRoomExpansion(room, hall, rand, floorPlan, possibles);
         }
 
         public override string ToString()
