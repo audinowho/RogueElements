@@ -144,6 +144,7 @@ namespace RogueElements.Tests
                 Array.Empty<Tuple<char, char>>());
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(100)).Returns(0);
 
             var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
             var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
