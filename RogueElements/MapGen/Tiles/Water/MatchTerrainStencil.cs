@@ -47,5 +47,12 @@ namespace RogueElements
 
             return this.Negate;
         }
+
+        public override string ToString()
+        {
+            if (this.MatchTiles.Count == 1)
+                return string.Format("Match {0}{1}", this.Negate ? "^" : string.Empty, this.MatchTiles[0].ToString());
+            return string.Format("Match {0}[{1}]", this.Negate ? "^" : string.Empty, this.MatchTiles.Count);
+        }
     }
 }

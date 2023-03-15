@@ -54,5 +54,12 @@ namespace RogueElements
 
             return !this.RequireAny;
         }
+
+        public override string ToString()
+        {
+            if (this.RequireAny)
+                return string.Format("Any of {0} Blob Reqs", this.List.Count);
+            return string.Format("All of {0} Blob Reqs", this.List.Count);
+        }
     }
 }

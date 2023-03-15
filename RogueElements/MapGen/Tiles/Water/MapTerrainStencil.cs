@@ -64,5 +64,19 @@ namespace RogueElements
             else
                 return result;
         }
+
+        public override string ToString()
+        {
+            List<string> listAll = new List<string>();
+            if (this.Room)
+                listAll.Add(nameof(this.Room));
+            if (this.Wall)
+                listAll.Add(nameof(this.Wall));
+            if (this.Blocked)
+                listAll.Add(nameof(this.Blocked));
+            if (listAll.Count == 0)
+                return string.Format("Match {0}", this.Not ? "anything" : "nothing");
+            return string.Format("Match {0}[{1}]", this.Not ? "any EXCEPT" : "any of", string.Join(", ", listAll));
+        }
     }
 }

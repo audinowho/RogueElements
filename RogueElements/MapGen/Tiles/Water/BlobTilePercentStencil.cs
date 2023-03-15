@@ -47,5 +47,12 @@ namespace RogueElements
 
             return amount * 100 > rect.Area * this.Percent;
         }
+
+        public override string ToString()
+        {
+            if (this.TileStencil == null)
+                return string.Format("Blob Tiles Percent: [EMPTY]");
+            return string.Format("Blob Tiles {0}%: {1}", this.Percent, this.TileStencil.ToString());
+        }
     }
 }

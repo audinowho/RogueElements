@@ -62,5 +62,12 @@ namespace RogueElements
 
             return !this.RequireAny;
         }
+
+        public override string ToString()
+        {
+            if (this.TileStencil == null)
+                return string.Format("Blob Tiles: [EMPTY]");
+            return string.Format("Blob Tiles{0}: {1}", this.RequireAny ? " (Any)" : string.Empty, this.TileStencil.ToString());
+        }
     }
 }

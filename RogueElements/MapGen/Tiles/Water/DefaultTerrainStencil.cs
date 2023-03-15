@@ -21,5 +21,10 @@ namespace RogueElements
         {
             return true;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Any Tile");
+        }
     }
 }
