@@ -56,5 +56,12 @@ namespace RogueElements
 
             return this.Negate == Detection.DetectDisconnect(checkArea, IsMapValid, rect.Start, rect.Size, IsBlobValid, true);
         }
+
+        public override string ToString()
+        {
+            if (this.TileStencil == null)
+                return string.Format("Blob Chokepoint: [EMPTY]");
+            return string.Format("{0}{1}Blob Chokepoint of {2}", this.Negate ? "No " : string.Empty, this.Global ? "Global " : string.Empty, this.TileStencil.ToString());
+        }
     }
 }
