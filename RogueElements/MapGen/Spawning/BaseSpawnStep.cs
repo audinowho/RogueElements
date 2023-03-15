@@ -45,5 +45,12 @@ namespace RogueElements
             if (spawns.Count > 0)
                 this.DistributeSpawns(map, spawns);
         }
+
+        public override string ToString()
+        {
+            if (this.Spawn == null)
+                return string.Format("{0}<{1}>: [EMPTY]", this.GetType().GetFormattedTypeName(), typeof(TSpawnable).Name);
+            return string.Format("{0}<{1}>: {2}", this.GetType().GetFormattedTypeName(), typeof(TSpawnable).Name, this.Spawn.ToString());
+        }
     }
 }

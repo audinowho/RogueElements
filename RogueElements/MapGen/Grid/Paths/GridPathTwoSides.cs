@@ -125,7 +125,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Axis:{1}", this.GetType().Name, this.GapAxis);
+            return string.Format("{0}: Axis:{1}", this.GetType().GetFormattedTypeName(), this.GapAxis);
         }
     }
 }

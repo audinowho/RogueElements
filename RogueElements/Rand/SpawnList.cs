@@ -201,7 +201,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}[{1}]", this.GetType().Name, this.spawns.Count);
+            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.spawns.Count);
         }
 
         void ISpawnList.Add(object spawn, int rate)

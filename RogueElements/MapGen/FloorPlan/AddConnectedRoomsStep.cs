@@ -54,6 +54,5 @@ namespace RogueElements
 
             return FloorPathBranch<T>.ChooseRoomExpansion(room, hall, rand, floorPlan, availableExpansions);
         }
-
     }
 }

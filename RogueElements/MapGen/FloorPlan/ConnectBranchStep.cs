@@ -95,7 +95,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}%", this.GetType().Name, this.ConnectPercent);
+            return string.Format("{0}: {1}%", this.GetType().GetFormattedTypeName(), this.ConnectPercent);
         }
 
         private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)

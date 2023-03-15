@@ -123,7 +123,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}x{2}+{3}x{4}", this.GetType().Name, this.MajorWidth, this.MinorHeight, this.MinorWidth, this.MajorHeight);
+            return string.Format("{0}: {1}x{2}+{3}x{4}", this.GetType().GetFormattedTypeName(), this.MajorWidth, this.MinorHeight, this.MinorWidth, this.MajorHeight);
         }
 
         protected override void PrepareFulfillableBorders(IRandom rand)

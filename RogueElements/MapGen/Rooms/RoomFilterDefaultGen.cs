@@ -37,9 +37,9 @@ namespace RogueElements
         public override string ToString()
         {
             if (this.Negate)
-                return string.Format("{0}^", this.GetType().Name);
+                return string.Format("{0}^", this.GetType().GetFormattedTypeName());
             else
-                return string.Format("{0}", this.GetType().Name);
+                return string.Format("{0}", this.GetType().GetFormattedTypeName());
         }
     }
 }

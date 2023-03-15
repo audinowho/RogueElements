@@ -60,6 +60,11 @@ namespace RogueElements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}", this.GetType().GetFormattedTypeName());
+        }
+
         private static void PrintGrid(bool[][] connectionGrid)
         {
             for (int yy = 0; yy < connectionGrid[0].Length; yy++)

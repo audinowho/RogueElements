@@ -377,7 +377,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Fill:{1}% Hall:{2}% Branch:{3}%", this.GetType().Name, this.FillPercent, this.HallPercent, this.BranchRatio);
+            return string.Format("{0}: Fill:{1}% Hall:{2}% Branch:{3}%", this.GetType().GetFormattedTypeName(), this.FillPercent, this.HallPercent, this.BranchRatio);
         }
 
         private (int area, int rooms) ExpandPath(IRandom rand, FloorPlan floorPlan, bool branch)

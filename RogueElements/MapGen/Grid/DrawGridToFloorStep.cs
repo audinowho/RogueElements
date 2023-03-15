@@ -32,7 +32,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}", this.GetType().Name);
+            return string.Format("{0}", this.GetType().GetFormattedTypeName());
         }
     }
 }

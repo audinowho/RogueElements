@@ -68,7 +68,9 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}<{1}>: Tile:{2}", this.GetType().Name, typeof(TSpawnable).Name, this.Terrain.ToString());
+            if (this.Spawn == null || this.Terrain == null)
+                return string.Format("{0}<{1}>: [EMPTY]", this.GetType().GetFormattedTypeName(), typeof(TSpawnable).Name);
+            return string.Format("{0}<{1}>[{2}] Terrain: {3}", this.GetType().GetFormattedTypeName(), typeof(TSpawnable).Name, this.Spawn.ToString(), this.Terrain.ToString());
         }
     }
 }

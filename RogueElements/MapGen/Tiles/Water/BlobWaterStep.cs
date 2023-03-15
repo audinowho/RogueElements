@@ -115,6 +115,11 @@ namespace RogueElements
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}: Amt:{1} Size:{2}", this.GetType().GetFormattedTypeName(), this.Blobs.ToString(), this.AreaScale.ToString());
+        }
+
         protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];

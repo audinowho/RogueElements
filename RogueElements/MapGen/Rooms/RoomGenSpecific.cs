@@ -76,7 +76,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}x{2}", this.GetType().Name, this.Tiles.Length, this.Tiles[0].Length);
+            return string.Format("{0}: {1}x{2}", this.GetType().GetFormattedTypeName(), this.Tiles.Length, this.Tiles[0].Length);
         }
 
         protected override void PrepareFulfillableBorders(IRandom rand)

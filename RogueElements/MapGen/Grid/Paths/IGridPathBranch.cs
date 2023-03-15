@@ -165,7 +165,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Fill:{1}% Branch:{2}%", this.GetType().Name, this.RoomRatio, this.BranchRatio);
+            return string.Format("{0}: Fill:{1}% Branch:{2}%", this.GetType().GetFormattedTypeName(), this.RoomRatio, this.BranchRatio);
         }
 
         protected bool ExpandPath(IRandom rand, GridPlan floorPlan, LocRay4 chosenRay)
