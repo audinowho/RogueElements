@@ -71,7 +71,9 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}[{1}]", this.GetType().Name, this.ToSpawn.Count);
+            if (this.ToSpawn.Count == 1)
+                return string.Format("{{{0}}}", this.ToSpawn[0].ToString());
+            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.ToSpawn.Count);
         }
     }
 }

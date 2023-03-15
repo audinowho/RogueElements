@@ -80,10 +80,9 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Add:{1}", this.GetType().Name, this.Amount);
+            return string.Format("{0}: Add:{1}", this.GetType().GetFormattedTypeName(), this.Amount);
         }
 
         protected abstract Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize);
-
     }
 }

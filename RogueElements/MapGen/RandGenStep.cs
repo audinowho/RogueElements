@@ -32,9 +32,9 @@ namespace RogueElements
         public override string ToString()
         {
             if (this.Spawns == null)
-                return string.Format("{0}", this.GetType().Name);
+                return string.Format("{0}", this.GetType().GetFormattedTypeName());
 
-            return string.Format("{0}[{1}]", this.GetType().Name, this.Spawns.ToString());
+            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.Spawns.ToString());
         }
     }
 }

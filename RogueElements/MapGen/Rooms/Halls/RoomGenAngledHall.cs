@@ -281,7 +281,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Angle:{1}%", this.GetType().Name, this.HallTurnBias);
+            return string.Format("{0}: Angle:{1}%", this.GetType().GetFormattedTypeName(), this.HallTurnBias);
         }
 
         private static void Choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)

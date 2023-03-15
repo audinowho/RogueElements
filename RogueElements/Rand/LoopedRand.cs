@@ -54,5 +54,12 @@ namespace RogueElements
 
             return result;
         }
+
+        public override string ToString()
+        {
+            if (this.AmountSpawner == null)
+                return string.Format("{0}[EMPTY]", this.GetType().GetFormattedTypeName());
+            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.AmountSpawner.ToString());
+        }
     }
 }

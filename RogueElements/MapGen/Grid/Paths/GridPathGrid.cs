@@ -175,7 +175,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Room:{1}% Hall:{2}%", this.GetType().Name, this.RoomRatio, this.HallRatio);
+            return string.Format("{0}: Room:{1}% Hall:{2}%", this.GetType().GetFormattedTypeName(), this.RoomRatio, this.HallRatio);
         }
     }
 }
