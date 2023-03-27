@@ -1,19 +1,29 @@
-﻿// <copyright file="PresetMultiRand.cs" company="Audino">
+﻿// <copyright file="IPresetMultiRand.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IPresetMultiRand
+    {
+        IList ToSpawn { get; }
+
+        bool CanPick { get; }
+
+        int Count { get; }
+    }
+
     /// <summary>
     /// Generates a list of items predefined by the user.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PresetMultiRand<T> : IMultiRandPicker<T>
+    public class PresetMultiRand<T> : IMultiRandPicker<T>, IPresetMultiRand
     {
         public PresetMultiRand()
         {
@@ -55,6 +65,10 @@ namespace RogueElements
 
         public bool CanPick => this.ToSpawn != null;
 
+        public int Count => this.ToSpawn != null ? this.ToSpawn.Count : 0;
+
+        IList IPresetMultiRand.ToSpawn => this.ToSpawn;
+
         public IMultiRandPicker<T> CopyState() => new PresetMultiRand<T>(this);
 
         public List<T> Roll(IRandom rand)
@@ -71,9 +85,9 @@ namespace RogueElements
 
         public override string ToString()
         {
-            if (this.ToSpawn.Count == 1)
+            if (this.Count == 1)
                 return string.Format("{{{0}}}", this.ToSpawn[0].ToString());
-            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.ToSpawn.Count);
+            return string.Format("{0}[{1}]", this.GetType().GetFormattedTypeName(), this.Count);
         }
     }
 }

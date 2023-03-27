@@ -1,4 +1,4 @@
-﻿// <copyright file="LoopedRand.cs" company="Audino">
+﻿// <copyright file="ILoopedRand.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,12 +8,17 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface ILoopedRand
+    {
+        IRandPicker<int> AmountSpawner { get; set; }
+    }
+
     /// <summary>
     /// Generates a list of items by repeatedly calling an IRandPicker
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class LoopedRand<T> : IMultiRandPicker<T>
+    public class LoopedRand<T> : IMultiRandPicker<T>, IRandPicker, ILoopedRand
     {
         public LoopedRand()
         {

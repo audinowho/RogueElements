@@ -1,13 +1,21 @@
-﻿// <copyright file="BaseSpawnStep.cs" company="Audino">
+﻿// <copyright file="IBaseSpawnStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IBaseSpawnStep
+    {
+        IStepSpawner Spawn { get; }
+
+        Type SpawnType { get; }
+    }
+
     /// <summary>
     /// Spawns objects of type E to IPlaceableGenContext T.
     /// Child classes offer a different way to place the list of spawns provided by Spawn.
@@ -15,7 +23,7 @@ namespace RogueElements
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public abstract class BaseSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>
+    public abstract class BaseSpawnStep<TGenContext, TSpawnable> : GenStep<TGenContext>, IBaseSpawnStep
         where TGenContext : class, IPlaceableGenContext<TSpawnable>
         where TSpawnable : ISpawnable
     {
@@ -32,6 +40,10 @@ namespace RogueElements
         /// The generator that creates a list of items for the step to spawn.
         /// </summary>
         public IStepSpawner<TGenContext, TSpawnable> Spawn { get; set; }
+
+        IStepSpawner IBaseSpawnStep.Spawn => this.Spawn;
+
+        public Type SpawnType => typeof(TSpawnable);
 
         public abstract void DistributeSpawns(TGenContext map, List<TSpawnable> spawns);
 
