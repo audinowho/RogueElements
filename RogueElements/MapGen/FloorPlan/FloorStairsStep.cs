@@ -100,7 +100,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}", this.GetType().GetFormattedTypeName());
+            return string.Format("{0}: Start: {1} End: {2}", this.GetType().GetFormattedTypeName(), this.Entrances.Count, this.Exits.Count);
         }
 
         /// <summary>
