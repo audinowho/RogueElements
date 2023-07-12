@@ -206,7 +206,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: Fill:{1}% Paths:{2}%", this.GetType().GetFormattedTypeName(), this.CircleRoomRatio, this.Paths);
+            return string.Format("{0}: Fill:{1}% Paths:{2}", this.GetType().GetFormattedTypeName(), this.CircleRoomRatio, this.Paths);
         }
 
         private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
