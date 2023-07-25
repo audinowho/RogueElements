@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class WaterStep<T> : GenStep<T>
+    public abstract class WaterStep<T> : GenStep<T>, IWaterStep
         where T : class, ITiledGenContext
     {
         protected WaterStep()
