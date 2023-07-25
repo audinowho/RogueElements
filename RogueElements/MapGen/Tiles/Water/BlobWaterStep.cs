@@ -13,7 +13,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class BlobWaterStep<T> : WaterStep<T>
+    public class BlobWaterStep<T> : WaterStep<T>, IBlobWaterStep
         where T : class, ITiledGenContext
     {
         private const int AUTOMATA_CHANCE = 55;
