@@ -8,14 +8,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IPerlinWaterStep : IWaterStep
+    public interface IWaterStep
     {
-        int OrderComplexity { get; set; }
-
-        int OrderSoftness { get; set; }
-
-        RandRange WaterPercent { get; set; }
-
-        bool Bowl { get; set; }
+        ITile Terrain { get; set; }
     }
 }
