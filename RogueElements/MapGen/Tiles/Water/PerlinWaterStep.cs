@@ -14,7 +14,7 @@ namespace RogueElements
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class PerlinWaterStep<T> : WaterStep<T>
+    public class PerlinWaterStep<T> : WaterStep<T>, IPerlinWaterStep
         where T : class, ITiledGenContext
     {
         private const int BUFFER_SIZE = 5;
@@ -123,7 +123,7 @@ namespace RogueElements
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}% {2}", this.GetType().GetFormattedTypeName(), this.WaterPercent, this.Terrain.ToString());
+            return string.Format("{0}: {1}% {2}", this.GetType().GetFormattedTypeName(), this.WaterPercent, this.Terrain);
         }
     }
 }
