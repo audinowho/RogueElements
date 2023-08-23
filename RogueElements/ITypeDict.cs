@@ -31,6 +31,8 @@ namespace RogueElements
 
     public interface ITypeDict : IEnumerable
     {
+        int Count { get; }
+
         void Clear();
 
         bool Contains(Type type);
