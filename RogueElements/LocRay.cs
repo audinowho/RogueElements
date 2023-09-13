@@ -59,6 +59,11 @@ namespace RogueElements
         public override bool Equals(object obj) => (obj is LocRay8 ray) && this.Equals(ray);
 
         public override int GetHashCode() => unchecked(971 + (this.Loc.GetHashCode() * 619) ^ (this.Dir.GetHashCode() * 491));
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}", this.Loc, this.Dir);
+        }
     }
 
     [Serializable]
@@ -105,5 +110,10 @@ namespace RogueElements
         public override bool Equals(object obj) => (obj is LocRay4) && this.Equals((LocRay4)obj);
 
         public override int GetHashCode() => unchecked(571 + (this.Loc.GetHashCode() * 293) ^ (this.Dir.GetHashCode() * 827));
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}", this.Loc, this.Dir);
+        }
     }
 }
