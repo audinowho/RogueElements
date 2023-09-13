@@ -1,19 +1,27 @@
-﻿// <copyright file="GridPathGrid.cs" company="Audino">
+﻿// <copyright file="IGridPathGrid.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RogueElements
 {
+    public interface IGridPathGrid
+    {
+        int RoomRatio { get; set; }
+
+        int HallRatio { get; set; }
+    }
+
     /// <summary>
     /// Populates the empty floor plan of a map by creating a path consisting of rooms on the perimeter, with hallways creating a grid inwards.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class GridPathGrid<T> : GridPathStartStepGeneric<T>
+    public class GridPathGrid<T> : GridPathStartStepGeneric<T>, IGridPathGrid
         where T : class, IRoomGridGenContext
     {
         public GridPathGrid()
