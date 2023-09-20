@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Initializes a map of Width x Height tiles.
+    /// Randomly chooses one of several gensteps to perform.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
