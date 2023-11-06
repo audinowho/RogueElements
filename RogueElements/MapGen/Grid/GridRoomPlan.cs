@@ -23,6 +23,9 @@ namespace RogueElements
 
         public Rect Bounds { get; set; }
 
+        /// <summary>
+        /// Prefers to be counted as a hall when translated into floorplan rooms
+        /// </summary>
         public bool PreferHall { get; set; }
 
         public IRoomGen RoomGen { get; set; }
