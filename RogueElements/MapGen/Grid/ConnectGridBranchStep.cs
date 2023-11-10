@@ -89,8 +89,13 @@ namespace RogueElements
                             else
                             {
                                 Loc loc = chosenBranch.Loc + dir.GetLoc();
-                                if (floorPlan.GetRoomIndex(loc) > -1)
-                                    candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
+                                int roomIndex = floorPlan.GetRoomIndex(loc);
+                                if (roomIndex > -1)
+                                {
+                                    GridRoomPlan roomPlan = floorPlan.GetRoomPlan(roomIndex);
+                                    if (BaseRoomFilter.PassesAllFilters(roomPlan, this.Filters))
+                                        candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
+                                }
                             }
                         }
                     }
