@@ -14,7 +14,225 @@ namespace RogueElements.Tests
     public class ConnectGridBranchTest
     {
         [Test]
+        public void IslandNegative()
+        {
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.A.B.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "0.A.B.0",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+
+            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
+            pathGen.GenericHalls = mockHalls.Object;
+
+            pathGen.ApplyToPath(testRand.Object, floorPlan);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
         public void StraightPath()
+        {
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B#C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+
+            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
+            pathGen.GenericHalls = mockHalls.Object;
+
+            pathGen.ApplyToPath(testRand.Object, floorPlan);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void StraightPathNoneHaveComponent()
+        {
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+
+            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
+            pathGen.GenericHalls = mockHalls.Object;
+
+            pathGen.ApplyToPath(testRand.Object, floorPlan);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void StraightPathOneHasComponent()
+        {
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            TestComponent component1 = new TestComponent();
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            {
+                GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+                roomPlan.Components.Set(component1);
+            }
+
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+            {
+                GridRoomPlan roomPlan = compareFloorPlan.GetRoomPlan(1);
+                roomPlan.Components.Set(component1);
+            }
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+
+            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
+            pathGen.GenericHalls = mockHalls.Object;
+
+            pathGen.ApplyToPath(testRand.Object, floorPlan);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void StraightPathBothHaveComponent()
+        {
+            string[] inGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B.C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            string[] outGrid =
+            {
+                "0.0.0.0",
+                ". . . .",
+                "A#B#C#D",
+                ". . . .",
+                "0.0.0.0",
+            };
+
+            TestComponent component1 = new TestComponent();
+            TestComponent component2 = new TestComponent();
+            TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
+            {
+                GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+                roomPlan.Components.Set(component1);
+                GridRoomPlan roomPlan2 = floorPlan.GetRoomPlan(2);
+                roomPlan2.Components.Set(component2);
+            }
+
+            TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
+            {
+                GridRoomPlan roomPlan = compareFloorPlan.GetRoomPlan(1);
+                roomPlan.Components.Set(component1);
+                GridRoomPlan roomPlan2 = compareFloorPlan.GetRoomPlan(2);
+                roomPlan2.Components.Set(component2);
+            }
+
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
+
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+
+            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
+            pathGen.GenericHalls = mockHalls.Object;
+
+            pathGen.ApplyToPath(testRand.Object, floorPlan);
+
+            TestGridFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
+        }
+
+        [Test]
+        public void StraightPathDone()
         {
             string[] inGrid =
             {
