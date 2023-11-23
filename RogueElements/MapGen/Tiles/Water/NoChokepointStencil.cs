@@ -27,10 +27,15 @@ namespace RogueElements
             this.TileStencil = tileStencil;
         }
 
+        /// <summary>
+        /// The stencil should return true if the tile is considered walkable. (Tile-being-choked)
+        /// </summary>
         public ITerrainStencil<T> TileStencil { get; set; }
 
         /// <summary>
         /// Determines if the entire map should be checked for connectivity, or just the immediate surrounding tiles.
+        /// If turned off, the gen will refuse to break ANY chokepoint period.
+        /// If turned on, it will break any chokepoint that has another way around somewhere, while still preventing true unsolvability.
         /// </summary>
         public bool Global { get; set; }
 
