@@ -40,14 +40,14 @@ namespace RogueElements
         public RandRange Blobs { get; set; }
 
         /// <summary>
-        /// The NxN size range of the acceptable area the blob takes.  It is measured in tiles.
-        /// </summary>
-        public IntRange AreaScale { get; set; }
-
-        /// <summary>
-        /// The NxN size range of the area creating the blob.  It is measured in tiles.
+        /// The NxN size range of the area creating the blob.  It is measured in tiles.  It is recommended to pick a range with at least 4 between min and max.
         /// </summary>
         public IntRange GenerateScale { get; set; }
+
+        /// <summary>
+        /// The NxN size range of the acceptable area the blob takes.  It is measured in tiles.  It is recommended to pick a range with at least 4 between min and max.  Must be equal to or smaller than Generate Scale.
+        /// </summary>
+        public IntRange AreaScale { get; set; }
 
         /// <summary>
         /// Blob-wide stencil.  All-or-nothing: If the blob position passes this stencil, it is drawn.  Otherwise it is not.
