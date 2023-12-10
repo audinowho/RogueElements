@@ -24,7 +24,7 @@ namespace RogueElements
     {
         
         /// <summary>
-        /// The edge of the map where the rooms exist in
+        /// The edge of the map where the rooms will spawn in.
         /// </summary>
         public Dir4 Edge { get; set; }
 
