@@ -27,6 +27,9 @@ namespace RogueElements
             //Create first room in center
             Loc sourceRoom = new Loc(middleWidth, middleHeight);
             floorPlan.AddRoom(sourceRoom, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
+            floorPlan.SetHall(new LocRay4(sourceRoom, Dir4.Left), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
+            floorPlan.SetHall(new LocRay4(sourceRoom, Dir4.Up), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
+
 
             //Create horizontal rooms extending from the center
             for (int x = 0; x < floorPlan.GridWidth; x++)
