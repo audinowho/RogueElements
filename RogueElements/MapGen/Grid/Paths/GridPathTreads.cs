@@ -185,12 +185,12 @@ namespace RogueElements
         protected void AddAdditionalHallwayConnections(IRandom rand, GridPlan floorPlan, List<Loc> rooms)
         {
             //This stores a list of locs that can generate a left or up migration for a side hallway connection.
-            SpawnList<Loc> possibleSideHallwaySources = new SpawnList<Loc>();
-            List<Loc> sideHallwaySources = new List<Loc>();
+            SpawnList<Tuple<Loc, int>> possibleSideHallwaySources = new SpawnList<Tuple<Loc, int>>();
+            List<Tuple<Loc, int>> sideHallwaySources = new List<Tuple<Loc, int>>();
             
             foreach (Loc room in rooms)
             {
-                bool hasRoom = false;
+                int hasRoom = -1;
                 int roomTier = Vertical ? room.Y : room.X;
                 int roomSideIndex = Vertical ? room.X : room.Y;
 
@@ -205,14 +205,14 @@ namespace RogueElements
                     if (floorPlan.GetRoomPlan(new Loc(Vertical ? i : roomTier, Vertical ? roomTier : i)) !=
                         null)
                     {
-                        hasRoom = true;
+                        hasRoom = i;
                         break;
                     }
                 }
 
-                if (hasRoom)
+                if (hasRoom > -1)
                 {
-                    possibleSideHallwaySources.Add(room, 1);
+                    possibleSideHallwaySources.Add(new Tuple<Loc, int>(room, hasRoom), 1);
                 }
             }
 
@@ -225,21 +225,19 @@ namespace RogueElements
                 sideHallwaySources.Add(possibleSideHallwaySources.Pick(rand, true));
             }
             
-            foreach (Loc sideHallwaySource in sideHallwaySources)
+            foreach (Tuple<Loc, int> sideHallwaySource in sideHallwaySources)
             {
-                int sourceRoomTier = Vertical ? sideHallwaySource.Y : sideHallwaySource.X;
-                int sourceRoomSideIndex = Vertical ? sideHallwaySource.X : sideHallwaySource.Y;
+                Loc sourceLoc = sideHallwaySource.Item1;
+                int targetSideIndex = sideHallwaySource.Item2;
                 
-                for (int jj = sourceRoomSideIndex; jj > 0; jj--)
+                int sourceRoomTier = Vertical ? sourceLoc.Y : sourceLoc.X;
+                int sourceRoomSideIndex = Vertical ? sourceLoc.X : sourceLoc.Y;
+                
+                for (int jj = sourceRoomSideIndex; jj > targetSideIndex; jj--)
                 {
                     Loc curLoc = new Loc(Vertical ? jj : sourceRoomTier, Vertical ? sourceRoomTier : jj);
 
-                    if (floorPlan.GetRoomPlan(curLoc) != null && jj != sourceRoomSideIndex)
-                    {
-                        break;
-                    }
-
-                    if (jj != sourceRoomSideIndex)
+                    if (jj != sourceRoomSideIndex && floorPlan.GetRoomPlan(curLoc) == null)
                     {
                         floorPlan.AddRoom(curLoc,this.GenericHalls.Pick(rand), this.HallComponents.Clone(), true);
                     }
