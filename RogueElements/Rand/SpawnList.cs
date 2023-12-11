@@ -108,23 +108,9 @@ namespace RogueElements
 
         public T Pick(IRandom random)
         {
-           return Pick(random, false);
-        }
-
-        public T Pick(IRandom random, bool remove)
-        {
             int ii = this.PickIndex(random);
-
-            T spawn = this.spawns[ii].Spawn;
-            
-            if (remove)
-            {
-                this.RemoveAt(ii);
-            }
-            
-            return spawn;
+            return this.spawns[ii].Spawn;
         }
-
 
         public int PickIndex(IRandom random)
         {
