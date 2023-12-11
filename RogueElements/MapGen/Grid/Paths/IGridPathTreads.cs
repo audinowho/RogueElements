@@ -3,34 +3,42 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    public interface IGridPathTreads
+    {
+        bool Vertical { get; set; }
+        RandRange RoomPercent { get; set; }
+        RandRange ConnectPercent { get; set; }
+        ComponentCollection LargeRoomComponents { get; set; }
+    }
+    
     /// <summary>
     /// Creates a grid plan with two large "tread" rooms along the sides and a set of rooms in the middle.
     /// Inverse of GridPathBeetle.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class GridPathTreads<T> : GridPathStartStepGeneric<T>
+    public class GridPathTreads<T> : GridPathStartStepGeneric<T>, IGridPathTreads
         where T : class, IRoomGridGenContext
     {
         /// <summary>
         /// Choose a horizontal or vertical orientation.
         /// </summary>
-        public bool Vertical;
+        public bool Vertical { get; set; }
 
         /// <summary>
         /// The number of small rooms attached to the main large rooms, as a percent of the rooms possible.
         /// </summary>
-        public int RoomPercent;
+        public RandRange RoomPercent { get; set; }
 
         /// <summary>
         /// The number of connections between adjacent small rooms, as a percent of the connections possible.
         /// </summary>
-        public int ConnectPercent;
+        public RandRange ConnectPercent { get; set; }  
         
         /// <summary>
         /// The room types that can be used for the giant rooms in the layout.
         /// </summary>
-        public SpawnList<RoomGen<T>> GiantHallGen;
+        public SpawnList<RoomGen<T>> GiantRoomsGen;
         
         /// <summary>
         /// Components that the giant rooms will be labeled with.
@@ -41,7 +49,7 @@ namespace RogueElements
         public GridPathTreads()
             : base()
         {
-            GiantHallGen = new SpawnList<RoomGen<T>>();
+            GiantRoomsGen = new SpawnList<RoomGen<T>>();
             LargeRoomComponents = new ComponentCollection();
         }
         
@@ -60,13 +68,13 @@ namespace RogueElements
             int firstRoomIndex = 0;
             int secondRoomIndex = mainLength - 1;
 
-            RoomGen<T> roomGen1 = GiantHallGen.Pick(rand);
+            RoomGen<T> roomGen1 = GiantRoomsGen.Pick(rand);
             if (roomGen1 == null)
                 roomGen1 = GenericRooms.Pick(rand);
             floorPlan.AddRoom(new Rect(Vertical ? 0 : firstRoomIndex, Vertical ? firstRoomIndex : 0, Vertical ? sideLength : 1, Vertical ? 1 : sideLength), roomGen1, this.LargeRoomComponents.Clone());
 
             
-            RoomGen<T> roomGen2 = GiantHallGen.Pick(rand);
+            RoomGen<T> roomGen2 = GiantRoomsGen.Pick(rand);
             if (roomGen2 == null)
                 roomGen2 = GenericRooms.Pick(rand);
             floorPlan.AddRoom(new Rect(Vertical ? 0 : secondRoomIndex, Vertical ? secondRoomIndex : 0, Vertical ? sideLength : 1, Vertical ? 1 : sideLength), roomGen2, this.LargeRoomComponents.Clone());
@@ -85,7 +93,7 @@ namespace RogueElements
                 }
             }
 
-            int numMiddleRooms = (int)(possibleRoomLocs.Count * (RoomPercent / 100f));
+            int numMiddleRooms = (int)(possibleRoomLocs.Count * (RoomPercent.Pick(rand) / 100f));
 
             if (numMiddleRooms < 1)
             {
@@ -218,7 +226,7 @@ namespace RogueElements
 
             int totalNumPossibleConnections = possibleSideHallwaySources.Count;
 
-            int numConnections = (int)(totalNumPossibleConnections * (ConnectPercent / 100f));
+            int numConnections = (int)(totalNumPossibleConnections * (ConnectPercent.Pick(rand) / 100f));
 
             for (int i = 0; i < numConnections; i++)
             {
