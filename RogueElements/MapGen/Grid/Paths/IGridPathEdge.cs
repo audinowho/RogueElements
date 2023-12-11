@@ -12,8 +12,6 @@ namespace RogueElements
         RandRange HallBranchRatio { get; set; }
     }
 
-
-
     /// <summary>
     /// Populates the empty grid plan of a map by creating a minimum spanning tree of connected rooms and halls.
     /// </summary>
@@ -49,6 +47,18 @@ namespace RogueElements
 
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
+            if (Edge == Dir4.None)
+            {
+                //Choose a random direction
+                SpawnList<Dir4> possibleDirs = new SpawnList<Dir4>();
+                possibleDirs.Add(Dir4.Down, 1);
+                possibleDirs.Add(Dir4.Up, 1);
+                possibleDirs.Add(Dir4.Left, 1);
+                possibleDirs.Add(Dir4.Right, 1);
+
+                Edge = possibleDirs.Pick(rand);
+            }
+            
             for (int ii = 0; ii < 10; ii++)
             {
                 // always clear before trying
