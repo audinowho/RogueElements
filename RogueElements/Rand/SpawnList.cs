@@ -18,6 +18,7 @@ namespace RogueElements
     {
         private readonly List<SpawnRate> spawns;
         private int spawnTotal;
+        private bool removeOnRoll;
 
         public SpawnList()
         {
@@ -26,13 +27,13 @@ namespace RogueElements
 
         public SpawnList(bool remove)
         {
-            this.RemoveOnRoll = remove;
+            this.removeOnRoll = remove;
             this.spawns = new List<SpawnRate>();
         }
 
         protected SpawnList(SpawnList<T> other)
         {
-            this.RemoveOnRoll = other.RemoveOnRoll;
+            this.removeOnRoll = other.removeOnRoll;
             this.spawnTotal = other.spawnTotal;
             this.spawns = new List<SpawnRate>();
             foreach (SpawnRate item in other.spawns)
@@ -50,7 +51,7 @@ namespace RogueElements
         /// <summary>
         /// False if this is a bag with replacement.  True if not.
         /// </summary>
-        public bool RemoveOnRoll { get; }
+        public bool RemoveOnRoll => this.removeOnRoll;
 
         public bool ChangesState => this.RemoveOnRoll;
 

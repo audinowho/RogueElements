@@ -16,6 +16,8 @@ namespace RogueElements
     [Serializable]
     public class RandBag<T> : IRandPicker<T>
     {
+        private bool removeOnRoll;
+
         public RandBag()
         {
             this.ToSpawn = new List<T>();
@@ -28,7 +30,7 @@ namespace RogueElements
 
         public RandBag(bool remove, List<T> toSpawn)
         {
-            this.RemoveOnRoll = remove;
+            this.removeOnRoll = remove;
             this.ToSpawn = toSpawn;
         }
 
@@ -40,7 +42,7 @@ namespace RogueElements
         protected RandBag(RandBag<T> other)
         {
             this.ToSpawn = new List<T>(other.ToSpawn);
-            this.RemoveOnRoll = other.RemoveOnRoll;
+            this.removeOnRoll = other.removeOnRoll;
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace RogueElements
         /// <summary>
         /// False if this is a bag with replacement.  True if not.
         /// </summary>
-        public bool RemoveOnRoll { get; }
+        public bool RemoveOnRoll => this.removeOnRoll;
 
         public bool ChangesState => this.RemoveOnRoll;
 
