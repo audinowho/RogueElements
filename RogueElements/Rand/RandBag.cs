@@ -26,6 +26,12 @@ namespace RogueElements
             this.ToSpawn = new List<T>(toSpawn);
         }
 
+        public RandBag(bool remove, List<T> toSpawn)
+        {
+            this.RemoveOnRoll = remove;
+            this.ToSpawn = toSpawn;
+        }
+
         public RandBag(List<T> toSpawn)
         {
             this.ToSpawn = toSpawn;
@@ -45,7 +51,7 @@ namespace RogueElements
         /// <summary>
         /// False if this is a bag with replacement.  True if not.
         /// </summary>
-        public bool RemoveOnRoll { get; set; }
+        public bool RemoveOnRoll { get; }
 
         public bool ChangesState => this.RemoveOnRoll;
 

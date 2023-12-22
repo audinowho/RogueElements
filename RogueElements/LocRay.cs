@@ -72,13 +72,12 @@ namespace RogueElements
         public Loc Loc;
         public Dir4 Dir;
 
-        
         public LocRay4(LocRay4 locRay4)
         {
             this.Loc = locRay4.Loc;
             this.Dir = locRay4.Dir;
         }
-        
+
         public LocRay4(Loc loc)
         {
             this.Loc = loc;

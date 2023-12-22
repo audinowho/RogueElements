@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="GridPathCross.cs" company="Audino">
+// Copyright (c) Audino
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace RogueElements
 {
@@ -24,14 +29,13 @@ namespace RogueElements
             int middleWidth = floorPlan.GridWidth / 2;
             int middleHeight = floorPlan.GridHeight / 2;
 
-            //Create first room in center
+            // Create first room in center
             Loc sourceRoom = new Loc(middleWidth, middleHeight);
             floorPlan.AddRoom(sourceRoom, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
             floorPlan.SetHall(new LocRay4(sourceRoom, Dir4.Left), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
             floorPlan.SetHall(new LocRay4(sourceRoom, Dir4.Up), this.GenericHalls.Pick(rand), this.HallComponents.Clone());
 
-
-            //Create horizontal rooms extending from the center
+            // Create horizontal rooms extending from the center
             for (int x = 0; x < floorPlan.GridWidth; x++)
             {
                 if (x != middleWidth)
@@ -45,7 +49,7 @@ namespace RogueElements
                 }
             }
 
-            //Create vertical rooms extending from the center
+            // Create vertical rooms extending from the center
             for (int y = 0; y < floorPlan.GridHeight; y++)
             {
                 if (y != middleHeight)

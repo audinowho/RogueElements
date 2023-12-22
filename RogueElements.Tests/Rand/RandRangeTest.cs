@@ -51,7 +51,7 @@ namespace RogueElements.Tests
         [Test]
         public void RandBagRemovable()
         {
-            RandBag<int> testPicker = new RandBag<int>(8, 5, 2, 3, 4, 1, 6, 7) { RemoveOnRoll = true };
+            RandBag<int> testPicker = new RandBag<int>(true, new List<int> { 8, 5, 2, 3, 4, 1, 6, 7 });
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(8)).Returns(3);
             testRand.Setup(p => p.Next(7)).Returns(6);
