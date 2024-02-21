@@ -24,6 +24,8 @@ namespace RogueElements
         {
             if (context is T map)
                 this.Apply(map);
+            else
+                throw new ArgumentException(string.Format("Context was of type '{0}' was passed into '{1}'.", context.GetType().AssemblyQualifiedName, this.GetType().AssemblyQualifiedName));
         }
     }
 }
