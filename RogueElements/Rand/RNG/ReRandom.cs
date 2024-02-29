@@ -93,6 +93,11 @@ namespace RogueElements
             return (int)(this.NextUInt64() % (ulong)maxValue);
         }
 
+        public override string ToString()
+        {
+            return string.Format("ReRandom: {0} {1} {2} {3}", this.s[0], this.s[1], this.s[2], this.s[3]);
+        }
+
         /// <remarks>
         /// Floating point operations, including doubles, are non-deterministic.
         /// They will vary by compiler, architecture, etc.
