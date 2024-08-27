@@ -14,7 +14,6 @@
     <PackageTags>game;library;roguelike;map;random;generator</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/audinowho/RogueElements</RepositoryUrl>
-    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DocumentationFile>bin\x64\Debug\netstandard2.0\RogueElements.xml</DocumentationFile>
