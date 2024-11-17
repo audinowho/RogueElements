@@ -22,13 +22,21 @@ namespace RogueElements
         public RandomRoomSpawnStep()
             : base()
         {
+            this.SuccessPercent = 100;
         }
 
-        public RandomRoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, bool includeHalls = false)
+        public RandomRoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent = 100, bool includeHalls = false)
             : base(spawn)
         {
+            this.SuccessPercent = successPercent;
             this.IncludeHalls = includeHalls;
         }
+
+        /// <summary>
+        /// The percentage chance to multiply a room's spawning chance when it successfully spawns an item.
+        /// 0 means it will never spawn in that room again.
+        /// </summary>
+        public int SuccessPercent { get; set; }
 
         /// <summary>
         /// Makes halls eligible for spawn.
@@ -44,7 +52,7 @@ namespace RogueElements
             {
                 if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
                     continue;
-                spawningRooms.Add(new RoomHallIndex(ii, false), 10);
+                spawningRooms.Add(new RoomHallIndex(ii, false), 100);
             }
 
             if (this.IncludeHalls)
@@ -53,11 +61,11 @@ namespace RogueElements
                 {
                     if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetHallPlan(ii), this.Filters))
                         continue;
-                    spawningRooms.Add(new RoomHallIndex(ii, true), 10);
+                    spawningRooms.Add(new RoomHallIndex(ii, true), 100);
                 }
             }
 
-            this.SpawnRandInCandRooms(map, spawningRooms, spawns, 100);
+            this.SpawnRandInCandRooms(map, spawningRooms, spawns, this.SuccessPercent);
         }
     }
 }
