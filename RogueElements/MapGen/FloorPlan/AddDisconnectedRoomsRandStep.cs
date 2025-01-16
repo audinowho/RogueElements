@@ -11,6 +11,7 @@ namespace RogueElements
 {
     /// <summary>
     /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
+    /// Randomly picks a location to spawn a new room in a finite number of times before giving up.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
