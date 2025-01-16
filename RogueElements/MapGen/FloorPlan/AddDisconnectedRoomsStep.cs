@@ -11,6 +11,8 @@ namespace RogueElements
 {
     /// <summary>
     /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
+    /// Sweeps through the entire floor to fit in the new rooms.
+    /// Guaranteed to spawn the room, but can cause performance problems for larger floors.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
