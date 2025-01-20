@@ -72,6 +72,58 @@ namespace RogueElements
         }
 
         /// <summary>
+        /// Gets the unwrapped version of start2 that is closest to start1.
+        /// </summary>
+        /// <param name="wrapSize">Size of wrapped area</param>
+        /// <param name="start1">Unwrapped start of bounds 1, the bounds to get close to.</param>
+        /// <param name="size1">Size of bounds 1</param>
+        /// <param name="start2">Unwrapped start of bounds 2, the bounds to get a close version of.</param>
+        /// <param name="size2">Size of bounds 2</param>
+        /// <returns></returns>
+        public static int GetClosestBounds(int wrapSize, int start1, int size1, int start2, int size2)
+        {
+            int wrapStart1 = MathUtils.Wrap(start1, wrapSize);
+            int wrapStart2 = MathUtils.Wrap(start2, wrapSize);
+
+            // a.start - b.end must be minimized, < 0 means MAYBE intersecting
+            int distLeft = wrapStart1 - (wrapStart2 + size2);
+
+            // b.start - a.end must be minimized, < 0 means MAYBE intersecting
+            int distRight = wrapStart2 - (wrapStart1 + size1);
+
+            // how much they actually intersect (negative number means their distance from each other)
+            int intersect = -Math.Max(distLeft, distRight);
+
+            if (distLeft > distRight)
+            {
+                // bounds 2 is to the left of bounds 1
+                // try shifting it to the right
+                int wrapStart2Shifted = wrapStart2 + wrapSize;
+                int intersectShifted = Collision.GetIntersection(wrapStart1, size1, wrapStart2Shifted, size2);
+
+                // check if this gives us a better intersection, or better closeness
+                if (intersect < intersectShifted)
+                    wrapStart2 = wrapStart2Shifted;
+            }
+            else if (distRight > distLeft)
+            {
+                // bounds 2 is to the right of bounds 1
+                // try shifting it to the left
+                int wrapStart2Shifted = wrapStart2 - wrapSize;
+                int intersectShifted = Collision.GetIntersection(wrapStart1, size1, wrapStart2Shifted, size2);
+
+                // check if this gives us a better intersection, or better closeness
+                if (intersect < intersectShifted)
+                    wrapStart2 = wrapStart2Shifted;
+            }
+
+            // we're as close as we can get
+            // return the position wrapStart2 should be in
+            int wrappedDiff = wrapStart2 - wrapStart1;
+            return start1 + wrappedDiff;
+        }
+
+        /// <summary>
         /// Gets the unwrapped version of pt2 that is closest to pt1.
         /// </summary>
         /// <param name="wrapSize"></param>
@@ -110,6 +162,27 @@ namespace RogueElements
             }
 
             return pt1 + diff1;
+        }
+
+        /// <summary>
+        /// Gets the unwrapped version of pt2 that is closest to pt1 in a specified direction.
+        /// </summary>
+        /// <param name="wrapSize"></param>
+        /// <param name="pt1">The point to get close to.  Unwrapped.</param>
+        /// <param name="pt2">The point to get a close version of.  Unwrapped.</param>
+        /// <param name="dirSign">The direction relative to pt1 that pt2 must be in, expressed as a sign.</param>
+        /// <returns></returns>
+        public static int GetClosestDirWrap(int wrapSize, int pt1, int pt2, int dirSign)
+        {
+            int wrapPt1 = MathUtils.Wrap(pt1, wrapSize);
+            int wrapPt2 = MathUtils.Wrap(pt2, wrapSize);
+            int wrappedDiff = wrapPt2 - wrapPt1;
+
+            // not only must it be in front, but it must be directly in front; always under wrapSize tiles away
+            if (dirSign == Math.Sign(wrappedDiff))
+                return pt1 + wrappedDiff;
+            else
+                return pt1 + wrappedDiff + (dirSign * wrapSize);
         }
 
         public static IEnumerable<Loc> IteratePointsInBounds(Loc wrapSize, Rect rect, Loc pt)

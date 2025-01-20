@@ -55,9 +55,34 @@ namespace RogueElements
                 Collides(start1.Y, size1.Y, start2.Y, size2.Y);
         }
 
+        /// <summary>
+        /// Checks if two bounds collide
+        /// </summary>
+        /// <param name="start1">Start of bounds 1</param>
+        /// <param name="size1">Size of bounds 1</param>
+        /// <param name="start2">Start of bounds 2</param>
+        /// <param name="size2">Size of bounds 2</param>
+        /// <returns></returns>
         public static bool Collides(int start1, int size1, int start2, int size2)
         {
             return start1 + size1 > start2 && start2 + size2 > start1;
+        }
+
+        /// <summary>
+        /// Calculates the amount of intersection between two bounds.
+        /// If they don't intersect, the number is negative and represents their distance from intersecting.
+        /// </summary>
+        /// <param name="start1">Start of bounds 1</param>
+        /// <param name="size1">Size of bounds 1</param>
+        /// <param name="start2">Start of bounds 2</param>
+        /// <param name="size2">Size of bounds 2</param>
+        /// <returns></returns>
+        public static int GetIntersection(int start1, int size1, int start2, int size2)
+        {
+            int distLeft = start1 - (start2 + size2);
+            int distRight = start2 - (start1 + size1);
+
+            return -Math.Max(distLeft, distRight);
         }
 
         public static bool InBounds(Rect rect, Loc point)
