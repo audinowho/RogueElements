@@ -92,8 +92,8 @@ namespace RogueElements
                         {
                             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
 
-                            // attempt to place in 20 locations
-                            for (int jj = 0; jj < 20; jj++)
+                            // attempt to place in 30 locations
+                            for (int jj = 0; jj < 30; jj++)
                             {
                                 int maxWidth = Math.Max(1, map.Width - mapBlob.Bounds.Width);
                                 int maxHeight = Math.Max(1, map.Height - mapBlob.Bounds.Height);

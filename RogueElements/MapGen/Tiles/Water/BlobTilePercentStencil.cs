@@ -11,6 +11,7 @@ namespace RogueElements
     /// <summary>
     /// A filter for determining the eligible tiles for an operation.
     /// Checking the bounds is checking each individual tile.
+    /// The amount of tiles in the blob placement that pass the stencil test must be over the specified percent.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
