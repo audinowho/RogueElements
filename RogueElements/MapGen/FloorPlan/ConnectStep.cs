@@ -74,7 +74,7 @@ namespace RogueElements
             sampleRect.Start += dir.GetLoc() * sampleRect.Size.GetScalar(dir.ToAxis());
 
             // it doesn't have to be exactly the borders so just add the total size to be sure
-            sampleRect.Expand(dir, vertical ? floorPlan.Size.Y : floorPlan.Size.X);
+            sampleRect.Expand(dir, floorPlan.Size.GetScalar(dir.ToAxis()));
 
             // find the closest room.
             var chosenTo = new RoomHallIndex(-1, false);
@@ -85,6 +85,14 @@ namespace RogueElements
                 // limit the expansion by direction
                 int sampleScalar = sampleRect.GetScalar(dir);
                 int collidedScalar = collidedRect.GetScalar(dir.Reverse());
+
+                // "unwrap" the collided scalar, such that it is always in front of the extrusion starting point
+                if (floorPlan.Wrap)
+                {
+                    int sampleStartScalar = sampleRect.GetScalar(dir.Reverse());
+                    collidedScalar = WrappedCollision.GetClosestDirWrap(floorPlan.Size.GetScalar(dir.ToAxis()), sampleStartScalar, collidedScalar, dirSign);
+                }
+
                 bool limit = dirSign == Math.Sign(sampleScalar - collidedScalar);
                 if (limit)
                 {
@@ -108,18 +116,30 @@ namespace RogueElements
             bool retractRight = false;
             Dir4 leftDir = DirExt.AddAngles(dir, Dir4.Left);
             Dir4 rightDir = DirExt.AddAngles(dir, Dir4.Right);
+            int leftScalar = sampleRect.GetScalar(leftDir);
+            int rightScalar = sampleRect.GetScalar(rightDir);
             foreach (RoomHallIndex collision in floorPlan.CheckCollision(widthRect))
             {
                 Rect collidedRect = floorPlan.GetRoomHall(collision).RoomGen.Draw;
                 if (!retractLeft)
                 {
-                    if (collidedRect.GetScalar(leftDir.Reverse()) == sampleRect.GetScalar(leftDir))
+                    int checkLeft = collidedRect.GetScalar(leftDir.Reverse());
+
+                    // the roomhall in question must be as close as possible to the left scalar before comparing
+                    if (floorPlan.Wrap)
+                        checkLeft = WrappedCollision.GetClosestWrap(floorPlan.Size.GetScalar(dir.ToAxis().Orth()), leftScalar, checkLeft);
+                    if (checkLeft == leftScalar)
                         retractLeft = true;
                 }
 
                 if (!retractRight)
                 {
-                    if (collidedRect.GetScalar(rightDir.Reverse()) == sampleRect.GetScalar(rightDir))
+                    int checkRight = collidedRect.GetScalar(rightDir.Reverse());
+
+                    // the roomhall in question must be as close as possible to the right scalar before comparing
+                    if (floorPlan.Wrap)
+                        checkRight = WrappedCollision.GetClosestWrap(floorPlan.Size.GetScalar(dir.ToAxis().Orth()), rightScalar, checkRight);
+                    if (checkRight == rightScalar)
                         retractRight = true;
                 }
             }
@@ -136,7 +156,22 @@ namespace RogueElements
 
             // check for border availability between start and end
             bool foundFrom = HasBorderOpening(genFrom, sampleRect, dir);
-            bool foundTo = HasBorderOpening(genTo, sampleRect, dir.Reverse());
+
+            Rect borderTestRect = sampleRect;
+            if (floorPlan.Wrap)
+            {
+                // if wrapped, borderTestRect must be moved as close to genTo as possible
+                Loc start = borderTestRect.Start;
+                start.SetScalar(dir.ToAxis().Orth(), WrappedCollision.GetClosestBounds(
+                    floorPlan.Size.GetScalar(dir.ToAxis().Orth()),
+                    genTo.Draw.Start.GetScalar(dir.ToAxis().Orth()),
+                    genTo.Draw.GetBorderLength(dir),
+                    borderTestRect.Start.GetScalar(dir.ToAxis().Orth()),
+                    borderTestRect.GetBorderLength(dir)));
+                borderTestRect.Start = start;
+            }
+
+            bool foundTo = HasBorderOpening(genTo, borderTestRect, dir.Reverse());
 
             // return the expansion if one is found
             if (foundFrom && foundTo)

@@ -866,5 +866,22 @@ namespace RogueElements
                     throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
             }
         }
+
+        public static void SetScalar(this ref Loc loc, Axis4 axis, int value)
+        {
+            switch (axis)
+            {
+                case Axis4.Vert:
+                    loc.Y = value;
+                    break;
+                case Axis4.Horiz:
+                    loc.X = value;
+                    break;
+                case Axis4.None:
+                    throw new ArgumentException($"Cannot get scalar on axis {nameof(Axis4.None)}.", nameof(axis));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, "Invalid enum value.");
+            }
+        }
     }
 }
