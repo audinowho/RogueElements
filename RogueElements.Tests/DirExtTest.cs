@@ -581,5 +581,33 @@ namespace RogueElements.Tests
                 Assert.That(new Loc(locX, locY).GetScalar(axis), Is.EqualTo(expected));
             }
         }
+
+
+        [Test]
+        [TestCase(0, 0, Axis4.Horiz, 0, 0, 0)]
+        [TestCase(0, 0, Axis4.Vert, 0, 0, 0)]
+        [TestCase(0, 0, Axis4.Horiz, 1, 1, 0)]
+        [TestCase(0, 0, Axis4.Vert, 1, 0, 1)]
+        [TestCase(1, 2, Axis4.Horiz, 0, 0, 2)]
+        [TestCase(1, 2, Axis4.Vert, 0, 1, 0)]
+        [TestCase(0, 0, Axis4.None, 0, 0, 0, true)]
+        [TestCase(0, 0, (Axis4)(-2), 0, 0, 0, true)]
+        [TestCase(0, 0, (Axis4)2, 0, 0, 0, true)]
+        public void ScalarSetAxis(int locX, int locY, Axis4 axis, int setValue, int expectedX, int expectedY, bool exception = false)
+        {
+            Loc subject = new Loc(locX, locY);
+            if (exception)
+            {
+                if (axis == Axis4.None)
+                    Assert.Throws<ArgumentException>(() => { subject.SetScalar(axis, setValue); });
+                else
+                    Assert.Throws<ArgumentOutOfRangeException>(() => { subject.SetScalar(axis, setValue); });
+            }
+            else
+            {
+                subject.SetScalar(axis, setValue);
+                Assert.That(subject, Is.EqualTo(new Loc(expectedX, expectedY)));
+            }
+        }
     }
 }

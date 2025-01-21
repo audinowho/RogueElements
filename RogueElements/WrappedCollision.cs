@@ -92,7 +92,7 @@ namespace RogueElements
             int distRight = wrapStart2 - (wrapStart1 + size1);
 
             // how much they actually intersect (negative number means their distance from each other)
-            int intersect = -Math.Max(distLeft, distRight);
+            int intersect = Collision.GetIntersection(wrapStart1, size1, wrapStart2, size2);
 
             if (distLeft > distRight)
             {

@@ -75,7 +75,7 @@ namespace RogueElements.Examples.Ex7_Special
             layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
             // Add the stairs up and down
-            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown()));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
             // Apply Items
             var itemSpawns = new SpawnList<Item>
