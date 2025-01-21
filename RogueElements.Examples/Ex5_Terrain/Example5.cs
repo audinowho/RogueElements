@@ -55,7 +55,7 @@ namespace RogueElements.Examples.Ex5_Terrain
             layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
             // Add the stairs up and down
-            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown()));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
             // Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
             const int terrain = 2;

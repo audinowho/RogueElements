@@ -82,7 +82,10 @@ namespace RogueElements
             int distLeft = start1 - (start2 + size2);
             int distRight = start2 - (start1 + size1);
 
-            return -Math.Max(distLeft, distRight);
+            if (distLeft < 0 && distRight < 0)
+                return Math.Min(start1 + size1, start2 + size2) - Math.Max(start1, start2);
+            else
+                return -Math.Max(distLeft, distRight);
         }
 
         public static bool InBounds(Rect rect, Loc point)

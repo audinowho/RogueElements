@@ -55,7 +55,7 @@ namespace RogueElements.Examples.Ex4_Stairs
             layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
 
             // Add the stairs up and down
-            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(new StairsUp(), new StairsDown()));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
             // Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());

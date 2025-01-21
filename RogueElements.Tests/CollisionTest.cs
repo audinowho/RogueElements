@@ -41,9 +41,29 @@ namespace RogueElements.Tests
         [TestCase(2, 4, 6, 2, false)]
         [TestCase(2, 6, 4, 2, true)]
         [TestCase(4, 2, 2, 6, true)]
+        [TestCase(2, 4, 2, 4, true)]
+        [TestCase(2, 4, 2, 4, true)]
+        [TestCase(2, 5, 3, 2, true)]
+        [TestCase(3, 2, 2, 5, true)]
         public void Collides(int start1, int size1, int start2, int size2, bool expected)
         {
             Assert.That(Collision.Collides(start1, size1, start2, size2), Is.EqualTo(expected));
+        }
+
+        [Test]
+        [TestCase(2, 4, 8, 4, -2)]
+        [TestCase(8, 4, 2, 4, -2)]
+        [TestCase(2, 4, 4, 4, 2)]
+        [TestCase(4, 4, 2, 4, 2)]
+        [TestCase(2, 4, 6, 2, 0)]
+        [TestCase(2, 6, 4, 2, 2)]
+        [TestCase(4, 2, 2, 6, 2)]
+        [TestCase(2, 4, 2, 4, 4)]
+        [TestCase(2, 5, 3, 2, 2)]
+        [TestCase(3, 2, 2, 5, 2)]
+        public void GetIntersection(int start1, int size1, int start2, int size2, int expected)
+        {
+            Assert.That(Collision.GetIntersection(start1, size1, start2, size2), Is.EqualTo(expected));
         }
 
         [Test]
