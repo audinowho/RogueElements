@@ -60,6 +60,37 @@ namespace RogueElements.Tests
         }
 
         [Test]
+
+        // Collision vs. No Collision
+        [TestCase(10, -9, 3, 3, 3, -7)]
+        [TestCase(10, 1, 3, 3, 3, 3)]
+        [TestCase(10, 11, 3, 3, 3, 13)]
+
+        // No Collision vs. No Collision
+        [TestCase(10, -9, 3, 7, 3, -13)]
+        [TestCase(10, 1, 3, 7, 3, -3)]
+        [TestCase(10, 11, 3, 7, 3, 7)]
+
+        // Internal Collision vs. No Collision
+        [TestCase(10, -2, 6, 0, 2, 0)]
+        [TestCase(10, 8, 6, 0, 2, 10)]
+        [TestCase(10, 0, 2, 8, 6, -2)]
+
+        // Collision vs. Better Collision
+        [TestCase(10, 2, 6, 6, 9, -4)]
+        [TestCase(10, 2, 6, 6, 19, -4)]
+        [TestCase(10, 6, 19, 2, 6, 12)]
+
+        // Border Tie
+        [TestCase(10, 2, 6, 8, 4, 8)]
+        [TestCase(10, 2, 6, -2, 4, 8)]
+        public void GetClosestBounds(int wrapSize, int start1, int size1, int start2, int size2, int expected)
+        {
+            for (int ii = -1; ii <= 1; ii++)
+                Assert.That(WrappedCollision.GetClosestBounds(wrapSize, start1, size1, start2 + (ii * wrapSize), size2), Is.EqualTo(expected));
+        }
+
+        [Test]
         [TestCase(2, 2, 4, 2, 4, 2)]
         [TestCase(2, 2, 4, 6, 4, 6)]
         [TestCase(2, 2, 4, 8, 4, -2)]
@@ -87,6 +118,41 @@ namespace RogueElements.Tests
                 for (int jj = -1; jj <= 1; jj++)
                     Assert.That(WrappedCollision.GetClosestWrap(wrapSize, pt1 + (ii * wrapSize), pt2 + (jj * wrapSize)), Is.EqualTo(expected + (ii * wrapSize)));
             }
+        }
+
+        [Test]
+
+        // tests using a high or low pt1
+        [TestCase(10, 2, 3, 1, 3)]
+        [TestCase(10, 2, 3, -1, -7)]
+        [TestCase(10, 2, 1, 1, 11)]
+        [TestCase(10, 2, 1, -1, 1)]
+        [TestCase(10, -8, 3, 1, -7)]
+        [TestCase(10, -8, 3, -1, -17)]
+        [TestCase(10, -8, 1, 1, 1)]
+        [TestCase(10, -8, 1, -1, -9)]
+
+        // tests on the border
+        [TestCase(10, 0, 9, 1, 9)]
+        [TestCase(10, 0, 9, -1, -1)]
+        [TestCase(10, 9, 0, 1, 10)]
+        [TestCase(10, 9, 0, -1, 0)]
+
+        // tests using p2 exactly on pt1
+        [TestCase(10, 5, -5, -1, -5)]
+        [TestCase(10, 5, -5, 1, 15)]
+        public void GetClosestDirWrap(int wrapSize, int pt1, int pt2, int dirSign, int expected)
+        {
+            for (int ii = -1; ii <= 1; ii++)
+                Assert.That(WrappedCollision.GetClosestDirWrap(wrapSize, pt1, pt2 + (ii * wrapSize), dirSign), Is.EqualTo(expected));
+        }
+
+        [TestCase(10, 0, 0, 0)]
+        [TestCase(10, 0, 0, -2)]
+        [TestCase(10, 0, 0, 2)]
+        public void GetClosestDirWrapInvalid(int wrapSize, int pt1, int pt2, int dirSign)
+        {
+            Assert.Throws<ArgumentException>(() => { WrappedCollision.GetClosestDirWrap(wrapSize, pt1, pt2, dirSign); });
         }
 
         // Normal case: the region is within the wrap bounds.
