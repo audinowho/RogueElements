@@ -79,7 +79,7 @@ namespace RogueElements
         /// <param name="size1">Size of bounds 1</param>
         /// <param name="start2">Unwrapped start of bounds 2, the bounds to get a close version of.</param>
         /// <param name="size2">Size of bounds 2</param>
-        /// <returns></returns>
+        /// <returns>The unwrapped version of start2 that is closest to start1</returns>
         public static int GetClosestBounds(int wrapSize, int start1, int size1, int start2, int size2)
         {
             int wrapStart1 = MathUtils.Wrap(start1, wrapSize);
@@ -174,6 +174,9 @@ namespace RogueElements
         /// <returns></returns>
         public static int GetClosestDirWrap(int wrapSize, int pt1, int pt2, int dirSign)
         {
+            if (dirSign != 1 && dirSign != -1)
+                throw new ArgumentException("DirSign must be -1 or 1!");
+
             int wrapPt1 = MathUtils.Wrap(pt1, wrapSize);
             int wrapPt2 = MathUtils.Wrap(pt2, wrapSize);
             int wrappedDiff = wrapPt2 - wrapPt1;
