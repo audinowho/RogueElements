@@ -40,30 +40,30 @@ namespace RogueElements.Tests
             }
         }
 
-        public static TestFloorPlan InitFloorToContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        public static TestFloorPlan InitFloorToContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links, bool wrap = false)
         {
             var floorPlan = new TestFloorPlan();
-            InitFloorToContext(floorPlan, new Rect(Loc.Zero, size), rooms, halls, links);
+            InitFloorToContext(floorPlan, new Rect(Loc.Zero, size), rooms, halls, links, wrap);
             return floorPlan;
         }
 
-        public static TestFloorPlan InitFloorToContext(Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        public static TestFloorPlan InitFloorToContext(Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links, bool wrap = false)
         {
             var floorPlan = new TestFloorPlan();
-            InitFloorToContext(floorPlan, rect, rooms, halls, links);
+            InitFloorToContext(floorPlan, rect, rooms, halls, links, wrap);
             return floorPlan;
         }
 
-        public static Mock<TestFloorPlan> InitFloorToMockContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        public static Mock<TestFloorPlan> InitFloorToMockContext(Loc size, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links, bool wrap = false)
         {
             var floorPlan = new Mock<TestFloorPlan> { CallBase = true };
-            InitFloorToContext(floorPlan.Object, new Rect(Loc.Zero, size), rooms, halls, links);
+            InitFloorToContext(floorPlan.Object, new Rect(Loc.Zero, size), rooms, halls, links, wrap);
             return floorPlan;
         }
 
-        private static void InitFloorToContext(TestFloorPlan floorPlan, Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links)
+        private static void InitFloorToContext(TestFloorPlan floorPlan, Rect rect, Rect[] rooms, Rect[] halls, Tuple<char, char>[] links, bool wrap = false)
         {
-            floorPlan.InitRect(rect, false);
+            floorPlan.InitRect(rect, wrap);
 
             // a quick way to set up rooms, halls, and connections
             // a list of rects for rooms, a list of rects for halls

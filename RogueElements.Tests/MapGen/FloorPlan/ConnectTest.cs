@@ -254,6 +254,86 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        public void GetRoomToConnectAcrossWrap()
+        {
+            TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(
+                new Loc(22, 14),
+                new Rect[] { new Rect(4, 10, 2, 2), new Rect(4, 4, 2, 2) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>(),
+                true);
+
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
+
+            Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
+            Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
+            Assert.That(node.Connector, Is.EqualTo(new Rect(4, 12, 2, 6)));
+        }
+
+        [Test]
+        public void GetRoomToConnectAcrossOrthWrap()
+        {
+            TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(
+                new Loc(22, 14),
+                new Rect[] { new Rect(4, 4, 2, 2), new Rect(-18, 10, 2, 2) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>(),
+                true);
+
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
+
+            Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
+            Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
+            Assert.That(node.Connector, Is.EqualTo(new Rect(4, 6, 2, 4)));
+        }
+
+        [Test]
+        public void GetRoomToConnectAcrossWrapIntercept()
+        {
+            TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(
+                new Loc(22, 14),
+                new Rect[] { new Rect(4, 6, 2, 2), new Rect(4, 10, 2, 2), new Rect(4, 0, 2, 2) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>(),
+                true);
+
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
+
+            Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
+            Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
+            Assert.That(node.Connector, Is.EqualTo(new Rect(4, 8, 2, 2)));
+        }
+
+        [Test]
+        public void GetRoomToConnectWrapRetract()
+        {
+            TestFloorPlan floorPlan = TestFloorPlan.InitFloorToContext(
+                new Loc(22, 14),
+                new Rect[] { new Rect(4, 4, 2, 2), new Rect(4, 10, 2, 2), new Rect(2, -7, 2, 2) },
+                Array.Empty<Rect>(),
+                Array.Empty<Tuple<char, char>>(),
+                true);
+
+            var nodeResult = ConnectTestStep.GetRoomToConnect(floorPlan, new RoomHallIndex(0, false), Dir4.Down);
+
+            Assert.That(nodeResult.HasValue, Is.True);
+            var node = nodeResult.Value;
+
+            Assert.That(node.From, Is.EqualTo(new RoomHallIndex(0, false)));
+            Assert.That(node.To, Is.EqualTo(new RoomHallIndex(1, false)));
+            Assert.That(node.Connector, Is.EqualTo(new Rect(5, 6, 1, 4)));
+        }
+
+        [Test]
         [TestCase(-2, false)]
         [TestCase(-1, true)]
         [TestCase(0, true)]
