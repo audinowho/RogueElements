@@ -142,6 +142,46 @@ namespace RogueElements.Tests
         }
 
         [Test]
+        [TestCase(true, false, false)]
+        [TestCase(false, true, true)]
+        public void ReceiveConstrainedOpenedBorderToFulfill(bool firstHalf, bool secondHalf, bool exception)
+        {
+            // test with offset, proving previous openedborders are properly transferred
+            // test error case, in which no bordertofulfill is opened
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            var roomGenTo = new TestRoomGen<ITiledGenContext>();
+            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
+            roomGenTo.PrepareSize(testRand.Object, new Loc(3, 2));
+            roomGenTo.SetLoc(new Loc(2, 0));
+            roomGenTo.PublicFulfillableBorder[Dir4.Down][0] = false;
+            roomGenTo.PublicFulfillableBorder[Dir4.Down][1] = firstHalf;
+            roomGenTo.PublicFulfillableBorder[Dir4.Down][2] = secondHalf;
+            roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
+            roomGenFrom.SetLoc(new Loc(0, 2));
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][0] = true;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][1] = true;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][2] = true;
+            roomGenFrom.PublicOpenedBorder[Dir4.Up][3] = true;
+
+            if (exception)
+            {
+                Assert.Throws<ArgumentException>(() => { roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, Dir4.Down); });
+            }
+            else
+            {
+                roomGenTo.AskBorderFromRoom(roomGenFrom.Draw, roomGenFrom.GetOpenedBorder, Dir4.Down);
+                var expectedBorderToFulfill = new Dictionary<Dir4, bool[]>
+                {
+                    [Dir4.Down] = new bool[] { false, true, false },
+                    [Dir4.Left] = new bool[] { false, false },
+                    [Dir4.Up] = new bool[] { false, false, false },
+                    [Dir4.Right] = new bool[] { false, false },
+                };
+                Assert.That(roomGenTo.PublicBorderToFulfill, Is.EqualTo(expectedBorderToFulfill));
+            }
+        }
+
+        [Test]
         public void ReceiveOpenedBorderToFulfillAlreadyFilled()
         {
             // test error case, in which no borderfill is opened by the openedborder but the tiles already exist
@@ -196,6 +236,36 @@ namespace RogueElements.Tests
                 roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), dir);
                 IntRange newRange = roomGen.RoomSideReqs[dir][0];
                 Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
+            }
+        }
+
+        [Test]
+        [TestCase(2, 6, 3, 6, false, true, false, false)]
+        [TestCase(2, 8, 3, 8, false, true, true, false)]
+        [TestCase(2, 5, 0, 0, false, false, false, true)]
+        public void ReceiveConstrainedBorderRange(int rangeStart, int rangeEnd, int expectedStart, int expectedEnd, bool start, bool mid, bool end, bool exception)
+        {
+            Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
+            var roomGen = new TestRoomGen<ITiledGenContext>();
+            roomGen.PrepareSize(testRand.Object, new Loc(5, 2));
+            roomGen.SetLoc(new Loc(3, 2));
+            roomGen.PublicFulfillableBorder[Dir4.Up][0] = false;
+            roomGen.PublicFulfillableBorder[Dir4.Up][1] = false;
+            roomGen.PublicFulfillableBorder[Dir4.Up][2] = true;
+            roomGen.PublicFulfillableBorder[Dir4.Up][3] = true;
+            roomGen.PublicFulfillableBorder[Dir4.Up][4] = true;
+
+            if (exception)
+            {
+                Assert.Throws<ArgumentException>(() => { roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), Dir4.Up); });
+            }
+            else
+            {
+                roomGen.AskBorderRange(new IntRange(rangeStart, rangeEnd), Dir4.Up);
+                IntRange newRange = roomGen.RoomSideReqs[Dir4.Up][0];
+                Assert.That(newRange, Is.EqualTo(new IntRange(expectedStart, expectedEnd)));
+                var expectedBorderToFulfill = new bool[] { start, start, mid, end, end };
+                Assert.That(roomGen.PublicBorderToFulfill[Dir4.Up], Is.EqualTo(expectedBorderToFulfill));
             }
         }
 
