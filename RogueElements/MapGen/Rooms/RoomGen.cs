@@ -69,6 +69,7 @@ namespace RogueElements
         /// <summary>
         /// Tiles that, if touched during this room's gen, signify that the req has been filled
         /// "the req" refers to the roomSideReqs for that side.
+        /// Always a subset of FulfillableBorder.
         /// </summary>
         protected Dictionary<Dir4, bool[]> BorderToFulfill { get => this.borderToFulfill; set => this.borderToFulfill = value; }
 
@@ -319,7 +320,7 @@ namespace RogueElements
                 {
                     for (int jj = 0; jj < side.Length; jj++)
                     {
-                        if (this.FulfillableBorder[dir][jj])
+                        if (this.BorderToFulfill[dir][jj])
                         {
                             foreach (IntRange range in unfulfilled[dir])
                             {
@@ -367,21 +368,25 @@ namespace RogueElements
         /// Will add a sidereq and consider all tiles in the range as eligible for fulfillment of that sidereq.
         /// Assumes that the borders are touching.  Unwrapped.
         /// </summary>
-        /// <param name="range"></param>
-        /// <param name="dir"></param>
+        /// <param name="range">Range to ask from this room.  Absolute coordinates.</param>
+        /// <param name="dir">The direction from this room's to the range.</param>
         public virtual void AskBorderRange(IntRange range, Dir4 dir)
         {
             this.AskSideReq(range, dir);
 
             bool[] destBorder = this.BorderToFulfill[dir];
+            bool[] constraintBorder = this.FulfillableBorder[dir];
 
             // compute the starting index in otherBorder to start transferring
             int offset = range.Min - this.Draw.Start.GetScalar(dir.ToAxis().Orth());
 
             // Traverse the region that both borders touch
             // make this room's opened borders into the other room's permitted borders
-            for (int ii = Math.Max(0, -offset); ii < range.Length && ii + offset < destBorder.Length; ii++)
-                destBorder[ii + offset] = true;
+            for (int ii = Math.Max(0, offset); ii - offset < range.Length && ii < destBorder.Length; ii++)
+            {
+                if (constraintBorder[ii])
+                    destBorder[ii] = true;
+            }
         }
 
         /// <summary>
@@ -404,9 +409,10 @@ namespace RogueElements
             IntRange sourceSide = sourceDraw.GetSide(dir.ToAxis());
             this.AskSideReq(sourceSide, dir);
             bool[] destBorder = this.BorderToFulfill[dir];
-            Loc diff = sourceDraw.Start - this.Draw.Start; // how far ahead the start of source is to dest
+            bool[] constraintBorder = this.FulfillableBorder[dir];
 
             // compute the starting index in otherBorder to start transferring
+            Loc diff = sourceDraw.Start - this.Draw.Start;
             int offset = diff.GetScalar(dir.ToAxis().Orth());
 
             // Traverse the region that both borders touch
@@ -415,10 +421,16 @@ namespace RogueElements
             int sourceLength = sourceDraw.GetBorderLength(dir.Reverse());
             for (int ii = Math.Max(0, offset); ii - offset < sourceLength && ii < destBorder.Length; ii++)
             {
-                bool sourceOpened = borderQuery(dir.Reverse(), ii - offset);
+                if (constraintBorder[ii])
+                {
+                    bool sourceOpened = borderQuery(dir.Reverse(), ii - offset);
 
-                destBorder[ii] = sourceOpened || destBorder[ii];
-                hasOpening |= sourceOpened;
+                    if (sourceOpened)
+                    {
+                        destBorder[ii] = true;
+                        hasOpening = true;
+                    }
+                }
             }
 
             if (!hasOpening)
