@@ -81,9 +81,12 @@ namespace RogueElements
                     {
                         roomDistance[nodeIndex] = distance;
 
-                        // prefer not to remove by value, but we have no choice
-                        free_indices.Remove(nodeIndex.Index);
-                        used_indices.Add(nodeIndex.Index);
+                        if (!nodeIndex.IsHall)
+                        {
+                            // prefer not to remove by value, but we have no choice
+                            free_indices.Remove(nodeIndex.Index);
+                            used_indices.Add(nodeIndex.Index);
+                        }
                     }
 
                     List<RoomHallIndex> GetAdjacentsLimited(RoomHallIndex nodeIndex)
