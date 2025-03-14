@@ -48,6 +48,8 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
+            if (map.RoomPlan.Wrap)
+                return;
             map.RoomPlan.Resize(map.RoomPlan.Size + new Loc(this.AddedSize), this.SpaceExpandDir, this.ExpandDir.Reverse());
             GenContextDebug.DebugProgress("Resized Floor");
         }
