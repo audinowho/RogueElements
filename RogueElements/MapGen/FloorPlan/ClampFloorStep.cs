@@ -33,6 +33,9 @@ namespace RogueElements
 
         public override void Apply(T map)
         {
+            if (map.RoomPlan.Wrap)
+                return;
+
             int clampedX = Math.Min(Math.Max(this.MinSize.X, map.RoomPlan.Size.X), this.MaxSize.X);
             int clampedY = Math.Min(Math.Max(this.MinSize.Y, map.RoomPlan.Size.Y), this.MaxSize.Y);
 
