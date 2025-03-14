@@ -74,6 +74,11 @@ namespace RogueElements
             {
                 IRoomGen adjGen = floorPlan.GetRoomHall(adj).RoomGen;
                 IntRange adjMinMax = adjGen.Draw.GetSide(dir.ToAxis());
+                if (floorPlan.Wrap)
+                {
+                    int newStart = WrappedCollision.GetClosestBounds(floorPlan.Size.GetScalar(dir.ToAxis().Orth()), minMax.Min, minMax.Length, adjMinMax.Min, adjMinMax.Length);
+                    adjMinMax = new IntRange(newStart, newStart + adjMinMax.Length);
+                }
                 minMax = new IntRange(Math.Min(adjMinMax.Min, minMax.Min), Math.Max(adjMinMax.Max, minMax.Max));
             }
 

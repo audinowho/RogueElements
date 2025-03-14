@@ -248,7 +248,7 @@ namespace RogueElements
         /// <param name="checkBlock">The operation determining if a tile is nontraversible.</param>
         /// <param name="checkDiagBlock">The operation determining if a tile is nontraversible, diagonally.</param>
         /// <param name="fillOp">The fill operation.</param>
-        /// <param name="loc"></param>
+        /// <param name="loc">Location to start the flood</param>
         public static void FloodFill(Rect rect, LocTest checkBlock, LocTest checkDiagBlock, LocAction fillOp, Loc loc)
         {
             if (checkBlock == null)
