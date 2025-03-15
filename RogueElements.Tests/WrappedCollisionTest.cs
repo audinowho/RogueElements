@@ -139,8 +139,8 @@ namespace RogueElements.Tests
         [TestCase(10, 9, 0, -1, 0)]
 
         // tests using p2 exactly on pt1
-        [TestCase(10, 5, -5, -1, -5)]
-        [TestCase(10, 5, -5, 1, 15)]
+        [TestCase(10, 5, -5, -1, 5)]
+        [TestCase(10, 5, -5, 1, 5)]
         public void GetClosestDirWrap(int wrapSize, int pt1, int pt2, int dirSign, int expected)
         {
             for (int ii = -1; ii <= 1; ii++)

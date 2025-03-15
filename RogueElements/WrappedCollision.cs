@@ -181,8 +181,8 @@ namespace RogueElements
             int wrapPt2 = MathUtils.Wrap(pt2, wrapSize);
             int wrappedDiff = wrapPt2 - wrapPt1;
 
-            // not only must it be in front, but it must be directly in front; always under wrapSize tiles away
-            if (dirSign == Math.Sign(wrappedDiff))
+            // it must be on top or in front; always under wrapSize tiles away
+            if (wrappedDiff == 0 || Math.Sign(wrappedDiff) == dirSign)
                 return pt1 + wrappedDiff;
             else
                 return pt1 + wrappedDiff + (dirSign * wrapSize);
