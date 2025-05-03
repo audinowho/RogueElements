@@ -12,10 +12,11 @@ namespace RogueElements
     /// Generates a room with specific tiles and borders.
     /// EDITOR UNFRIENDLY
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenSpecific<T> : RoomGen<T>
-        where T : ITiledGenContext
+    public class RoomGenSpecific<TGenContext, TTile> : RoomGen<TGenContext, TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenSpecific()
         {
@@ -23,41 +24,41 @@ namespace RogueElements
 
         public RoomGenSpecific(int width, int height)
         {
-            this.Tiles = new ITile[width][];
+            this.Tiles = new TTile[width][];
             for (int xx = 0; xx < width; xx++)
-                this.Tiles[xx] = new ITile[height];
+                this.Tiles[xx] = new TTile[height];
         }
 
-        public RoomGenSpecific(int width, int height, ITile roomTerrain)
+        public RoomGenSpecific(int width, int height, TTile roomTerrain)
             : this(width, height)
         {
             this.RoomTerrain = roomTerrain;
         }
 
-        protected RoomGenSpecific(RoomGenSpecific<T> other)
+        protected RoomGenSpecific(RoomGenSpecific<TGenContext, TTile> other)
         {
             this.RoomTerrain = other.RoomTerrain;
-            this.Tiles = new ITile[other.Tiles.Length][];
+            this.Tiles = new TTile[other.Tiles.Length][];
             for (int xx = 0; xx < other.Tiles.Length; xx++)
             {
-                this.Tiles[xx] = new ITile[other.Tiles[0].Length];
+                this.Tiles[xx] = new TTile[other.Tiles[0].Length];
                 for (int yy = 0; yy < other.Tiles[0].Length; yy++)
                     this.Tiles[xx][yy] = other.Tiles[xx][yy].Copy();
             }
         }
 
-        public ITile RoomTerrain { get; set; }
+        public TTile RoomTerrain { get; set; }
 
-        public ITile[][] Tiles { get; set; }
+        public TTile[][] Tiles { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenSpecific<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenSpecific<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Tiles.Length, this.Tiles[0].Length);
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             if (this.Draw.Width != this.Tiles.Length || this.Draw.Height != this.Tiles[0].Length)
             {

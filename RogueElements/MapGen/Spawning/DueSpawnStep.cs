@@ -16,8 +16,9 @@ namespace RogueElements
     /// <typeparam name="TSpawnable">Type of the item to spawn.</typeparam>
     /// <typeparam name="TEntrance">Type of the Map Entrance.</typeparam>
     [Serializable]
-    public class DueSpawnStep<TGenContext, TSpawnable, TEntrance> : RoomSpawnStep<TGenContext, TSpawnable>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>, IViewPlaceableGenContext<TEntrance>
+    public class DueSpawnStep<TGenContext, TTile, TSpawnable, TEntrance> : RoomSpawnStep<TGenContext, TTile, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext<TTile>, IPlaceableGenContext<TSpawnable>, IViewPlaceableGenContext<TEntrance>
+        where TTile : ITile<TTile>
         where TSpawnable : ISpawnable
         where TEntrance : IEntrance
     {
@@ -54,7 +55,7 @@ namespace RogueElements
             int startRoom = 0;
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
-                FloorRoomPlan room = map.RoomPlan.GetRoomPlan(ii);
+                FloorRoomPlan<TTile> room = map.RoomPlan.GetRoomPlan(ii);
                 if (map.RoomPlan.InBounds(room.RoomGen.Draw, map.GetLoc(0)))
                 {
                     startRoom = ii;
@@ -74,10 +75,10 @@ namespace RogueElements
             int multFactor = int.MaxValue / maxVal / roomWeights.Count;
             foreach (RoomHallIndex idx in roomWeights.Keys)
             {
-                IFloorRoomPlan room = map.RoomPlan.GetRoomHall(idx);
+                IFloorRoomPlan<TTile> room = map.RoomPlan.GetRoomHall(idx);
                 if (idx.IsHall && !this.IncludeHalls)
                     continue;
-                if (!BaseRoomFilter.PassesAllFilters(room, this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(room, this.Filters))
                     continue;
                 if (roomWeights[idx] == 0)
                     continue;

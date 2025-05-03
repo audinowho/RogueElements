@@ -11,17 +11,18 @@ namespace RogueElements
     /// Creates a grid plan made up of a center room and halls and rooms extending off in the four cardinal directions.
     /// For best results, it is recommended to make grid height and width odd numbers.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathCross<T> : GridPathStartStepGeneric<T>
-        where T : class, IRoomGridGenContext
+    public class GridPathCross<TGenContext, TTile> : GridPathStartStepGeneric<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathCross()
             : base()
         {
         }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             // always clear before trying
             floorPlan.Clear();

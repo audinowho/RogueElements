@@ -12,17 +12,18 @@ namespace RogueElements
     /// Takes an existing grid plan and changes some of the rooms into the default room type.
     /// The default room is a single tile in size and effectively acts as a hallway.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class SetGridDefaultsStep<T> : GridPlanStep<T>
-        where T : class, IRoomGridGenContext
+    public class SetGridDefaultsStep<TGenContext, TTile> : GridPlanStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public SetGridDefaultsStep()
         {
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
-        public SetGridDefaultsStep(RandRange defaultRatio, List<BaseRoomFilter> filter)
+        public SetGridDefaultsStep(RandRange defaultRatio, List<BaseRoomFilter<TTile>> filter)
         {
             this.DefaultRatio = defaultRatio;
             this.Filters = filter;
@@ -36,14 +37,14 @@ namespace RogueElements
         /// <summary>
         /// Determines which rooms are eligible to be turned into default.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             List<int> candidates = new List<int>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
                     continue;
 
                 List<int> adjacents = floorPlan.GetAdjacentRooms(ii);
@@ -56,8 +57,8 @@ namespace RogueElements
             for (int ii = 0; ii < amountToDefault; ii++)
             {
                 int randIndex = rand.Next(candidates.Count);
-                GridRoomPlan plan = floorPlan.GetRoomPlan(candidates[randIndex]);
-                plan.RoomGen = new RoomGenDefault<T>();
+                GridRoomPlan<TTile> plan = floorPlan.GetRoomPlan(candidates[randIndex]);
+                plan.RoomGen = new RoomGenDefault<TGenContext, TTile>();
                 plan.PreferHall = true;
                 candidates.RemoveAt(randIndex);
                 GenContextDebug.DebugProgress("Defaulted Room");

@@ -16,8 +16,9 @@ namespace RogueElements
     /// <typeparam name="TEntrance"></typeparam>
     /// <typeparam name="TExit"></typeparam>
     [Serializable]
-    public class FloorStairsStep<TGenContext, TEntrance, TExit> : BaseFloorStairsStep<TGenContext, TEntrance, TExit>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+    public class FloorStairsStep<TGenContext, TTile, TEntrance, TExit> : BaseFloorStairsStep<TGenContext, TTile, TEntrance, TExit>
+        where TGenContext : class, IFloorPlanGenContext<TTile>, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+        where TTile : ITile<TTile>
         where TEntrance : IEntrance
         where TExit : IExit
     {

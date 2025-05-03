@@ -10,11 +10,11 @@ using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
-    public class TestFloorPlan : FloorPlan
+    public class TestFloorPlan : FloorPlan<TestTile>
     {
-        public List<FloorRoomPlan> PublicRooms => this.Rooms;
+        public List<FloorRoomPlan<TestTile>> PublicRooms => this.Rooms;
 
-        public List<FloorHallPlan> PublicHalls => this.Halls;
+        public List<FloorHallPlan<TestTile>> PublicHalls => this.Halls;
 
         public static void CompareFloorPlans(TestFloorPlan floorPlan, TestFloorPlan compareFloorPlan)
         {
@@ -22,8 +22,8 @@ namespace RogueElements.Tests
             Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                FloorRoomPlan plan = floorPlan.PublicRooms[ii];
-                FloorRoomPlan comparePlan = compareFloorPlan.PublicRooms[ii];
+                FloorRoomPlan<TestTile> plan = floorPlan.PublicRooms[ii];
+                FloorRoomPlan<TestTile> comparePlan = compareFloorPlan.PublicRooms[ii];
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
                 Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
@@ -32,8 +32,8 @@ namespace RogueElements.Tests
             Assert.That(floorPlan.HallCount, Is.EqualTo(compareFloorPlan.HallCount));
             for (int ii = 0; ii < floorPlan.HallCount; ii++)
             {
-                FloorHallPlan plan = floorPlan.PublicHalls[ii];
-                FloorHallPlan comparePlan = compareFloorPlan.PublicHalls[ii];
+                FloorHallPlan<TestTile> plan = floorPlan.PublicHalls[ii];
+                FloorHallPlan<TestTile> comparePlan = compareFloorPlan.PublicHalls[ii];
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Adjacents, Is.EqualTo(comparePlan.Adjacents));
                 Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
@@ -71,14 +71,14 @@ namespace RogueElements.Tests
             {
                 var gen = new TestFloorPlanGen((char)('A' + ii));
                 gen.PrepareDraw(rooms[ii]);
-                floorPlan.PublicRooms.Add(new FloorRoomPlan(gen, new ComponentCollection()));
+                floorPlan.PublicRooms.Add(new FloorRoomPlan<TestTile>(gen, new ComponentCollection()));
             }
 
             for (int ii = 0; ii < halls.Length; ii++)
             {
                 var gen = new TestFloorPlanGen((char)('a' + ii));
                 gen.PrepareDraw(halls[ii]);
-                floorPlan.PublicHalls.Add(new FloorHallPlan(gen, new ComponentCollection()));
+                floorPlan.PublicHalls.Add(new FloorHallPlan<TestTile>(gen, new ComponentCollection()));
             }
 
             // and finally a list of tuples that link rooms to rooms and halls to halls
@@ -90,8 +90,8 @@ namespace RogueElements.Tests
                 int index2 = hall2 ? links[ii].Item2 - 'a' : links[ii].Item2 - 'A';
                 var link1 = new RoomHallIndex(index1, hall1);
                 var link2 = new RoomHallIndex(index2, hall2);
-                IFloorRoomPlan from1 = floorPlan.GetRoomHall(link1);
-                IFloorRoomPlan from2 = floorPlan.GetRoomHall(link2);
+                IFloorRoomPlan<TestTile> from1 = floorPlan.GetRoomHall(link1);
+                IFloorRoomPlan<TestTile> from2 = floorPlan.GetRoomHall(link2);
                 from1.Adjacents.Add(link2);
                 from2.Adjacents.Add(link1);
             }

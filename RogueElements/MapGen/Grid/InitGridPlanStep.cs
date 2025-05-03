@@ -14,10 +14,11 @@ namespace RogueElements
     /// Gen Steps that operate on the grid plan can add, erase, or change rooms/hallways.
     /// Once finished, apply DrawGridToFloorStep to take the grid and create a floor plan.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class InitGridPlanStep<T> : GenStep<T>
-        where T : class, IRoomGridGenContext
+    public class InitGridPlanStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public InitGridPlanStep()
         {
@@ -58,10 +59,10 @@ namespace RogueElements
         /// </summary>
         public bool Wrap { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             // initialize grid
-            var floorPlan = new GridPlan();
+            var floorPlan = new GridPlan<TTile>();
             floorPlan.InitSize(this.CellX, this.CellY, this.CellWidth, this.CellHeight, this.CellWall, this.Wrap);
 
             map.InitGrid(floorPlan);

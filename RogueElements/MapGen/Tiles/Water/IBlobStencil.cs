@@ -8,9 +8,10 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IBlobStencil<T>
-        where T : class, ITiledGenContext
+    public interface IBlobStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
-        bool Test(T map, Rect rect, Grid.LocTest blobTest);
+        bool Test(TGenContext map, Rect rect, Grid.LocTest blobTest);
     }
 }

@@ -14,22 +14,23 @@ namespace RogueElements
     /// Sweeps through the entire floor to fit in the new rooms.
     /// Guaranteed to spawn the room, but can cause performance problems for larger floors.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class AddDisconnectedRoomsStep<T> : AddDisconnectedRoomsBaseStep<T>
-        where T : class, IFloorPlanGenContext
+    public class AddDisconnectedRoomsStep<TGenContext, TTile> : AddDisconnectedRoomsBaseStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public AddDisconnectedRoomsStep()
             : base()
         {
         }
 
-        public AddDisconnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms)
+        public AddDisconnectedRoomsStep(IRandPicker<RoomGen<TGenContext, TTile>> genericRooms)
             : base(genericRooms)
         {
         }
 
-        protected override Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize)
+        protected override Loc? ChooseViableLoc(IRandom rand, FloorPlan<TTile> floorPlan, Loc roomSize)
         {
             Rect allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End - roomSize + new Loc(1));
             if (floorPlan.Wrap)

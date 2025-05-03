@@ -12,10 +12,11 @@ namespace RogueElements
     /// Takes an existing floor plan and changes one of the rooms into the specified room type.
     /// The size of the room may change because of this, and thus may also require the addition of a supporting hallway.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class SetSpecialRoomStep<T> : FloorPlanStep<T>
-        where T : class, IFloorPlanGenContext
+    public class SetSpecialRoomStep<TGenContext, TTile> : FloorPlanStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public SetSpecialRoomStep()
         {
@@ -23,27 +24,27 @@ namespace RogueElements
             this.Halls = null;
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
-        public SetSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
+        public SetSpecialRoomStep(IRandPicker<RoomGen<TGenContext, TTile>> rooms, IRandPicker<PermissiveRoomGen<TGenContext, TTile>> halls)
         {
             this.Rooms = rooms;
             this.Halls = halls;
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         /// <summary>
         /// The room to place.  It can be chosen out of several possibilities, but only one room will be placed.
         /// </summary>
-        public IRandPicker<RoomGen<T>> Rooms { get; set; }
+        public IRandPicker<RoomGen<TGenContext, TTile>> Rooms { get; set; }
 
         /// <summary>
         /// Determines which rooms are eligible to be turned into the new room type.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// Components that the newly added room will be labeled with.
@@ -54,14 +55,14 @@ namespace RogueElements
         /// When changing a room to a new type, the new type may be smaller and require a supporting hallway.
         /// This variable determines the room types that can be used as the intermediate hall.
         /// </summary>
-        public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
+        public IRandPicker<PermissiveRoomGen<TGenContext, TTile>> Halls { get; set; }
 
         /// <summary>
         /// Components that the newly added halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
+        public static Rect GetSupportRect(FloorPlan<TTile> floorPlan, IRoomGen<TTile> oldGen, IRoomGen<TTile> newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
             Rect supportRect = newGen.Draw;
@@ -72,7 +73,7 @@ namespace RogueElements
 
             foreach (RoomHallIndex adj in adjacentsInDir)
             {
-                IRoomGen adjGen = floorPlan.GetRoomHall(adj).RoomGen;
+                IRoomGen<TTile> adjGen = floorPlan.GetRoomHall(adj).RoomGen;
                 IntRange adjMinMax = adjGen.Draw.GetSide(dir.ToAxis());
                 if (floorPlan.Wrap)
                 {
@@ -99,11 +100,11 @@ namespace RogueElements
             return supportRect;
         }
 
-        public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             // choose certain rooms in the list to be special rooms
             // special rooms are required; so make sure they don't overlap
-            IRoomGen newGen = this.Rooms.Pick(rand).Copy();
+            IRoomGen<TTile> newGen = this.Rooms.Pick(rand).Copy();
             Loc size = newGen.ProposeSize(rand);
             newGen.PrepareSize(rand, size);
             int factor = floorPlan.DrawRect.Area / newGen.Draw.Area;
@@ -113,8 +114,8 @@ namespace RogueElements
             var room_indices = new SpawnList<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                FloorRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                FloorRoomPlan<TTile> plan = floorPlan.GetRoomPlan(ii);
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
                     continue;
                 if (plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
                     plan.RoomGen.Draw.Height >= newGen.Draw.Height)
@@ -124,8 +125,8 @@ namespace RogueElements
             for (int ii = 0; ii < floorPlan.HallCount; ii++)
             {
                 var roomHall = new RoomHallIndex(ii, true);
-                IFloorRoomPlan plan = floorPlan.GetRoomHall(roomHall);
-                if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                IFloorRoomPlan<TTile> plan = floorPlan.GetRoomHall(roomHall);
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(plan, this.Filters))
                     continue;
                 if (plan.RoomGen.Draw.Width >= newGen.Draw.Width &&
                     plan.RoomGen.Draw.Height >= newGen.Draw.Height)
@@ -137,10 +138,10 @@ namespace RogueElements
                 int ind = room_indices.PickIndex(rand);
                 RoomHallIndex oldRoomHall = room_indices.GetSpawn(ind);
                 Dictionary<Dir4, List<RoomHallIndex>> adjacentIndicesByDir = GetDirectionAdjacents(floorPlan, oldRoomHall);
-                var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+                var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TTile>>>();
                 foreach (Dir4 dir in DirExt.VALID_DIR4)
                 {
-                    adjacentsByDir[dir] = new List<IRoomGen>();
+                    adjacentsByDir[dir] = new List<IRoomGen<TTile>>();
                     foreach (RoomHallIndex adj in adjacentIndicesByDir[dir])
                         adjacentsByDir[dir].Add(floorPlan.GetRoomHall(adj).RoomGen);
                 }
@@ -158,11 +159,11 @@ namespace RogueElements
             }
         }
 
-        public void PlaceRoom(IRandom rand, FloorPlan floorPlan, IRoomGen newGen, RoomHallIndex oldRoomHall)
+        public void PlaceRoom(IRandom rand, FloorPlan<TTile> floorPlan, IRoomGen<TTile> newGen, RoomHallIndex oldRoomHall)
         {
             // first get the adjacents of the removed room
             Dictionary<Dir4, List<RoomHallIndex>> adjacentsByDir = GetDirectionAdjacents(floorPlan, oldRoomHall);
-            IRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
+            IRoomPlan<TTile> oldPlan = floorPlan.GetRoomHall(oldRoomHall);
 
             // remove the room; update the adjacents too
             floorPlan.EraseRoomHall(oldRoomHall);
@@ -178,7 +179,7 @@ namespace RogueElements
             }
 
             var newAdjacents = new List<RoomHallIndex>();
-            var supportHalls = new Dictionary<Dir4, IPermissiveRoomGen>();
+            var supportHalls = new Dictionary<Dir4, IPermissiveRoomGen<TTile>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
                 if (newGen.Draw.GetScalar(dir) == oldPlan.RoomGen.Draw.GetScalar(dir))
@@ -188,7 +189,7 @@ namespace RogueElements
                 else if (adjacentsByDir[dir].Count > 0)
                 {
                     Rect supportRect = GetSupportRect(floorPlan, oldPlan.RoomGen, newGen, dir, adjacentsByDir[dir]);
-                    var supportHall = (IPermissiveRoomGen)this.Halls.Pick(rand).Copy();
+                    var supportHall = (IPermissiveRoomGen<TTile>)this.Halls.Pick(rand).Copy();
                     supportHall.PrepareSize(rand, supportRect.Size);
                     supportHall.SetLoc(supportRect.Start);
                     supportHalls[dir] = supportHall;
@@ -218,13 +219,13 @@ namespace RogueElements
             }
         }
 
-        public Loc FindPlacement(IRandom rand, Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
+        public Loc FindPlacement(IRandom rand, Dictionary<Dir4, List<IRoomGen<TTile>>> adjacentsByDir, IRoomGen<TTile> newGen, IRoomGen<TTile> oldGen)
         {
             SpawnList<Loc> possiblePlacements = this.GetPossiblePlacements(adjacentsByDir, newGen, oldGen);
             return possiblePlacements.SpawnTotal == 0 ? new Loc(-1) : possiblePlacements.Pick(rand);
         }
 
-        public SpawnList<Loc> GetPossiblePlacements(Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen)
+        public SpawnList<Loc> GetPossiblePlacements(Dictionary<Dir4, List<IRoomGen<TTile>>> adjacentsByDir, IRoomGen<TTile> newGen, IRoomGen<TTile> oldGen)
         {
             // test all positions around perimeter
             Rect oldRect = oldGen.Draw;
@@ -282,7 +283,7 @@ namespace RogueElements
             return possiblePlacements;
         }
 
-        public virtual int GetAllBorderMatch(Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, IRoomGen newGen, IRoomGen oldGen, Loc loc)
+        public virtual int GetAllBorderMatch(Dictionary<Dir4, List<IRoomGen<TTile>>> adjacentsByDir, IRoomGen<TTile> newGen, IRoomGen<TTile> oldGen, Loc loc)
         {
             // TODO: Currently fails the loc if a single adjacent in a given direction is not met.
             // Perhaps allow the halls to cover the un-met required adjacent
@@ -318,10 +319,10 @@ namespace RogueElements
             return matchValue;
         }
 
-        public virtual int GetSideBorderMatch(IRoomGen newGen, Dictionary<Dir4, List<IRoomGen>> adjacentsByDir, Loc loc, Dir4 dir, int matchValue)
+        public virtual int GetSideBorderMatch(IRoomGen<TTile> newGen, Dictionary<Dir4, List<IRoomGen<TTile>>> adjacentsByDir, Loc loc, Dir4 dir, int matchValue)
         {
-            foreach (IRoomGen adj in adjacentsByDir[dir])
-                matchValue = Math.Min(matchValue, FloorPlan.GetBorderMatch(adj, newGen, loc, dir.Reverse()));
+            foreach (IRoomGen<TTile> adj in adjacentsByDir[dir])
+                matchValue = Math.Min(matchValue, FloorPlan<TTile>.GetBorderMatch(adj, newGen, loc, dir.Reverse()));
             return matchValue;
         }
 
@@ -330,16 +331,16 @@ namespace RogueElements
             return Math.Max(1, oldRect.Area * factor / newRect.Area);
         }
 
-        private static Dictionary<Dir4, List<RoomHallIndex>> GetDirectionAdjacents(FloorPlan floorPlan, RoomHallIndex oldRoomHall)
+        private static Dictionary<Dir4, List<RoomHallIndex>> GetDirectionAdjacents(FloorPlan<TTile> floorPlan, RoomHallIndex oldRoomHall)
         {
             var adjacentsByDir = new Dictionary<Dir4, List<RoomHallIndex>>();
-            IFloorRoomPlan oldPlan = floorPlan.GetRoomHall(oldRoomHall);
+            IFloorRoomPlan<TTile> oldPlan = floorPlan.GetRoomHall(oldRoomHall);
             foreach (Dir4 dir in DirExt.VALID_DIR4)
                 adjacentsByDir[dir] = new List<RoomHallIndex>();
 
             foreach (RoomHallIndex adjacent in oldPlan.Adjacents)
             {
-                IFloorRoomPlan adjPlan = floorPlan.GetRoomHall(adjacent);
+                IFloorRoomPlan<TTile> adjPlan = floorPlan.GetRoomHall(adjacent);
                 Dir4 dir = floorPlan.GetDirAdjacent(oldPlan.RoomGen, adjPlan.RoomGen);
                 adjacentsByDir[dir].Add(adjacent);
             }

@@ -19,10 +19,11 @@ namespace RogueElements
     /// <summary>
     /// Populates the empty grid plan of a map by creating a ring of rooms and halls at the outer cells of the grid.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathCircle<T> : GridPathStartStepGeneric<T>, IGridPathCircle
-        where T : class, IRoomGridGenContext
+    public class GridPathCircle<TGenContext, TTile> : GridPathStartStepGeneric<TGenContext, TTile>, IGridPathCircle
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathCircle()
             : base()
@@ -39,7 +40,7 @@ namespace RogueElements
         /// </summary>
         public RandRange Paths { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             if (floorPlan.GridWidth < 3 || floorPlan.GridHeight < 3)
                 throw new InvalidOperationException("Not enough room to create path.");
@@ -162,7 +163,7 @@ namespace RogueElements
 
                             Loc dest = wanderer + chosenDir.GetLoc();
 
-                            GridRoomPlan existingRoom = floorPlan.GetRoomPlan(dest);
+                            GridRoomPlan<TTile> existingRoom = floorPlan.GetRoomPlan(dest);
                             if (existingRoom == null)
                             {
                                 if (currentLength == pathLength - 1) // only the end room can be a non-hall
@@ -209,7 +210,7 @@ namespace RogueElements
             return string.Format("{0}: Fill:{1}% Paths:{2}", this.GetType().GetFormattedTypeName(), this.CircleRoomRatio, this.Paths);
         }
 
-        private void RollOpenRoom(IRandom rand, GridPlan floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
+        private void RollOpenRoom(IRandom rand, GridPlan<TTile> floorPlan, Loc loc, ref int roomOpen, ref int maxRooms)
         {
             if (RollRatio(rand, ref roomOpen, ref maxRooms))
                 floorPlan.AddRoom(loc, this.GenericRooms.Pick(rand), this.RoomComponents.Clone());

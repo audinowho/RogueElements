@@ -13,17 +13,18 @@ namespace RogueElements
     /// A room is considered the end of a branch when it is connected to only one other room.
     /// ie, a dead end.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class ConnectBranchStep<T> : ConnectStep<T>
-        where T : class, IFloorPlanGenContext
+    public class ConnectBranchStep<TGenContext, TTile> : ConnectStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public ConnectBranchStep()
             : base()
         {
         }
 
-        public ConnectBranchStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        public ConnectBranchStep(IRandPicker<PermissiveRoomGen<TGenContext, TTile>> genericHalls)
             : base(genericHalls)
         {
         }
@@ -33,7 +34,7 @@ namespace RogueElements
         /// </summary>
         public int ConnectPercent { get; set; }
 
-        public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             List<List<RoomHallIndex>> candBranchPoints = GetBranchArms(floorPlan);
 
@@ -42,8 +43,8 @@ namespace RogueElements
             {
                 for (int yy = candBranchPoints[xx].Count - 1; yy >= 0; yy--)
                 {
-                    IFloorRoomPlan plan = floorPlan.GetRoomHall(candBranchPoints[xx][yy]);
-                    if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                    IFloorRoomPlan<TTile> plan = floorPlan.GetRoomHall(candBranchPoints[xx][yy]);
+                    if (!BaseRoomFilter<TTile>.PassesAllFilters(plan, this.Filters))
                         candBranchPoints[xx].RemoveAt(yy);
                 }
             }
@@ -62,7 +63,7 @@ namespace RogueElements
                 if (chosenDestResult is ListPathTraversalNode chosenDest)
                 {
                     // connect
-                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)this.GenericHalls.Pick(rand).Copy();
+                    var hall = (PermissiveRoomGen<TGenContext, TTile>)this.GenericHalls.Pick(rand).Copy();
                     hall.PrepareSize(rand, chosenDest.Connector.Size);
                     hall.SetLoc(chosenDest.Connector.Start);
                     floorPlan.AddHall(hall, this.Components.Clone(), chosenDest.From, chosenDest.To);
@@ -98,12 +99,12 @@ namespace RogueElements
             return string.Format("{0}: {1}%", this.GetType().GetFormattedTypeName(), this.ConnectPercent);
         }
 
-        private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
+        private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan<TTile> floorPlan)
         {
             List<ListPathTraversalNode> endBranches = new List<ListPathTraversalNode>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                FloorRoomPlan roomPlan = floorPlan.GetRoomPlan(ii);
+                FloorRoomPlan<TTile> roomPlan = floorPlan.GetRoomPlan(ii);
                 if (roomPlan.Adjacents.Count == 1)
                     endBranches.Add(new ListPathTraversalNode(new RoomHallIndex(-1, false), new RoomHallIndex(ii, false)));
             }

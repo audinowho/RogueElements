@@ -42,15 +42,15 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            var pathGen = new GridPathSpecific<IGridPathTestContext, TestTile>
             {
-                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[vwidth][],
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext, TestTile>[vwidth][],
             };
             for (int ii = 0; ii < vwidth; ii++)
-                pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[vheight];
-            pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[hwidth][];
+                pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext, TestTile>[vheight];
+            pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext, TestTile>[hwidth][];
             for (int ii = 0; ii < hwidth; ii++)
-                pathGen.SpecificHHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[hheight];
+                pathGen.SpecificHHalls[ii] = new PermissiveRoomGen<IGridPathTestContext, TestTile>[hheight];
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
 
@@ -84,33 +84,33 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            var pathGen = new GridPathSpecific<IGridPathTestContext>
+            var pathGen = new GridPathSpecific<IGridPathTestContext, TestTile>
             {
-                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext>[3][],
+                SpecificVHalls = new PermissiveRoomGen<IGridPathTestContext, TestTile>[3][],
             };
             for (int ii = 0; ii < 3; ii++)
-                pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[2];
-            pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext>[2][];
+                pathGen.SpecificVHalls[ii] = new PermissiveRoomGen<IGridPathTestContext, TestTile>[2];
+            pathGen.SpecificHHalls = new PermissiveRoomGen<IGridPathTestContext, TestTile>[2][];
             for (int ii = 0; ii < 2; ii++)
-                pathGen.SpecificHHalls[ii] = new PermissiveRoomGen<IGridPathTestContext>[3];
+                pathGen.SpecificHHalls[ii] = new PermissiveRoomGen<IGridPathTestContext, TestTile>[3];
 
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(0, 0, 1, 1), new TestGridRoomGen('A')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(0, 0, 1, 1), new TestGridRoomGen('A')));
             pathGen.SpecificHHalls[0][0] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(1, 0, 1, 1), new TestGridRoomGen('B')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(1, 0, 1, 1), new TestGridRoomGen('B')));
             pathGen.SpecificHHalls[1][0] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(2, 0, 1, 1), new TestGridRoomGen('C')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(2, 0, 1, 1), new TestGridRoomGen('C')));
             pathGen.SpecificVHalls[2][0] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(2, 1, 1, 1), new TestGridRoomGen('D')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(2, 1, 1, 1), new TestGridRoomGen('D')));
             pathGen.SpecificVHalls[2][1] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(2, 2, 1, 1), new TestGridRoomGen('E')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(2, 2, 1, 1), new TestGridRoomGen('E')));
             pathGen.SpecificHHalls[1][2] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(1, 2, 1, 1), new TestGridRoomGen('F')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(1, 2, 1, 1), new TestGridRoomGen('F')));
             pathGen.SpecificHHalls[0][2] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(0, 2, 1, 1), new TestGridRoomGen('G')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(0, 2, 1, 1), new TestGridRoomGen('G')));
             pathGen.SpecificVHalls[0][1] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(0, 1, 1, 1), new TestGridRoomGen('H')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(0, 1, 1, 1), new TestGridRoomGen('H')));
             pathGen.SpecificHHalls[0][1] = new TestGridRoomGen();
-            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext>(new Rect(1, 1, 1, 1), new TestGridRoomGen('I')));
+            pathGen.SpecificRooms.Add(new SpecificGridRoomPlan<IGridPathTestContext, TestTile>(new Rect(1, 1, 1, 1), new TestGridRoomGen('I')));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 

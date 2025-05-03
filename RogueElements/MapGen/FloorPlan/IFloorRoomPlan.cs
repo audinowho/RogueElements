@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IFloorRoomPlan : IRoomPlan
+    public interface IFloorRoomPlan<TTile> : IRoomPlan<TTile>
+        where TTile : ITile<TTile>
     {
         List<RoomHallIndex> Adjacents { get; }
     }

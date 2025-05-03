@@ -23,6 +23,7 @@ namespace RogueElements
 
         public abstract BaseHallBrush Clone();
 
-        public abstract void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length);
+        public abstract void DrawHallBrush<TTile>(ITiledGenContext<TTile> map, Rect bounds, LocRay4 ray, int length)
+            where TTile : ITile<TTile>;
     }
 }

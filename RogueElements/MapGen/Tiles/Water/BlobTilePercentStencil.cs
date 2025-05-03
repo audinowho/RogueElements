@@ -13,27 +13,28 @@ namespace RogueElements
     /// Checking the bounds is checking each individual tile.
     /// The amount of tiles in the blob placement that pass the stencil test must be over the specified percent.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class BlobTilePercentStencil<T> : IBlobStencil<T>
-        where T : class, ITiledGenContext
+    public class BlobTilePercentStencil<TGenContext, TTile> : IBlobStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public BlobTilePercentStencil()
         {
-            this.TileStencil = new DefaultTerrainStencil<T>();
+            this.TileStencil = new DefaultTerrainStencil<TGenContext, TTile>();
         }
 
-        public BlobTilePercentStencil(int percent, ITerrainStencil<T> tileStencil)
+        public BlobTilePercentStencil(int percent, ITerrainStencil<TGenContext, TTile> tileStencil)
         {
             this.Percent = percent;
             this.TileStencil = tileStencil;
         }
 
-        public ITerrainStencil<T> TileStencil { get; set; }
+        public ITerrainStencil<TGenContext, TTile> TileStencil { get; set; }
 
         public int Percent { get; set; }
 
-        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
+        public bool Test(TGenContext map, Rect rect, Grid.LocTest blobTest)
         {
             int amount = 0;
             for (int xx = rect.X; xx < rect.End.X; xx++)

@@ -12,17 +12,18 @@ namespace RogueElements
     /// A filter for determining the eligible tiles for an operation.
     /// Tiles in a list of allowed tile types are eligible.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class MatchTerrainStencil<T> : ITerrainStencil<T>
-        where T : class, ITiledGenContext
+    public class MatchTerrainStencil<TGenContext, TTile> : ITerrainStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public MatchTerrainStencil()
         {
-            this.MatchTiles = new List<ITile>();
+            this.MatchTiles = new List<TTile>();
         }
 
-        public MatchTerrainStencil(bool negate, params ITile[] tiles)
+        public MatchTerrainStencil(bool negate, params TTile[] tiles)
             : this()
         {
             this.Negate = negate;
@@ -32,14 +33,14 @@ namespace RogueElements
         /// <summary>
         /// The allowed tile types.
         /// </summary>
-        public List<ITile> MatchTiles { get; private set; }
+        public List<TTile> MatchTiles { get; private set; }
 
         public bool Negate { get; set; }
 
-        public bool Test(T map, Loc loc)
+        public bool Test(TGenContext map, Loc loc)
         {
-            ITile checkTile = map.GetTile(loc);
-            foreach (ITile tile in this.MatchTiles)
+            TTile checkTile = map.GetTile(loc);
+            foreach (TTile tile in this.MatchTiles)
             {
                 if (checkTile.TileEquivalent(tile))
                     return !this.Negate;

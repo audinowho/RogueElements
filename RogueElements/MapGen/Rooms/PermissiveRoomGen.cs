@@ -10,10 +10,11 @@ namespace RogueElements
     /// <summary>
     /// Subclass of RoomGen that can fulfill any combination of paths leading into it.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public abstract class PermissiveRoomGen<T> : RoomGen<T>, IPermissiveRoomGen
-        where T : ITiledGenContext
+    public abstract class PermissiveRoomGen<TGenContext, TTile> : RoomGen<TGenContext, TTile>, IPermissiveRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected PermissiveRoomGen()
         {

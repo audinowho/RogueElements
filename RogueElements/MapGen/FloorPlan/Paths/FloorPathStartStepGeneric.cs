@@ -10,8 +10,9 @@ using RogueElements;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class FloorPathStartStepGeneric<T> : FloorPathStartStep<T>
-        where T : class, IFloorPlanGenContext
+    public abstract class FloorPathStartStepGeneric<TGenContext, TTile> : FloorPathStartStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected FloorPathStartStepGeneric()
         {
@@ -19,7 +20,7 @@ namespace RogueElements
             this.HallComponents = new ComponentCollection();
         }
 
-        protected FloorPathStartStepGeneric(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        protected FloorPathStartStepGeneric(IRandPicker<RoomGen<TGenContext, TTile>> genericRooms, IRandPicker<PermissiveRoomGen<TGenContext, TTile>> genericHalls)
         {
             this.GenericRooms = genericRooms;
             this.GenericHalls = genericHalls;
@@ -30,7 +31,7 @@ namespace RogueElements
         /// <summary>
         /// The room types that can be used for the rooms of the layout.
         /// </summary>
-        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
+        public IRandPicker<RoomGen<TGenContext, TTile>> GenericRooms { get; set; }
 
         /// <summary>
         /// Components that the newly added rooms will be labeled with.
@@ -40,14 +41,14 @@ namespace RogueElements
         /// <summary>
         /// The room types that can be used for the halls of the layout.
         /// </summary>
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+        public IRandPicker<PermissiveRoomGen<TGenContext, TTile>> GenericHalls { get; set; }
 
         /// <summary>
         /// Components that the newly added halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             if (!this.GenericRooms.CanPick || !this.GenericHalls.CanPick)
                 throw new InvalidOperationException("Can't create a path without rooms or halls.");

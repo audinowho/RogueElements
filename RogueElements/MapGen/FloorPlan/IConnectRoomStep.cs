@@ -16,17 +16,18 @@ namespace RogueElements
     /// <summary>
     /// Takes the current floor plan and connects its rooms with other rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class ConnectRoomStep<T> : ConnectStep<T>, IConnectRoomStep
-        where T : class, IFloorPlanGenContext
+    public class ConnectRoomStep<TGenContext, TTile> : ConnectStep<TGenContext, TTile>, IConnectRoomStep
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public ConnectRoomStep()
             : base()
         {
         }
 
-        public ConnectRoomStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        public ConnectRoomStep(IRandPicker<PermissiveRoomGen<TGenContext, TTile>> genericHalls)
             : base(genericHalls)
         {
         }
@@ -40,12 +41,12 @@ namespace RogueElements
         /// </summary>
         public RandRange ConnectFactor { get; set; }
 
-        public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             List<RoomHallIndex> candBranchPoints = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                if (!BaseRoomFilter.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(floorPlan.GetRoomPlan(ii), this.Filters))
                     continue;
                 candBranchPoints.Add(new RoomHallIndex(ii, false));
             }
@@ -63,7 +64,7 @@ namespace RogueElements
                 if (chosenDestResult is ListPathTraversalNode chosenDest)
                 {
                     // connect
-                    PermissiveRoomGen<T> hall = (PermissiveRoomGen<T>)this.GenericHalls.Pick(rand).Copy();
+                    var hall = (PermissiveRoomGen<TGenContext, TTile>)this.GenericHalls.Pick(rand).Copy();
                     hall.PrepareSize(rand, chosenDest.Connector.Size);
                     hall.SetLoc(chosenDest.Connector.Start);
                     floorPlan.AddHall(hall, this.Components.Clone(), chosenDest.From, chosenDest.To);

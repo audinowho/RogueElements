@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public class FloorPlan
+    public class FloorPlan<TTile>
+        where TTile : ITile<TTile>
     {
         public FloorPlan()
         {
@@ -29,9 +30,9 @@ namespace RogueElements
 
         public virtual int HallCount => this.Halls.Count;
 
-        protected List<FloorRoomPlan> Rooms { get; private set; }
+        protected List<FloorRoomPlan<TTile>> Rooms { get; private set; }
 
-        protected List<FloorHallPlan> Halls { get; private set; }
+        protected List<FloorHallPlan<TTile>> Halls { get; private set; }
 
         /// <summary>
         /// Gets the amount of tiles that overlap when adding a new room adjacent to an existing room.
@@ -41,7 +42,7 @@ namespace RogueElements
         /// <param name="candLoc">The proposed location of the new room. Assumes this loc is indeed adjacent to the roomFrom, even in wrapped scenarios.</param>
         /// <param name="expandTo">The direction to expand from the old room to new room.</param>
         /// <returns></returns>
-        public static int GetBorderMatch(IRoomGen roomFrom, IRoomGen room, Loc candLoc, Dir4 expandTo)
+        public static int GetBorderMatch(IRoomGen<TTile> roomFrom, IRoomGen<TTile> room, Loc candLoc, Dir4 expandTo)
         {
             Loc diff = roomFrom.Draw.Start - candLoc; // how far ahead the start of source is to dest
             int offset = diff.GetScalar(expandTo.ToAxis().Orth());
@@ -122,7 +123,7 @@ namespace RogueElements
         /// <param name="roomGenFrom"></param>
         /// <param name="roomGenTo"></param>
         /// <returns></returns>
-        public Dir4 GetDirAdjacent(IRoomGen roomGenFrom, IRoomGen roomGenTo)
+        public Dir4 GetDirAdjacent(IRoomGen<TTile> roomGenFrom, IRoomGen<TTile> roomGenTo)
         {
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
@@ -143,8 +144,8 @@ namespace RogueElements
             this.Start = rect.Start;
             this.Size = rect.Size;
             this.Wrap = wrap;
-            this.Rooms = new List<FloorRoomPlan>();
-            this.Halls = new List<FloorHallPlan>();
+            this.Rooms = new List<FloorRoomPlan<TTile>>();
+            this.Halls = new List<FloorHallPlan<TTile>>();
         }
 
         public void Clear()
@@ -153,27 +154,27 @@ namespace RogueElements
             this.Halls.Clear();
         }
 
-        public virtual FloorRoomPlan GetRoomPlan(int index)
+        public virtual FloorRoomPlan<TTile> GetRoomPlan(int index)
         {
             return this.Rooms[index];
         }
 
-        public virtual IRoomGen GetRoom(int index)
+        public virtual IRoomGen<TTile> GetRoom(int index)
         {
             return this.Rooms[index].RoomGen;
         }
 
-        public virtual FloorHallPlan GetHallPlan(int index)
+        public virtual FloorHallPlan<TTile> GetHallPlan(int index)
         {
             return this.Halls[index];
         }
 
-        public virtual IPermissiveRoomGen GetHall(int index)
+        public virtual IPermissiveRoomGen<TTile> GetHall(int index)
         {
             return this.Halls[index].RoomGen;
         }
 
-        public virtual IFloorRoomPlan GetRoomHall(RoomHallIndex room)
+        public virtual IFloorRoomPlan<TTile> GetRoomHall(RoomHallIndex room)
         {
             if (!room.IsHall)
                 return this.Rooms[room.Index];
@@ -181,7 +182,7 @@ namespace RogueElements
                 return this.Halls[room.Index];
         }
 
-        public void AddRoom(IRoomGen gen, ComponentCollection components, params RoomHallIndex[] attached)
+        public void AddRoom(IRoomGen<TTile> gen, ComponentCollection components, params RoomHallIndex[] attached)
         {
             // check against colliding on other rooms (and not halls)
             foreach (var room in this.Rooms)
@@ -202,20 +203,20 @@ namespace RogueElements
 
             // we expect that the room has already been given a size
             // and that its fulfillables match up with its adjacent's fulfillables.
-            var plan = new FloorRoomPlan(gen, components);
+            var plan = new FloorRoomPlan<TTile>(gen, components);
 
             // attach everything
             plan.Adjacents.AddRange(attached);
             foreach (RoomHallIndex fromRoom in attached)
             {
-                IFloorRoomPlan fromPlan = this.GetRoomHall(fromRoom);
+                IFloorRoomPlan<TTile> fromPlan = this.GetRoomHall(fromRoom);
                 fromPlan.Adjacents.Add(new RoomHallIndex(this.Rooms.Count, false));
             }
 
             this.Rooms.Add(plan);
         }
 
-        public void AddHall(IPermissiveRoomGen gen, ComponentCollection components, params RoomHallIndex[] attached)
+        public void AddHall(IPermissiveRoomGen<TTile> gen, ComponentCollection components, params RoomHallIndex[] attached)
         {
             // we expect that the hall has already been given a size...
             // check against colliding on other rooms (and not halls)
@@ -228,13 +229,13 @@ namespace RogueElements
             // check against rooms that go out of bounds
             if (!this.Wrap && !this.DrawRect.Contains(gen.Draw))
                 throw new InvalidOperationException("Tried to add out of range!");
-            var plan = new FloorHallPlan(gen, components);
+            var plan = new FloorHallPlan<TTile>(gen, components);
 
             // attach everything
             plan.Adjacents.AddRange(attached);
             foreach (RoomHallIndex fromRoom in attached)
             {
-                IFloorRoomPlan fromPlan = this.GetRoomHall(fromRoom);
+                IFloorRoomPlan<TTile> fromPlan = this.GetRoomHall(fromRoom);
                 fromPlan.Adjacents.Add(new RoomHallIndex(this.Halls.Count, true));
             }
 
@@ -381,7 +382,7 @@ namespace RogueElements
                 return adjacents;
             }
 
-            IFloorRoomPlan plan = this.GetRoomHall(room);
+            IFloorRoomPlan<TTile> plan = this.GetRoomHall(room);
             if (plan.Adjacents.Count > 0)
                 Graph.TraverseBreadthFirst(plan.Adjacents[0], NodeAct, GetChokeAdjacents);
 
@@ -418,7 +419,7 @@ namespace RogueElements
                 this.Halls[ii].RoomGen.SetLoc(this.Halls[ii].RoomGen.Draw.Start + anchorDiff - diff);
         }
 
-        public void DrawOnMap(ITiledGenContext map)
+        public void DrawOnMap(ITiledGenContext<TTile> map)
         {
             GenContextDebug.StepIn("Main Rooms");
             try
@@ -426,12 +427,12 @@ namespace RogueElements
                 for (int ii = 0; ii < this.Rooms.Count; ii++)
                 {
                     // take in the broad fulfillables from adjacent rooms that have not yet drawn
-                    IFloorRoomPlan plan = this.Rooms[ii];
+                    IFloorRoomPlan<TTile> plan = this.Rooms[ii];
                     foreach (RoomHallIndex adj in plan.Adjacents)
                     {
                         if (adj.IsHall || adj.Index > ii)
                         {
-                            IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            IRoomGen<TTile> adjacentGen = this.GetRoomHall(adj).RoomGen;
 
                             Dir4 adjDir = this.GetDirAdjacent(plan.RoomGen, adjacentGen);
                             Rect wrapRect = this.GetAdjacentRect(plan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
@@ -457,12 +458,12 @@ namespace RogueElements
                 for (int ii = 0; ii < this.Halls.Count; ii++)
                 {
                     // take in the broad fulfillables from adjacent rooms that have not yet drawn
-                    IFloorRoomPlan plan = this.Halls[ii];
+                    IFloorRoomPlan<TTile> plan = this.Halls[ii];
                     foreach (RoomHallIndex adj in plan.Adjacents)
                     {
                         if (adj.IsHall && adj.Index > ii)
                         {
-                            IRoomGen adjacentGen = this.GetRoomHall(adj).RoomGen;
+                            IRoomGen<TTile> adjacentGen = this.GetRoomHall(adj).RoomGen;
 
                             Dir4 adjDir = this.GetDirAdjacent(plan.RoomGen, adjacentGen);
                             Rect wrapRect = this.GetAdjacentRect(plan.RoomGen.Draw, adjacentGen.Draw, adjDir).Value;
@@ -489,8 +490,8 @@ namespace RogueElements
         /// <param name="from"></param>
         public void TransferBorderToAdjacents(RoomHallIndex from)
         {
-            IFloorRoomPlan basePlan = this.GetRoomHall(from);
-            IRoomGen roomGen = basePlan.RoomGen;
+            IFloorRoomPlan<TTile> basePlan = this.GetRoomHall(from);
+            IRoomGen<TTile> roomGen = basePlan.RoomGen;
             List<RoomHallIndex> adjacents = basePlan.Adjacents;
             foreach (RoomHallIndex adjacent in adjacents)
             {
@@ -498,7 +499,7 @@ namespace RogueElements
                 if ((!from.IsHall && adjacent.IsHall) ||
                     (from.IsHall == adjacent.IsHall && from.Index < adjacent.Index))
                 {
-                    IRoomGen adjacentGen = this.GetRoomHall(adjacent).RoomGen;
+                    IRoomGen<TTile> adjacentGen = this.GetRoomHall(adjacent).RoomGen;
 
                     Dir4 adjDir = this.GetDirAdjacent(adjacentGen, roomGen);
                     Rect wrapRect = this.GetAdjacentRect(adjacentGen.Draw, basePlan.RoomGen.Draw, adjDir).Value;
@@ -541,14 +542,14 @@ namespace RogueElements
             List<RoomHallIndex> results = new List<RoomHallIndex>();
             for (int ii = 0; ii < this.Rooms.Count; ii++)
             {
-                FloorRoomPlan room = this.Rooms[ii];
+                FloorRoomPlan<TTile> room = this.Rooms[ii];
                 if (this.Collides(room.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, false));
             }
 
             for (int ii = 0; ii < this.Halls.Count; ii++)
             {
-                FloorHallPlan hall = this.Halls[ii];
+                FloorHallPlan<TTile> hall = this.Halls[ii];
                 if (this.Collides(hall.RoomGen.Draw, rect))
                     results.Add(new RoomHallIndex(ii, true));
             }
@@ -556,12 +557,12 @@ namespace RogueElements
             return results;
         }
 
-        public IEnumerable<IRoomPlan> GetAllPlans()
+        public IEnumerable<IRoomPlan<TTile>> GetAllPlans()
         {
-            foreach (FloorRoomPlan plan in this.Rooms)
+            foreach (FloorRoomPlan<TTile> plan in this.Rooms)
                 yield return plan;
 
-            foreach (FloorHallPlan plan in this.Halls)
+            foreach (FloorHallPlan<TTile> plan in this.Halls)
                 yield return plan;
         }
 

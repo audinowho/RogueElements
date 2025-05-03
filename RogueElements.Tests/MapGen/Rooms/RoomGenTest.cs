@@ -24,7 +24,7 @@ namespace RogueElements.Tests
         public void PrepareSize(int x, int y, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
 
             // check size
             // opened border and requestable borders are the correct dimensions
@@ -54,7 +54,7 @@ namespace RogueElements.Tests
         public void PrepareSizeIncompleteFulfillableException(bool openDown, bool openLeft, bool openUp, bool openRight)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenException<ITiledGenContext>
+            var roomGen = new TestRoomGenException<ITiledGenContext<TestTile>>
             {
                 OpenDown = openDown,
                 OpenLeft = openLeft,
@@ -83,8 +83,8 @@ namespace RogueElements.Tests
         public void ReceiveOpenedBorder(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2, Dir4 dir, int expectedStart, int expectedEnd, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGenTo = new TestRoomGen<ITiledGenContext>();
-            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
+            var roomGenTo = new TestRoomGen<ITiledGenContext<TestTile>>();
+            var roomGenFrom = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGenTo.PrepareSize(testRand.Object, new Loc(w1, h1));
             roomGenTo.SetLoc(new Loc(x1, y1));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(w2, h2));
@@ -112,8 +112,8 @@ namespace RogueElements.Tests
             // test with offset, proving previous openedborders are properly transferred
             // test error case, in which no bordertofulfill is opened
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGenTo = new TestRoomGen<ITiledGenContext>();
-            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
+            var roomGenTo = new TestRoomGen<ITiledGenContext<TestTile>>();
+            var roomGenFrom = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGenTo.PrepareSize(testRand.Object, new Loc(3, 2));
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
@@ -149,8 +149,8 @@ namespace RogueElements.Tests
             // test with offset, proving previous openedborders are properly transferred
             // test error case, in which no bordertofulfill is opened
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGenTo = new TestRoomGen<ITiledGenContext>();
-            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
+            var roomGenTo = new TestRoomGen<ITiledGenContext<TestTile>>();
+            var roomGenFrom = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGenTo.PrepareSize(testRand.Object, new Loc(3, 2));
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenTo.PublicFulfillableBorder[Dir4.Down][0] = false;
@@ -186,8 +186,8 @@ namespace RogueElements.Tests
         {
             // test error case, in which no borderfill is opened by the openedborder but the tiles already exist
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGenTo = new TestRoomGen<ITiledGenContext>();
-            var roomGenFrom = new TestRoomGen<ITiledGenContext>();
+            var roomGenTo = new TestRoomGen<ITiledGenContext<TestTile>>();
+            var roomGenFrom = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGenTo.PrepareSize(testRand.Object, new Loc(3, 2));
             roomGenTo.SetLoc(new Loc(2, 0));
             roomGenFrom.PrepareSize(testRand.Object, new Loc(4, 2));
@@ -223,7 +223,7 @@ namespace RogueElements.Tests
         public void ReceiveBorderRange(int rangeStart, int rangeEnd, Dir4 dir, int expectedStart, int expectedEnd, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(testRand.Object, new Loc(5, 7));
             roomGen.SetLoc(new Loc(1, 2));
 
@@ -246,7 +246,7 @@ namespace RogueElements.Tests
         public void ReceiveConstrainedBorderRange(int rangeStart, int rangeEnd, int expectedStart, int expectedEnd, bool start, bool mid, bool end, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(testRand.Object, new Loc(5, 2));
             roomGen.SetLoc(new Loc(3, 2));
             roomGen.PublicFulfillableBorder[Dir4.Up][0] = false;
@@ -279,7 +279,7 @@ namespace RogueElements.Tests
         public void ReceiveBorderRangeFulfilledTile(int rangeStart, int rangeEnd, Dir4 dir, int expectedStart, int expectedEnd, bool exception)
         {
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenException<ITiledGenContext>
+            var roomGen = new TestRoomGenException<ITiledGenContext<TestTile>>
             {
                 OpenDown = true,
                 OpenLeft = true,
@@ -306,7 +306,7 @@ namespace RogueElements.Tests
         {
             // test with offset, proving previous openedborders are properly transferred
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(testRand.Object, new Loc(5, 7));
             roomGen.SetLoc(new Loc(2, 3));
 
@@ -324,7 +324,7 @@ namespace RogueElements.Tests
         [Test]
         public void SetRoomBordersClear()
         {
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -352,7 +352,7 @@ namespace RogueElements.Tests
         [Test]
         public void SetRoomBordersSemiBlocked()
         {
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -380,7 +380,7 @@ namespace RogueElements.Tests
         [Test]
         public void SetRoomBordersSubFulfillable()
         {
-            var roomGen = new TestRoomGenException<ITiledGenContext>
+            var roomGen = new TestRoomGenException<ITiledGenContext<TestTile>>
             {
                 OpenDown = true,
                 OpenLeft = true,
@@ -422,8 +422,8 @@ namespace RogueElements.Tests
         {
             // one or several sidereqs met with only one tile (do nothing)
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -452,7 +452,7 @@ namespace RogueElements.Tests
 
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
-            roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
+            roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
         }
 
         [Test]
@@ -460,8 +460,8 @@ namespace RogueElements.Tests
         {
             // two intersecting sidereqs met with only one tile (do nothing)
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -483,7 +483,7 @@ namespace RogueElements.Tests
             roomGen.Object.AskBorderRange(new IntRange(2, 5), Dir4.Down);
             roomGen.Object.FulfillRoomBorders(testContext, false);
 
-            roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
+            roomGen.Verify(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()), Times.Never());
         }
 
         [Test]
@@ -497,8 +497,8 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
             testRand.Setup(p => p.Next(4)).Returns(fulfillRoll);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
 
             string[] inGrid =
             {
@@ -534,8 +534,8 @@ namespace RogueElements.Tests
             seq = seq.Returns(1);
             seq = seq.Returns(0);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -567,8 +567,8 @@ namespace RogueElements.Tests
         {
             // one sidereq not met, fulfilled completely, only fulfillable borders
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -610,8 +610,8 @@ namespace RogueElements.Tests
             seq = testRand.SetupSequence(p => p.Next(1));
             seq = seq.Returns(0);
             seq = seq.Returns(0);
-            Mock<TestRoomGen<ITiledGenContext>> roomGen = new Mock<TestRoomGen<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext>(), It.IsAny<Dir4>(), It.IsAny<int>()));
+            var roomGen = new Mock<TestRoomGen<ITiledGenContext<TestTile>>> { CallBase = true };
+            roomGen.Setup(p => p.DigAtBorder(It.IsAny<ITiledGenContext<TestTile>>(), It.IsAny<Dir4>(), It.IsAny<int>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -648,7 +648,7 @@ namespace RogueElements.Tests
         [TestCase(Dir4.Left, 5, 0, true)]
         public void DigAtBorder(Dir4 dir, int scalar, int resultGrid, bool exception)
         {
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -727,7 +727,7 @@ namespace RogueElements.Tests
             // one sidereq, 3 tiles
             var testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             var sideReqs = new List<IntRange> { new IntRange(5, 8) };
             var compare = new List<HashSet<int>>();
@@ -746,7 +746,7 @@ namespace RogueElements.Tests
             // one sidereq, 3 tiles
             var testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, false, false, true, true };
             var sideReqs = new List<IntRange> { new IntRange(5, 7) };
             var compare = new List<HashSet<int>>();
@@ -765,7 +765,7 @@ namespace RogueElements.Tests
             // one sidereq, 3 tiles
             var testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true };
             var sideReqs = new List<IntRange> { new IntRange(5, 6) };
             var compare = new List<HashSet<int>>();
@@ -784,7 +784,7 @@ namespace RogueElements.Tests
             // one sidereq, 3 tiles
             var testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, false, false, true };
             var sideReqs = new List<IntRange> { new IntRange(5, 8) };
             var compare = new List<HashSet<int>>();
@@ -803,7 +803,7 @@ namespace RogueElements.Tests
             // one sidereq, 3 tiles, one allowed
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, false, true, false, true };
             List<IntRange> sideReqs = new List<IntRange> { new IntRange(5, 8) };
             List<HashSet<int>> compare = new List<HashSet<int>>();
@@ -823,7 +823,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(1);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -852,7 +852,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(roll1);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -879,7 +879,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(roll1);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -904,7 +904,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(0);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, false, false, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -935,7 +935,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(3)).Returns(roll1);
             testRand.Setup(p => p.Next(2)).Returns(roll2);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -968,7 +968,7 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(3)).Returns(roll1);
             testRand.Setup(p => p.Next(2)).Returns(roll2);
             testRand.Setup(p => p.Next(1)).Returns(0);
-            var roomGen = new TestRoomGen<ITiledGenContext>();
+            var roomGen = new TestRoomGen<ITiledGenContext<TestTile>>();
             bool[] permittedRange = { true, true, true, true, true };
             List<IntRange> sideReqs = new List<IntRange>
             {
@@ -991,7 +991,7 @@ namespace RogueElements.Tests
         }
 
         public class TestRoomGenException<T> : TestRoomGen<T>
-            where T : ITiledGenContext
+            where T : ITiledGenContext<TestTile>
         {
             public bool OpenDown { get; set; }
 
@@ -1010,8 +1010,8 @@ namespace RogueElements.Tests
             }
         }
 
-        public class TestRoomGen<T> : RoomGen<T>
-            where T : ITiledGenContext
+        public class TestRoomGen<T> : RoomGen<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public new Dictionary<Dir4, List<IntRange>> RoomSideReqs => base.RoomSideReqs;
 
@@ -1021,7 +1021,7 @@ namespace RogueElements.Tests
 
             public Dictionary<Dir4, bool[]> PublicBorderToFulfill => this.BorderToFulfill;
 
-            public override RoomGen<T> Copy() => new TestRoomGen<T>();
+            public override RoomGen<T, TestTile> Copy() => new TestRoomGen<T>();
 
             public override Loc ProposeSize(IRandom rand) => Loc.Zero;
 

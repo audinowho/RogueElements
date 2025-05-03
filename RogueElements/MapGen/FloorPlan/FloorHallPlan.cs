@@ -8,18 +8,19 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public class FloorHallPlan : IFloorRoomPlan
+    public class FloorHallPlan<TTile> : IFloorRoomPlan<TTile>
+        where TTile : ITile<TTile>
     {
-        public FloorHallPlan(IPermissiveRoomGen roomGen, ComponentCollection components)
+        public FloorHallPlan(IPermissiveRoomGen<TTile> roomGen, ComponentCollection components)
         {
             this.RoomGen = roomGen;
             this.Components = components;
             this.Adjacents = new List<RoomHallIndex>();
         }
 
-        public IPermissiveRoomGen RoomGen { get; set; }
+        public IPermissiveRoomGen<TTile> RoomGen { get; set; }
 
-        IRoomGen IRoomPlan.RoomGen => this.RoomGen;
+        IRoomGen<TTile> IRoomPlan<TTile>.RoomGen => this.RoomGen;
 
         public ComponentCollection Components { get; }
 

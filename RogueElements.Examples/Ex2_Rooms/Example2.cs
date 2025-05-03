@@ -18,25 +18,25 @@ namespace RogueElements.Examples.Ex2_Rooms
             var layout = new MapGen<MapGenContext>();
 
             // Initialize a 54x40 floorplan with which to populate with rectangular floor and halls.
-            InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>(54, 40);
+            var startGen = new InitFloorPlanStep<MapGenContext, Tile>(54, 40);
             layout.GenSteps.Add(-2, startGen);
 
             // Create some room types to place
-            var genericRooms = new SpawnList<RoomGen<MapGenContext>>
+            var genericRooms = new SpawnList<RoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenSquare<MapGenContext>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
-                { new RoomGenRound<MapGenContext>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
+                { new RoomGenSquare<MapGenContext, Tile>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
+                { new RoomGenRound<MapGenContext, Tile>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
             };
 
             // Create some hall types to place
-            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>
+            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)), 10 },
-                { new RoomGenSquare<MapGenContext>(new RandRange(1), new RandRange(1)), 20 },
+                { new RoomGenAngledHall<MapGenContext, Tile>(0, new RandRange(3, 7), new RandRange(3, 7)), 10 },
+                { new RoomGenSquare<MapGenContext, Tile>(new RandRange(1), new RandRange(1)), 20 },
             };
 
             // Feed the room and hall types to a path that is composed of a branching tree
-            FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>(genericRooms, genericHalls)
+            var path = new FloorPathBranch<MapGenContext, Tile>(genericRooms, genericHalls)
             {
                 HallPercent = 50,
                 FillPercent = new RandRange(45),
@@ -46,7 +46,7 @@ namespace RogueElements.Examples.Ex2_Rooms
             layout.GenSteps.Add(-1, path);
 
             // Draw the rooms onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext, Tile>(1));
 
             // Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());

@@ -9,8 +9,9 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class GridPathStartStep<T> : GridPlanStep<T>
-        where T : class, IRoomGridGenContext
+    public abstract class GridPathStartStep<TGenContext, TTile> : GridPlanStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public static bool RollRatio(IRandom rand, ref int ratio, ref int max)
         {
@@ -25,7 +26,7 @@ namespace RogueElements
             return roll;
         }
 
-        public static void SafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, IRoomGen roomGen, ComponentCollection roomComponents, ComponentCollection hallComponents, bool preferHall = false)
+        public static void SafeAddHall(LocRay4 locRay, GridPlan<TTile> floorPlan, IPermissiveRoomGen<TTile> hallGen, IRoomGen<TTile> roomGen, ComponentCollection roomComponents, ComponentCollection hallComponents, bool preferHall = false)
         {
             floorPlan.SetHall(locRay, hallGen, hallComponents.Clone());
             ComponentCollection collection = preferHall ? hallComponents : roomComponents;
@@ -36,15 +37,15 @@ namespace RogueElements
                 floorPlan.AddRoom(dest, roomGen, collection.Clone(), preferHall);
         }
 
-        public virtual void CreateErrorPath(IRandom rand, GridPlan floorPlan)
+        public virtual void CreateErrorPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             floorPlan.Clear();
             floorPlan.AddRoom(new Loc(0, 0), this.GetDefaultGen(), new ComponentCollection());
         }
 
-        public virtual RoomGen<T> GetDefaultGen()
+        public virtual RoomGen<TGenContext, TTile> GetDefaultGen()
         {
-            return new RoomGenDefault<T>();
+            return new RoomGenDefault<TGenContext, TTile>();
         }
     }
 }

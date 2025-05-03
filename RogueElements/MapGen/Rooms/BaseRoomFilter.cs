@@ -10,11 +10,12 @@ using System.Text;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class BaseRoomFilter
+    public abstract class BaseRoomFilter<TTile>
+        where TTile : ITile<TTile>
     {
-        public static bool PassesAllFilters(IRoomPlan plan, List<BaseRoomFilter> filters)
+        public static bool PassesAllFilters(IRoomPlan<TTile> plan, List<BaseRoomFilter<TTile>> filters)
         {
-            foreach (BaseRoomFilter filter in filters)
+            foreach (BaseRoomFilter<TTile> filter in filters)
             {
                 if (!filter.PassesFilter(plan))
                     return false;
@@ -23,6 +24,6 @@ namespace RogueElements
             return true;
         }
 
-        public abstract bool PassesFilter(IRoomPlan plan);
+        public abstract bool PassesFilter(IRoomPlan<TTile> plan);
     }
 }

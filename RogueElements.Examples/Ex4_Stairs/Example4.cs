@@ -17,7 +17,7 @@ namespace RogueElements.Examples.Ex4_Stairs
             var layout = new MapGen<MapGenContext>();
 
             // Initialize a 3x2 grid of 10x10 cells.
-            var startGen = new InitGridPlanStep<MapGenContext>(1)
+            var startGen = new InitGridPlanStep<MapGenContext, Tile>(1)
             {
                 CellX = 3,
                 CellY = 2,
@@ -27,35 +27,35 @@ namespace RogueElements.Examples.Ex4_Stairs
             layout.GenSteps.Add(-4, startGen);
 
             // Create a path that is composed of a ring around the edge
-            var path = new GridPathBranch<MapGenContext>
+            var path = new GridPathBranch<MapGenContext, Tile>
             {
                 RoomRatio = new RandRange(70),
                 BranchRatio = new RandRange(0, 50),
             };
 
-            var genericRooms = new SpawnList<RoomGen<MapGenContext>>
+            var genericRooms = new SpawnList<RoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenSquare<MapGenContext>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
-                { new RoomGenRound<MapGenContext>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
+                { new RoomGenSquare<MapGenContext, Tile>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
+                { new RoomGenRound<MapGenContext, Tile>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
             };
             path.GenericRooms = genericRooms;
 
-            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>
+            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenAngledHall<MapGenContext>(50), 10 },
+                { new RoomGenAngledHall<MapGenContext, Tile>(50), 10 },
             };
             path.GenericHalls = genericHalls;
 
             layout.GenSteps.Add(-4, path);
 
             // Output the rooms into a FloorPlan
-            layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext>());
+            layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext, Tile>());
 
             // Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext, Tile>(1));
 
             // Add the stairs up and down
-            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, Tile, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
             // Run the generator and print
             MapGenContext context = layout.GenMap(MathUtils.Rand.NextUInt64());

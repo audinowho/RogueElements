@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IRoomGenCross : IRoomGen
+    public interface IRoomGenCross<TTile> : IRoomGen<TTile>
+        where TTile : ITile<TTile>
     {
         RandRange MajorWidth { get; set; }
 
@@ -22,10 +23,11 @@ namespace RogueElements
     /// <summary>
     /// Generates a room composed of two rectangles, one vertical and one horizontal.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenCross<T> : RoomGen<T>, IRoomGenCross
-        where T : ITiledGenContext
+    public class RoomGenCross<TGenContext, TTile> : RoomGen<TGenContext, TTile>, IRoomGenCross<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         [NonSerialized]
         private int chosenMinorWidth;
@@ -51,7 +53,7 @@ namespace RogueElements
             this.MinorHeight = minorHeight;
         }
 
-        protected RoomGenCross(RoomGenCross<T> other)
+        protected RoomGenCross(RoomGenCross<TGenContext, TTile> other)
         {
             this.MajorWidth = other.MajorWidth;
             this.MajorHeight = other.MajorHeight;
@@ -87,14 +89,14 @@ namespace RogueElements
 
         protected int ChosenOffsetY { get => this.chosenOffsetY; set => this.chosenOffsetY = value; }
 
-        public override RoomGen<T> Copy() => new RoomGenCross<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenCross<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.MajorWidth.Pick(rand), this.MajorHeight.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             Loc size1 = new Loc(this.Draw.Width, this.ChosenMinorHeight);
             Loc size2 = new Loc(this.ChosenMinorWidth, this.Draw.Height);

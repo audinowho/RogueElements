@@ -13,16 +13,17 @@ namespace RogueElements
     /// A room is considered the end of a branch when it is connected to only one other room.
     /// ie, a dead end.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class ConnectGridBranchStep<T> : GridPlanStep<T>
-        where T : class, IRoomGridGenContext
+    public class ConnectGridBranchStep<TGenContext, TTile> : GridPlanStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public ConnectGridBranchStep()
         {
-            this.GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
+            this.GenericHalls = new SpawnList<PermissiveRoomGen<TGenContext, TTile>>();
             this.HallComponents = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         public ConnectGridBranchStep(int connectPercent)
@@ -39,26 +40,26 @@ namespace RogueElements
         /// <summary>
         /// Determines which rooms are eligible to be connected.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// The room types that can be used as the hall connecting the two base rooms.
         /// </summary>
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+        public IRandPicker<PermissiveRoomGen<TGenContext, TTile>> GenericHalls { get; set; }
 
         /// <summary>
         /// Components that the newly added halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             List<LocRay4> endBranches = new List<LocRay4>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                GridRoomPlan roomPlan = floorPlan.GetRoomPlan(ii);
+                GridRoomPlan<TTile> roomPlan = floorPlan.GetRoomPlan(ii);
 
-                if (!BaseRoomFilter.PassesAllFilters(roomPlan, this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(roomPlan, this.Filters))
                     continue;
 
                 if (roomPlan.Bounds.Size == new Loc(1))
@@ -92,8 +93,8 @@ namespace RogueElements
                                 int roomIndex = floorPlan.GetRoomIndex(loc);
                                 if (roomIndex > -1)
                                 {
-                                    GridRoomPlan roomPlan = floorPlan.GetRoomPlan(roomIndex);
-                                    if (BaseRoomFilter.PassesAllFilters(roomPlan, this.Filters))
+                                    GridRoomPlan<TTile> roomPlan = floorPlan.GetRoomPlan(roomIndex);
+                                    if (BaseRoomFilter<TTile>.PassesAllFilters(roomPlan, this.Filters))
                                         candBonds.Add(new LocRay4(chosenBranch.Loc, dir));
                                 }
                             }

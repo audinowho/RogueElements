@@ -12,17 +12,18 @@ namespace RogueElements
     /// A filter for determining the eligible tiles for an operation.
     /// Eligible if bordering a certain tile type.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class BorderTerrainStencil<T> : ITerrainStencil<T>
-        where T : class, ITiledGenContext
+    public class BorderTerrainStencil<TGenContext, TTile> : ITerrainStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public BorderTerrainStencil()
         {
-            this.MatchTiles = new List<ITile>();
+            this.MatchTiles = new List<TTile>();
         }
 
-        public BorderTerrainStencil(bool negate, params ITile[] tiles)
+        public BorderTerrainStencil(bool negate, params TTile[] tiles)
             : this()
         {
             this.Negate = negate;
@@ -32,17 +33,17 @@ namespace RogueElements
         /// <summary>
         /// The allowed tile types.
         /// </summary>
-        public List<ITile> MatchTiles { get; private set; }
+        public List<TTile> MatchTiles { get; private set; }
 
         public bool Negate { get; set; }
 
-        public bool Test(T map, Loc loc)
+        public bool Test(TGenContext map, Loc loc)
         {
             foreach (Dir8 dir in DirExt.VALID_DIR8)
             {
                 Loc moveLoc = loc + dir.GetLoc();
-                ITile checkTile = map.GetTile(moveLoc);
-                foreach (ITile tile in this.MatchTiles)
+                TTile checkTile = map.GetTile(moveLoc);
+                foreach (TTile tile in this.MatchTiles)
                 {
                     if (checkTile.TileEquivalent(tile))
                         return !this.Negate;

@@ -10,32 +10,33 @@ namespace RogueElements
     /// <summary>
     /// Merges blobs of terrain that touch diagonally.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class DropDiagonalBlockStep<T> : GenStep<T>
-        where T : class, ITiledGenContext
+    public class DropDiagonalBlockStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public DropDiagonalBlockStep()
         {
         }
 
-        public DropDiagonalBlockStep(ITile terrain)
+        public DropDiagonalBlockStep(TTile terrain)
         {
             this.Terrain = terrain;
         }
 
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             for (int xx = 0; xx < map.Width - 1; xx++)
             {
                 for (int yy = 0; yy < map.Height - 1; yy++)
                 {
-                    ITile a1 = map.GetTile(new Loc(xx, yy));
-                    ITile b1 = map.GetTile(new Loc(xx + 1, yy));
-                    ITile a2 = map.GetTile(new Loc(xx, yy + 1));
-                    ITile b2 = map.GetTile(new Loc(xx + 1, yy + 1));
+                    TTile a1 = map.GetTile(new Loc(xx, yy));
+                    TTile b1 = map.GetTile(new Loc(xx + 1, yy));
+                    TTile a2 = map.GetTile(new Loc(xx, yy + 1));
+                    TTile b2 = map.GetTile(new Loc(xx + 1, yy + 1));
 
                     int dropType = map.Rand.Next(3);
                     if (this.Terrain.TileEquivalent(a1) && map.WallTerrain.TileEquivalent(b1) && map.WallTerrain.TileEquivalent(a2) && this.Terrain.TileEquivalent(b2))

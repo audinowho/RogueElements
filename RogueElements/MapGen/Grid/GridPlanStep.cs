@@ -10,16 +10,17 @@ using RogueElements;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class GridPlanStep<T> : GenStep<T>
-        where T : class, IRoomGridGenContext
+    public abstract class GridPlanStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected GridPlanStep()
         {
         }
 
-        public abstract void ApplyToPath(IRandom rand, GridPlan floorPlan);
+        public abstract void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan);
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             // actual map creation step
             this.ApplyToPath(map.Rand, map.GridPlan);

@@ -83,8 +83,8 @@ namespace RogueElements.Tests
             var gen = new TestFloorPlanGen('C');
             gen.PrepareDraw(new Rect(5, 3, 2, 2));
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new SetSpecialRoomTestStep(mockRooms.Object, mockHalls.Object);
             pathGen.PlaceRoom(testRand.Object, floorPlan, gen, new RoomHallIndex(0, false));
@@ -115,8 +115,8 @@ namespace RogueElements.Tests
             var gen = new TestFloorPlanGen('D');
             gen.PrepareDraw(new Rect(3, 3, 2, 2));
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new SetSpecialRoomTestStep(mockRooms.Object, mockHalls.Object);
             pathGen.PlaceRoom(testRand.Object, floorPlan, gen, new RoomHallIndex(0, false));
@@ -147,9 +147,9 @@ namespace RogueElements.Tests
             var gen = new TestFloorPlanGen('D');
             gen.PrepareDraw(new Rect(5, 3, 2, 2));
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
-            Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('a'));
 
             var pathGen = new SetSpecialRoomTestStep(mockRooms.Object, mockHalls.Object);
@@ -199,10 +199,10 @@ namespace RogueElements.Tests
             var gen = new TestFloorPlanGen('F');
             gen.PrepareDraw(new Rect(5, 5, 2, 2));
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
-            Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext, TestTile>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('a'));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('b'));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('c'));
@@ -235,9 +235,9 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 new Tuple<char, char>[] { Tuple.Create('A', 'B'), Tuple.Create('A', 'C'), Tuple.Create('A', 'D'), Tuple.Create('A', 'E') });
 
-            IRoomGen oldGen = floorPlan.GetRoom(0);
+            IRoomGen<TestTile> oldGen = floorPlan.GetRoom(0);
 
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            Mock<IRoomGen<TestTile>> mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(x, y, 2, 2));
 
             var indexLookup = new Dictionary<Dir4, int> { { Dir4.Down, 1 }, { Dir4.Left, 2 }, { Dir4.Up, 3 }, { Dir4.Right, 4 } };
@@ -258,9 +258,9 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 new Tuple<char, char>[] { Tuple.Create('A', 'B') });
 
-            IRoomGen oldGen = floorPlan.GetRoom(0);
+            IRoomGen<TestTile> oldGen = floorPlan.GetRoom(0);
 
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(5, 3, 2, 2));
 
             List<RoomHallIndex> adjacentsInDir = new List<RoomHallIndex> { new RoomHallIndex(1, false) };
@@ -280,9 +280,9 @@ namespace RogueElements.Tests
                 Array.Empty<Rect>(),
                 new Tuple<char, char>[] { Tuple.Create('A', 'B'), Tuple.Create('A', 'C') });
 
-            IRoomGen oldGen = floorPlan.GetRoom(0);
+            IRoomGen<TestTile> oldGen = floorPlan.GetRoom(0);
 
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(5, 3, 2, 2));
 
             var adjacentsInDir = new List<RoomHallIndex>
@@ -300,17 +300,17 @@ namespace RogueElements.Tests
         public void GetPossiblePlacements()
         {
             // verify all possible positions are checked
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 5, 6));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetAllBorderMatch(adjacentsByDir, mockTo.Object, mockFrom.Object, It.IsAny<Loc>())).Returns(1);
@@ -333,17 +333,17 @@ namespace RogueElements.Tests
         public void GetPossiblePlacementsNarrow()
         {
             // only vertical sliding allowed
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 4, 4));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 4, 2));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetAllBorderMatch(adjacentsByDir, mockTo.Object, mockFrom.Object, It.IsAny<Loc>())).Returns(1);
@@ -359,17 +359,17 @@ namespace RogueElements.Tests
         public void GetPossiblePlacementsSingle()
         {
             // no sliding allowed
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 4, 4));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 4, 4));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetAllBorderMatch(adjacentsByDir, mockTo.Object, mockFrom.Object, It.IsAny<Loc>())).Returns(1);
@@ -384,17 +384,17 @@ namespace RogueElements.Tests
         {
             // can't place anywhere, so resort to the middle
             // verify all possible positions are checked
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 6, 6));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetAllBorderMatch(adjacentsByDir, mockTo.Object, mockFrom.Object, It.IsAny<Loc>())).Returns(0);
@@ -416,17 +416,17 @@ namespace RogueElements.Tests
         public void GetPossiblePlacementsNoneNoRoom(int w, int h)
         {
             // can't place anywhere, can't resort to middle
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 4, 4));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, w, h));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetAllBorderMatch(adjacentsByDir, mockTo.Object, mockFrom.Object, It.IsAny<Loc>())).Returns(0);
@@ -465,17 +465,17 @@ namespace RogueElements.Tests
         public void GetAllBorderMatch(int x, int y, int w, int h, bool down, bool left, bool up, bool right)
         {
             // map consists of one adjacent each side
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 4, 4));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, w, h));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetSideBorderMatch(mockTo.Object, adjacentsByDir, It.IsAny<Loc>(), It.IsAny<Dir4>(), It.IsAny<int>())).Returns(1);
@@ -492,17 +492,17 @@ namespace RogueElements.Tests
         public void GetAllBorderMatchMin()
         {
             // confirms that the result is based on the minimum adjacent match
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(3, 3, 4, 4));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 3));
 
-            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen>>();
+            var adjacentsByDir = new Dictionary<Dir4, List<IRoomGen<TestTile>>>();
             foreach (Dir4 dir in DirExt.VALID_DIR4)
-                adjacentsByDir[dir] = new List<IRoomGen>();
+                adjacentsByDir[dir] = new List<IRoomGen<TestTile>>();
 
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new Mock<SetSpecialRoomTestStep>(mockRooms.Object, mockHalls.Object) { CallBase = true };
             pathGen.Setup(p => p.GetSideBorderMatch(mockTo.Object, adjacentsByDir, It.IsAny<Loc>(), Dir4.Up, It.IsAny<int>())).Returns(3);
@@ -522,14 +522,14 @@ namespace RogueElements.Tests
             throw new NotImplementedException();
         }
 
-        public class SetSpecialRoomTestStep : SetSpecialRoomStep<IFloorPlanTestContext>
+        public class SetSpecialRoomTestStep : SetSpecialRoomStep<IFloorPlanTestContext, TestTile>
         {
-            public SetSpecialRoomTestStep(IRandPicker<RoomGen<IFloorPlanTestContext>> rooms, IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>> halls)
+            public SetSpecialRoomTestStep(IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>> rooms, IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>> halls)
                 : base(rooms, halls)
             {
             }
 
-            public static Rect GetSupportRect(TestFloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir) => SetSpecialRoomStep<IFloorPlanTestContext>.GetSupportRect(floorPlan, oldGen, newGen, dir, adjacentsInDir);
+            public static Rect GetSupportRect(TestFloorPlan floorPlan, IRoomGen<TestTile> oldGen, IRoomGen<TestTile> newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir) => SetSpecialRoomStep<IFloorPlanTestContext, TestTile>.GetSupportRect(floorPlan, oldGen, newGen, dir, adjacentsInDir);
         }
     }
 }

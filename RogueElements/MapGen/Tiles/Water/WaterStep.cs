@@ -9,15 +9,16 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class WaterStep<T> : GenStep<T>, IWaterStep
-        where T : class, ITiledGenContext
+    public abstract class WaterStep<TGenContext, TTile> : GenStep<TGenContext>, IWaterStep<TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected WaterStep()
         {
-            this.TerrainStencil = new DefaultTerrainStencil<T>();
+            this.TerrainStencil = new DefaultTerrainStencil<TGenContext, TTile>();
         }
 
-        protected WaterStep(ITile terrain, ITerrainStencil<T> check)
+        protected WaterStep(TTile terrain, ITerrainStencil<TGenContext, TTile> check)
         {
             this.Terrain = terrain;
             this.TerrainStencil = check;
@@ -26,14 +27,14 @@ namespace RogueElements
         /// <summary>
         /// Tile representing the water terrain to paint with.
         /// </summary>
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
         /// <summary>
         /// Determines which tiles are eligible to be painted on.
         /// </summary>
-        public ITerrainStencil<T> TerrainStencil { get; set; }
+        public ITerrainStencil<TGenContext, TTile> TerrainStencil { get; set; }
 
-        protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset)
+        protected void DrawBlob(TGenContext map, BlobMap blobMap, int index, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[index];
             for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
@@ -53,7 +54,7 @@ namespace RogueElements
             GenContextDebug.DebugProgress("Draw Blob");
         }
 
-        protected void DrawLocs(T map, Loc[] locs)
+        protected void DrawLocs(TGenContext map, Loc[] locs)
         {
             foreach (Loc loc in locs)
             {

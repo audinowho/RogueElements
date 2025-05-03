@@ -8,10 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IRoomGridGenContext : IFloorPlanGenContext
+    public interface IRoomGridGenContext<TTile> : IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
-        GridPlan GridPlan { get; }
+        GridPlan<TTile> GridPlan { get; }
 
-        void InitGrid(GridPlan plan);
+        void InitGrid(GridPlan<TTile> plan);
     }
 }

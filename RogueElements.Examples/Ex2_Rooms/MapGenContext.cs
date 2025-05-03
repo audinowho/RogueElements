@@ -10,16 +10,16 @@ using System.Text;
 
 namespace RogueElements.Examples.Ex2_Rooms
 {
-    public class MapGenContext : BaseMapGenContext<Map>, IFloorPlanGenContext
+    public class MapGenContext : BaseMapGenContext<Map>, IFloorPlanGenContext<Tile>
     {
         public MapGenContext()
             : base()
         {
         }
 
-        public FloorPlan RoomPlan { get; private set; }
+        public FloorPlan<Tile> RoomPlan { get; private set; }
 
-        public void InitPlan(FloorPlan plan)
+        public void InitPlan(FloorPlan<Tile> plan)
         {
             this.RoomPlan = plan;
         }

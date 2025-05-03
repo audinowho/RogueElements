@@ -10,10 +10,11 @@ namespace RogueElements
     /// <summary>
     /// Resizes the floor plan.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class ResizeFloorStep<T> : GenStep<T>
-        where T : class, IFloorPlanGenContext
+    public class ResizeFloorStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public ResizeFloorStep()
         {
@@ -46,7 +47,7 @@ namespace RogueElements
         /// </summary>
         public Dir8 SpaceExpandDir { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             if (map.RoomPlan.Wrap)
                 return;

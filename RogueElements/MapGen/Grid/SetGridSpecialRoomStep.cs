@@ -11,36 +11,37 @@ namespace RogueElements
     /// <summary>
     /// Takes an existing grid plan and changes one of the rooms into the specified room type.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class SetGridSpecialRoomStep<T> : GridPlanStep<T>
-        where T : class, IRoomGridGenContext
+    public class SetGridSpecialRoomStep<TGenContext, TTile> : GridPlanStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public SetGridSpecialRoomStep()
             : base()
         {
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
             this.RoomComponents = new ComponentCollection();
         }
 
         /// <summary>
         /// The type of room to place.  It can be chosen out of several possibilities, but only one room will be placed.
         /// </summary>
-        public IRandPicker<RoomGen<T>> Rooms { get; set; }
+        public IRandPicker<RoomGen<TGenContext, TTile>> Rooms { get; set; }
 
         /// <summary>
         /// Determines which rooms are eligible to be turned into the new room type.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// Components that the newly added room will be labeled with.
         /// </summary>
         public ComponentCollection RoomComponents { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
-            IRoomGen newGen = this.Rooms.Pick(rand).Copy();
+            IRoomGen<TTile> newGen = this.Rooms.Pick(rand).Copy();
             Loc size = newGen.ProposeSize(rand);
 
             // choose certain rooms in the list to be special rooms
@@ -48,8 +49,8 @@ namespace RogueElements
             List<int> room_indices = new List<int>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                GridRoomPlan<TTile> plan = floorPlan.GetRoomPlan(ii);
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(plan, this.Filters))
                     continue;
                 if (plan.PreferHall)
                     continue;
@@ -61,7 +62,7 @@ namespace RogueElements
             if (room_indices.Count > 0)
             {
                 int ind = rand.Next(room_indices.Count);
-                GridRoomPlan plan = floorPlan.GetRoomPlan(room_indices[ind]);
+                GridRoomPlan<TTile> plan = floorPlan.GetRoomPlan(room_indices[ind]);
                 plan.RoomGen = newGen;
                 foreach (RoomComponent component in this.RoomComponents)
                     plan.Components.Set(component.Clone());
@@ -70,7 +71,7 @@ namespace RogueElements
             }
         }
 
-        private static Loc GetBoundsSize(GridPlan floorPlan, GridRoomPlan plan)
+        private static Loc GetBoundsSize(GridPlan<TTile> floorPlan, GridRoomPlan<TTile> plan)
         {
             Loc cellSize = new Loc(plan.Bounds.Width * floorPlan.WidthPerCell, plan.Bounds.Height * floorPlan.HeightPerCell);
             Loc cellWallSize = new Loc((plan.Bounds.Width - 1) * floorPlan.CellWall, (plan.Bounds.Height - 1) * floorPlan.CellWall);

@@ -18,10 +18,11 @@ namespace RogueElements
     /// <summary>
     /// Populates the empty grid plan of a map by creating a minimum spanning tree of connected rooms and halls.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathBranch<T> : GridPathStartStepGeneric<T>, IGridPathBranch
-        where T : class, IRoomGridGenContext
+    public class GridPathBranch<TGenContext, TTile> : GridPathStartStepGeneric<TGenContext, TTile>, IGridPathBranch
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathBranch()
             : base()
@@ -47,7 +48,7 @@ namespace RogueElements
         /// </summary>
         public bool NoForcedBranches { get; set; }
 
-        public static List<LocRay4> GetPossibleExpansions(GridPlan floorPlan, bool branch)
+        public static List<LocRay4> GetPossibleExpansions(GridPlan<TTile> floorPlan, bool branch)
         {
             List<LocRay4> availableRays = new List<LocRay4>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
@@ -63,7 +64,7 @@ namespace RogueElements
             return availableRays;
         }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             for (int ii = 0; ii < 10; ii++)
             {
@@ -170,7 +171,7 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="loc"></param>
         /// <returns></returns>
-        protected static IEnumerable<Dir4> GetRoomExpandDirs(GridPlan floorPlan, Loc loc)
+        protected static IEnumerable<Dir4> GetRoomExpandDirs(GridPlan<TTile> floorPlan, Loc loc)
         {
             foreach (Dir4 dir in DirExt.VALID_DIR4)
             {
@@ -195,7 +196,7 @@ namespace RogueElements
             return newBranch;
         }
 
-        protected bool ExpandPath(IRandom rand, GridPlan floorPlan, LocRay4 chosenRay)
+        protected bool ExpandPath(IRandom rand, GridPlan<TTile> floorPlan, LocRay4 chosenRay)
         {
             floorPlan.SetHall(chosenRay, this.GenericHalls.Pick(rand), this.HallComponents.Clone());
             floorPlan.AddRoom(chosenRay.Traverse(1), this.GenericRooms.Pick(rand), this.RoomComponents.Clone());
@@ -204,12 +205,12 @@ namespace RogueElements
             return true;
         }
 
-        protected virtual Loc PopRandomLoc(GridPlan floorPlan, IRandom rand, List<Loc> locs)
+        protected virtual Loc PopRandomLoc(GridPlan<TTile> floorPlan, IRandom rand, List<Loc> locs)
         {
             return PopRandomLocEqual(rand, locs);
         }
 
-        protected virtual SpawnList<LocRay4> GetExpandDirChances(GridPlan floorPlan, Loc newTerminal)
+        protected virtual SpawnList<LocRay4> GetExpandDirChances(GridPlan<TTile> floorPlan, Loc newTerminal)
         {
             SpawnList<LocRay4> availableRays = new SpawnList<LocRay4>();
             foreach (Dir4 dir in GetRoomExpandDirs(floorPlan, newTerminal))

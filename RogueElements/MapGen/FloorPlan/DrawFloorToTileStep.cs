@@ -12,10 +12,11 @@ namespace RogueElements
     /// Takes the floor plan of the map and draws all tiles in all rooms to the actual map.
     /// This is typically done once per floor generation.  It must only be done after the floor plan itself is complete.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class DrawFloorToTileStep<T> : GenStep<T>
-        where T : class, IFloorPlanGenContext
+    public class DrawFloorToTileStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public DrawFloorToTileStep()
         {
@@ -31,7 +32,7 @@ namespace RogueElements
         /// </summary>
         public int Padding { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             // draw on map
             map.CreateNew(

@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IPerlinWaterStep : IWaterStep
+    public interface IPerlinWaterStep<TTile> : IWaterStep<TTile>
+        where TTile : ITile<TTile>
     {
         int OrderComplexity { get; set; }
 

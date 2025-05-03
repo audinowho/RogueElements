@@ -12,33 +12,34 @@ namespace RogueElements
     /// Creates a map out of specific tiles.
     /// Not very editor-friendly.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class SpecificTilesStep<T> : GenStep<T>
-        where T : class, ITiledGenContext
+    public class SpecificTilesStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public SpecificTilesStep()
         {
-            this.Tiles = Array.Empty<ITile[]>();
+            this.Tiles = Array.Empty<TTile[]>();
         }
 
-        public SpecificTilesStep(ITile[][] tiles)
+        public SpecificTilesStep(TTile[][] tiles)
         {
             this.Tiles = tiles;
             this.Offset = Loc.Zero;
         }
 
-        public SpecificTilesStep(ITile[][] tiles, Loc offset)
+        public SpecificTilesStep(TTile[][] tiles, Loc offset)
         {
             this.Tiles = tiles;
             this.Offset = offset;
         }
 
-        public ITile[][] Tiles { get; set; }
+        public TTile[][] Tiles { get; set; }
 
         public Loc Offset { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             // initialize map array to empty
             // set default map values

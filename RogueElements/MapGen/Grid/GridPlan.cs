@@ -11,7 +11,8 @@ namespace RogueElements
     /// <summary>
     /// A dungeon layout that uses a rectangular array of rooms, connected to each other in cardinal directions.
     /// </summary>
-    public class GridPlan
+    public class GridPlan<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPlan()
         {
@@ -43,33 +44,33 @@ namespace RogueElements
 
         protected int[][] Rooms { get; set; }
 
-        protected GridHallGroup[][] VHalls { get; set; }
+        protected GridHallGroup<TTile>[][] VHalls { get; set; }
 
-        protected GridHallGroup[][] HHalls { get; set; }
+        protected GridHallGroup<TTile>[][] HHalls { get; set; }
 
         // list of all rooms on the entire floor
         // each entry is a different room, guaranteed
-        protected List<GridRoomPlan> ArrayRooms { get; set; }
+        protected List<GridRoomPlan<TTile>> ArrayRooms { get; set; }
 
         public void InitSize(int width, int height, int widthPerCell, int heightPerCell, int cellWall = 1, bool wrap = false)
         {
             this.Rooms = new int[width][];
-            this.VHalls = new GridHallGroup[width][];
-            this.HHalls = new GridHallGroup[width][];
+            this.VHalls = new GridHallGroup<TTile>[width][];
+            this.HHalls = new GridHallGroup<TTile>[width][];
             for (int xx = 0; xx < width; xx++)
             {
                 this.Rooms[xx] = new int[height];
-                this.VHalls[xx] = new GridHallGroup[height];
-                this.HHalls[xx] = new GridHallGroup[height];
+                this.VHalls[xx] = new GridHallGroup<TTile>[height];
+                this.HHalls[xx] = new GridHallGroup<TTile>[height];
                 for (int yy = 0; yy < height; yy++)
                 {
                     this.Rooms[xx][yy] = -1;
-                    this.VHalls[xx][yy] = new GridHallGroup();
-                    this.HHalls[xx][yy] = new GridHallGroup();
+                    this.VHalls[xx][yy] = new GridHallGroup<TTile>();
+                    this.HHalls[xx][yy] = new GridHallGroup<TTile>();
                 }
             }
 
-            this.ArrayRooms = new List<GridRoomPlan>();
+            this.ArrayRooms = new List<GridRoomPlan<TTile>>();
 
             this.WidthPerCell = widthPerCell;
             this.HeightPerCell = heightPerCell;
@@ -85,29 +86,29 @@ namespace RogueElements
             int height = this.GridHeight;
 
             this.Rooms = new int[width][];
-            this.VHalls = new GridHallGroup[width][];
-            this.HHalls = new GridHallGroup[width][];
+            this.VHalls = new GridHallGroup<TTile>[width][];
+            this.HHalls = new GridHallGroup<TTile>[width][];
             for (int xx = 0; xx < width; xx++)
             {
                 this.Rooms[xx] = new int[height];
-                this.VHalls[xx] = new GridHallGroup[height];
-                this.HHalls[xx] = new GridHallGroup[height];
+                this.VHalls[xx] = new GridHallGroup<TTile>[height];
+                this.HHalls[xx] = new GridHallGroup<TTile>[height];
                 for (int yy = 0; yy < height; yy++)
                 {
                     this.Rooms[xx][yy] = -1;
-                    this.VHalls[xx][yy] = new GridHallGroup();
-                    this.HHalls[xx][yy] = new GridHallGroup();
+                    this.VHalls[xx][yy] = new GridHallGroup<TTile>();
+                    this.HHalls[xx][yy] = new GridHallGroup<TTile>();
                 }
             }
 
-            this.ArrayRooms = new List<GridRoomPlan>();
+            this.ArrayRooms = new List<GridRoomPlan<TTile>>();
         }
 
         /// <summary>
         /// Generates the position and size of each room and hall, and places it in the specified IFloorPlanGenContext.
         /// </summary>
         /// <param name="map"></param>
-        public void PlaceRoomsOnFloor(IFloorPlanGenContext map)
+        public void PlaceRoomsOnFloor(IFloorPlanGenContext<TTile> map)
         {
             // decide on room sizes
             for (int ii = 0; ii < this.ArrayRooms.Count; ii++)
@@ -137,7 +138,7 @@ namespace RogueElements
                     if (plan.PreferHall)
                     {
                         roomToHall.Add(new RoomHallIndex(map.RoomPlan.HallCount, true));
-                        map.RoomPlan.AddHall((IPermissiveRoomGen)plan.RoomGen, plan.Components);
+                        map.RoomPlan.AddHall((IPermissiveRoomGen<TTile>)plan.RoomGen, plan.Components);
                         GenContextDebug.DebugProgress("Add Hall Room");
                     }
                     else
@@ -163,7 +164,7 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < this.VHalls[xx].Length; yy++)
                     {
-                        GridHallGroup hallGroup = this.VHalls[xx][yy];
+                        GridHallGroup<TTile> hallGroup = this.VHalls[xx][yy];
                         for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
                         {
                             List<RoomHallIndex> adj = new List<RoomHallIndex>();
@@ -195,7 +196,7 @@ namespace RogueElements
                 {
                     for (int yy = 0; yy < this.HHalls[xx].Length; yy++)
                     {
-                        GridHallGroup hallGroup = this.HHalls[xx][yy];
+                        GridHallGroup<TTile> hallGroup = this.HHalls[xx][yy];
 
                         for (int ii = 0; ii < hallGroup.HallParts.Count; ii++)
                         {
@@ -237,14 +238,14 @@ namespace RogueElements
         /// </summary>
         /// <param name="locRay">The location of the room + the direction of the connecting hall relative to the room.</param>
         /// <returns></returns>
-        public GridHallPlan GetHall(LocRay4 locRay)
+        public GridHallPlan<TTile> GetHall(LocRay4 locRay)
         {
             return this.GetHallGroup(locRay)?.MainHall;
         }
 
-        public IEnumerable<IRoomPlan> GetAllPlans()
+        public IEnumerable<IRoomPlan<TTile>> GetAllPlans()
         {
-            foreach (GridRoomPlan plan in this.ArrayRooms)
+            foreach (GridRoomPlan<TTile> plan in this.ArrayRooms)
                 yield return plan;
 
             for (int xx = 0; xx < this.VHalls.Length; xx++)
@@ -287,17 +288,17 @@ namespace RogueElements
                 return Collision.InBounds(rect, loc);
         }
 
-        public IRoomGen GetRoom(int index)
+        public IRoomGen<TTile> GetRoom(int index)
         {
             return this.ArrayRooms[index].RoomGen;
         }
 
-        public GridRoomPlan GetRoomPlan(int index)
+        public GridRoomPlan<TTile> GetRoomPlan(int index)
         {
             return this.ArrayRooms[index];
         }
 
-        public GridRoomPlan GetRoomPlan(Loc loc)
+        public GridRoomPlan<TTile> GetRoomPlan(Loc loc)
         {
             int index = this.GetRoomIndex(loc);
             if (index > -1)
@@ -320,7 +321,7 @@ namespace RogueElements
             if (this.Wrap)
                 loc = this.WrapRoom(loc);
             int roomIndex = this.Rooms[loc.X][loc.Y];
-            GridRoomPlan room = this.ArrayRooms[roomIndex];
+            GridRoomPlan<TTile> room = this.ArrayRooms[roomIndex];
             this.ArrayRooms.RemoveAt(roomIndex);
             for (int xx = room.Bounds.Start.X; xx < room.Bounds.End.X; xx++)
             {
@@ -343,22 +344,22 @@ namespace RogueElements
             }
         }
 
-        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components)
+        public void AddRoom(Loc loc, IRoomGen<TTile> gen, ComponentCollection components)
         {
             this.AddRoom(new Rect(loc, new Loc(1)), gen, components, false);
         }
 
-        public void AddRoom(Loc loc, IRoomGen gen, ComponentCollection components, bool preferHall)
+        public void AddRoom(Loc loc, IRoomGen<TTile> gen, ComponentCollection components, bool preferHall)
         {
             this.AddRoom(new Rect(loc, new Loc(1)), gen, components, preferHall);
         }
 
-        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components)
+        public void AddRoom(Rect rect, IRoomGen<TTile> gen, ComponentCollection components)
         {
             this.AddRoom(rect, gen, components, false);
         }
 
-        public void AddRoom(Rect rect, IRoomGen gen, ComponentCollection components, bool preferHall)
+        public void AddRoom(Rect rect, IRoomGen<TTile> gen, ComponentCollection components, bool preferHall)
         {
             Rect floorRect = new Rect(0, 0, this.GridWidth, this.GridHeight);
             if (!this.Wrap && !floorRect.Contains(rect))
@@ -390,13 +391,13 @@ namespace RogueElements
                 }
             }
 
-            if (preferHall && !(gen is IPermissiveRoomGen))
+            if (preferHall && !(gen is IPermissiveRoomGen<TTile>))
                 throw new InvalidOperationException("Cannot prefer hall for a non-permissive gen!");
 
             if (this.Wrap)
                 rect = new Rect(this.WrapRoom(rect.Start), rect.Size);
 
-            var room = new GridRoomPlan(rect, gen.Copy(), components)
+            var room = new GridRoomPlan<TTile>(rect, gen.Copy(), components)
             {
                 PreferHall = preferHall,
             };
@@ -452,13 +453,13 @@ namespace RogueElements
         /// <param name="locRay">The location of the room + the direction of the connecting hall relative to the room.</param>
         /// <param name="hallGen"></param>
         /// <param name="components">components to include in the hall</param>
-        public void SetHall(LocRay4 locRay, IPermissiveRoomGen hallGen, ComponentCollection components)
+        public void SetHall(LocRay4 locRay, IPermissiveRoomGen<TTile> hallGen, ComponentCollection components)
         {
-            GridHallPlan plan = null;
+            GridHallPlan<TTile> plan = null;
             if (hallGen != null)
-                plan = new GridHallPlan((IPermissiveRoomGen)hallGen.Copy(), components);
+                plan = new GridHallPlan<TTile>((IPermissiveRoomGen<TTile>)hallGen.Copy(), components);
 
-            GridHallGroup group = this.GetHallGroup(locRay);
+            GridHallGroup<TTile> group = this.GetHallGroup(locRay);
             if (group != null)
                 group.SetHall(plan);
             else
@@ -472,7 +473,7 @@ namespace RogueElements
         /// <param name="roomIndex"></param>
         public void ChooseRoomBounds(IRandom rand, int roomIndex)
         {
-            GridRoomPlan roomPair = this.ArrayRooms[roomIndex];
+            GridRoomPlan<TTile> roomPair = this.ArrayRooms[roomIndex];
 
             // the RoomGens are allowed to choose any size period, but this function will cap them at the cell sizes
             Loc size = roomPair.RoomGen.ProposeSize(rand);
@@ -493,7 +494,7 @@ namespace RogueElements
         /// <param name="rand">todo: describe rand parameter on ChooseHallBounds</param>
         public void ChooseHallBounds(IRandom rand, int x, int y, bool vertical)
         {
-            GridHallGroup hallGroup = vertical ? this.VHalls[x][y] : this.HHalls[x][y];
+            GridHallGroup<TTile> hallGroup = vertical ? this.VHalls[x][y] : this.HHalls[x][y];
             if (hallGroup.MainHall == null)
                 return;
 
@@ -501,10 +502,10 @@ namespace RogueElements
             Dir4 dir = vertical ? Dir4.Down : Dir4.Right;
             Axis4 orth = vertical ? Axis4.Horiz : Axis4.Vert;
 
-            GridRoomPlan startRoom = this.GetRoomPlan(loc);
+            GridRoomPlan<TTile> startRoom = this.GetRoomPlan(loc);
 
             // always down or left of the original
-            GridRoomPlan endRoom = this.GetRoomPlan(loc + dir.GetLoc());
+            GridRoomPlan<TTile> endRoom = this.GetRoomPlan(loc + dir.GetLoc());
 
             // in the case of wrapped rooms, we must push the end room position forward by one whole map size
             Rect wrappedEndDraw = endRoom.RoomGen.Draw;
@@ -629,8 +630,8 @@ namespace RogueElements
                 Rect endBox = vertical ? new Rect(endDivRange.Min, divPoint, endDivRange.Length, end.Y - divPoint)
                     : new Rect(divPoint, endDivRange.Min, end.X - divPoint, endDivRange.Length);
 
-                GridHallPlan originalHall = hallGroup.MainHall;
-                hallGroup.HallParts.Add(new GridHallPlan((IPermissiveRoomGen)originalHall.RoomGen.Copy(), originalHall.Components));
+                GridHallPlan<TTile> originalHall = hallGroup.MainHall;
+                hallGroup.HallParts.Add(new GridHallPlan<TTile>((IPermissiveRoomGen<TTile>)originalHall.RoomGen.Copy(), originalHall.Components));
                 hallGroup.HallParts[0].RoomGen.PrepareSize(rand, startBox.Size);
                 hallGroup.HallParts[0].RoomGen.SetLoc(startBox.Start);
                 hallGroup.HallParts[1].RoomGen.PrepareSize(rand, endBox.Size);
@@ -641,7 +642,7 @@ namespace RogueElements
         public List<int> GetAdjacentRooms(int roomIndex)
         {
             List<int> returnList = new List<int>();
-            GridRoomPlan room = this.ArrayRooms[roomIndex];
+            GridRoomPlan<TTile> room = this.ArrayRooms[roomIndex];
             for (int ii = 0; ii < room.Bounds.Size.X; ii++)
             {
                 // above
@@ -673,7 +674,7 @@ namespace RogueElements
 
         public int GetRoomIndex(LocRay4 locRay)
         {
-            GridHallPlan hall = this.GetHall(locRay);
+            GridHallPlan<TTile> hall = this.GetHall(locRay);
             if (hall != null)
             {
                 Loc moveLoc = locRay.Traverse(1);
@@ -776,12 +777,12 @@ namespace RogueElements
             return endRange;
         }
 
-        private GridHallGroup GetHallGroup(LocRay4 locRay)
+        private GridHallGroup<TTile> GetHallGroup(LocRay4 locRay)
         {
             if (!locRay.Dir.Validate())
                 throw new ArgumentOutOfRangeException("Invalid enum value.");
 
-            GridHallGroup[][] hallGroup;
+            GridHallGroup<TTile>[][] hallGroup;
             Loc endLoc;
             switch (locRay.Dir)
             {

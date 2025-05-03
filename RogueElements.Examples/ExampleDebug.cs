@@ -124,23 +124,32 @@ namespace RogueElements.Examples
             }
 
             ConsoleKey key = ConsoleKey.Enter;
-            {
-                ConsoleKey newKey = PrintGridRoomHalls(curMap, msg, printDebug, printViewer);
-                if (key == ConsoleKey.Enter)
-                    key = newKey;
-            }
+            ConsoleKey? newKey;
 
-            {
-                ConsoleKey newKey = PrintListRoomHalls(curMap, msg, printDebug, printViewer);
-                if (key == ConsoleKey.Enter)
-                    key = newKey;
-            }
+            // Grid Room Halls
+            newKey = PrintGridRoomHalls<Tile>(curMap, msg, printDebug, printViewer);
 
-            {
-                ConsoleKey newKey = PrintTiles(curMap, msg, printDebug, printViewer);
-                if (key == ConsoleKey.Enter)
-                    key = newKey;
-            }
+            if (newKey == null)
+                newKey = PrintGridRoomHalls<CellTile>(curMap, msg, printDebug, printViewer);
+
+            if (key == ConsoleKey.Enter && newKey != null)
+                key = (ConsoleKey)newKey;
+
+            newKey = PrintListRoomHalls<Tile>(curMap, msg, printDebug, printViewer);
+
+            if (newKey == null)
+                newKey = PrintListRoomHalls<CellTile>(curMap, msg, printDebug, printViewer);
+
+            if (key == ConsoleKey.Enter && newKey != null)
+                key = (ConsoleKey)newKey;
+
+            newKey = PrintTiles<Tile>(curMap, msg, printDebug, printViewer);
+
+            if (newKey == null)
+                newKey = PrintTiles<CellTile>(curMap, msg, printDebug, printViewer);
+
+            if (key == ConsoleKey.Enter && newKey != null)
+                key = (ConsoleKey)newKey;
 
             switch (key)
             {
@@ -158,10 +167,12 @@ namespace RogueElements.Examples
             }
         }
 
-        public static ConsoleKey PrintTiles(IGenContext map, string msg, bool printDebug, bool printViewer)
+        public static ConsoleKey? PrintTiles<TTile>(IGenContext map, string msg, bool printDebug, bool printViewer)
+            where TTile : ITile<TTile>
         {
-            if (!(map is ITiledGenContext context))
-                return ConsoleKey.Enter;
+            if (!(map is ITiledGenContext<TTile> context)) // Might wanna do something about this, example 8 probably won't work with this
+                return null;
+
             if (!context.TilesInitialized)
                 return ConsoleKey.Enter;
 
@@ -222,7 +233,8 @@ namespace RogueElements.Examples
                     Loc mapLoc = new Loc(Console.CursorLeft, Console.CursorTop) - start;
                     RewriteLine(farthestPrint, $"X:{mapLoc.X:D3}  Y:{mapLoc.Y:D3}");
                     farthestPrint++;
-                    ITile tile = context.GetTile(mapLoc);
+
+                    TTile tile = context.GetTile(mapLoc);
                     RewriteLine(farthestPrint, $"Tile: {tile}");
                     farthestPrint++;
 
@@ -250,13 +262,14 @@ namespace RogueElements.Examples
             }
         }
 
-        public static ConsoleKey PrintListRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
+        public static ConsoleKey? PrintListRoomHalls<TTile>(IGenContext map, string msg, bool printDebug, bool printViewer)
+            where TTile : ITile<TTile>
         {
-            if (!(map is IFloorPlanGenContext context))
-                return ConsoleKey.Enter;
+            if (!(map is IFloorPlanGenContext<TTile> context))
+                return null;
 
             var str = new StringBuilder();
-            FloorPlan plan = context.RoomPlan;
+            FloorPlan<TTile> plan = context.RoomPlan;
             if (plan == null)
                 return ConsoleKey.Enter;
 
@@ -271,7 +284,7 @@ namespace RogueElements.Examples
             for (int ii = 0; ii < plan.RoomCount; ii++)
             {
                 char chosenChar = (char)('A' + (ii % 26));
-                IRoomGen gen = plan.GetRoom(ii);
+                IRoomGen<TTile> gen = plan.GetRoom(ii);
                 for (int xx = gen.Draw.Left; xx < gen.Draw.Right; xx++)
                 {
                     for (int yy = gen.Draw.Top; yy < gen.Draw.Bottom; yy++)
@@ -290,7 +303,7 @@ namespace RogueElements.Examples
             {
                 char chosenChar = (char)('a' + (ii % 26));
 
-                IRoomGen gen = plan.GetHall(ii);
+                IRoomGen<TTile> gen = plan.GetHall(ii);
 
                 for (int xx = gen.Draw.Left; xx < gen.Draw.Right; xx++)
                 {
@@ -343,7 +356,7 @@ namespace RogueElements.Examples
 
                     for (int ii = 0; ii < plan.RoomCount; ii++)
                     {
-                        FloorRoomPlan roomPlan = plan.GetRoomPlan(ii);
+                        FloorRoomPlan<TTile> roomPlan = plan.GetRoomPlan(ii);
                         if (roomPlan.RoomGen.Draw.Contains(mapLoc))
                         {
                             // stats
@@ -380,7 +393,7 @@ namespace RogueElements.Examples
 
                     for (int ii = 0; ii < plan.HallCount; ii++)
                     {
-                        FloorHallPlan hallPlan = plan.GetHallPlan(ii);
+                        FloorHallPlan<TTile> hallPlan = plan.GetHallPlan(ii);
                         if (hallPlan.RoomGen.Draw.Contains(mapLoc))
                         {
                             string roomString = $"Hall #{ii}: {hallPlan.RoomGen.Draw.X}x{hallPlan.RoomGen.Draw.Y} {hallPlan.RoomGen}";
@@ -416,13 +429,14 @@ namespace RogueElements.Examples
             }
         }
 
-        public static ConsoleKey PrintGridRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
+        public static ConsoleKey? PrintGridRoomHalls<TTile>(IGenContext map, string msg, bool printDebug, bool printViewer)
+            where TTile : ITile<TTile>
         {
-            if (!(map is IRoomGridGenContext context))
-                return ConsoleKey.Enter;
+            if (!(map is IRoomGridGenContext<TTile> context))
+                return null;
 
             var str = new StringBuilder();
-            GridPlan plan = context.GridPlan;
+            GridPlan<TTile> plan = context.GridPlan;
             if (plan == null)
                 return ConsoleKey.Enter;
 
@@ -506,7 +520,7 @@ namespace RogueElements.Examples
                     if (alignX && alignY)
                     {
                         int index = plan.GetRoomIndex(mapLoc);
-                        GridRoomPlan roomPlan = plan.GetRoomPlan(mapLoc);
+                        GridRoomPlan<TTile> roomPlan = plan.GetRoomPlan(mapLoc);
                         if (roomPlan != null)
                         {
                             string roomString = $"Room #{index}: {roomPlan.RoomGen}";
@@ -521,7 +535,7 @@ namespace RogueElements.Examples
                     }
                     else if (alignX)
                     {
-                        GridHallPlan hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Down));
+                        GridHallPlan<TTile> hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Down));
                         if (hall != null)
                         {
                             RewriteLine(farthestPrint, "Hall: " + hall.RoomGen);
@@ -533,7 +547,7 @@ namespace RogueElements.Examples
                     }
                     else if (alignY)
                     {
-                        GridHallPlan hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Right));
+                        GridHallPlan<TTile> hall = plan.GetHall(new LocRay4(mapLoc, Dir4.Right));
                         if (hall != null)
                         {
                             RewriteLine(farthestPrint, "Hall: " + hall.RoomGen);

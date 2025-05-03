@@ -21,6 +21,6 @@ namespace RogueElements.Tests
         {
         }
 
-        public override RoomGen<IGridPathTestContext> Copy() => new TestGridRoomGen(this);
+        public override RoomGen<IGridPathTestContext, TestTile> Copy() => new TestGridRoomGen(this);
     }
 }

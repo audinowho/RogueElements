@@ -11,23 +11,24 @@ namespace RogueElements
     /// <summary>
     /// Erases blobs of terrain that do not touch walkable ground.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class EraseIsolatedStep<T> : GenStep<T>
-        where T : class, ITiledGenContext
+    public class EraseIsolatedStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public EraseIsolatedStep()
         {
         }
 
-        public EraseIsolatedStep(ITile terrain)
+        public EraseIsolatedStep(TTile terrain)
         {
             this.Terrain = terrain;
         }
 
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             bool[][] connectionGrid = new bool[map.Width][];
             for (int xx = 0; xx < map.Width; xx++)

@@ -47,10 +47,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 17)).Returns(0);
 
             var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(4, 4) };
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
 
-            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext>(mockRooms.Object) { Amount = new RandRange(1) };
+            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext, TestTile>(mockRooms.Object) { Amount = new RandRange(1) };
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -83,10 +83,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 17)).Returns(16);
 
             var roomGen = new TestFloorPlanGen('A') { ProposedSize = new Loc(4, 4) };
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
 
-            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext>(mockRooms.Object) { Amount = new RandRange(1) };
+            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext, TestTile>(mockRooms.Object) { Amount = new RandRange(1) };
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -119,10 +119,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 18)).Returns(0);
 
             var roomGen = new TestFloorPlanGen('B') { ProposedSize = new Loc(3, 3) };
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
 
-            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext>(mockRooms.Object) { Amount = new RandRange(1) };
+            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext, TestTile>(mockRooms.Object) { Amount = new RandRange(1) };
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);
@@ -155,10 +155,10 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(0, 17)).Returns(0);
 
             var roomGen = new TestFloorPlanGen('B') { ProposedSize = new Loc(4, 4) };
-            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockRooms.Setup(p => p.Pick(testRand.Object)).Returns(roomGen);
 
-            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext>(mockRooms.Object) { Amount = new RandRange(1) };
+            var pathGen = new AddDisconnectedRoomsRandStep<IFloorPlanTestContext, TestTile>(mockRooms.Object) { Amount = new RandRange(1) };
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
             TestFloorPlan.CompareFloorPlans(floorPlan, compareFloorPlan);

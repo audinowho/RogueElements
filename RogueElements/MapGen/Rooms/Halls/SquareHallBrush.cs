@@ -42,7 +42,7 @@ namespace RogueElements
             return new SquareHallBrush(this);
         }
 
-        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length)
+        public override void DrawHallBrush<TTile>(ITiledGenContext<TTile> map, Rect bounds, LocRay4 ray, int length)
         {
             for (int ii = 0; ii < length; ii++)
             {

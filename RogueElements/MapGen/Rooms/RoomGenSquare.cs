@@ -10,10 +10,11 @@ namespace RogueElements
     /// <summary>
     /// Generates a rectangular room with the specified width and height.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenSquare<T> : PermissiveRoomGen<T>, ISizedRoomGen
-        where T : ITiledGenContext
+    public class RoomGenSquare<TGenContext, TTile> : PermissiveRoomGen<TGenContext, TTile>, ISizedRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenSquare()
         {
@@ -25,7 +26,7 @@ namespace RogueElements
             this.Height = height;
         }
 
-        protected RoomGenSquare(RoomGenSquare<T> other)
+        protected RoomGenSquare(RoomGenSquare<TGenContext, TTile> other)
         {
             this.Width = other.Width;
             this.Height = other.Height;
@@ -41,14 +42,14 @@ namespace RogueElements
         /// </summary>
         public RandRange Height { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenSquare<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenSquare<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             this.DrawMapDefault(map);
         }

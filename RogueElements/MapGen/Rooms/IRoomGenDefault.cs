@@ -15,23 +15,24 @@ namespace RogueElements
     /// <summary>
     /// Generates a one-tile room.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenDefault<T> : PermissiveRoomGen<T>, IRoomGenDefault
-        where T : ITiledGenContext
+    public class RoomGenDefault<TGenContext, TTile> : PermissiveRoomGen<TGenContext, TTile>, IRoomGenDefault
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenDefault()
         {
         }
 
-        public override RoomGen<T> Copy() => new RoomGenDefault<T>();
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenDefault<TGenContext, TTile>();
 
         public override Loc ProposeSize(IRandom rand)
         {
             return Loc.One;
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             this.DrawMapDefault(map);
         }

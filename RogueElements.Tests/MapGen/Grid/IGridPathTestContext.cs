@@ -5,7 +5,7 @@
 
 namespace RogueElements.Tests
 {
-    public interface IGridPathTestContext : IRoomGridGenContext
+    public interface IGridPathTestContext : IRoomGridGenContext<TestTile>
     {
     }
 }

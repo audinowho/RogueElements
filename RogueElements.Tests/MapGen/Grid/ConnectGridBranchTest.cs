@@ -40,9 +40,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -78,9 +78,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -116,10 +116,10 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
-            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent<TestTile>(false, new TestComponent()));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -152,23 +152,23 @@ namespace RogueElements.Tests
             TestComponent component1 = new TestComponent();
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             {
-                GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+                GridRoomPlan<TestTile> roomPlan = floorPlan.GetRoomPlan(1);
                 roomPlan.Components.Set(component1);
             }
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
             {
-                GridRoomPlan roomPlan = compareFloorPlan.GetRoomPlan(1);
+                GridRoomPlan<TestTile> roomPlan = compareFloorPlan.GetRoomPlan(1);
                 roomPlan.Components.Set(component1);
             }
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
-            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent<TestTile>(false, new TestComponent()));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -202,27 +202,27 @@ namespace RogueElements.Tests
             TestComponent component2 = new TestComponent();
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
             {
-                GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+                GridRoomPlan<TestTile> roomPlan = floorPlan.GetRoomPlan(1);
                 roomPlan.Components.Set(component1);
-                GridRoomPlan roomPlan2 = floorPlan.GetRoomPlan(2);
+                GridRoomPlan<TestTile> roomPlan2 = floorPlan.GetRoomPlan(2);
                 roomPlan2.Components.Set(component2);
             }
 
             TestGridFloorPlan compareFloorPlan = TestGridFloorPlan.InitGridToContext(outGrid);
             {
-                GridRoomPlan roomPlan = compareFloorPlan.GetRoomPlan(1);
+                GridRoomPlan<TestTile> roomPlan = compareFloorPlan.GetRoomPlan(1);
                 roomPlan.Components.Set(component1);
-                GridRoomPlan roomPlan2 = compareFloorPlan.GetRoomPlan(2);
+                GridRoomPlan<TestTile> roomPlan2 = compareFloorPlan.GetRoomPlan(2);
                 roomPlan2.Components.Set(component2);
             }
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
-            pathGen.Filters.Add(new RoomFilterComponent(false, new TestComponent()));
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
+            pathGen.Filters.Add(new RoomFilterComponent<TestTile>(false, new TestComponent()));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -258,9 +258,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -300,9 +300,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -342,9 +342,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -380,9 +380,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -418,9 +418,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -460,9 +460,9 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -503,9 +503,9 @@ namespace RogueElements.Tests
             testRand.Setup(p => p.Next(It.IsNotIn<int>(2))).Returns(0);
             testRand.Setup(p => p.Next(2)).Returns(1);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 100 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 100 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -550,9 +550,9 @@ namespace RogueElements.Tests
             seq = seq.Returns(99);
             seq = seq.Returns(99);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 50 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 50 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -598,9 +598,9 @@ namespace RogueElements.Tests
             seq = seq.Returns(99);
             seq = seq.Returns(99);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 50 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 50 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -646,9 +646,9 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(99);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 50 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 50 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 
@@ -694,9 +694,9 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(99);
 
-            var pathGen = new ConnectGridBranchStep<IGridPathTestContext> { ConnectPercent = 50 };
+            var pathGen = new ConnectGridBranchStep<IGridPathTestContext, TestTile> { ConnectPercent = 50 };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
 

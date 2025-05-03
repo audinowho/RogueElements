@@ -13,22 +13,23 @@ namespace RogueElements
     /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
     /// Randomly picks a location to spawn a new room in a finite number of times before giving up.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class AddDisconnectedRoomsRandStep<T> : AddDisconnectedRoomsBaseStep<T>
-        where T : class, IFloorPlanGenContext
+    public class AddDisconnectedRoomsRandStep<TGenContext, TTile> : AddDisconnectedRoomsBaseStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public AddDisconnectedRoomsRandStep()
             : base()
         {
         }
 
-        public AddDisconnectedRoomsRandStep(IRandPicker<RoomGen<T>> genericRooms)
+        public AddDisconnectedRoomsRandStep(IRandPicker<RoomGen<TGenContext, TTile>> genericRooms)
             : base(genericRooms)
         {
         }
 
-        protected override Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize)
+        protected override Loc? ChooseViableLoc(IRandom rand, FloorPlan<TTile> floorPlan, Loc roomSize)
         {
             Rect allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End - roomSize + new Loc(1));
             if (floorPlan.Wrap)

@@ -12,18 +12,19 @@ namespace RogueElements
     /// Takes the grid plan of the map and draws all cells and halls into rooms of a floor plan.
     /// This is typically done once per floor generation.  It must only be done after the grid plan itself is complete.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class DrawGridToFloorStep<T> : GenStep<T>
-        where T : class, IRoomGridGenContext
+    public class DrawGridToFloorStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public DrawGridToFloorStep()
         {
         }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
-            var floorPlan = new FloorPlan();
+            var floorPlan = new FloorPlan<TTile>();
             floorPlan.InitSize(map.GridPlan.Size, map.GridPlan.Wrap);
             map.InitPlan(floorPlan);
 

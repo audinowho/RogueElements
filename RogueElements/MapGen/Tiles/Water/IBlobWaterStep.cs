@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IBlobWaterStep : IWaterStep
+    public interface IBlobWaterStep<TTile> : IWaterStep<TTile>
+        where TTile : ITile<TTile>
     {
         RandRange Blobs { get; set; }
 

@@ -32,11 +32,11 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            var pathGen = new GridPathTwoSides<IGridPathTestContext> { GapAxis = Axis4.Horiz };
+            var pathGen = new GridPathTwoSides<IGridPathTestContext, TestTile> { GapAxis = Axis4.Horiz };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             pathGen.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             pathGen.GenericRooms = mockRooms.Object;
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
@@ -59,13 +59,13 @@ namespace RogueElements.Tests
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
 
-            var pathGen = new GridPathTwoSides<IGridPathTestContext> { GapAxis = Axis4.Horiz };
+            var pathGen = new GridPathTwoSides<IGridPathTestContext, TestTile> { GapAxis = Axis4.Horiz };
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('A'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('B'));
             pathGen.GenericRooms = mockRooms.Object;
@@ -105,19 +105,19 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(0);
 
-            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>> { CallBase = true };
+            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext, TestTile>> { CallBase = true };
             pathGen.Object.GapAxis = Axis4.Horiz;
 
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('F'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('I'));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.Object.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('A'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('B'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));
@@ -167,19 +167,19 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(0);
 
-            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>> { CallBase = true };
+            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext, TestTile>> { CallBase = true };
             pathGen.Object.GapAxis = Axis4.Vert;
 
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('F'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('I'));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.Object.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('A'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('B'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));
@@ -225,19 +225,19 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(2)).Returns(1);
 
-            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>> { CallBase = true };
+            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext, TestTile>> { CallBase = true };
             pathGen.Object.GapAxis = Axis4.Horiz;
 
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('F'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('I'));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.Object.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('A'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('B'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));
@@ -285,19 +285,19 @@ namespace RogueElements.Tests
             seq = seq.Returns(0);
             seq = seq.Returns(1);
 
-            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext>> { CallBase = true };
+            var pathGen = new Mock<GridPathTwoSides<IGridPathTestContext, TestTile>> { CallBase = true };
             pathGen.Object.GapAxis = Axis4.Horiz;
 
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('C'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('F'));
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('I'));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestGridRoomGen());
             pathGen.Object.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> roomSeq = mockRooms.SetupSequence(p => p.Pick(testRand.Object));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('A'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('B'));
             roomSeq = roomSeq.Returns(new TestGridRoomGen('D'));

@@ -12,32 +12,33 @@ namespace RogueElements
     /// A filter for determining the eligible tiles for an operation.
     /// Checking the bounds is checking each individual tile.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class BlobTileStencil<T> : IBlobStencil<T>
-        where T : class, ITiledGenContext
+    public class BlobTileStencil<TGenContext, TTile> : IBlobStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public BlobTileStencil()
         {
-            this.TileStencil = new DefaultTerrainStencil<T>();
+            this.TileStencil = new DefaultTerrainStencil<TGenContext, TTile>();
         }
 
-        public BlobTileStencil(ITerrainStencil<T> tileStencil)
+        public BlobTileStencil(ITerrainStencil<TGenContext, TTile> tileStencil)
         {
             this.TileStencil = tileStencil;
         }
 
-        public BlobTileStencil(ITerrainStencil<T> tileStencil, bool requireAny)
+        public BlobTileStencil(ITerrainStencil<TGenContext, TTile> tileStencil, bool requireAny)
         {
             this.TileStencil = tileStencil;
             this.RequireAny = requireAny;
         }
 
-        public ITerrainStencil<T> TileStencil { get; set; }
+        public ITerrainStencil<TGenContext, TTile> TileStencil { get; set; }
 
         public bool RequireAny { get; set; }
 
-        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
+        public bool Test(TGenContext map, Rect rect, Grid.LocTest blobTest)
         {
             for (int xx = rect.X; xx < rect.End.X; xx++)
             {

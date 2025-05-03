@@ -20,7 +20,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3, 5)).Returns(3);
             testRand.Setup(p => p.Next(4, 7)).Returns(4);
-            RoomGenSquare<ITiledGenContext> roomGen = new RoomGenSquare<ITiledGenContext>(new RandRange(3, 5), new RandRange(4, 7));
+            var roomGen = new RoomGenSquare<ITiledGenContext<TestTile>, TestTile>(new RandRange(3, 5), new RandRange(4, 7));
 
             Loc compare = roomGen.ProposeSize(testRand.Object);
 
@@ -33,7 +33,7 @@ namespace RogueElements.Tests
         public void DrawOnMap()
         {
             // verify it fills up the entire square area!
-            var roomGen = new RoomGenSquare<ITiledGenContext>();
+            var roomGen = new RoomGenSquare<ITiledGenContext<TestTile>, TestTile>();
             string[] inGrid =
             {
                 "XXXXXXXX",

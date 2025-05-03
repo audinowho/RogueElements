@@ -7,7 +7,8 @@ using System;
 
 namespace RogueElements
 {
-    public interface IRoomGen
+    public interface IRoomGen<TTile>
+        where TTile : ITile<TTile>
     {
         Rect Draw { get; }
 
@@ -25,8 +26,8 @@ namespace RogueElements
 
         void SetLoc(Loc loc);
 
-        void DrawOnMap(ITiledGenContext map);
+        void DrawOnMap(ITiledGenContext<TTile> map);
 
-        IRoomGen Copy();
+        IRoomGen<TTile> Copy();
     }
 }

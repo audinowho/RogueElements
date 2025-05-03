@@ -10,7 +10,7 @@ using RogueElements;
 
 namespace RogueElements.Examples.Ex7_Special
 {
-    public class MapGenContext : BaseMapGenContext<Map>, IFloorPlanGenContext,
+    public class MapGenContext : BaseMapGenContext<Map>, IFloorPlanGenContext<Tile>,
         IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>,
         IPlaceableGenContext<Item>
     {
@@ -21,7 +21,7 @@ namespace RogueElements.Examples.Ex7_Special
 
         protected delegate List<Loc> GetOpen(Rect rect);
 
-        public FloorPlan RoomPlan { get; private set; }
+        public FloorPlan<Tile> RoomPlan { get; private set; }
 
         public List<StairsUp> GenEntrances => this.Map.GenEntrances;
 
@@ -31,7 +31,7 @@ namespace RogueElements.Examples.Ex7_Special
 
         int IViewPlaceableGenContext<StairsDown>.Count => this.GenExits.Count;
 
-        public override bool CanSetTile(Loc loc, ITile tile)
+        public override bool CanSetTile(Loc loc, Tile tile)
         {
             for (int ii = 0; ii < this.GenEntrances.Count; ii++)
             {
@@ -48,7 +48,7 @@ namespace RogueElements.Examples.Ex7_Special
             return true;
         }
 
-        public void InitPlan(FloorPlan plan)
+        public void InitPlan(FloorPlan<Tile> plan)
         {
             this.RoomPlan = plan;
         }

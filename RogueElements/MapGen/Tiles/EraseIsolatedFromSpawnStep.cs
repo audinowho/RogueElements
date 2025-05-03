@@ -14,20 +14,21 @@ namespace RogueElements
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TEntrance"></typeparam>
     [Serializable]
-    public class EraseIsolatedFromSpawnStep<TGenContext, TEntrance> : GenStep<TGenContext>
-        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>
+    public class EraseIsolatedFromSpawnStep<TGenContext, TTile, TEntrance> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>, IViewPlaceableGenContext<TEntrance>
+        where TTile : ITile<TTile>
         where TEntrance : IEntrance
     {
         public EraseIsolatedFromSpawnStep()
         {
         }
 
-        public EraseIsolatedFromSpawnStep(ITile terrain)
+        public EraseIsolatedFromSpawnStep(TTile terrain)
         {
             this.Terrain = terrain;
         }
 
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
         public override void Apply(TGenContext map)
         {

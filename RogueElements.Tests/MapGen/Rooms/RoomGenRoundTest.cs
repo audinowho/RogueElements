@@ -25,8 +25,8 @@ namespace RogueElements.Tests
         public void DrawOnMap1x1()
         {
             // normal circle 1x1
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -64,8 +64,8 @@ namespace RogueElements.Tests
         public void DrawOnMap4x1()
         {
             // normal circle 4x1
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXX",
@@ -103,8 +103,8 @@ namespace RogueElements.Tests
         public void DrawOnMap7x7()
         {
             // normal circle 7x7
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -148,8 +148,8 @@ namespace RogueElements.Tests
         public void DrawOnMap8x8()
         {
             // normal circle 8x8
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -193,8 +193,8 @@ namespace RogueElements.Tests
         public void DrawOnMap7x4()
         {
             // larger height circle 7x4
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -238,8 +238,8 @@ namespace RogueElements.Tests
         public void DrawOnMap4x7()
         {
             // larger width circle 4x7
-            Mock<RoomGenRound<ITiledGenContext>> roomGen = new Mock<RoomGenRound<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenRound<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -284,7 +284,7 @@ namespace RogueElements.Tests
         {
             // normal circle 1x1
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(1, 1));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -303,7 +303,7 @@ namespace RogueElements.Tests
         {
             // normal circle 4x1
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(4, 1));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -325,7 +325,7 @@ namespace RogueElements.Tests
             // larger width circle 4x8
             // larger height circle 8x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(7, 7));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -346,7 +346,7 @@ namespace RogueElements.Tests
             // larger width circle 4x8
             // larger height circle 8x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(8, 8));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -366,7 +366,7 @@ namespace RogueElements.Tests
             // larger height circle 4x7
             // larger width circle 7x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(4, 7));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -385,7 +385,7 @@ namespace RogueElements.Tests
         {
             // larger width circle 7x4
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestRoomGenRound<ITiledGenContext>();
+            var roomGen = new TestRoomGenRound<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(mockRand.Object, new Loc(7, 4));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -399,8 +399,8 @@ namespace RogueElements.Tests
             Assert.That(roomGen.PublicFulfillableBorder, Is.EqualTo(expectedFulfillable));
         }
 
-        public class TestRoomGenRound<T> : RoomGenRound<T>
-            where T : ITiledGenContext
+        public class TestRoomGenRound<T> : RoomGenRound<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
         }

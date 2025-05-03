@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface ITiledGenContext : IGenContext
+    public interface ITiledGenContext<TTile> : IGenContext
+        where TTile : ITile<TTile>
     {
-        ITile RoomTerrain { get; }
+        TTile RoomTerrain { get; }
 
-        ITile WallTerrain { get; }
+        TTile WallTerrain { get; }
 
         int Width { get; }
 
@@ -26,13 +27,13 @@ namespace RogueElements
 
         bool TileBlocked(Loc loc, bool diagonal);
 
-        ITile GetTile(Loc loc);
+        TTile GetTile(Loc loc);
 
-        bool CanSetTile(Loc loc, ITile tile);
+        bool CanSetTile(Loc loc, TTile tile);
 
-        bool TrySetTile(Loc loc, ITile tile);
+        bool TrySetTile(Loc loc, TTile tile);
 
-        void SetTile(Loc loc, ITile tile);
+        void SetTile(Loc loc, TTile tile);
 
         void CreateNew(int tileWidth, int tileHeight, bool wrap = false);
     }

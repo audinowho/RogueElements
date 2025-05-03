@@ -12,10 +12,11 @@ namespace RogueElements
     /// If the bounds of the current roomplan maximum, the size will increase to include them.
     /// Always shrinks in the BottomRight direction, which results in the TopLeft corner remaining constant.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class ClampFloorStep<T> : GenStep<T>
-        where T : class, IFloorPlanGenContext
+    public class ClampFloorStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public ClampFloorStep()
         {
@@ -31,7 +32,7 @@ namespace RogueElements
 
         public Loc MaxSize { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             if (map.RoomPlan.Wrap)
                 return;
@@ -41,7 +42,7 @@ namespace RogueElements
 
             Loc start = map.RoomPlan.Size;
             Loc end = Loc.Zero;
-            foreach (IRoomPlan plan in map.RoomPlan.GetAllPlans())
+            foreach (IRoomPlan<TTile> plan in map.RoomPlan.GetAllPlans())
             {
                 Rect roomRect = plan.RoomGen.Draw;
                 start = new Loc(Math.Min(start.X, roomRect.Start.X), Math.Min(start.Y, roomRect.Start.Y));

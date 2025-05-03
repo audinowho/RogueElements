@@ -19,10 +19,11 @@ namespace RogueElements
     /// <summary>
     /// Populates the empty floor plan of a map by creating a path consisting of rooms on the perimeter, with hallways creating a grid inwards.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathGrid<T> : GridPathStartStepGeneric<T>, IGridPathGrid
-        where T : class, IRoomGridGenContext
+    public class GridPathGrid<TGenContext, TTile> : GridPathStartStepGeneric<TGenContext, TTile>, IGridPathGrid
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathGrid()
             : base()
@@ -39,7 +40,7 @@ namespace RogueElements
         /// </summary>
         public int HallRatio { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             if (floorPlan.GridWidth < 3 || floorPlan.GridHeight < 3)
                 throw new InvalidOperationException("Not enough room to create path.");

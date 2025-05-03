@@ -3,10 +3,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System;
+
 namespace RogueElements.Tests
 {
-    public class TestTile : ITile
+    public struct TestTile : ITile<TestTile>, IEquatable<TestTile>
     {
+        public int ID { get; set; }
+
         public TestTile()
         {
         }
@@ -16,23 +20,34 @@ namespace RogueElements.Tests
             this.ID = id;
         }
 
-        protected TestTile(TestTile other)
-        {
-            this.ID = other.ID;
-        }
+        // protected TestTile(TestTile other)
+        // {
+        //     this.ID = other.ID;
+        // }
 
-        public int ID { get; set; }
+        public bool Equals(TestTile other)
+        {
+            return this.ID == other.ID;
+        }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is TestTile other))
-                return false;
-            return other.ID == this.ID;
+            return obj is TestTile other && this.Equals(other);
         }
 
-        public ITile Copy() => new TestTile(this);
+        public bool TileEquivalent(TestTile other)
+        {
+            throw new System.NotImplementedException();
+        }
 
-        public bool TileEquivalent(ITile other) => this.Equals(other);
+        public TestTile Copy()
+        {
+            return this;
+        }
+
+        ITile ITile.Copy() => this.Copy();
+
+        bool ITile.TileEquivalent(ITile other) => this.Equals(other);
 
         public override int GetHashCode() => this.ID;
     }

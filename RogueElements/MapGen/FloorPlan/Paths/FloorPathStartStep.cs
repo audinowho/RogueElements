@@ -10,21 +10,22 @@ using RogueElements;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class FloorPathStartStep<T> : FloorPlanStep<T>
-        where T : class, IFloorPlanGenContext
+    public abstract class FloorPathStartStep<TGenContext, TTile> : FloorPlanStep<TGenContext, TTile>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
-        public void CreateErrorPath(IRandom rand, FloorPlan floorPlan)
+        public void CreateErrorPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             floorPlan.Clear();
-            RoomGen<T> room = this.GetDefaultGen();
+            RoomGen<TGenContext, TTile> room = this.GetDefaultGen();
             room.PrepareSize(rand, Loc.One);
             room.SetLoc(Loc.Zero);
             floorPlan.AddRoom(room, new ComponentCollection());
         }
 
-        public virtual RoomGen<T> GetDefaultGen()
+        public virtual RoomGen<TGenContext, TTile> GetDefaultGen()
         {
-            return new RoomGenDefault<T>();
+            return new RoomGenDefault<TGenContext, TTile>();
         }
     }
 }
