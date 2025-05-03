@@ -30,14 +30,14 @@ namespace RogueElements.Tests
                 "0.0",
             };
 
-            var pathGen = new Mock<GridPathStartStepGeneric<IGridPathTestContext>> { CallBase = true };
+            var pathGen = new Mock<GridPathStartStepGeneric<IGridPathTestContext, TestTile>> { CallBase = true };
 
-            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
+            Moq.Language.ISetupSequentialResult<RoomGen<IGridPathTestContext, TestTile>> defaultSeq = pathGen.SetupSequence(p => p.GetDefaultGen());
             defaultSeq = defaultSeq.Returns(new TestGridRoomGen('A'));
 
-            Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>> mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             pathGen.Object.GenericHalls = mockHalls.Object;
-            Mock<IRandPicker<RoomGen<IGridPathTestContext>>> mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext>>>(MockBehavior.Strict);
+            var mockRooms = new Mock<IRandPicker<RoomGen<IGridPathTestContext, TestTile>>>(MockBehavior.Strict);
             pathGen.Object.GenericRooms = mockRooms.Object;
 
             Mock<IRandom> mockRand = new Mock<IRandom>(MockBehavior.Strict);

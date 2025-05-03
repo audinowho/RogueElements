@@ -346,34 +346,34 @@ namespace RogueElements.Tests
         public void HasBorderOpening(int x, bool expected)
         {
             const Dir4 expandTo = Dir4.Up;
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            Mock<IRoomGen<TestTile>> mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 6, 2));
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 1, 4))).Returns(true);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(2, 3, 5))).Returns(false);
             Rect rectTo = new Rect(x, 0, 2, 2);
 
-            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHall = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
-            var pathGen = new ConnectBranchStep<IFloorPlanTestContext>(mockHall.Object);
+            var pathGen = new ConnectBranchStep<IFloorPlanTestContext, TestTile>(mockHall.Object);
             bool hasOpening = ConnectTestStep.HasBorderOpening(mockFrom.Object, rectTo, expandTo);
 
             Assert.That(hasOpening, Is.EqualTo(expected));
         }
 
-        private class ConnectTestStep : ConnectStep<IFloorPlanTestContext>
+        private class ConnectTestStep : ConnectStep<IFloorPlanTestContext, TestTile>
         {
-            public ConnectTestStep(IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>> genericHalls)
+            public ConnectTestStep(IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>> genericHalls)
                 : base(genericHalls)
             {
             }
 
-            public static new bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo) => ConnectStep<IFloorPlanTestContext>.HasBorderOpening(roomFrom, rectTo, expandTo);
+            public static new bool HasBorderOpening(IRoomGen<TestTile> roomFrom, Rect rectTo, Dir4 expandTo) => ConnectStep<IFloorPlanTestContext, TestTile>.HasBorderOpening(roomFrom, rectTo, expandTo);
 
-            public static ListPathTraversalNode? GetRoomToConnect(TestFloorPlan floorPlan, RoomHallIndex chosenFrom, Dir4 dir) => ConnectStep<IFloorPlanTestContext>.GetRoomToConnect(floorPlan, chosenFrom, dir);
+            public static ListPathTraversalNode? GetRoomToConnect(TestFloorPlan floorPlan, RoomHallIndex chosenFrom, Dir4 dir) => ConnectStep<IFloorPlanTestContext, TestTile>.GetRoomToConnect(floorPlan, chosenFrom, dir);
 
-            public static SpawnList<ListPathTraversalNode> GetPossibleExpansions(TestFloorPlan floorPlan, List<RoomHallIndex> candList) => ConnectStep<IFloorPlanTestContext>.GetPossibleExpansions(floorPlan, candList);
+            public static SpawnList<ListPathTraversalNode> GetPossibleExpansions(TestFloorPlan floorPlan, List<RoomHallIndex> candList) => ConnectStep<IFloorPlanTestContext, TestTile>.GetPossibleExpansions(floorPlan, candList);
 
-            public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+            public override void ApplyToPath(IRandom rand, FloorPlan<TestTile> floorPlan)
             {
             }
         }

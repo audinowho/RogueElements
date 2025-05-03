@@ -19,27 +19,28 @@ namespace RogueElements
     /// <summary>
     /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public abstract class AddConnectedRoomsBaseStep<T> : FloorPlanStep<T>, IAddConnectedRoomsStep
-        where T : class, IFloorPlanGenContext
+    public abstract class AddConnectedRoomsBaseStep<TGenContext, TTile> : FloorPlanStep<TGenContext, TTile>, IAddConnectedRoomsStep
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected AddConnectedRoomsBaseStep()
             : base()
         {
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
-        protected AddConnectedRoomsBaseStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        protected AddConnectedRoomsBaseStep(IRandPicker<RoomGen<TGenContext, TTile>> genericRooms, IRandPicker<PermissiveRoomGen<TGenContext, TTile>> genericHalls)
             : base()
         {
             this.GenericRooms = genericRooms;
             this.GenericHalls = genericHalls;
             this.RoomComponents = new ComponentCollection();
             this.HallComponents = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         /// <summary>
@@ -55,12 +56,12 @@ namespace RogueElements
         /// <summary>
         /// Determines which rooms are eligible to have the new rooms added on.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// The room types that can be used for the room being added.
         /// </summary>
-        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
+        public IRandPicker<RoomGen<TGenContext, TTile>> GenericRooms { get; set; }
 
         /// <summary>
         /// Components that the newly added rooms will be labeled with.
@@ -70,20 +71,20 @@ namespace RogueElements
         /// <summary>
         /// The room types that can be used as the intermediate hall.
         /// </summary>
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+        public IRandPicker<PermissiveRoomGen<TGenContext, TTile>> GenericHalls { get; set; }
 
         /// <summary>
         /// Components that the newly added halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             int amount = this.Amount.Pick(rand);
 
             for (int kk = 0; kk < amount; kk++)
             {
-                FloorPathBranch<T>.ListPathBranchExpansion? expansionResult = this.ChooseRoomExpansion(rand, floorPlan);
+                FloorPathBranch<TGenContext, TTile>.ListPathBranchExpansion? expansionResult = this.ChooseRoomExpansion(rand, floorPlan);
 
                 if (!expansionResult.HasValue)
                     continue;
@@ -103,7 +104,7 @@ namespace RogueElements
             }
         }
 
-        public abstract FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan);
+        public abstract FloorPathBranch<TGenContext, TTile>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan<TTile> floorPlan);
 
         /// <summary>
         /// Returns a random generic room or hall that can fit in the specified floor.
@@ -112,9 +113,9 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="isHall"></param>
         /// <returns></returns>
-        public virtual RoomGen<T> PrepareRoom(IRandom rand, FloorPlan floorPlan, bool isHall)
+        public virtual RoomGen<TGenContext, TTile> PrepareRoom(IRandom rand, FloorPlan<TTile> floorPlan, bool isHall)
         {
-            RoomGen<T> room;
+            RoomGen<TGenContext, TTile> room;
             if (!isHall) // choose a room
                 room = this.GenericRooms.Pick(rand).Copy();
             else // chose a hall

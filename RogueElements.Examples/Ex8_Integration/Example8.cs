@@ -18,7 +18,7 @@ namespace RogueElements.Examples.Ex8_Integration
             ExampleCreationStrategy<Map> exampleCreation = new ExampleCreationStrategy<Map>();
 
             // Initialize a 6x4 grid of 10x10 cells.
-            var startGen = new InitGridPlanStep<MapGenContext>(1)
+            var startGen = new InitGridPlanStep<MapGenContext, CellTile>(1)
             {
                 CellX = 6,
                 CellY = 4,
@@ -28,32 +28,32 @@ namespace RogueElements.Examples.Ex8_Integration
             exampleCreation.Layout.GenSteps.Add(-4, startGen);
 
             // Create a path that is composed of a ring around the edge
-            var path = new GridPathBranch<MapGenContext>
+            var path = new GridPathBranch<MapGenContext, CellTile>
             {
                 RoomRatio = new RandRange(70),
                 BranchRatio = new RandRange(0, 50),
             };
 
-            var genericRooms = new SpawnList<RoomGen<MapGenContext>>
+            var genericRooms = new SpawnList<RoomGen<MapGenContext, CellTile>>
             {
-                { new RoomGenSquare<MapGenContext>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
-                { new RoomGenRound<MapGenContext>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
+                { new RoomGenSquare<MapGenContext, CellTile>(new RandRange(4, 8), new RandRange(4, 8)), 10 }, // cross
+                { new RoomGenRound<MapGenContext, CellTile>(new RandRange(5, 9), new RandRange(5, 9)), 10 }, // round
             };
             path.GenericRooms = genericRooms;
 
-            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>
+            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext, CellTile>>
             {
-                { new RoomGenAngledHall<MapGenContext>(50), 10 },
+                { new RoomGenAngledHall<MapGenContext, CellTile>(50), 10 },
             };
             path.GenericHalls = genericHalls;
 
             exampleCreation.Layout.GenSteps.Add(-4, path);
 
             // Output the rooms into a FloorPlan
-            exampleCreation.Layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext>());
+            exampleCreation.Layout.GenSteps.Add(-2, new DrawGridToFloorStep<MapGenContext, CellTile>());
 
             // Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            exampleCreation.Layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
+            exampleCreation.Layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext, CellTile>(1));
 
             // Run the generator and print
             exampleCreation.Seed = MathUtils.Rand.NextUInt64();

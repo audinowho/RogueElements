@@ -10,7 +10,8 @@ using System.Text;
 namespace RogueElements
 {
     [Serializable]
-    public class RoomFilterComponent : BaseRoomFilter
+    public class RoomFilterComponent<TTile> : BaseRoomFilter<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomFilterComponent()
         {
@@ -29,7 +30,7 @@ namespace RogueElements
 
         public ComponentCollection Components { get; set; }
 
-        public override bool PassesFilter(IRoomPlan plan)
+        public override bool PassesFilter(IRoomPlan<TTile> plan)
         {
             foreach (RoomComponent component in this.Components)
             {

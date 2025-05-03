@@ -12,39 +12,40 @@ namespace RogueElements
     /// Populates an empty grid plan of a map by creating a specific path of rooms and hallways.
     /// VERY EDITOR UNFRIENDLY
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathSpecific<T> : GridPathStartStep<T>
-        where T : class, IRoomGridGenContext
+    public class GridPathSpecific<TGenContext, TTile> : GridPathStartStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathSpecific()
             : base()
         {
-            this.SpecificRooms = new List<SpecificGridRoomPlan<T>>();
+            this.SpecificRooms = new List<SpecificGridRoomPlan<TGenContext, TTile>>();
             this.HallComponents = new ComponentCollection();
         }
 
         /// <summary>
         /// The rooms to place, and where they go.
         /// </summary>
-        public List<SpecificGridRoomPlan<T>> SpecificRooms { get; set; }
+        public List<SpecificGridRoomPlan<TGenContext, TTile>> SpecificRooms { get; set; }
 
         /// <summary>
         /// The full array of vertical halls.
         /// </summary>
-        public PermissiveRoomGen<T>[][] SpecificVHalls { get; set; }
+        public PermissiveRoomGen<TGenContext, TTile>[][] SpecificVHalls { get; set; }
 
         /// <summary>
         /// The full array of horizontal halls.
         /// </summary>
-        public PermissiveRoomGen<T>[][] SpecificHHalls { get; set; }
+        public PermissiveRoomGen<TGenContext, TTile>[][] SpecificHHalls { get; set; }
 
         /// <summary>
         /// Components that the halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public static void UnsafeAddHall(LocRay4 locRay, GridPlan floorPlan, IPermissiveRoomGen hallGen, ComponentCollection components)
+        public static void UnsafeAddHall(LocRay4 locRay, GridPlan<TTile> floorPlan, IPermissiveRoomGen<TTile> hallGen, ComponentCollection components)
         {
             floorPlan.SetHall(locRay, hallGen, components.Clone());
             GenContextDebug.DebugProgress("Hall");
@@ -55,7 +56,7 @@ namespace RogueElements
             }
         }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             if (floorPlan.GridWidth != this.SpecificVHalls.Length ||
                 floorPlan.GridWidth - 1 != this.SpecificHHalls.Length ||

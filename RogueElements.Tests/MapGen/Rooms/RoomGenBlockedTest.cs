@@ -20,7 +20,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3, 5)).Returns(3);
             testRand.Setup(p => p.Next(4, 7)).Returns(4);
-            var roomGen = new RoomGenBlocked<ITiledGenContext>(new TestTile(1), new RandRange(3, 5), new RandRange(4, 7), RandRange.Empty, RandRange.Empty);
+            var roomGen = new RoomGenBlocked<ITiledGenContext<TestTile>, TestTile>(new TestTile(1), new RandRange(3, 5), new RandRange(4, 7), RandRange.Empty, RandRange.Empty);
 
             Loc compare = roomGen.ProposeSize(testRand.Object);
 
@@ -33,7 +33,7 @@ namespace RogueElements.Tests
         public void DrawOnMapNone()
         {
             // verify it fills up the entire square area!
-            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            var roomGen = new RoomGenBlocked<ITiledGenContext<TestTile>, TestTile>
             {
                 BlockWidth = new RandRange(0),
                 BlockHeight = new RandRange(0),
@@ -84,7 +84,7 @@ namespace RogueElements.Tests
         public void DrawOnMapMin()
         {
             // verify it fills up the entire square area!
-            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            var roomGen = new RoomGenBlocked<ITiledGenContext<TestTile>, TestTile>
             {
                 BlockWidth = new RandRange(2),
                 BlockHeight = new RandRange(1),
@@ -137,7 +137,7 @@ namespace RogueElements.Tests
         public void DrawOnMapMax()
         {
             // verify it fills up the entire square area!
-            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            var roomGen = new RoomGenBlocked<ITiledGenContext<TestTile>, TestTile>
             {
                 BlockWidth = new RandRange(2),
                 BlockHeight = new RandRange(1),
@@ -190,7 +190,7 @@ namespace RogueElements.Tests
         public void DrawOnMapOversize()
         {
             // verify it fills up the entire square area!
-            var roomGen = new RoomGenBlocked<ITiledGenContext>
+            var roomGen = new RoomGenBlocked<ITiledGenContext<TestTile>, TestTile>
             {
                 BlockWidth = new RandRange(200),
                 BlockHeight = new RandRange(100),

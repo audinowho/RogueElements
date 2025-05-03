@@ -8,10 +8,11 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IFloorPlanGenContext : ITiledGenContext
+    public interface IFloorPlanGenContext<TTile> : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
-        FloorPlan RoomPlan { get; }
+        FloorPlan<TTile> RoomPlan { get; }
 
-        void InitPlan(FloorPlan plan);
+        void InitPlan(FloorPlan<TTile> plan);
     }
 }

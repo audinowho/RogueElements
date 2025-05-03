@@ -11,10 +11,11 @@ namespace RogueElements
     /// <summary>
     /// Initializes a map of Width x Height tiles.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class InitTilesStep<T> : GenStep<T>
-        where T : class, ITiledGenContext
+    public class InitTilesStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public InitTilesStep()
         {
@@ -30,7 +31,7 @@ namespace RogueElements
 
         public int Height { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             // initialize map array to empty
             // set default map values

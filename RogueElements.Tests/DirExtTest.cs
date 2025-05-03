@@ -4,9 +4,9 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
+
+using NUnit.Compatibility;
 using NUnit.Framework;
-using RogueElements;
 
 namespace RogueElements.Tests
 {
@@ -215,8 +215,8 @@ namespace RogueElements.Tests
         {
             Assert.That(DirExt.Combine(horiz, vert), Is.EqualTo(dir));
             dir.Separate(out DirH resH, out DirV resV);
-            Assert.AreEqual(resH, horiz);
-            Assert.AreEqual(resV, vert);
+            Assert.That(resH, Is.EqualTo(horiz));
+            Assert.That(resV, Is.EqualTo(vert));
         }
 
         [Test]

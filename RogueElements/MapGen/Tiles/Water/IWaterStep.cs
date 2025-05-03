@@ -8,8 +8,9 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
-    public interface IWaterStep
+    public interface IWaterStep<TTile>
+        where TTile : ITile<TTile>
     {
-        ITile Terrain { get; set; }
+        TTile Terrain { get; set; }
     }
 }

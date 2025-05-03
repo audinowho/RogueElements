@@ -12,25 +12,26 @@ namespace RogueElements
     /// A rectangular brush for painting hallways.
     /// </summary>
     [Serializable]
-    public class TerrainHallBrush : BaseHallBrush
+    public class TerrainHallBrush<TTile> : BaseHallBrush
+        where TTile : ITile<TTile>
     {
         public TerrainHallBrush()
         {
         }
 
-        public TerrainHallBrush(Loc size, ITile terrain)
+        public TerrainHallBrush(Loc size, TTile terrain)
         {
             this.Dims = size;
             this.Terrain = terrain;
         }
 
-        public TerrainHallBrush(TerrainHallBrush other)
+        public TerrainHallBrush(TerrainHallBrush<TTile> other)
         {
             this.Dims = other.Dims;
             this.Terrain = other.Terrain;
         }
 
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
         /// <summary>
         /// Dimensions of the brush, in Tiles
@@ -43,11 +44,15 @@ namespace RogueElements
 
         public override BaseHallBrush Clone()
         {
-            return new TerrainHallBrush(this);
+            return new TerrainHallBrush<TTile>(this);
         }
 
-        public override void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length)
+        // TODO: Figure a way for this to work better
+        public override void DrawHallBrush<TTile2>(ITiledGenContext<TTile2> map, Rect bounds, LocRay4 ray, int length)
         {
+            if (typeof(TTile) != typeof(TTile2))
+                throw new InvalidOperationException("Mismatching tile types!");
+
             for (int ii = 0; ii < length; ii++)
             {
                 Loc point = ray.Traverse(ii);
@@ -57,8 +62,8 @@ namespace RogueElements
                     for (int yy = brushRect.Y; yy < brushRect.Bottom; yy++)
                     {
                         Loc dest = new Loc(xx, yy);
-                        if (map.CanSetTile(dest, this.Terrain))
-                            map.SetTile(dest, this.Terrain.Copy());
+                        if (map.CanSetTile(dest, (TTile2)(object)this.Terrain))
+                            map.SetTile(dest, (TTile2)(object)this.Terrain.Copy());
                     }
                 }
             }

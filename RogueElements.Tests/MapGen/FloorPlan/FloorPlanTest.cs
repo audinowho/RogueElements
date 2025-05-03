@@ -562,15 +562,15 @@ namespace RogueElements.Tests
         [TestCase(4, true, 0, 0)]
         public void TransferBorderToAdjacents(int index, bool isHall, int expectedRoom, int expectedHall)
         {
-            List<Mock<IRoomGen>> roomGenTarget = new List<Mock<IRoomGen>>();
-            List<Mock<IPermissiveRoomGen>> hallGenTarget = new List<Mock<IPermissiveRoomGen>>();
+            var roomGenTarget = new List<Mock<IRoomGen<TestTile>>>();
+            var hallGenTarget = new List<Mock<IPermissiveRoomGen<TestTile>>>();
 
             var floorPlan = new TestFloorPlan();
             floorPlan.InitSize(new Loc(22, 14));
 
             for (int ii = 0; ii < 5; ii++)
             {
-                Mock<IRoomGen> roomGen = new Mock<IRoomGen>(MockBehavior.Strict);
+                var roomGen = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
                 if (!isHall && index == ii)
                 {
                     roomGen.SetupGet(p => p.Draw).Returns(new Rect(new Loc(1, 5), new Loc(4, 2)));
@@ -586,7 +586,7 @@ namespace RogueElements.Tests
                     roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
                 }
 
-                var roomPlan = new FloorRoomPlan(roomGen.Object, new ComponentCollection());
+                var roomPlan = new FloorRoomPlan<TestTile>(roomGen.Object, new ComponentCollection());
 
                 // only the room under test should get adjacents
                 if (!isHall && index == ii)
@@ -602,7 +602,7 @@ namespace RogueElements.Tests
 
             for (int ii = 0; ii < 5; ii++)
             {
-                Mock<IPermissiveRoomGen> roomGen = new Mock<IPermissiveRoomGen>(MockBehavior.Strict);
+                var roomGen = new Mock<IPermissiveRoomGen<TestTile>>(MockBehavior.Strict);
                 roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
                 if (isHall && index == ii)
                 {
@@ -619,7 +619,7 @@ namespace RogueElements.Tests
                     roomGen.SetupGet(p => p.Draw).Returns(Rect.Empty);
                 }
 
-                var roomPlan = new FloorHallPlan(roomGen.Object, new ComponentCollection());
+                var roomPlan = new FloorHallPlan<TestTile>(roomGen.Object, new ComponentCollection());
 
                 if (isHall && index == ii)
                 {
@@ -632,7 +632,7 @@ namespace RogueElements.Tests
                 floorPlan.PublicHalls.Add(roomPlan);
             }
 
-            IRoomGen from = floorPlan.GetRoomHall(new RoomHallIndex(index, isHall)).RoomGen;
+            IRoomGen<TestTile> from = floorPlan.GetRoomHall(new RoomHallIndex(index, isHall)).RoomGen;
 
             floorPlan.TransferBorderToAdjacents(new RoomHallIndex(index, isHall));
 
@@ -665,9 +665,9 @@ namespace RogueElements.Tests
         public void GetDirAdjacent(int dx, int dy, Dir4 expectedDir)
         {
             // transfers based on location; requires EXACT contact
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 2, 2));
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(dx, dy, 2, 2));
 
             var testFloorPlan = new TestFloorPlan();
@@ -823,10 +823,10 @@ namespace RogueElements.Tests
         public void GetBorderMatch(int x, int expectedMatch)
         {
             const Dir4 expandTo = Dir4.Up;
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 4, 2));
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 1, 2, 3))).Returns(true);
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 2));
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(0, 1, 2))).Returns(true);
 
@@ -847,11 +847,11 @@ namespace RogueElements.Tests
         public void GetBorderMatchPatterned(int x, int expectedMatch)
         {
             const Dir4 expandTo = Dir4.Up;
-            Mock<IRoomGen> mockFrom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockFrom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockFrom.SetupGet(p => p.Draw).Returns(new Rect(0, 2, 4, 2));
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(0, 2))).Returns(true);
             mockFrom.Setup(p => p.GetFulfillableBorder(expandTo, It.IsIn(1, 3))).Returns(false);
-            Mock<IRoomGen> mockTo = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockTo = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockTo.SetupGet(p => p.Draw).Returns(new Rect(0, 0, 3, 2));
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(0, 2))).Returns(true);
             mockTo.Setup(p => p.GetFulfillableBorder(expandTo.Reverse(), It.IsIn(1))).Returns(false);

@@ -23,7 +23,7 @@ namespace RogueElements.Tests
             {
                 for (int yy = 3; yy <= xx; yy++)
                 {
-                    RoomGenCave<ITiledGenContext> roomGen = new RoomGenCave<ITiledGenContext>(new RandRange(xx, xx + 3), new RandRange(yy, yy + 3));
+                    var roomGen = new RoomGenCave<ITiledGenContext<TestTile>, TestTile>(new RandRange(xx, xx + 3), new RandRange(yy, yy + 3));
 
                     List<int> rolledW = new List<int>();
                     List<int> rolledH = new List<int>();
@@ -82,8 +82,8 @@ namespace RogueElements.Tests
             throw new NotImplementedException();
         }
 
-        public class TestRoomGenCave<T> : RoomGenCave<T>
-            where T : ITiledGenContext
+        public class TestRoomGenCave<T> : RoomGenCave<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
         }

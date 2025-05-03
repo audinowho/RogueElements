@@ -7,7 +7,7 @@ using RogueSharp;
 
 namespace RogueElements
 {
-    public class CellTile : Cell, ITile
+    public class CellTile : Cell, ITile<CellTile>
     {
         public CellTile(int x, int y, bool isTransparent, bool isWalkable, bool isInFov)
             : base(x, y, isTransparent, isWalkable, isInFov)
@@ -26,8 +26,12 @@ namespace RogueElements
 
         public static CellTile FromCell(ICell other) => new CellTile(other);
 
-        public bool TileEquivalent(ITile other) => (other is ICell cell) && cell?.IsWalkable == this.IsWalkable;
+        public bool TileEquivalent(CellTile other) => other?.IsWalkable == this.IsWalkable;
 
-        public ITile Copy() => new CellTile(this);
+        public CellTile Copy() => new CellTile(this);
+
+        bool ITile.TileEquivalent(ITile other) => other is ICell cell && cell.IsWalkable == this.IsWalkable;
+
+        ITile ITile.Copy() => this.Copy();
     }
 }

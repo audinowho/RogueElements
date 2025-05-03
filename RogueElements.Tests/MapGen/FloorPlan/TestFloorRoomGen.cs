@@ -7,8 +7,8 @@ using System;
 
 namespace RogueElements.Tests
 {
-    public class TestFloorRoomGen<T> : PermissiveRoomGen<T>
-        where T : ITiledGenContext
+    public class TestFloorRoomGen<T> : PermissiveRoomGen<T, TestTile>
+        where T : ITiledGenContext<TestTile>
     {
         public TestFloorRoomGen()
         {
@@ -29,7 +29,7 @@ namespace RogueElements.Tests
 
         public Loc ProposedSize { get; set; }
 
-        public override RoomGen<T> Copy() => new TestFloorRoomGen<T>(this);
+        public override RoomGen<T, TestTile> Copy() => new TestFloorRoomGen<T>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {

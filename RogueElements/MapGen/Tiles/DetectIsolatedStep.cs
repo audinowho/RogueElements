@@ -13,8 +13,9 @@ namespace RogueElements
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TEntrance"></typeparam>
     [Serializable]
-    public class DetectIsolatedStep<TGenContext, TEntrance> : GenStep<TGenContext>
-        where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>
+    public class DetectIsolatedStep<TGenContext, TTile, TEntrance> : GenStep<TGenContext>
+        where TGenContext : class, ITiledGenContext<TTile>, IViewPlaceableGenContext<TEntrance>
+        where TTile : ITile<TTile>
         where TEntrance : IEntrance
     {
         public DetectIsolatedStep()

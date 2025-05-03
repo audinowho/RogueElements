@@ -13,10 +13,11 @@ namespace RogueElements
     /// Will generate a square if asked to generate for a size it did not propose.
     /// For square-looking rooms, check to make sure the room was not cut down.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenCave<T> : RoomGen<T>, ISizedRoomGen
-        where T : ITiledGenContext
+    public class RoomGenCave<TGenContext, TTile> : RoomGen<TGenContext, TTile>, ISizedRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         private const int AUTOMATA_CHANCE = 55;
 
@@ -35,7 +36,7 @@ namespace RogueElements
             this.Height = height;
         }
 
-        protected RoomGenCave(RoomGenCave<T> other)
+        protected RoomGenCave(RoomGenCave<TGenContext, TTile> other)
         {
             this.Width = other.Width;
             this.Height = other.Height;
@@ -53,7 +54,7 @@ namespace RogueElements
 
         protected bool[][] Tiles { get => this.tiles; set => this.tiles = value; }
 
-        public override RoomGen<T> Copy() => new RoomGenCave<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenCave<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
@@ -128,7 +129,7 @@ namespace RogueElements
             return new Loc(this.Tiles.Length, this.Tiles[0].Length);
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             if (this.Draw.Width != this.Tiles.Length || this.Draw.Height != this.Tiles[0].Length)
             {

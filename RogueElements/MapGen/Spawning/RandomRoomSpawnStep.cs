@@ -15,8 +15,9 @@ namespace RogueElements
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class RandomRoomSpawnStep<TGenContext, TSpawnable> : RoomSpawnStep<TGenContext, TSpawnable>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
+    public class RandomRoomSpawnStep<TGenContext, TTile, TSpawnable> : RoomSpawnStep<TGenContext, TTile, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext<TTile>, IPlaceableGenContext<TSpawnable>
+        where TTile : ITile<TTile>
         where TSpawnable : ISpawnable
     {
         public RandomRoomSpawnStep()
@@ -50,7 +51,7 @@ namespace RogueElements
 
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
-                if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
                     continue;
                 spawningRooms.Add(new RoomHallIndex(ii, false), 100);
             }
@@ -59,7 +60,7 @@ namespace RogueElements
             {
                 for (int ii = 0; ii < map.RoomPlan.HallCount; ii++)
                 {
-                    if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetHallPlan(ii), this.Filters))
+                    if (!BaseRoomFilter<TTile>.PassesAllFilters(map.RoomPlan.GetHallPlan(ii), this.Filters))
                         continue;
                     spawningRooms.Add(new RoomHallIndex(ii, true), 100);
                 }

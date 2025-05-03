@@ -13,11 +13,11 @@ namespace RogueElements.Tests
     [TestFixture]
     public class SpawnerTest
     {
-        public interface IPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>
+        public interface IPlaceableRoomTestContext : ITiledGenContext<TestTile>, IFloorPlanGenContext<TestTile>, IPlaceableGenContext<SpawnableChar>
         {
         }
 
-        public interface IViewPlaceableRoomTestContext : ITiledGenContext, IFloorPlanGenContext, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<TestEntryPoint>
+        public interface IViewPlaceableRoomTestContext : ITiledGenContext<TestTile>, IFloorPlanGenContext<TestTile>, IPlaceableGenContext<SpawnableChar>, IViewPlaceableGenContext<TestEntryPoint>
         {
         }
 
@@ -117,14 +117,14 @@ namespace RogueElements.Tests
             // expect place item
             mockMap.Setup(p => p.PlaceItem(new Loc(locX, locY), new SpawnableChar('a')));
 
-            Mock<IRoomGen> mockRoom = new Mock<IRoomGen>(MockBehavior.Strict);
+            var mockRoom = new Mock<IRoomGen<TestTile>>(MockBehavior.Strict);
             mockRoom.SetupGet(p => p.Draw).Returns(new Rect(10, 20, 30, 40));
-            var roomPlan = new FloorRoomPlan(mockRoom.Object, new ComponentCollection());
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var roomPlan = new FloorRoomPlan<TestTile>(mockRoom.Object, new ComponentCollection());
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(roomPlan);
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
-            var roomSpawner = new Mock<RoomSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null) { CallBase = true };
+            var roomSpawner = new Mock<RoomSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null) { CallBase = true };
 
             roomSpawner.Object.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), new SpawnableChar('a'));
 
@@ -162,7 +162,7 @@ namespace RogueElements.Tests
             foreach (Dir4 dir in DirExt.VALID_DIR4)
                 spawns.Add(new SpawnableChar('a'));
 
-            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null, 100, false) { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), new SpawnableChar('a'))).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), new SpawnableChar('a'))).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), new SpawnableChar('a'))).Returns(true);
@@ -207,7 +207,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 5; ii++)
                 spawns.Add(new SpawnableChar('a'));
 
-            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null, 100, false) { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), new SpawnableChar('a'))).Returns(successful);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), new SpawnableChar('a'))).Returns(successful);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), new SpawnableChar('a'))).Returns(successful);
@@ -249,7 +249,7 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 5; ii++)
                 spawns.Add(new SpawnableChar('a'));
 
-            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null, 100, false) { CallBase = true };
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(0, false), new SpawnableChar('a'))).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(1, false), new SpawnableChar('a'))).Returns(true);
             roomSpawner.Setup(p => p.SpawnInRoom(mockMap.Object, new RoomHallIndex(2, false), new SpawnableChar('a'))).Returns(true);
@@ -272,16 +272,16 @@ namespace RogueElements.Tests
         {
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<RandomRoomSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null, 100, false) { CallBase = true };
 
             SpawnList<RoomHallIndex> compare = new SpawnList<RoomHallIndex>
             {
@@ -303,12 +303,12 @@ namespace RogueElements.Tests
             // tests eligibility of terminals
             Mock<IPlaceableRoomTestContext> mockMap = new Mock<IPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(4);
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan(new TestFloorPlanGen('D'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('D'), new ComponentCollection()));
             List<int> adjacents = new List<int>();
             mockFloor.Setup(p => p.GetAdjacentRooms(0)).Returns(adjacents);
             adjacents = new List<int> { 2 };
@@ -321,7 +321,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<TerminalSpawnStep<IPlaceableRoomTestContext, SpawnableChar>>(null, false) { CallBase = true };
+            var roomSpawner = new Mock<TerminalSpawnStep<IPlaceableRoomTestContext, TestTile, SpawnableChar>>(null, false) { CallBase = true };
 
             var compare1 = new SpawnList<RoomHallIndex>
             {
@@ -351,17 +351,17 @@ namespace RogueElements.Tests
             // A=>0=>B
             Mock<IViewPlaceableRoomTestContext> mockMap = new Mock<IViewPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(2);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, true))).Returns(new FloorHallPlan(new TestFloorPlanGen('0'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, true))).Returns(new FloorHallPlan<TestTile>(new TestFloorPlanGen('0'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
 
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -377,7 +377,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, TestTile, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 3;
@@ -401,17 +401,17 @@ namespace RogueElements.Tests
             // A=>0=>B
             Mock<IViewPlaceableRoomTestContext> mockMap = new Mock<IViewPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(2);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, true))).Returns(new FloorHallPlan(new TestFloorPlanGen('0'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, true))).Returns(new FloorHallPlan<TestTile>(new TestFloorPlanGen('0'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
 
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -427,7 +427,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100, true) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, TestTile, SpawnableChar, TestEntryPoint>>(null, 100, true) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 3;
@@ -452,18 +452,18 @@ namespace RogueElements.Tests
             // A=>B=>C
             Mock<IViewPlaceableRoomTestContext> mockMap = new Mock<IViewPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
 
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -479,7 +479,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, TestTile, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 3;
@@ -504,19 +504,19 @@ namespace RogueElements.Tests
             // A<=B=>C
             Mock<IViewPlaceableRoomTestContext> mockMap = new Mock<IViewPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(3);
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('A'), new ComponentCollection()));
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'B';
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
 
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('A'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('A'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
 
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
@@ -532,7 +532,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, TestTile, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
 
             const int maxVal = 2;
             const int rooms = 3;
@@ -559,20 +559,20 @@ namespace RogueElements.Tests
                C=>D */
             Mock<IViewPlaceableRoomTestContext> mockMap = new Mock<IViewPlaceableRoomTestContext>(MockBehavior.Strict);
 
-            Mock<FloorPlan> mockFloor = new Mock<FloorPlan>(MockBehavior.Strict);
+            var mockFloor = new Mock<FloorPlan<TestTile>>(MockBehavior.Strict);
             mockFloor.SetupGet(p => p.RoomCount).Returns(4);
             Mock<TestFloorPlanGen> startRoom = new Mock<TestFloorPlanGen>(MockBehavior.Strict);
             startRoom.SetupProperty(p => p.Draw);
             startRoom.SetupGet(p => p.Draw).Returns(new Rect(2, 2, 4, 4));
             startRoom.Object.Identifier = 'A';
-            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan(new TestFloorPlanGen('D'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan(startRoom.Object, new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('B'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('C'), new ComponentCollection()));
-            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(3, false))).Returns(new FloorRoomPlan(new TestFloorPlanGen('D'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(0)).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(1)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(2)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomPlan(3)).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('D'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(0, false))).Returns(new FloorRoomPlan<TestTile>(startRoom.Object, new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(1, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('B'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(2, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('C'), new ComponentCollection()));
+            mockFloor.Setup(p => p.GetRoomHall(new RoomHallIndex(3, false))).Returns(new FloorRoomPlan<TestTile>(new TestFloorPlanGen('D'), new ComponentCollection()));
             mockMap.SetupGet(p => p.RoomPlan).Returns(mockFloor.Object);
 
             List<RoomHallIndex> adjacents = new List<RoomHallIndex> { new RoomHallIndex(1, false), new RoomHallIndex(2, false) };
@@ -589,7 +589,7 @@ namespace RogueElements.Tests
 
             Mock<List<SpawnableChar>> mockSpawns = new Mock<List<SpawnableChar>>(MockBehavior.Strict);
 
-            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
+            var roomSpawner = new Mock<DueSpawnStep<IViewPlaceableRoomTestContext, TestTile, SpawnableChar, TestEntryPoint>>(null, 100, false) { CallBase = true };
 
             const int maxVal = 3;
             const int rooms = 4;

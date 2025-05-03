@@ -8,7 +8,7 @@ using RogueSharp;
 
 namespace RogueElements.Examples.Ex8_Integration
 {
-    public class MapGenContext : ITiledGenContext, IRoomGridGenContext
+    public class MapGenContext : ITiledGenContext<CellTile>, IRoomGridGenContext<CellTile>
     {
         public MapGenContext()
         {
@@ -19,9 +19,9 @@ namespace RogueElements.Examples.Ex8_Integration
 
         public IRandom Rand { get; private set; }
 
-        public FloorPlan RoomPlan { get; private set; }
+        public FloorPlan<CellTile> RoomPlan { get; private set; }
 
-        public GridPlan GridPlan { get; private set; }
+        public GridPlan<CellTile> GridPlan { get; private set; }
 
         public bool TilesInitialized => this.Map.Width > 0 && this.Map.Height > 0;
 
@@ -31,15 +31,15 @@ namespace RogueElements.Examples.Ex8_Integration
 
         public bool Wrap => false;
 
-        public ITile RoomTerrain => new CellTile(0, 0, true, true, false);
+        public CellTile RoomTerrain => new CellTile(0, 0, true, true, false);
 
-        public ITile WallTerrain => new CellTile(0, 0, false, false, false);
+        public CellTile WallTerrain => new CellTile(0, 0, false, false, false);
 
-        public ITile GetTile(Loc loc) => CellTile.FromCell(this.Map.GetCell(loc.X, loc.Y));
+        public CellTile GetTile(Loc loc) => CellTile.FromCell(this.Map.GetCell(loc.X, loc.Y));
 
-        public bool CanSetTile(Loc loc, ITile tile) => true;
+        public bool CanSetTile(Loc loc, CellTile tile) => true;
 
-        public bool TrySetTile(Loc loc, ITile tile)
+        public bool TrySetTile(Loc loc, CellTile tile)
         {
             if (!this.CanSetTile(loc, tile))
                 return false;
@@ -48,7 +48,7 @@ namespace RogueElements.Examples.Ex8_Integration
             return true;
         }
 
-        public void SetTile(Loc loc, ITile tile)
+        public void SetTile(Loc loc, CellTile tile)
         {
             if (!this.TrySetTile(loc, tile))
                 throw new InvalidOperationException("Can't place tile!");
@@ -59,12 +59,12 @@ namespace RogueElements.Examples.Ex8_Integration
             this.Rand = new ReRandom(seed);
         }
 
-        bool ITiledGenContext.TileBlocked(Loc loc)
+        bool ITiledGenContext<CellTile>.TileBlocked(Loc loc)
         {
             return !this.Map.IsWalkable(loc.X, loc.Y);
         }
 
-        bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
+        bool ITiledGenContext<CellTile>.TileBlocked(Loc loc, bool diagonal)
         {
             return !this.Map.IsWalkable(loc.X, loc.Y);
         }
@@ -78,12 +78,12 @@ namespace RogueElements.Examples.Ex8_Integration
         {
         }
 
-        public void InitPlan(FloorPlan plan)
+        public void InitPlan(FloorPlan<CellTile> plan)
         {
             this.RoomPlan = plan;
         }
 
-        public void InitGrid(GridPlan plan)
+        public void InitGrid(GridPlan<CellTile> plan)
         {
             this.GridPlan = plan;
         }

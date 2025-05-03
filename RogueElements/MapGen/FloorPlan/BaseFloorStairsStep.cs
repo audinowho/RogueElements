@@ -15,8 +15,9 @@ namespace RogueElements
     /// <typeparam name="TEntrance"></typeparam>
     /// <typeparam name="TExit"></typeparam>
     [Serializable]
-    public abstract class BaseFloorStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+    public abstract class BaseFloorStairsStep<TGenContext, TTile, TEntrance, TExit> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
+        where TTile : ITile<TTile>
         where TEntrance : IEntrance
         where TExit : IExit
     {
@@ -24,21 +25,21 @@ namespace RogueElements
         {
             this.Entrances = new List<TEntrance>();
             this.Exits = new List<TExit>();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         public BaseFloorStairsStep(TEntrance entrance, TExit exit)
         {
             this.Entrances = new List<TEntrance> { entrance };
             this.Exits = new List<TExit> { exit };
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         public BaseFloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
         {
             this.Entrances = entrances;
             this.Exits = exits;
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         /// <summary>
@@ -54,14 +55,14 @@ namespace RogueElements
         /// <summary>
         /// Used to filter out rooms that do not make suitable entrances/exits, such as boss rooms.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         public override void Apply(TGenContext map)
         {
             List<int> free_indices = new List<int>();
             for (int ii = 0; ii < map.RoomPlan.RoomCount; ii++)
             {
-                if (!BaseRoomFilter.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(map.RoomPlan.GetRoomPlan(ii), this.Filters))
                     continue;
                 free_indices.Add(ii);
             }

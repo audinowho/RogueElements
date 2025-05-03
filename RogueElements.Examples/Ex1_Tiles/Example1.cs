@@ -17,7 +17,7 @@ namespace RogueElements.Examples.Ex1_Tiles
             var layout = new MapGen<MapGenContext>();
 
             // Initialize a 30x25 blank map full of Wall tiles
-            InitTilesStep<MapGenContext> startStep = new InitTilesStep<MapGenContext>(30, 25);
+            var startStep = new InitTilesStep<MapGenContext, Tile>(30, 25);
             layout.GenSteps.Add(0, startStep);
 
             // Draw a specific array of tiles onto the map at offset X2,Y3
@@ -45,10 +45,11 @@ namespace RogueElements.Examples.Ex1_Tiles
                 "....###...###...###......",
                 "...........#.............",
             };
-            ITile[][] tiles = new ITile[level[0].Length][];
+
+            Tile[][] tiles = new Tile[level[0].Length][];
             for (int xx = 0; xx < level[0].Length; xx++)
             {
-                tiles[xx] = new ITile[level.Length];
+                tiles[xx] = new Tile[level.Length];
                 for (int yy = 0; yy < level.Length; yy++)
                 {
                     int id = Map.WALL_TERRAIN_ID;
@@ -58,7 +59,7 @@ namespace RogueElements.Examples.Ex1_Tiles
                 }
             }
 
-            var drawStep = new SpecificTilesStep<MapGenContext>(tiles, new Loc(2, 3));
+            var drawStep = new SpecificTilesStep<MapGenContext, Tile>(tiles, new Loc(2, 3));
             layout.GenSteps.Add(0, drawStep);
 
             // Run the generator and print

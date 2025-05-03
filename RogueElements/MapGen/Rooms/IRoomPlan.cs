@@ -5,9 +5,10 @@
 
 namespace RogueElements
 {
-    public interface IRoomPlan
+    public interface IRoomPlan<TTile>
+        where TTile : ITile<TTile>
     {
-        IRoomGen RoomGen { get; }
+        IRoomGen<TTile> RoomGen { get; }
 
         ComponentCollection Components { get; }
     }

@@ -13,7 +13,8 @@ namespace RogueElements
     /// Filters for rooms using the default generator.
     /// </summary>
     [Serializable]
-    public class RoomFilterDefaultGen : BaseRoomFilter
+    public class RoomFilterDefaultGen<TTile> : BaseRoomFilter<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomFilterDefaultGen()
         {
@@ -26,7 +27,7 @@ namespace RogueElements
 
         public bool Negate { get; set; }
 
-        public override bool PassesFilter(IRoomPlan plan)
+        public override bool PassesFilter(IRoomPlan<TTile> plan)
         {
             if (plan.RoomGen is IRoomGenDefault)
                 return !this.Negate;

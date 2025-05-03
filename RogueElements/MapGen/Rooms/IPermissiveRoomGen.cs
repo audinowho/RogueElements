@@ -5,11 +5,13 @@
 
 namespace RogueElements
 {
-    public interface IPermissiveRoomGen : IRoomGen
+    public interface IPermissiveRoomGen<TTile> : IRoomGen<TTile>
+        where TTile : ITile<TTile>
     {
     }
 
-    public interface ISizedRoomGen : IRoomGen
+    public interface ISizedRoomGen<TTile> : IRoomGen<TTile>
+        where TTile : ITile<TTile>
     {
         RandRange Width { get; set; }
 

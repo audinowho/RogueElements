@@ -9,15 +9,15 @@ using NUnit.Framework;
 
 namespace RogueElements.Tests
 {
-    public class TestGridFloorPlan : GridPlan
+    public class TestGridFloorPlan : GridPlan<TestTile>
     {
-        public List<GridRoomPlan> PublicArrayRooms => this.ArrayRooms;
+        public List<GridRoomPlan<TestTile>> PublicArrayRooms => this.ArrayRooms;
 
         public int[][] PublicRooms => this.Rooms;
 
-        public GridHallGroup[][] PublicVHalls => this.VHalls;
+        public GridHallGroup<TestTile>[][] PublicVHalls => this.VHalls;
 
-        public GridHallGroup[][] PublicHHalls => this.HHalls;
+        public GridHallGroup<TestTile>[][] PublicHHalls => this.HHalls;
 
         public static void CompareFloorPlans(TestGridFloorPlan floorPlan, TestGridFloorPlan compareFloorPlan)
         {
@@ -25,8 +25,8 @@ namespace RogueElements.Tests
             Assert.That(floorPlan.RoomCount, Is.EqualTo(compareFloorPlan.RoomCount));
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {
-                GridRoomPlan plan = floorPlan.GetRoomPlan(ii);
-                GridRoomPlan comparePlan = compareFloorPlan.GetRoomPlan(ii);
+                GridRoomPlan<TestTile> plan = floorPlan.GetRoomPlan(ii);
+                GridRoomPlan<TestTile> comparePlan = compareFloorPlan.GetRoomPlan(ii);
                 Assert.That(plan.RoomGen, Is.EqualTo(comparePlan.RoomGen));
                 Assert.That(plan.Bounds, Is.EqualTo(comparePlan.Bounds));
                 Assert.That(plan.Components, Is.EquivalentTo(comparePlan.Components));
@@ -82,7 +82,7 @@ namespace RogueElements.Tests
                 throw new ArgumentException("Bad input grid!");
             var floorPlan = new TestGridFloorPlan();
             floorPlan.InitSize((inGrid[0].Length + 1) / 2, (inGrid.Length + 1) / 2, widthPerCell, heightPerCell, 1, wrap);
-            GridRoomPlan[] addedRooms = new GridRoomPlan[26];
+            var addedRooms = new GridRoomPlan<TestTile>[26];
 
             for (int xx = 0; xx < inGrid[0].Length; xx++)
             {
@@ -99,8 +99,8 @@ namespace RogueElements.Tests
                         {
                             floorPlan.Rooms[x][y] = val - 'A';
                             if (addedRooms[val - 'A'] == null)
-                                addedRooms[val - 'A'] = new GridRoomPlan(new Rect(x, y, 1, 1), new TestGridRoomGen(val), new ComponentCollection());
-                            GridRoomPlan roomPlan = addedRooms[val - 'A'];
+                                addedRooms[val - 'A'] = new GridRoomPlan<TestTile>(new Rect(x, y, 1, 1), new TestGridRoomGen(val), new ComponentCollection());
+                            GridRoomPlan<TestTile> roomPlan = addedRooms[val - 'A'];
 
                             if (roomPlan.Bounds.End.X < x)
                                 roomPlan.Bounds = new Rect(new Loc(x, roomPlan.Bounds.Y), new Loc(floorPlan.GridWidth - x + roomPlan.Bounds.Size.X, roomPlan.Bounds.Size.Y));
@@ -125,7 +125,7 @@ namespace RogueElements.Tests
                     {
                         // vhalls
                         if (val == '#')
-                            floorPlan.VHalls[x][y].SetHall(new GridHallPlan(new TestGridRoomGen(), new ComponentCollection()));
+                            floorPlan.VHalls[x][y].SetHall(new GridHallPlan<TestTile>(new TestGridRoomGen(), new ComponentCollection()));
                         else if (val == '.')
                             floorPlan.VHalls[x][y].SetHall(null);
                         else
@@ -135,7 +135,7 @@ namespace RogueElements.Tests
                     {
                         // hhalls
                         if (val == '#')
-                            floorPlan.HHalls[x][y].SetHall(new GridHallPlan(new TestGridRoomGen(), new ComponentCollection()));
+                            floorPlan.HHalls[x][y].SetHall(new GridHallPlan<TestTile>(new TestGridRoomGen(), new ComponentCollection()));
                         else if (val == '.')
                             floorPlan.HHalls[x][y].SetHall(null);
                         else

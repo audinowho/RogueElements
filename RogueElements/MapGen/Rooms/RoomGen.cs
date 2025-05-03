@@ -23,10 +23,11 @@ namespace RogueElements
     /// * Another example would be if the algorithm from above placed this RoomGen between two rooms: one above and one below.It wants to connect them from above and below.The RoomGen must provide an opening somewhere for its north and south borders.
     /// * The keyword is somewhere. Somewhere that the RoomGen gets to pick and the calling code cannot.
     /// </remarks>
-    /// <typeparam name="T">The MapGenContext to apply the room to.</typeparam>
+    /// <typeparam name="TGenContext">The MapGenContext to apply the room to.</typeparam>
     [Serializable]
-    public abstract class RoomGen<T> : IRoomGen
-        where T : ITiledGenContext
+    public abstract class RoomGen<TGenContext, TTile> : IRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         [NonSerialized]
         private Dictionary<Dir4, List<IntRange>> roomSideReqs;
@@ -107,9 +108,9 @@ namespace RogueElements
         /// Creates a copy of the object, to be placed in the generated layout.
         /// </summary>
         /// <returns></returns>
-        public abstract RoomGen<T> Copy();
+        public abstract RoomGen<TGenContext, TTile> Copy();
 
-        IRoomGen IRoomGen.Copy() => this.Copy();
+        IRoomGen<TTile> IRoomGen<TTile>.Copy() => this.Copy();
 
         // this structure is serialized, so make sure runtime state variables are clean at start
 
@@ -240,11 +241,11 @@ namespace RogueElements
             return resultStarts;
         }
 
-        public abstract void DrawOnMap(T map);
+        public abstract void DrawOnMap(TGenContext map);
 
-        void IRoomGen.DrawOnMap(ITiledGenContext map) => this.DrawOnMap((T)map);
+        void IRoomGen<TTile>.DrawOnMap(ITiledGenContext<TTile> map) => this.DrawOnMap((TGenContext)map);
 
-        public virtual void SetRoomBorders(T map)
+        public virtual void SetRoomBorders(TGenContext map)
         {
             for (int ii = 0; ii < this.Draw.Width; ii++)
             {
@@ -264,7 +265,7 @@ namespace RogueElements
         /// </summary>
         /// <param name="map">Map to draw on.</param>
         /// <param name="openAll">Chooses all borders instead of just one.</param>
-        public virtual void FulfillRoomBorders(T map, bool openAll)
+        public virtual void FulfillRoomBorders(TGenContext map, bool openAll)
         {
             // NOTE: This assumes that reaching any open tile results in reaching the room as a whole.
             // It also assumes that an open tile would eventually be reached if dug far enough.
@@ -342,7 +343,7 @@ namespace RogueElements
         /// <param name="map"></param>
         /// <param name="dir">The direction of the border, facing outwards.</param>
         /// <param name="scalar"></param>
-        public virtual void DigAtBorder(ITiledGenContext map, Dir4 dir, int scalar)
+        public virtual void DigAtBorder(ITiledGenContext<TTile> map, Dir4 dir, int scalar)
         {
             Loc curLoc = this.Draw.GetEdgeLoc(dir, scalar);
             int length = dir.ToAxis() == Axis4.Vert ? this.Draw.Height : this.Draw.Width;
@@ -439,7 +440,7 @@ namespace RogueElements
 
         protected abstract void PrepareFulfillableBorders(IRandom rand);
 
-        protected void DrawMapDefault(T map)
+        protected void DrawMapDefault(TGenContext map)
         {
             // draw on all
             for (int x = 0; x < this.Draw.Size.X; x++)

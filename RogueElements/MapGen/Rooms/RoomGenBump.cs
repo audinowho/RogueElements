@@ -11,10 +11,11 @@ namespace RogueElements
     /// <summary>
     /// Generates a rectangular room with the specified width and height, and with the tiles at the perimeter randomly blocked.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenBump<T> : PermissiveRoomGen<T>, ISizedRoomGen
-        where T : ITiledGenContext
+    public class RoomGenBump<TGenContext, TTile> : PermissiveRoomGen<TGenContext, TTile>, ISizedRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenBump()
         {
@@ -27,7 +28,7 @@ namespace RogueElements
             this.BumpPercent = bumpPercent;
         }
 
-        protected RoomGenBump(RoomGenBump<T> other)
+        protected RoomGenBump(RoomGenBump<TGenContext, TTile> other)
         {
             this.Width = other.Width;
             this.Height = other.Height;
@@ -49,14 +50,14 @@ namespace RogueElements
         /// </summary>
         public RandRange BumpPercent { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenBump<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenBump<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             // add peturbations
             if (this.Draw.Size.X > 2 && this.Draw.Size.Y > 2)

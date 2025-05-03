@@ -12,10 +12,11 @@ namespace RogueElements
     /// A room that connects its exits with a narrow hallway.
     /// It is able to handle all combinations of exits from all combination of directions.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenAngledHall<T> : PermissiveRoomGen<T>
-        where T : ITiledGenContext
+    public class RoomGenAngledHall<TGenContext, TTile> : PermissiveRoomGen<TGenContext, TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenAngledHall()
         {
@@ -42,7 +43,7 @@ namespace RogueElements
             this.Height = height;
         }
 
-        protected RoomGenAngledHall(RoomGenAngledHall<T> other)
+        protected RoomGenAngledHall(RoomGenAngledHall<TGenContext, TTile> other)
         {
             this.HallTurnBias = other.HallTurnBias;
             this.Brush = other.Brush.Clone();
@@ -70,14 +71,14 @@ namespace RogueElements
         /// </summary>
         public RandRange Height { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenAngledHall<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenAngledHall<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             // check if there are any sides that have intersections such that straight lines are possible
             var possibleStarts = new Dictionary<Dir4, List<HashSet<int>>>();
@@ -251,7 +252,7 @@ namespace RogueElements
         /// <param name="forwardEnd"></param>
         /// <param name="starts"></param>
         /// <param name="drawnRays">todo: describe drawnRays parameter on DrawCombinedHall</param>
-        public void DrawCombinedHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Dir4 dir, int forwardEnd, int[] starts)
+        public void DrawCombinedHall(ITiledGenContext<TTile> map, List<(LocRay4, int)> drawnRays, Dir4 dir, int forwardEnd, int[] starts)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
 
@@ -284,7 +285,7 @@ namespace RogueElements
             return string.Format("{0}: Angle:{1}%", this.GetType().GetFormattedTypeName(), this.HallTurnBias);
         }
 
-        private static void Choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
+        private static void Choose1on1BentHallStarts(TGenContext map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
         {
             // special case; make sure that start and end are NOT aligned to each other because we want a bend
             // This method is run with the assumption that the following is never true:
@@ -372,7 +373,7 @@ namespace RogueElements
         /// <param name="point1"></param>
         /// <param name="point2"></param>
         /// <param name="dir"></param>
-        private void DrawHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Loc point1, Loc point2, Dir4 dir)
+        private void DrawHall(ITiledGenContext<TTile> map, List<(LocRay4, int)> drawnRays, Loc point1, Loc point2, Dir4 dir)
         {
             LocRay4 ray = new LocRay4(point1, dir);
             int range = 0;
@@ -426,7 +427,7 @@ namespace RogueElements
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
         /// <param name="drawnRays">todo: describe drawnRays parameter on DrawSecondaryHall</param>
-        private void DrawSecondaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
+        private void DrawSecondaryHall(TGenContext map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
@@ -508,7 +509,7 @@ namespace RogueElements
         /// <param name="vertical"></param>
         /// <param name="turn"></param>
         /// <param name="drawnRays">todo: describe drawnRays parameter on DrawPrimaryHall</param>
-        private void DrawPrimaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
+        private void DrawPrimaryHall(TGenContext map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
             {
@@ -592,7 +593,7 @@ namespace RogueElements
         /// <param name="cross"></param>
         /// <param name="vertical"></param>
         /// <param name="drawnRays">todo: describe drawnRays parameter on DrawStraightHall</param>
-        private void DrawStraightHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, bool vertical)
+        private void DrawStraightHall(TGenContext map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, bool vertical)
         {
             int startSideDist = MathUtils.ChooseFromHash(cross, map.Rand);
             Loc startLoc = new Loc(vertical ? startSideDist : this.Draw.X, vertical ? this.Draw.Y : startSideDist);

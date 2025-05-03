@@ -46,7 +46,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('b'));
 
             var pathGen = new ConnectBranchTestStep(mockHalls.Object) { ConnectPercent = 100 };
@@ -99,7 +99,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
             mockHalls.Setup(p => p.Pick(testRand.Object)).Returns(new TestFloorPlanGen('b'));
 
             var pathGen = new ConnectBranchTestStep(mockHalls.Object) { ConnectPercent = 100 };
@@ -181,8 +181,8 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
-            Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
+            Moq.Language.ISetupSequentialResult<PermissiveRoomGen<IFloorPlanTestContext, TestTile>> hallSeq = mockHalls.SetupSequence(p => p.Pick(testRand.Object));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('c'));
             hallSeq = hallSeq.Returns(new TestFloorPlanGen('d'));
 
@@ -221,7 +221,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(It.IsAny<int>())).Returns(0);
 
-            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>>>(MockBehavior.Strict);
+            var mockHalls = new Mock<IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>>>(MockBehavior.Strict);
 
             var pathGen = new ConnectBranchTestStep(mockHalls.Object);
             pathGen.ApplyToPath(testRand.Object, floorPlan);
@@ -343,14 +343,14 @@ namespace RogueElements.Tests
             Assert.That(arms, Is.EqualTo(expectedArms));
         }
 
-        private class ConnectBranchTestStep : ConnectBranchStep<IFloorPlanTestContext>
+        private class ConnectBranchTestStep : ConnectBranchStep<IFloorPlanTestContext, TestTile>
         {
-            public ConnectBranchTestStep(IRandPicker<PermissiveRoomGen<IFloorPlanTestContext>> genericHalls)
+            public ConnectBranchTestStep(IRandPicker<PermissiveRoomGen<IFloorPlanTestContext, TestTile>> genericHalls)
                 : base(genericHalls)
             {
             }
 
-            public static List<List<RoomHallIndex>> GetBranchArms(TestFloorPlan floorPlan) => ConnectBranchStep<IFloorPlanTestContext>.GetBranchArms(floorPlan);
+            public static List<List<RoomHallIndex>> GetBranchArms(TestFloorPlan floorPlan) => ConnectBranchStep<IFloorPlanTestContext, TestTile>.GetBranchArms(floorPlan);
         }
     }
 }

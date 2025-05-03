@@ -9,7 +9,7 @@ using RogueElements;
 
 namespace RogueElements.Examples
 {
-    public class Tile : ITile
+    public sealed class Tile : ITile<Tile>
     {
         public Tile()
         {
@@ -28,13 +28,15 @@ namespace RogueElements.Examples
 
         public int ID { get; set; }
 
-        public ITile Copy() => new Tile(this);
+        public Tile Copy() => new Tile(this);
 
-        public bool TileEquivalent(ITile other)
+        public bool TileEquivalent(Tile other)
         {
-            if (!(other is Tile tile))
-                return false;
-            return tile.ID == this.ID;
+            return this.ID == other.ID;
         }
+
+        ITile ITile.Copy() => this.Copy();
+
+        bool ITile.TileEquivalent(ITile other) => other is Tile t && this.TileEquivalent(t);
     }
 }

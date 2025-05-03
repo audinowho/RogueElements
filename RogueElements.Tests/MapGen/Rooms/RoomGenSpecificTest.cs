@@ -34,8 +34,8 @@ namespace RogueElements.Tests
             throw new NotImplementedException();
         }
 
-        public class TestRoomGenSpecific<T> : RoomGenSpecific<T>
-            where T : ITiledGenContext
+        public class TestRoomGenSpecific<T> : RoomGenSpecific<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
         }

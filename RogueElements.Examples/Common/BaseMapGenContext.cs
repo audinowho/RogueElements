@@ -10,7 +10,7 @@ using System.Text;
 
 namespace RogueElements.Examples
 {
-    public abstract class BaseMapGenContext<TMap> : ITiledGenContext
+    public abstract class BaseMapGenContext<TMap> : ITiledGenContext<Tile>
         where TMap : BaseMap, new()
     {
         protected BaseMapGenContext()
@@ -20,9 +20,9 @@ namespace RogueElements.Examples
 
         public TMap Map { get; set; }
 
-        public ITile RoomTerrain => new Tile(BaseMap.ROOM_TERRAIN_ID);
+        public Tile RoomTerrain => new Tile(BaseMap.ROOM_TERRAIN_ID);
 
-        public ITile WallTerrain => new Tile(BaseMap.WALL_TERRAIN_ID);
+        public Tile WallTerrain => new Tile(BaseMap.WALL_TERRAIN_ID);
 
         public bool TilesInitialized => this.Map.Tiles != null;
 
@@ -34,11 +34,11 @@ namespace RogueElements.Examples
 
         public IRandom Rand => this.Map.Rand;
 
-        public ITile GetTile(Loc loc) => this.Map.Tiles[loc.X][loc.Y];
+        public Tile GetTile(Loc loc) => this.Map.Tiles[loc.X][loc.Y];
 
-        public virtual bool CanSetTile(Loc loc, ITile tile) => true;
+        public virtual bool CanSetTile(Loc loc, Tile tile) => true;
 
-        public bool TrySetTile(Loc loc, ITile tile)
+        public bool TrySetTile(Loc loc, Tile tile)
         {
             if (!this.CanSetTile(loc, tile))
                 return false;
@@ -46,7 +46,7 @@ namespace RogueElements.Examples
             return true;
         }
 
-        public void SetTile(Loc loc, ITile tile)
+        public void SetTile(Loc loc, Tile tile)
         {
             if (!this.TrySetTile(loc, tile))
                 throw new InvalidOperationException("Can't place tile!");
@@ -57,12 +57,12 @@ namespace RogueElements.Examples
             this.Map.Rand = new ReRandom(seed);
         }
 
-        bool ITiledGenContext.TileBlocked(Loc loc)
+        bool ITiledGenContext<Tile>.TileBlocked(Loc loc)
         {
             return this.Map.Tiles[loc.X][loc.Y].ID == BaseMap.WALL_TERRAIN_ID;
         }
 
-        bool ITiledGenContext.TileBlocked(Loc loc, bool diagonal)
+        bool ITiledGenContext<Tile>.TileBlocked(Loc loc, bool diagonal)
         {
             return this.Map.Tiles[loc.X][loc.Y].ID == BaseMap.WALL_TERRAIN_ID;
         }

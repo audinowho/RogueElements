@@ -11,18 +11,19 @@ namespace RogueElements
     /// <summary>
     /// Contains data about which cells a room occupies in a GridFloorPlan.
     /// </summary>
-    public class GridHallGroup
+    public class GridHallGroup<TTile>
+        where TTile : ITile<TTile>
     {
         public GridHallGroup()
         {
-            this.HallParts = new List<GridHallPlan>();
+            this.HallParts = new List<GridHallPlan<TTile>>();
         }
 
-        public GridHallPlan MainHall => this.HallParts.Count > 0 ? this.HallParts[0] : null;
+        public GridHallPlan<TTile> MainHall => this.HallParts.Count > 0 ? this.HallParts[0] : null;
 
-        public List<GridHallPlan> HallParts { get; }
+        public List<GridHallPlan<TTile>> HallParts { get; }
 
-        public void SetHall(GridHallPlan plan)
+        public void SetHall(GridHallPlan<TTile> plan)
         {
             this.HallParts.Clear();
             if (plan != null)

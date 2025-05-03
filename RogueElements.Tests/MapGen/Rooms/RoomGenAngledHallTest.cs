@@ -13,7 +13,7 @@ namespace RogueElements.Tests
     [TestFixture]
     public class RoomGenAngledHallTest
     {
-        public static void SetBorderInfo(RoomGenAngledHall<ITiledGenContext> roomGen, string[] inGrid)
+        public static void SetBorderInfo(RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile> roomGen, string[] inGrid)
         {
             int upStart = -1;
             int downStart = -1;
@@ -91,10 +91,10 @@ namespace RogueElements.Tests
         {
             // two overlapping sides (no bias)
             // two overlapping sides (half bias 49)
-            Mock<RoomGenAngledHall<ITiledGenContext>> roomGen = new Mock<RoomGenAngledHall<ITiledGenContext>> { CallBase = true };
+            var roomGen = new Mock<RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
             roomGen.Object.HallTurnBias = bias;
             roomGen.Object.Brush = new DefaultHallBrush();
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
 
             string[] inGrid =
             {
@@ -156,7 +156,7 @@ namespace RogueElements.Tests
         {
             // two overlapping sides (all bias)
             // two overlapping sides (half bias 50)
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -225,7 +225,7 @@ namespace RogueElements.Tests
         public void DrawOnMapStraightIntersectForceTurned()
         {
             // no overlap, force no turn (and result in defaulting to turn)
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(100);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(100);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -294,7 +294,7 @@ namespace RogueElements.Tests
         public void DrawOnMapStraightIntersectForceNoTurn()
         {
             // one-tile overlap, force turn (and result in defaulting to no turn)
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>();
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>();
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -349,7 +349,7 @@ namespace RogueElements.Tests
         public void DrawOnMapStraightIntersectBigBrushWithRoom()
         {
             // straight hall but with a larger brush
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(0, new SquareHallBrush(new Loc(2)));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -404,7 +404,7 @@ namespace RogueElements.Tests
         public void DrawOnMapStraightIntersectBigBrush()
         {
             // straight hall but with a larger brush
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(0, new SquareHallBrush(new Loc(2)));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -459,7 +459,7 @@ namespace RogueElements.Tests
         public void DrawOnMapStraightIntersectBigBrushBorder()
         {
             // straight hall with a large brush, but hitting the border
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0, new SquareHallBrush(new Loc(2)));
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(0, new SquareHallBrush(new Loc(2)));
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -516,7 +516,7 @@ namespace RogueElements.Tests
         public void DrawOnMapAngleIntersect(int bias)
         {
             // bias will not affect the outcome here
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXX...XX",
@@ -579,7 +579,7 @@ namespace RogueElements.Tests
         public void DrawCombinedHall()
         {
             // basic case
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>();
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>();
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -614,7 +614,7 @@ namespace RogueElements.Tests
         public void DrawOnMap3Intersect()
         {
             // opposite sides: not crooked
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>();
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>();
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -680,7 +680,7 @@ namespace RogueElements.Tests
         public void DrawOnMap3IntersectTurned()
         {
             // opposite sides: crooked, intersecting on the crooked point
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(100);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(100);
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -753,7 +753,7 @@ namespace RogueElements.Tests
         public void DrawOnMap3IntersectTurnedIntersected()
         {
             // opposite sides: crooked, intersecting beside the crooked point
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(100);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(100);
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -826,7 +826,7 @@ namespace RogueElements.Tests
         public void DrawOnMap4IntersectNoTurn()
         {
             // no sides crooked
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(0);
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -892,7 +892,7 @@ namespace RogueElements.Tests
         public void DrawOnMap4IntersectHorizTurn()
         {
             // horiz sides crooked
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(50);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(50);
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -963,7 +963,7 @@ namespace RogueElements.Tests
         public void DrawOnMap4IntersectBothTurn()
         {
             // both sides crooked
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(100);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(100);
             string[] inGrid =
             {
                 "XXXX.....X",
@@ -1039,7 +1039,7 @@ namespace RogueElements.Tests
         {
             // 1 to many
             // turn off turn bias
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "X..X.....X",
@@ -1115,7 +1115,7 @@ namespace RogueElements.Tests
         {
             // many to many
             // turn off turn bias
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "X..X.....X",
@@ -1195,7 +1195,7 @@ namespace RogueElements.Tests
         {
             // many to many
             // turn off turn bias
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -1275,7 +1275,7 @@ namespace RogueElements.Tests
         public void DrawOnMap3Cross(int bias)
         {
             // many to many
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "X..X.....X",
@@ -1366,7 +1366,7 @@ namespace RogueElements.Tests
         public void DrawOnMap4Cross(int bias)
         {
             // many to many
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "X..X.....X",
@@ -1461,7 +1461,7 @@ namespace RogueElements.Tests
         public void DrawOnMap1Single(int bias)
         {
             // many to many
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -1524,7 +1524,7 @@ namespace RogueElements.Tests
         public void DrawOnMap1Cross(int bias)
         {
             // many to many
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -1595,7 +1595,7 @@ namespace RogueElements.Tests
         public void DrawOnMap1CrossClose(int bias)
         {
             // many to many
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(bias);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(bias);
             string[] inGrid =
             {
                 "XXXXXXXXXX",
@@ -1662,7 +1662,7 @@ namespace RogueElements.Tests
         public void DrawOnMapNone()
         {
             // with no inputs, the generator throws an exception
-            var roomGen = new RoomGenAngledHall<ITiledGenContext>(0);
+            var roomGen = new RoomGenAngledHall<ITiledGenContext<TestTile>, TestTile>(0);
             string[] inGrid =
             {
                 "XXXXXXXXXX",

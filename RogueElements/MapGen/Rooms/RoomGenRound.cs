@@ -10,10 +10,11 @@ namespace RogueElements
     /// <summary>
     /// Generates a rounded room.  Square dimensions result in a circle, while rectangular dimensions result in capsules.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenRound<T> : RoomGen<T>, ISizedRoomGen
-        where T : ITiledGenContext
+    public class RoomGenRound<TGenContext, TTile> : RoomGen<TGenContext, TTile>, ISizedRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenRound()
         {
@@ -25,7 +26,7 @@ namespace RogueElements
             this.Height = height;
         }
 
-        protected RoomGenRound(RoomGenRound<T> other)
+        protected RoomGenRound(RoomGenRound<TGenContext, TTile> other)
         {
             this.Width = other.Width;
             this.Height = other.Height;
@@ -41,14 +42,14 @@ namespace RogueElements
         /// </summary>
         public RandRange Height { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenRound<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenRound<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             int diameter = Math.Min(this.Draw.Width, this.Draw.Height);
 

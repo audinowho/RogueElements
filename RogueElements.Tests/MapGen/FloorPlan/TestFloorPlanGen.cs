@@ -21,6 +21,6 @@ namespace RogueElements.Tests
         {
         }
 
-        public override RoomGen<IFloorPlanTestContext> Copy() => new TestFloorPlanGen(this);
+        public override RoomGen<IFloorPlanTestContext, TestTile> Copy() => new TestFloorPlanGen(this);
     }
 }

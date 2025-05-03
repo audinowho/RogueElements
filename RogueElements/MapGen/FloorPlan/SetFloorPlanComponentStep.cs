@@ -12,29 +12,30 @@ namespace RogueElements
     /// Takes all rooms in the map's floor plan and gives them a specified component.
     /// These components can be used to identify the room in some way for future filtering.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class SetFloorPlanComponentStep<T> : GenStep<T>
-        where T : class, IFloorPlanGenContext
+    public class SetFloorPlanComponentStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public SetFloorPlanComponentStep()
         {
             this.Components = new ComponentCollection();
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// Components to add.
         /// </summary>
         public ComponentCollection Components { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
-            foreach (IRoomPlan plan in map.RoomPlan.GetAllPlans())
+            foreach (IRoomPlan<TTile> plan in map.RoomPlan.GetAllPlans())
             {
-                if (!BaseRoomFilter.PassesAllFilters(plan, this.Filters))
+                if (!BaseRoomFilter<TTile>.PassesAllFilters(plan, this.Filters))
                     continue;
 
                 foreach (RoomComponent component in this.Components)

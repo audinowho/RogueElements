@@ -14,22 +14,23 @@ namespace RogueElements
     /// <typeparam name="TGenContext"></typeparam>
     /// <typeparam name="TSpawnable"></typeparam>
     [Serializable]
-    public class TerrainSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
-        where TGenContext : class, IPlaceableGenContext<TSpawnable>, ITiledGenContext
+    public class TerrainSpawnStep<TGenContext, TSpawnable, TTile> : BaseSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IPlaceableGenContext<TSpawnable>, ITiledGenContext<TTile>
         where TSpawnable : ISpawnable
+        where TTile : ITile<TTile>
     {
         public TerrainSpawnStep()
             : base()
         {
         }
 
-        public TerrainSpawnStep(ITile terrain)
+        public TerrainSpawnStep(TTile terrain)
             : base()
         {
             this.Terrain = terrain;
         }
 
-        public TerrainSpawnStep(ITile terrain, IStepSpawner<TGenContext, TSpawnable> spawn)
+        public TerrainSpawnStep(TTile terrain, IStepSpawner<TGenContext, TSpawnable> spawn)
             : base(spawn)
         {
             this.Terrain = terrain;
@@ -38,7 +39,7 @@ namespace RogueElements
         /// <summary>
         /// The type of tile to spawn in.
         /// </summary>
-        public ITile Terrain { get; set; }
+        public TTile Terrain { get; set; }
 
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
@@ -48,7 +49,7 @@ namespace RogueElements
             {
                 for (int yy = 0; yy < map.Height; yy++)
                 {
-                    ITile tile = map.GetTile(new Loc(xx, yy));
+                    TTile tile = map.GetTile(new Loc(xx, yy));
 
                     if (this.Terrain.TileEquivalent(tile))
                         freeTiles.Add(new Loc(xx, yy));

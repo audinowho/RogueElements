@@ -12,10 +12,11 @@ namespace RogueElements
     /// Generates a random spread of water on the map. This is achieved by generating a heightContext using Perlin Noise,
     /// then converting all tiles with a height value below the specified threshold to water.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class PerlinWaterStep<T> : WaterStep<T>, IPerlinWaterStep
-        where T : class, ITiledGenContext
+    public class PerlinWaterStep<TGenContext, TTile> : WaterStep<TGenContext, TTile>, IPerlinWaterStep<TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         private const int BUFFER_SIZE = 5;
 
@@ -24,7 +25,7 @@ namespace RogueElements
         {
         }
 
-        public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, ITerrainStencil<T> stencil, int softness = default, bool bowl = true)
+        public PerlinWaterStep(RandRange waterPercent, int complexity, TTile terrain, ITerrainStencil<TGenContext, TTile> stencil, int softness = default, bool bowl = true)
             : base(terrain, stencil)
         {
             this.WaterPercent = waterPercent;
@@ -53,7 +54,7 @@ namespace RogueElements
         /// </summary>
         public bool Bowl { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             int waterPercent = this.WaterPercent.Pick(map.Rand);
             if (waterPercent == 0)

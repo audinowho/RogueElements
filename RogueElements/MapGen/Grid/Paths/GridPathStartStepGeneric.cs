@@ -9,8 +9,9 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class GridPathStartStepGeneric<T> : GridPathStartStep<T>
-        where T : class, IRoomGridGenContext
+    public abstract class GridPathStartStepGeneric<TGenContext, TTile> : GridPathStartStep<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         protected GridPathStartStepGeneric()
         {
@@ -21,7 +22,7 @@ namespace RogueElements
         /// <summary>
         /// The room types that can be used for the rooms of the layout.
         /// </summary>
-        public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
+        public IRandPicker<RoomGen<TGenContext, TTile>> GenericRooms { get; set; }
 
         /// <summary>
         /// Components that the newly added rooms will be labeled with.
@@ -31,14 +32,14 @@ namespace RogueElements
         /// <summary>
         /// The room types that can be used for the halls of the layout.
         /// </summary>
-        public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
+        public IRandPicker<PermissiveRoomGen<TGenContext, TTile>> GenericHalls { get; set; }
 
         /// <summary>
         /// Components that the newly added halls will be labeled with.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             if (!this.GenericRooms.CanPick || !this.GenericHalls.CanPick)
                 throw new InvalidOperationException("Can't create a path without rooms or halls.");

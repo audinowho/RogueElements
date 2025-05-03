@@ -13,7 +13,8 @@ namespace RogueElements
     /// Filters for rooms using the hall plan.
     /// </summary>
     [Serializable]
-    public class RoomFilterHall : BaseRoomFilter
+    public class RoomFilterHall<TTile> : BaseRoomFilter<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomFilterHall()
         {
@@ -26,9 +27,9 @@ namespace RogueElements
 
         public bool Negate { get; set; }
 
-        public override bool PassesFilter(IRoomPlan plan)
+        public override bool PassesFilter(IRoomPlan<TTile> plan)
         {
-            if (plan is FloorHallPlan)
+            if (plan is FloorHallPlan<TTile>)
                 return !this.Negate;
 
             return this.Negate;

@@ -12,17 +12,18 @@ namespace RogueElements
     /// A filter for determining the eligible tiles for an operation.
     /// Locations that, if all made unwalkable, do not cause a chokepoint to be removed, are eligible.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class NoChokepointStencil<T> : IBlobStencil<T>
-        where T : class, ITiledGenContext
+    public class NoChokepointStencil<TGenContext, TTile> : IBlobStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public NoChokepointStencil()
         {
-            this.TileStencil = new DefaultTerrainStencil<T>();
+            this.TileStencil = new DefaultTerrainStencil<TGenContext, TTile>();
         }
 
-        public NoChokepointStencil(ITerrainStencil<T> tileStencil)
+        public NoChokepointStencil(ITerrainStencil<TGenContext, TTile> tileStencil)
         {
             this.TileStencil = tileStencil;
         }
@@ -30,7 +31,7 @@ namespace RogueElements
         /// <summary>
         /// The stencil should return true if the tile is considered walkable. (Tile-being-choked)
         /// </summary>
-        public ITerrainStencil<T> TileStencil { get; set; }
+        public ITerrainStencil<TGenContext, TTile> TileStencil { get; set; }
 
         /// <summary>
         /// Determines if the entire map should be checked for connectivity, or just the immediate surrounding tiles.
@@ -41,7 +42,7 @@ namespace RogueElements
 
         public bool Negate { get; set; }
 
-        public bool Test(T map, Rect rect, Grid.LocTest blobTest)
+        public bool Test(TGenContext map, Rect rect, Grid.LocTest blobTest)
         {
             bool IsMapValid(Loc loc) => this.TileStencil.Test(map, loc);
             bool IsBlobValid(Loc loc) => blobTest(loc + rect.Start);

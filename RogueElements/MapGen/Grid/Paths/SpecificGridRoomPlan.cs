@@ -9,10 +9,11 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public class SpecificGridRoomPlan<T>
-        where T : ITiledGenContext
+    public class SpecificGridRoomPlan<TGenContext, TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
-        public SpecificGridRoomPlan(Rect bounds, RoomGen<T> roomGen)
+        public SpecificGridRoomPlan(Rect bounds, RoomGen<TGenContext, TTile> roomGen)
         {
             this.Bounds = bounds;
             this.RoomGen = roomGen;
@@ -23,7 +24,7 @@ namespace RogueElements
 
         public bool PreferHall { get; set; }
 
-        public RoomGen<T> RoomGen { get; set; }
+        public RoomGen<TGenContext, TTile> RoomGen { get; set; }
 
         public ComponentCollection Components { get; set; }
     }

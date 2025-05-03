@@ -11,10 +11,11 @@ namespace RogueElements
     /// <summary>
     /// Populates the empty floor plan of a map by creating a path consisting of rooms on the far left and far right, with hallways connecting the two sides.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class GridPathTwoSides<T> : GridPathStartStepGeneric<T>
-        where T : class, IRoomGridGenContext
+    public class GridPathTwoSides<TGenContext, TTile> : GridPathStartStepGeneric<TGenContext, TTile>
+        where TGenContext : class, IRoomGridGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public GridPathTwoSides()
             : base()
@@ -26,7 +27,7 @@ namespace RogueElements
         /// </summary>
         public Axis4 GapAxis { get; set; }
 
-        public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, GridPlan<TTile> floorPlan)
         {
             // open rooms on both sides
             Loc gridSize = new Loc(floorPlan.GridWidth, floorPlan.GridHeight);
@@ -117,7 +118,7 @@ namespace RogueElements
             GenContextDebug.StepOut();
         }
 
-        public void PlaceOrientedHall(Axis4 axis, int scalar, int orth, int scalarDiff, GridPlan floorPlan, PermissiveRoomGen<T> hallGen)
+        public void PlaceOrientedHall(Axis4 axis, int scalar, int orth, int scalarDiff, GridPlan<TTile> floorPlan, PermissiveRoomGen<TGenContext, TTile> hallGen)
         {
             Loc loc = this.GapAxis.CreateLoc(scalar, orth);
             floorPlan.SetHall(new LocRay4(loc, axis.GetDir(scalarDiff)), hallGen, this.HallComponents.Clone());

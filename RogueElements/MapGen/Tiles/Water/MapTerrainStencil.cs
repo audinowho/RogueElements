@@ -12,10 +12,11 @@ namespace RogueElements
     /// A filter for determining the eligible tiles for an operation.
     /// Tiles of a certain type are eligible.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class MapTerrainStencil<T> : ITerrainStencil<T>
-        where T : class, ITiledGenContext
+    public class MapTerrainStencil<TGenContext, TTile> : ITerrainStencil<TGenContext, TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public MapTerrainStencil()
         {
@@ -49,7 +50,7 @@ namespace RogueElements
         /// </summary>
         public bool Not { get; private set; }
 
-        public bool Test(T map, Loc loc)
+        public bool Test(TGenContext map, Loc loc)
         {
             bool result = false;
             if (this.Room && map.RoomTerrain.TileEquivalent(map.GetTile(loc)))

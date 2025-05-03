@@ -5,7 +5,7 @@
 
 namespace RogueElements.Tests
 {
-    public interface IFloorPlanTestContext : IFloorPlanGenContext
+    public interface IFloorPlanTestContext : IFloorPlanGenContext<TestTile>
     {
     }
 }

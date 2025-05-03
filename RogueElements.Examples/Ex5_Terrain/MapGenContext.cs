@@ -10,7 +10,7 @@ using RogueElements;
 
 namespace RogueElements.Examples.Ex5_Terrain
 {
-    public class MapGenContext : BaseMapGenContext<Map>, IRoomGridGenContext, IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>
+    public class MapGenContext : BaseMapGenContext<Map>, IRoomGridGenContext<Tile>, IViewPlaceableGenContext<StairsUp>, IViewPlaceableGenContext<StairsDown>
     {
         public MapGenContext()
             : base()
@@ -19,9 +19,9 @@ namespace RogueElements.Examples.Ex5_Terrain
 
         protected delegate List<Loc> GetOpen(Rect rect);
 
-        public FloorPlan RoomPlan { get; private set; }
+        public FloorPlan<Tile> RoomPlan { get; private set; }
 
-        public GridPlan GridPlan { get; private set; }
+        public GridPlan<Tile> GridPlan { get; private set; }
 
         public List<StairsUp> GenEntrances => this.Map.GenEntrances;
 
@@ -31,7 +31,7 @@ namespace RogueElements.Examples.Ex5_Terrain
 
         int IViewPlaceableGenContext<StairsDown>.Count => this.GenExits.Count;
 
-        public override bool CanSetTile(Loc loc, ITile tile)
+        public override bool CanSetTile(Loc loc, Tile tile)
         {
             for (int ii = 0; ii < this.GenEntrances.Count; ii++)
             {
@@ -48,12 +48,12 @@ namespace RogueElements.Examples.Ex5_Terrain
             return true;
         }
 
-        public void InitPlan(FloorPlan plan)
+        public void InitPlan(FloorPlan<Tile> plan)
         {
             this.RoomPlan = plan;
         }
 
-        public void InitGrid(GridPlan plan)
+        public void InitGrid(GridPlan<Tile> plan)
         {
             this.GridPlan = plan;
         }

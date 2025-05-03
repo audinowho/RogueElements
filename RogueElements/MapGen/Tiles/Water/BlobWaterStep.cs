@@ -11,10 +11,11 @@ namespace RogueElements
     /// <summary>
     /// Creates blobs of water using cellular automata, and places them around the map.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class BlobWaterStep<T> : WaterStep<T>, IBlobWaterStep
-        where T : class, ITiledGenContext
+    public class BlobWaterStep<TGenContext, TTile> : WaterStep<TGenContext, TTile>, IBlobWaterStep<TTile>
+        where TGenContext : class, ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         private const int AUTOMATA_CHANCE = 55;
         private const int AUTOMATA_ROUNDS = 5;
@@ -22,10 +23,10 @@ namespace RogueElements
         public BlobWaterStep()
             : base()
         {
-            this.BlobStencil = new DefaultBlobStencil<T>();
+            this.BlobStencil = new DefaultBlobStencil<TGenContext, TTile>();
         }
 
-        public BlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, IBlobStencil<T> blobStencil, IntRange areaScale, IntRange generateScale)
+        public BlobWaterStep(RandRange blobs, TTile terrain, ITerrainStencil<TGenContext, TTile> stencil, IBlobStencil<TGenContext, TTile> blobStencil, IntRange areaScale, IntRange generateScale)
             : base(terrain, stencil)
         {
             this.Blobs = blobs;
@@ -52,9 +53,9 @@ namespace RogueElements
         /// <summary>
         /// Blob-wide stencil.  All-or-nothing: If the blob position passes this stencil, it is drawn.  Otherwise it is not.
         /// </summary>
-        public IBlobStencil<T> BlobStencil { get; set; }
+        public IBlobStencil<TGenContext, TTile> BlobStencil { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
             int blobs = this.Blobs.Pick(map.Rand);
             int startScale = this.GenerateScale.Max - 1;
@@ -120,7 +121,7 @@ namespace RogueElements
             return string.Format("{0}: Amt:{1} Size:{2}", this.GetType().GetFormattedTypeName(), this.Blobs.ToString(), this.AreaScale.ToString());
         }
 
-        protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
+        protected virtual bool AttemptBlob(TGenContext map, BlobMap blobMap, int blobIdx, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
 

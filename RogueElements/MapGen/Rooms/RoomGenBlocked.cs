@@ -11,16 +11,17 @@ namespace RogueElements
     /// <summary>
     /// Generates a rectangular room with the specified width and height, and with a rectangular block with specified width and height.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class RoomGenBlocked<T> : PermissiveRoomGen<T>, ISizedRoomGen
-        where T : ITiledGenContext
+    public class RoomGenBlocked<TGenContext, TTile> : PermissiveRoomGen<TGenContext, TTile>, ISizedRoomGen<TTile>
+        where TGenContext : ITiledGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public RoomGenBlocked()
         {
         }
 
-        public RoomGenBlocked(ITile blockTerrain, RandRange width, RandRange height, RandRange blockWidth, RandRange blockHeight)
+        public RoomGenBlocked(TTile blockTerrain, RandRange width, RandRange height, RandRange blockWidth, RandRange blockHeight)
         {
             this.BlockTerrain = blockTerrain;
             this.Width = width;
@@ -29,7 +30,7 @@ namespace RogueElements
             this.BlockHeight = blockHeight;
         }
 
-        protected RoomGenBlocked(RoomGenBlocked<T> other)
+        protected RoomGenBlocked(RoomGenBlocked<TGenContext, TTile> other)
         {
             this.BlockTerrain = other.BlockTerrain.Copy();
             this.Width = other.Width;
@@ -61,16 +62,16 @@ namespace RogueElements
         /// <summary>
         /// The terrain used for the block.
         /// </summary>
-        public ITile BlockTerrain { get; set; }
+        public TTile BlockTerrain { get; set; }
 
-        public override RoomGen<T> Copy() => new RoomGenBlocked<T>(this);
+        public override RoomGen<TGenContext, TTile> Copy() => new RoomGenBlocked<TGenContext, TTile>(this);
 
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
-        public override void DrawOnMap(T map)
+        public override void DrawOnMap(TGenContext map)
         {
             for (int x = 0; x < this.Draw.Size.X; x++)
             {

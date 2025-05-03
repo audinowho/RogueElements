@@ -9,26 +9,27 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class RoomSpawnStep<TGenContext, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
-        where TGenContext : class, IFloorPlanGenContext, IPlaceableGenContext<TSpawnable>
+    public abstract class RoomSpawnStep<TGenContext, TTile, TSpawnable> : BaseSpawnStep<TGenContext, TSpawnable>
+        where TGenContext : class, IFloorPlanGenContext<TTile>, IPlaceableGenContext<TSpawnable>
+        where TTile : ITile<TTile>
         where TSpawnable : ISpawnable
     {
         protected RoomSpawnStep()
             : base()
         {
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         protected RoomSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn)
             : base(spawn)
         {
-            this.Filters = new List<BaseRoomFilter>();
+            this.Filters = new List<BaseRoomFilter<TTile>>();
         }
 
         /// <summary>
         /// Determines the rooms eligible to spawn the objects in.
         /// </summary>
-        public List<BaseRoomFilter> Filters { get; set; }
+        public List<BaseRoomFilter<TTile>> Filters { get; set; }
 
         /// <summary>
         /// Spawns the chosen spawnables into the chosen collection of rooms
@@ -71,7 +72,7 @@ namespace RogueElements
 
         public virtual bool SpawnInRoom(TGenContext map, RoomHallIndex roomIndex, TSpawnable spawn)
         {
-            IRoomGen room = map.RoomPlan.GetRoomHall(roomIndex).RoomGen;
+            IRoomGen<TTile> room = map.RoomPlan.GetRoomHall(roomIndex).RoomGen;
             List<Loc> freeTiles = map.GetFreeTiles(room.Draw);
 
             if (freeTiles.Count > 0)

@@ -9,20 +9,20 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     [Serializable]
-    public abstract class GenStep<T> : IGenStep
-        where T : class, IGenContext
+    public abstract class GenStep<TGenContext> : IGenStep
+        where TGenContext : class, IGenContext
     {
         // change activemap into an interface that supports tile, mob, and item modification
-        public abstract void Apply(T map);
+        public abstract void Apply(TGenContext map);
 
         public bool CanApply(IGenContext context)
         {
-            return context is T;
+            return context is TGenContext;
         }
 
         public void Apply(IGenContext context)
         {
-            if (context is T map)
+            if (context is TGenContext map)
                 this.Apply(map);
             else
                 throw new ArgumentException(string.Format("Context was of type '{0}' was passed into '{1}'.", context.GetType().AssemblyQualifiedName, this.GetType().AssemblyQualifiedName));

@@ -33,10 +33,10 @@ namespace RogueElements.Tests
             };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            GridRoomPlan roomPlan = floorPlan.GetRoomPlan(1);
+            GridRoomPlan<TestTile> roomPlan = floorPlan.GetRoomPlan(1);
             roomPlan.Components.Set(new TestComponent());
             roomPlan = floorPlan.GetRoomPlan(3);
-            roomPlan.RoomGen = new RoomGenDefault<IGridPathTestContext>();
+            roomPlan.RoomGen = new RoomGenDefault<IGridPathTestContext, TestTile>();
             roomPlan.PreferHall = true;
 
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
@@ -47,11 +47,11 @@ namespace RogueElements.Tests
             // The roll for choosing room index
             testRand.Setup(p => p.Next(3)).Returns(roll);
 
-            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
+            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext, TestTile>
             {
-                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext, TestTile>>(new RoomGenSquare<IGridPathTestContext, TestTile>()),
             };
-            pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
+            pathGen.Filters.Add(new RoomFilterComponent<TestTile>(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 
@@ -60,9 +60,9 @@ namespace RogueElements.Tests
             for (int ii = 0; ii < 5; ii++)
             {
                 if (ii == expectedChosen)
-                    Assert.That(floorPlan.GetRoomPlan(ii).RoomGen, Is.TypeOf<RoomGenSquare<IGridPathTestContext>>());
+                    Assert.That(floorPlan.GetRoomPlan(ii).RoomGen, Is.TypeOf<RoomGenSquare<IGridPathTestContext, TestTile>>());
                 else
-                    Assert.That(floorPlan.GetRoomPlan(ii).RoomGen, Is.Not.TypeOf<RoomGenSquare<IGridPathTestContext>>());
+                    Assert.That(floorPlan.GetRoomPlan(ii).RoomGen, Is.Not.TypeOf<RoomGenSquare<IGridPathTestContext, TestTile>>());
             }
         }
 
@@ -82,7 +82,7 @@ namespace RogueElements.Tests
             };
 
             TestGridFloorPlan floorPlan = TestGridFloorPlan.InitGridToContext(inGrid);
-            GridRoomPlan roomPlan = floorPlan.GetRoomPlan(0);
+            GridRoomPlan<TestTile> roomPlan = floorPlan.GetRoomPlan(0);
             roomPlan.Components.Set(new TestComponent());
             roomPlan = floorPlan.GetRoomPlan(1);
             roomPlan.Components.Set(new TestComponent());
@@ -94,11 +94,11 @@ namespace RogueElements.Tests
             // The roll for size
             testRand.Setup(p => p.Next(0, 0)).Returns(0);
 
-            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext>
+            var pathGen = new SetGridSpecialRoomStep<IGridPathTestContext, TestTile>
             {
-                Rooms = new PresetPicker<RoomGen<IGridPathTestContext>>(new RoomGenSquare<IGridPathTestContext>()),
+                Rooms = new PresetPicker<RoomGen<IGridPathTestContext, TestTile>>(new RoomGenSquare<IGridPathTestContext, TestTile>()),
             };
-            pathGen.Filters.Add(new RoomFilterComponent(true, new TestComponent()));
+            pathGen.Filters.Add(new RoomFilterComponent<TestTile>(true, new TestComponent()));
 
             pathGen.ApplyToPath(testRand.Object, floorPlan);
 

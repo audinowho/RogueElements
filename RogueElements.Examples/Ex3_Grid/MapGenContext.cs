@@ -10,23 +10,23 @@ using System.Text;
 
 namespace RogueElements.Examples.Ex3_Grid
 {
-    public class MapGenContext : BaseMapGenContext<Map>, IRoomGridGenContext
+    public class MapGenContext : BaseMapGenContext<Map>, IRoomGridGenContext<Tile>
     {
         public MapGenContext()
             : base()
         {
         }
 
-        public FloorPlan RoomPlan { get; private set; }
+        public FloorPlan<Tile> RoomPlan { get; private set; }
 
-        public GridPlan GridPlan { get; private set; }
+        public GridPlan<Tile> GridPlan { get; private set; }
 
-        public void InitPlan(FloorPlan plan)
+        public void InitPlan(FloorPlan<Tile> plan)
         {
             this.RoomPlan = plan;
         }
 
-        public void InitGrid(GridPlan plan)
+        public void InitGrid(GridPlan<Tile> plan)
         {
             this.GridPlan = plan;
         }

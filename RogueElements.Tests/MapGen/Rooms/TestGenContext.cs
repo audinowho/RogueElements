@@ -5,17 +5,17 @@
 
 namespace RogueElements.Tests
 {
-    public class TestGenContext : ITiledGenContext
+    public class TestGenContext : ITiledGenContext<TestTile>
     {
         public IRandom Rand { get; private set; }
 
-        public ITile RoomTerrain => new TestTile(0);
+        public TestTile RoomTerrain => new TestTile(0);
 
-        public ITile WallTerrain => new TestTile(1);
+        public TestTile WallTerrain => new TestTile(1);
 
         public bool TilesInitialized => this.Tiles != null;
 
-        public ITile[][] Tiles { get; private set; }
+        public TestTile[][] Tiles { get; private set; }
 
         public int Width => this.Tiles.Length;
 
@@ -32,7 +32,7 @@ namespace RogueElements.Tests
             {
                 for (int yy = 0; yy < testContext.Height; yy++)
                 {
-                    ((TestTile)testContext.Tiles[xx][yy]).ID = (inGrid[yy][xx] == 'X') ? 1 : 0;
+                    testContext.Tiles[xx][yy].ID = (inGrid[yy][xx] == 'X') ? 1 : 0;
                 }
             }
 
@@ -53,24 +53,24 @@ namespace RogueElements.Tests
 
         public bool TileBlocked(Loc loc, bool diagonal) => ((TestTile)this.Tiles[loc.X][loc.Y]).ID != 0;
 
-        public ITile GetTile(Loc loc) => this.Tiles[loc.X][loc.Y];
+        public TestTile GetTile(Loc loc) => this.Tiles[loc.X][loc.Y];
 
-        public void SetTile(Loc loc, ITile tile) => this.Tiles[loc.X][loc.Y] = tile;
+        public void SetTile(Loc loc, TestTile tile) => this.Tiles[loc.X][loc.Y] = tile;
 
-        public bool TrySetTile(Loc loc, ITile tile)
+        public bool TrySetTile(Loc loc, TestTile tile)
         {
             this.SetTile(loc, tile);
             return true;
         }
 
-        public bool CanSetTile(Loc loc, ITile tile) => true;
+        public bool CanSetTile(Loc loc, TestTile tile) => true;
 
         public void CreateNew(int tileWidth, int tileHeight, bool wrap = false)
         {
-            this.Tiles = new ITile[tileWidth][];
+            this.Tiles = new TestTile[tileWidth][];
             for (int ii = 0; ii < tileWidth; ii++)
             {
-                this.Tiles[ii] = new ITile[tileHeight];
+                this.Tiles[ii] = new TestTile[tileHeight];
                 for (int jj = 0; jj < tileHeight; jj++)
                     this.Tiles[ii][jj] = new TestTile();
             }

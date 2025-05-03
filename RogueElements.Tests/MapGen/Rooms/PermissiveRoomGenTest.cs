@@ -19,7 +19,7 @@ namespace RogueElements.Tests
             // verify all fulfillableborders set to true
             // as well as bordertofulfill set to correct sizes
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
-            var roomGen = new TestPermissiveRoomGen<ITiledGenContext>();
+            var roomGen = new TestPermissiveRoomGen<ITiledGenContext<TestTile>>();
             roomGen.PrepareSize(testRand.Object, new Loc(2, 3));
 
             var expectedFulfillable = new Dictionary<Dir4, bool[]>
@@ -42,8 +42,8 @@ namespace RogueElements.Tests
             Assert.That(roomGen.PublicBorderToFulfill, Is.EqualTo(expectedToFulfill));
         }
 
-        public class TestPermissiveRoomGen<T> : PermissiveRoomGen<T>
-            where T : ITiledGenContext
+        public class TestPermissiveRoomGen<T> : PermissiveRoomGen<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
 
@@ -51,7 +51,7 @@ namespace RogueElements.Tests
 
             public Dictionary<Dir4, bool[]> PublicBorderToFulfill => this.BorderToFulfill;
 
-            public override RoomGen<T> Copy() => new TestPermissiveRoomGen<T>();
+            public override RoomGen<T, TestTile> Copy() => new TestPermissiveRoomGen<T>();
 
             public override Loc ProposeSize(IRandom rand) => Loc.Zero;
 

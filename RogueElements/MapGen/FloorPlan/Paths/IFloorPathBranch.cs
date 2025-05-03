@@ -20,22 +20,23 @@ namespace RogueElements
     /// <summary>
     /// Populates the empty floor plan of a map by creating a minimum spanning tree of connected rooms and halls.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>, IFloorPathBranch
-        where T : class, IFloorPlanGenContext
+    public class FloorPathBranch<TGenContext, TTile> : FloorPathStartStepGeneric<TGenContext, TTile>, IFloorPathBranch
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public FloorPathBranch()
             : base()
         {
         }
 
-        public FloorPathBranch(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
+        public FloorPathBranch(IRandPicker<RoomGen<TGenContext, TTile>> genericRooms, IRandPicker<PermissiveRoomGen<TGenContext, TTile>> genericHalls)
             : base(genericRooms, genericHalls)
         {
         }
 
-        public delegate RoomGen<T> RoomPrep(IRandom rand, FloorPlan floorPlan, bool isHall);
+        public delegate RoomGen<TGenContext, TTile> RoomPrep(IRandom rand, FloorPlan<TTile> floorPlan, bool isHall);
 
         /// <summary>
         /// The percentage of total space in the floor plan that the step aims to fill with rooms.
@@ -67,7 +68,7 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="branch">Chooses to branch from a path instead of extending it.</param>
         /// <returns>All possible RoomHallIndex that can receive an expansion.</returns>
-        public static List<RoomHallIndex> GetPossibleExpansions(FloorPlan floorPlan, bool branch)
+        public static List<RoomHallIndex> GetPossibleExpansions(FloorPlan<TTile> floorPlan, bool branch)
         {
             List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
@@ -89,7 +90,7 @@ namespace RogueElements
             return availableExpansions;
         }
 
-        public static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan floorPlan, RoomHallIndex indexFrom, IRoomGen roomFrom, IRoomGen room, Dir4 expandTo)
+        public static void AddLegalPlacements(SpawnList<Loc> possiblePlacements, FloorPlan<TTile> floorPlan, RoomHallIndex indexFrom, IRoomGen<TTile> roomFrom, IRoomGen<TTile> room, Dir4 expandTo)
         {
             bool vertical = expandTo.ToAxis() == Axis4.Vert;
 
@@ -123,7 +124,7 @@ namespace RogueElements
                 {
                     if (collision != indexFrom)
                     {
-                        IRoomGen collideRoom = floorPlan.GetRoomHall(collision).RoomGen;
+                        IRoomGen<TTile> collideRoom = floorPlan.GetRoomHall(collision).RoomGen;
 
                         // this is the point at which the new room will barely touch the collided room
                         // the +1 at the end will move it into the safe zone
@@ -141,7 +142,7 @@ namespace RogueElements
                     if (floorPlan.Wrap || floorPlan.DrawRect.Contains(new Rect(locTo, room.Draw.Size)))
                     {
                         // check the border match and if add to possible placements
-                        int chanceTo = FloorPlan.GetBorderMatch(roomFrom, room, locTo, expandTo);
+                        int chanceTo = FloorPlan<TTile>.GetBorderMatch(roomFrom, room, locTo, expandTo);
                         if (chanceTo > 0)
                             possiblePlacements.Add(locTo, chanceTo * reverseSideMult);
                     }
@@ -161,7 +162,7 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="availableExpansions"></param>
         /// <returns>A set of instructions on how to expand the path.</returns>
-        public static ListPathBranchExpansion? ChooseRandRoomExpansion(IRoomGen room, IRoomGen hall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        public static ListPathBranchExpansion? ChooseRandRoomExpansion(IRoomGen<TTile> room, IRoomGen<TTile> hall, IRandom rand, FloorPlan<TTile> floorPlan, List<RoomHallIndex> availableExpansions)
         {
             if (availableExpansions.Count == 0)
                 return null;
@@ -171,7 +172,7 @@ namespace RogueElements
                 // choose the next room to add to
                 RoomHallIndex firstExpandFrom = availableExpansions[rand.Next(availableExpansions.Count)];
                 RoomHallIndex expandFrom = firstExpandFrom;
-                IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
+                IRoomGen<TTile> roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
 
                 // if a hall is specified, make it the connector
                 if (hall != null)
@@ -185,13 +186,13 @@ namespace RogueElements
                 }
 
                 if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
-                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+                    return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen<TTile>)hall);
             }
 
             return null;
         }
 
-        public static ListPathBranchExpansion? ChooseRoomExpansion(IRoomGen room, IRoomGen hall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
+        public static ListPathBranchExpansion? ChooseRoomExpansion(IRoomGen<TTile> room, IRoomGen<TTile> hall, IRandom rand, FloorPlan<TTile> floorPlan, List<RoomHallIndex> availableExpansions)
         {
             List<RoomHallIndex> expansions = new List<RoomHallIndex>();
             expansions.AddRange(availableExpansions);
@@ -202,7 +203,7 @@ namespace RogueElements
                 // choose the next room to add to
                 RoomHallIndex firstExpandFrom = availableExpansions[expandIdx];
                 RoomHallIndex expandFrom = firstExpandFrom;
-                IRoomGen roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
+                IRoomGen<TTile> roomFrom = floorPlan.GetRoomHall(firstExpandFrom).RoomGen;
 
                 // if a hall is specified, make it the connector
                 if (hall != null)
@@ -228,7 +229,7 @@ namespace RogueElements
                         roomFrom = hall;
 
                         if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
-                            return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+                            return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen<TTile>)hall);
 
                         possibleHallPlacements.RemoveAt(candIndex);
                     }
@@ -236,7 +237,7 @@ namespace RogueElements
                 else
                 {
                     if (ChooseRoomExpansionFromRoom(room, rand, floorPlan, expandFrom, roomFrom))
-                        return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen)hall);
+                        return new ListPathBranchExpansion(firstExpandFrom, room, (IPermissiveRoomGen<TTile>)hall);
                 }
 
                 expansions.RemoveAt(expandIdx);
@@ -245,7 +246,7 @@ namespace RogueElements
             return null;
         }
 
-        public static bool ChooseRoomExpansionFromRoom(IRoomGen room, IRandom rand, FloorPlan floorPlan, RoomHallIndex expandFrom, IRoomGen roomFrom)
+        public static bool ChooseRoomExpansionFromRoom(IRoomGen<TTile> room, IRandom rand, FloorPlan<TTile> floorPlan, RoomHallIndex expandFrom, IRoomGen<TTile> roomFrom)
         {
             // randomly choose a perimeter to assign this to
             SpawnList<Loc> possiblePlacements = new SpawnList<Loc>();
@@ -265,7 +266,7 @@ namespace RogueElements
             return true;
         }
 
-        public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
+        public override void ApplyToPath(IRandom rand, FloorPlan<TTile> floorPlan)
         {
             for (int ii = 0; ii < 10; ii++)
             {
@@ -279,7 +280,7 @@ namespace RogueElements
                 int tilesLeft = tilesToOpen;
 
                 // choose a room
-                IRoomGen room = this.PrepareRoom(rand, floorPlan, false);
+                IRoomGen<TTile> room = this.PrepareRoom(rand, floorPlan, false);
 
                 // place in a random location
                 room.SetLoc(new Loc(
@@ -344,9 +345,9 @@ namespace RogueElements
         /// <param name="floorPlan"></param>
         /// <param name="isHall"></param>
         /// <returns></returns>
-        public virtual RoomGen<T> PrepareRoom(IRandom rand, FloorPlan floorPlan, bool isHall)
+        public virtual RoomGen<TGenContext, TTile> PrepareRoom(IRandom rand, FloorPlan<TTile> floorPlan, bool isHall)
         {
-            RoomGen<T> room;
+            RoomGen<TGenContext, TTile> room;
             if (!isHall) // choose a room
                 room = this.GenericRooms.Pick(rand).Copy();
             else // chose a hall
@@ -362,11 +363,11 @@ namespace RogueElements
             return room;
         }
 
-        public virtual ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan, bool branch)
+        public virtual ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan<TTile> floorPlan, bool branch)
         {
             List<RoomHallIndex> possibles = GetPossibleExpansions(floorPlan, branch);
             bool addHall = rand.Next(100) < this.HallPercent;
-            IRoomGen room, hall;
+            IRoomGen<TTile> room, hall;
             room = this.PrepareRoom(rand, floorPlan, false);
             if (addHall)
                 hall = this.PrepareRoom(rand, floorPlan, true);
@@ -380,7 +381,7 @@ namespace RogueElements
             return string.Format("{0}: Fill:{1}% Hall:{2}% Branch:{3}%", this.GetType().GetFormattedTypeName(), this.FillPercent, this.HallPercent, this.BranchRatio);
         }
 
-        private (int area, int rooms) ExpandPath(IRandom rand, FloorPlan floorPlan, bool branch)
+        private (int area, int rooms) ExpandPath(IRandom rand, FloorPlan<TTile> floorPlan, bool branch)
         {
             ListPathBranchExpansion? expansionResult = this.ChooseRoomExpansion(rand, floorPlan, branch);
 
@@ -413,10 +414,10 @@ namespace RogueElements
         public struct ListPathBranchExpansion
         {
             public RoomHallIndex From;
-            public IPermissiveRoomGen Hall;
-            public IRoomGen Room;
+            public IPermissiveRoomGen<TTile> Hall;
+            public IRoomGen<TTile> Room;
 
-            public ListPathBranchExpansion(RoomHallIndex from, IRoomGen room, IPermissiveRoomGen hall)
+            public ListPathBranchExpansion(RoomHallIndex from, IRoomGen<TTile> room, IPermissiveRoomGen<TTile> hall)
             {
                 this.From = from;
                 this.Room = room;

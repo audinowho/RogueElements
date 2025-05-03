@@ -17,4 +17,16 @@ namespace RogueElements
         /// <returns></returns>
         ITile Copy();
     }
+
+    public interface ITile<TSelf> : ITile
+        where TSelf : ITile<TSelf>
+    {
+        bool TileEquivalent(TSelf other);
+
+        /// <summary>
+        /// Creates a copy of the object, to be placed in the generated layout.
+        /// </summary>
+        /// <returns></returns>
+        TSelf Copy();
+    }
 }

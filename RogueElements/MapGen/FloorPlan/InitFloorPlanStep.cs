@@ -13,10 +13,11 @@ namespace RogueElements
     /// Gen Steps that operate on the floor plan can add rooms, delete them, or change the rooms in some way.
     /// Once finished, apply DrawFloorToTileStep to draw the actual tiles of the rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TGenContext"></typeparam>
     [Serializable]
-    public class InitFloorPlanStep<T> : GenStep<T>
-        where T : class, IFloorPlanGenContext
+    public class InitFloorPlanStep<TGenContext, TTile> : GenStep<TGenContext>
+        where TGenContext : class, IFloorPlanGenContext<TTile>
+        where TTile : ITile<TTile>
     {
         public InitFloorPlanStep()
         {
@@ -37,9 +38,9 @@ namespace RogueElements
         /// </summary>
         public bool Wrap { get; set; }
 
-        public override void Apply(T map)
+        public override void Apply(TGenContext map)
         {
-            var floorPlan = new FloorPlan();
+            var floorPlan = new FloorPlan<TTile>();
             floorPlan.InitSize(new Loc(this.Width, this.Height), this.Wrap);
 
             map.InitPlan(floorPlan);

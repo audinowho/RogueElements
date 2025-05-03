@@ -85,43 +85,43 @@ namespace RogueElements.Tests
         [Test]
         public void Test0ne1()
         {
-            Assert.IsTrue(new Priority(0) != new Priority(1));
+            Assert.That(new Priority(0) != new Priority(1));
         }
 
         [Test]
         public void TestNeg1Lt0Neg1()
         {
-            Assert.IsTrue(new Priority(-1) < new Priority(0, -1));
+            Assert.That(new Priority(-1) < new Priority(0, -1));
         }
 
         [Test]
         public void Test0p1Lt1()
         {
-            Assert.IsTrue(new Priority(0, 1) < new Priority(1));
+            Assert.That(new Priority(0, 1) < new Priority(1));
         }
 
         [Test]
         public void Test0Eq0p0()
         {
-            Assert.IsTrue(new Priority(0) == new Priority(0, 0));
+            Assert.That(new Priority(0) == new Priority(0, 0));
         }
 
         [Test]
         public void Test0Gt0pNeg1()
         {
-            Assert.IsTrue(new Priority(0) > new Priority(0, -1));
+            Assert.That(new Priority(0) > new Priority(0, -1));
         }
 
         [Test]
         public void Test0Lt0p0p1()
         {
-            Assert.IsTrue(new Priority(0) < new Priority(0, 0, 1));
+            Assert.That(new Priority(0) < new Priority(0, 0, 1));
         }
 
         [Test]
         public void Test1p0p1Gt1p0p0p1()
         {
-            Assert.IsTrue(new Priority(1, 0, 1) > new Priority(1, 0, 0, 1));
+            Assert.That(new Priority(1, 0, 1) > new Priority(1, 0, 0, 1));
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace RogueElements.Tests
         {
             Priority lhs = Priority.Invalid;
             Priority rhs = Priority.Invalid;
-            Assert.IsTrue(lhs == rhs);
+            Assert.That(lhs == rhs);
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace RogueElements.Tests
         {
             Priority lhs = new Priority(null);
             Priority rhs = new Priority(new int[] { });
-            Assert.IsTrue(lhs == rhs);
+            Assert.That(lhs == rhs);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace RogueElements.Tests
         {
             Priority lhs = new Priority(null);
             Priority rhs = Priority.Invalid;
-            Assert.IsTrue(lhs == rhs);
+            Assert.That(lhs == rhs);
         }
 
         [Test]
@@ -161,16 +161,16 @@ namespace RogueElements.Tests
             if (eq)
             {
                 if (gt)
-                    Assert.IsFalse(lhs >= rhs);
+                    Assert.That(lhs >= rhs, Is.False);
                 else
-                    Assert.IsFalse(lhs <= rhs);
+                    Assert.That(lhs <= rhs, Is.False);
             }
             else
             {
                 if (gt)
-                    Assert.IsFalse(lhs > rhs);
+                    Assert.That(lhs > rhs, Is.False);
                 else
-                    Assert.IsFalse(lhs < rhs);
+                    Assert.That(lhs < rhs, Is.False);
             }
         }
 
@@ -182,7 +182,7 @@ namespace RogueElements.Tests
         public void TestIdx(int idx, int val)
         {
             Priority priority = new Priority(0, 1, 2, 3, 5, 8, 13);
-            Assert.AreEqual(priority[idx], val);
+            Assert.That(priority[idx], Is.EqualTo(val));
         }
 
         [Test]
@@ -198,28 +198,28 @@ namespace RogueElements.Tests
         public void TestNullLength()
         {
             Priority priority = new Priority(null);
-            Assert.AreEqual(priority.Length, 0);
+            Assert.That(priority.Length, Is.EqualTo(0));
         }
 
         [Test]
         public void Test0Length()
         {
             Priority priority = new Priority(0, 0, 0);
-            Assert.AreEqual(priority.Length, 1);
+            Assert.That(priority.Length, Is.EqualTo(1));
         }
 
         [Test]
         public void Test2Length()
         {
             Priority priority = new Priority(2, 1, 0);
-            Assert.AreEqual(priority.Length, 2);
+            Assert.That(priority.Length, Is.EqualTo(2));
         }
 
         [Test]
         public void TestLength()
         {
             Priority priority = new Priority(0, 1, 2, 3, 5, 8, 13);
-            Assert.AreEqual(priority.Length, 7);
+            Assert.That(priority.Length, Is.EqualTo(7));
         }
     }
 }

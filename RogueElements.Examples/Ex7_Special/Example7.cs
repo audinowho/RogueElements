@@ -18,24 +18,24 @@ namespace RogueElements.Examples.Ex7_Special
             var layout = new MapGen<MapGenContext>();
 
             // Initialize a 54x40 floorplan with which to populate with rectangular floor and halls.
-            InitFloorPlanStep<MapGenContext> startGen = new InitFloorPlanStep<MapGenContext>(54, 40);
+            var startGen = new InitFloorPlanStep<MapGenContext, Tile>(54, 40);
             layout.GenSteps.Add(-2, startGen);
 
             // Create some room types to place
-            SpawnList<RoomGen<MapGenContext>> genericRooms = new SpawnList<RoomGen<MapGenContext>>
+            var genericRooms = new SpawnList<RoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenSquare<MapGenContext>(new RandRange(7, 9), new RandRange(7, 9)), 10 }, // square
-                { new RoomGenRound<MapGenContext>(new RandRange(6, 10), new RandRange(6, 10)), 10 }, // round
+                { new RoomGenSquare<MapGenContext, Tile>(new RandRange(7, 9), new RandRange(7, 9)), 10 }, // square
+                { new RoomGenRound<MapGenContext, Tile>(new RandRange(6, 10), new RandRange(6, 10)), 10 }, // round
             };
 
             // Create some hall types to place
-            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext>>
+            var genericHalls = new SpawnList<PermissiveRoomGen<MapGenContext, Tile>>
             {
-                { new RoomGenAngledHall<MapGenContext>(0, new RandRange(3, 7), new RandRange(3, 7)), 10 },
+                { new RoomGenAngledHall<MapGenContext, Tile>(0, new RandRange(3, 7), new RandRange(3, 7)), 10 },
             };
 
             // Feed the room and hall types to a path that is composed of a branching tree
-            FloorPathBranch<MapGenContext> path = new FloorPathBranch<MapGenContext>(genericRooms, genericHalls)
+            FloorPathBranch<MapGenContext, Tile> path = new FloorPathBranch<MapGenContext, Tile>(genericRooms, genericHalls)
             {
                 HallPercent = 50,
                 FillPercent = new RandRange(40),
@@ -59,23 +59,23 @@ namespace RogueElements.Examples.Ex7_Special
                                              "~~~..~~~",
             };
 
-            SetSpecialRoomStep<MapGenContext> listSpecialStep = new SetSpecialRoomStep<MapGenContext>
+            var listSpecialStep = new SetSpecialRoomStep<MapGenContext, Tile>
             {
-                Rooms = new PresetPicker<RoomGen<MapGenContext>>(CreateRoomGenSpecific<MapGenContext>(custom)),
+                Rooms = new PresetPicker<RoomGen<MapGenContext, Tile>>(CreateRoomGenSpecific<MapGenContext>(custom)),
             };
             listSpecialStep.RoomComponents.Set(new TreasureRoomComponent());
-            PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>
+            var picker = new PresetPicker<PermissiveRoomGen<MapGenContext, Tile>>
             {
-                ToSpawn = new RoomGenAngledHall<MapGenContext>(0),
+                ToSpawn = new RoomGenAngledHall<MapGenContext, Tile>(0),
             };
             listSpecialStep.Halls = picker;
             layout.GenSteps.Add(-1, listSpecialStep);
 
             // Draw the rooms of the FloorPlan onto the tiled map, with 1 TILE padded on each side
-            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext>(1));
+            layout.GenSteps.Add(0, new DrawFloorToTileStep<MapGenContext, Tile>(1));
 
             // Add the stairs up and down
-            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
+            layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, Tile, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
             // Apply Items
             var itemSpawns = new SpawnList<Item>
@@ -88,7 +88,8 @@ namespace RogueElements.Examples.Ex7_Special
                 { new Item((int)'/'), 10 },
                 { new Item((int)'*'), 50 },
             };
-            RandomRoomSpawnStep<MapGenContext, Item> itemPlacement = new RandomRoomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
+
+            var itemPlacement = new RandomRoomSpawnStep<MapGenContext, Tile, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(6, itemPlacement);
 
             // Apply Treasure Items
@@ -97,8 +98,9 @@ namespace RogueElements.Examples.Ex7_Special
                 { new Item((int)'!'), 10 },
                 { new Item((int)'*'), 50 },
             };
-            RandomRoomSpawnStep<MapGenContext, Item> treasurePlacement = new RandomRoomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(treasureSpawns, new RandRange(7, 10))));
-            treasurePlacement.Filters.Add(new RoomFilterComponent(false, new TreasureRoomComponent()));
+
+            var treasurePlacement = new RandomRoomSpawnStep<MapGenContext, Tile, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(treasureSpawns, new RandRange(7, 10))));
+            treasurePlacement.Filters.Add(new RoomFilterComponent<Tile>(false, new TreasureRoomComponent()));
             layout.GenSteps.Add(6, treasurePlacement);
 
             // Run the generator and print
@@ -106,12 +108,13 @@ namespace RogueElements.Examples.Ex7_Special
             Print(context.Map, title);
         }
 
-        public static RoomGenSpecific<T> CreateRoomGenSpecific<T>(string[] level)
-            where T : class, ITiledGenContext
+        public static RoomGenSpecific<TGenContext, Tile> CreateRoomGenSpecific<TGenContext>(string[] level)
+            where TGenContext : class, ITiledGenContext<Tile>
         {
 #pragma warning disable CC0008 // Use object initializer
-            RoomGenSpecific<T> roomGen = new RoomGenSpecific<T>(level[0].Length, level.Length, new Tile(BaseMap.ROOM_TERRAIN_ID));
+            var roomGen = new RoomGenSpecific<TGenContext, Tile>(level[0].Length, level.Length, new Tile(BaseMap.ROOM_TERRAIN_ID));
 #pragma warning restore CC0008 // Use object initializer
+
             roomGen.Tiles = new Tile[level[0].Length][];
             for (int xx = 0; xx < level[0].Length; xx++)
             {

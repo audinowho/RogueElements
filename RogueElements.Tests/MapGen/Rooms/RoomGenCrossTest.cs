@@ -19,7 +19,7 @@ namespace RogueElements.Tests
             Mock<IRandom> testRand = new Mock<IRandom>(MockBehavior.Strict);
             testRand.Setup(p => p.Next(3, 5)).Returns(3);
             testRand.Setup(p => p.Next(4, 7)).Returns(4);
-            var roomGen = new RoomGenCross<ITiledGenContext>(new RandRange(3, 5), new RandRange(4, 7), new RandRange(3, 5), new RandRange(4, 7));
+            var roomGen = new RoomGenCross<ITiledGenContext<TestTile>, TestTile>(new RandRange(3, 5), new RandRange(4, 7), new RandRange(3, 5), new RandRange(4, 7));
 
             Loc compare = roomGen.ProposeSize(testRand.Object);
 
@@ -31,8 +31,8 @@ namespace RogueElements.Tests
         public void DrawOnMap()
         {
             // verify pieces stay in contact even with adversarial rolls
-            Mock<RoomGenCross<ITiledGenContext>> roomGen = new Mock<RoomGenCross<ITiledGenContext>> { CallBase = true };
-            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext>()));
+            var roomGen = new Mock<RoomGenCross<ITiledGenContext<TestTile>, TestTile>> { CallBase = true };
+            roomGen.Setup(p => p.SetRoomBorders(It.IsAny<ITiledGenContext<TestTile>>()));
             roomGen.Object.MajorWidth = new RandRange(2, 6);
             roomGen.Object.MajorHeight = new RandRange(3, 9);
             roomGen.Object.MinorWidth = new RandRange(1, 2);
@@ -89,7 +89,7 @@ namespace RogueElements.Tests
             Moq.Language.ISetupSequentialResult<int> seq = testRand.SetupSequence(p => p.Next(2));
             seq = seq.Returns(1);
             seq = seq.Returns(0);
-            var roomGen = new TestRoomGenCross<ITiledGenContext>
+            var roomGen = new TestRoomGenCross<ITiledGenContext<TestTile>>
             {
                 MajorWidth = new RandRange(2, 4),
                 MajorHeight = new RandRange(3, 9),
@@ -112,8 +112,8 @@ namespace RogueElements.Tests
             testRand.Verify(p => p.Next(It.IsAny<int>()), Times.Exactly(2));
         }
 
-        public class TestRoomGenCross<T> : RoomGenCross<T>
-            where T : ITiledGenContext
+        public class TestRoomGenCross<T> : RoomGenCross<T, TestTile>
+            where T : ITiledGenContext<TestTile>
         {
             public Dictionary<Dir4, bool[]> PublicFulfillableBorder => this.FulfillableBorder;
         }
