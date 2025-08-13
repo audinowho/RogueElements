@@ -11,6 +11,8 @@ namespace RogueElements
 {
     /// <summary>
     /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
+    /// Each addition attempt has it choose randomly from existing rooms to extend from.
+    /// It will try a finite number of times before it gives up.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
@@ -29,6 +31,7 @@ namespace RogueElements
 
         public override FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan)
         {
+            // TODO: don't go through all rooms, just pick randomly
             List<RoomHallIndex> availableExpansions = new List<RoomHallIndex>();
             for (int ii = 0; ii < floorPlan.RoomCount; ii++)
             {

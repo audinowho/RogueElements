@@ -11,6 +11,7 @@ namespace RogueElements
 {
     /// <summary>
     /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
+    /// It gathers all possible places to add a room, and picks one.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]

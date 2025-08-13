@@ -191,6 +191,16 @@ namespace RogueElements
             return null;
         }
 
+        /// <summary>
+        /// Chooses a node to expand the path from based on the specified branch setting.
+        /// Tries all possible expansions.
+        /// </summary>
+        /// <param name="room"></param>
+        /// <param name="hall"></param>
+        /// <param name="rand"></param>
+        /// <param name="floorPlan"></param>
+        /// <param name="availableExpansions"></param>
+        /// <returns></returns>
         public static ListPathBranchExpansion? ChooseRoomExpansion(IRoomGen room, IRoomGen hall, IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> availableExpansions)
         {
             List<RoomHallIndex> expansions = new List<RoomHallIndex>();

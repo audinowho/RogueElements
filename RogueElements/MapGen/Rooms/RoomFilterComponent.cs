@@ -9,6 +9,9 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Filters for rooms that have a specific group of components.
+    /// </summary>
     [Serializable]
     public class RoomFilterComponent : BaseRoomFilter
     {
