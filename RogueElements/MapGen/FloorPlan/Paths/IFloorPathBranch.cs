@@ -43,7 +43,7 @@ namespace RogueElements
         public RandRange FillPercent { get; set; }
 
         /// <summary>
-        /// The chance that rooms are attached ot each other using an intermediate hallway.
+        /// The chance that rooms are attached to each other using an intermediate hallway.
         /// </summary>
         public int HallPercent { get; set; }
 
