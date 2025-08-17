@@ -120,6 +120,14 @@ namespace RogueElements
             return string.Format("{0}: Amt:{1} Size:{2}", this.GetType().GetFormattedTypeName(), this.Blobs.ToString(), this.AreaScale.ToString());
         }
 
+        /// <summary>
+        /// Attempts to place a blob from the blob map.
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="blobMap"></param>
+        /// <param name="blobIdx"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];
@@ -135,7 +143,7 @@ namespace RogueElements
             if (!this.BlobStencil.Test(map, new Rect(offset, mapBlob.Bounds.Size), IsBlobValid))
                 return false;
 
-            this.DrawBlob(map, blobMap, blobIdx, offset);
+            this.DrawBlob(map, new Rect(offset, mapBlob.Bounds.Size), IsBlobValid);
             return true;
         }
     }

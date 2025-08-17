@@ -10,8 +10,32 @@ using NUnit.Framework;
 namespace RogueElements.Tests
 {
     [TestFixture]
-    public class BlobWaterStepTest
+    public class WaterStepTest
     {
+        [Test]
+        [Ignore("TODO")]
+        public void DrawBlob()
+        {
+            // mock a 4x4 map
+            // draw with no approval.
+            // draw with full approval:
+            // draw a tile at 0,0
+            // draw a tile at 1,0
+            // draw a 2x1 blob
+            // draw with approval outside bounds
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        [Ignore("TODO")]
+        public void AttemptBlob()
+        {
+            // 0 water
+            // 100% water
+            // something in between?
+            throw new NotImplementedException();
+        }
+
         [Test]
         [Ignore("TODO")]
         public void BlobWater()

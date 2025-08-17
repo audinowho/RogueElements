@@ -33,16 +33,20 @@ namespace RogueElements
         /// </summary>
         public ITerrainStencil<T> TerrainStencil { get; set; }
 
-        protected void DrawBlob(T map, BlobMap blobMap, int index, Loc offset)
+        /// <summary>
+        /// Draws a blob with the specified bounds and test method
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="rect"></param>
+        /// <param name="blobTest">The method to test for terrain presence.  Passes in global location on the map.</param>
+        protected void DrawBlob(T map, Rect rect, Grid.LocTest blobTest)
         {
-            BlobMap.Blob mapBlob = blobMap.Blobs[index];
-            for (int xx = Math.Max(0, offset.X); xx < Math.Min(map.Width, offset.X + mapBlob.Bounds.Width); xx++)
+            for (int xx = Math.Max(0, rect.X); xx < Math.Min(map.Width, rect.End.X); xx++)
             {
-                for (int yy = Math.Max(0, offset.Y); yy < Math.Min(map.Height, offset.Y + mapBlob.Bounds.Height); yy++)
+                for (int yy = Math.Max(0, rect.Y); yy < Math.Min(map.Height, rect.End.Y); yy++)
                 {
                     Loc destLoc = new Loc(xx, yy);
-                    Loc srcLoc = destLoc - offset + mapBlob.Bounds.Start;
-                    if (blobMap.Map[srcLoc.X][srcLoc.Y] == index)
+                    if (blobTest(destLoc))
                     {
                         if (this.TerrainStencil.Test(map, destLoc))
                             map.TrySetTile(destLoc, this.Terrain.Copy());
