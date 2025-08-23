@@ -1,4 +1,4 @@
-﻿// <copyright file="FloorStairsStep.cs" company="Audino">
+﻿// <copyright file="BaseFloorStairsStep.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -20,21 +20,21 @@ namespace RogueElements
         where TEntrance : IEntrance
         where TExit : IExit
     {
-        public BaseFloorStairsStep()
+        protected BaseFloorStairsStep()
         {
             this.Entrances = new List<TEntrance>();
             this.Exits = new List<TExit>();
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public BaseFloorStairsStep(TEntrance entrance, TExit exit)
+        protected BaseFloorStairsStep(TEntrance entrance, TExit exit)
         {
             this.Entrances = new List<TEntrance> { entrance };
             this.Exits = new List<TExit> { exit };
             this.Filters = new List<BaseRoomFilter>();
         }
 
-        public BaseFloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
+        protected BaseFloorStairsStep(List<TEntrance> entrances, List<TExit> exits)
         {
             this.Entrances = entrances;
             this.Exits = exits;
