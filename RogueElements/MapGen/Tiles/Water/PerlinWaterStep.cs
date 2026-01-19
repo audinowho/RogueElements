@@ -9,21 +9,36 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Generates a random spread of water on the map. This is achieved by generating a heightContext using Perlin Noise,
-    /// then converting all tiles with a height value below the specified threshold to water.
+    /// Generates water coverage on the map using Perlin noise to create natural-looking terrain.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
+    /// <remarks>
+    /// This step generates a height map using Perlin noise, then converts all tiles with height values
+    /// below a calculated threshold into water tiles, achieving the target water percentage.
+    /// </remarks>
     [Serializable]
     public class PerlinWaterStep<T> : WaterStep<T>, IPerlinWaterStep
         where T : class, ITiledGenContext
     {
         private const int BUFFER_SIZE = 5;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PerlinWaterStep{T}"/> class.
+        /// </summary>
         public PerlinWaterStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PerlinWaterStep{T}"/> class with the specified parameters.
+        /// </summary>
+        /// <param name="waterPercent">The target percentage of water coverage.</param>
+        /// <param name="complexity">The number of Perlin noise iterations for height map generation.</param>
+        /// <param name="terrain">The water terrain tile to place.</param>
+        /// <param name="stencil">The stencil that determines eligible placement locations.</param>
+        /// <param name="softness">The minimum unit size of water tiles (0 = 1x1, 1 = 2x2, etc.).</param>
+        /// <param name="bowl">Whether to apply bowl distortion to prevent edge cutoffs.</param>
         public PerlinWaterStep(RandRange waterPercent, int complexity, ITile terrain, ITerrainStencil<T> stencil, int softness = default, bool bowl = true)
             : base(terrain, stencil)
         {
@@ -34,25 +49,29 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Determines how many iterations of Perlin noise to generate the heighTContext with. Higher complexity = higher variation of heights and more natural looking terrain.
+        /// Gets or sets the number of Perlin noise iterations for height map generation.
+        /// Higher values produce more varied heights and more natural-looking terrain.
         /// </summary>
         public int OrderComplexity { get; set; }
 
         /// <summary>
-        /// Determines the smallest unit of water tiles on the map. 0 = 1x1 tile of water, 1 = 2x2 tile of water, etc.
+        /// Gets or sets the minimum unit size of water tiles.
+        /// A value of 0 produces 1x1 tiles, 1 produces 2x2 tiles, and so on.
         /// </summary>
         public int OrderSoftness { get; set; }
 
         /// <summary>
-        /// The percent chance of water occurring.
+        /// Gets or sets the target percentage of the map to cover with water.
         /// </summary>
         public RandRange WaterPercent { get; set; }
 
         /// <summary>
-        /// Distorts the water such that it becomes like a bowl-shape, preventing awkward cutoffs at the edge of the map.
+        /// Gets or sets a value indicating whether to apply bowl distortion.
+        /// When enabled, water values are interpolated upward near map edges to prevent awkward cutoffs.
         /// </summary>
         public bool Bowl { get; set; }
 
+        /// <inheritdoc/>
         public override void Apply(T map)
         {
             int waterPercent = this.WaterPercent.Pick(map.Rand);

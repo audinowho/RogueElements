@@ -12,28 +12,46 @@ namespace RogueElements
     /// A room that connects its exits with a narrow hallway.
     /// It is able to handle all combinations of exits from all combination of directions.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that supports tiled generation.</typeparam>
     [Serializable]
     public class RoomGenAngledHall<T> : PermissiveRoomGen<T>
         where T : ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenAngledHall{T}"/> class.
+        /// </summary>
         public RoomGenAngledHall()
         {
             this.Brush = new DefaultHallBrush();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenAngledHall{T}"/> class with a specified turn bias.
+        /// </summary>
+        /// <param name="turnBias">The percentage chance (0-100) for the hall to make a turn.</param>
         public RoomGenAngledHall(int turnBias)
         {
             this.HallTurnBias = turnBias;
             this.Brush = new DefaultHallBrush();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenAngledHall{T}"/> class with a turn bias and brush.
+        /// </summary>
+        /// <param name="turnBias">The percentage chance (0-100) for the hall to make a turn.</param>
+        /// <param name="brush">The brush used to draw the hall.</param>
         public RoomGenAngledHall(int turnBias, BaseHallBrush brush)
         {
             this.HallTurnBias = turnBias;
             this.Brush = brush;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenAngledHall{T}"/> class with turn bias and dimensions.
+        /// </summary>
+        /// <param name="turnBias">The percentage chance (0-100) for the hall to make a turn.</param>
+        /// <param name="width">The preferred width range of the hall area.</param>
+        /// <param name="height">The preferred height range of the hall area.</param>
         public RoomGenAngledHall(int turnBias, RandRange width, RandRange height)
         {
             this.HallTurnBias = turnBias;
@@ -42,6 +60,10 @@ namespace RogueElements
             this.Height = height;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenAngledHall{T}"/> class as a copy of another.
+        /// </summary>
+        /// <param name="other">The instance to copy from.</param>
         protected RoomGenAngledHall(RoomGenAngledHall<T> other)
         {
             this.HallTurnBias = other.HallTurnBias;
@@ -51,32 +73,35 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// A percentage chance 0 to 100 for the hall making a turn.
+        /// Gets or sets the percentage chance (0-100) for the hall to make a turn instead of going straight.
         /// </summary>
         public int HallTurnBias { get; set; }
 
         /// <summary>
-        /// The brush to draw the hall with.
+        /// Gets or sets the brush used to draw the hall tiles.
         /// </summary>
         public BaseHallBrush Brush { get; set; }
 
         /// <summary>
-        /// The preferred width of the area covered by the hall.
+        /// Gets or sets the preferred width range of the area covered by the hall.
         /// </summary>
         public RandRange Width { get; set; }
 
         /// <summary>
-        /// The preferred height of the area covered by the hall.
+        /// Gets or sets the preferred height range of the area covered by the hall.
         /// </summary>
         public RandRange Height { get; set; }
 
+        /// <inheritdoc/>
         public override RoomGen<T> Copy() => new RoomGenAngledHall<T>(this);
 
+        /// <inheritdoc/>
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
+        /// <inheritdoc/>
         public override void DrawOnMap(T map)
         {
             // check if there are any sides that have intersections such that straight lines are possible
@@ -246,11 +271,11 @@ namespace RogueElements
         /// <summary>
         /// Draws a bundle of halls from one direction, going up to the specified point, and connects them.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="dir"></param>
-        /// <param name="forwardEnd"></param>
-        /// <param name="starts"></param>
-        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawCombinedHall</param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="drawnRays">The list of previously drawn ray segments for collision detection.</param>
+        /// <param name="dir">The direction from which the halls originate.</param>
+        /// <param name="forwardEnd">The coordinate where the halls should end.</param>
+        /// <param name="starts">The starting positions of each hall along the perpendicular axis.</param>
         public void DrawCombinedHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Dir4 dir, int forwardEnd, int[] starts)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;
@@ -279,11 +304,21 @@ namespace RogueElements
             this.DrawHall(map, drawnRays, combineStart, combineEnd, vertical ? Dir4.Right : Dir4.Down);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: Angle:{1}%", this.GetType().GetFormattedTypeName(), this.HallTurnBias);
         }
 
+        /// <summary>
+        /// Chooses starting tiles for a bent hall with exactly one start and one end.
+        /// Ensures the start and end are not aligned to force a bend.
+        /// </summary>
+        /// <param name="map">The map context for random number generation.</param>
+        /// <param name="starts">The set of possible start positions.</param>
+        /// <param name="ends">The set of possible end positions.</param>
+        /// <param name="startTiles">Output array to store the chosen start tile.</param>
+        /// <param name="endTiles">Output array to store the chosen end tile.</param>
         private static void Choose1on1BentHallStarts(T map, HashSet<int> starts, HashSet<int> ends, int[] startTiles, int[] endTiles)
         {
             // special case; make sure that start and end are NOT aligned to each other because we want a bend
@@ -321,11 +356,11 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Returns the intersection of two hashsets IF they both contain only one hashset.  Returns an empty hashset otherwise.
+        /// Returns the intersection of two hashsets IF they both contain only one hashset. Returns an empty hashset otherwise.
         /// </summary>
-        /// <param name="opening1"></param>
-        /// <param name="opening2"></param>
-        /// <returns></returns>
+        /// <param name="opening1">The first list of hash sets.</param>
+        /// <param name="opening2">The second list of hash sets.</param>
+        /// <returns>The intersection if both lists have exactly one set; otherwise, an empty set.</returns>
         private static HashSet<int> GetIntersectedTiles(List<HashSet<int>> opening1, List<HashSet<int>> opening2)
         {
             HashSet<int> intersect = new HashSet<int>();
@@ -339,6 +374,13 @@ namespace RogueElements
             return intersect;
         }
 
+        /// <summary>
+        /// Gets the minimum or maximum value from an array of choices based on direction and extension preference.
+        /// </summary>
+        /// <param name="choices">The array of position choices.</param>
+        /// <param name="dir">The direction of the hall.</param>
+        /// <param name="extendFar">Whether to extend to the farthest position.</param>
+        /// <returns>The selected minimum or maximum position.</returns>
         private static int GetHallMinMax(int[] choices, Dir4 dir, bool extendFar)
         {
             bool useMax = extendFar;
@@ -353,6 +395,12 @@ namespace RogueElements
             return result;
         }
 
+        /// <summary>
+        /// Checks if a location collides with any previously drawn hall segment.
+        /// </summary>
+        /// <param name="drawnRays">The list of previously drawn ray segments.</param>
+        /// <param name="endLoc">The location to check for collision.</param>
+        /// <returns>True if the location collides with a drawn hall; otherwise, false.</returns>
         private static bool CollidesWithHall(List<(LocRay4, int)> drawnRays, Loc endLoc)
         {
             foreach ((LocRay4 ray, int range) drawn in drawnRays)
@@ -367,11 +415,11 @@ namespace RogueElements
         /// <summary>
         /// Draws a hall in a straight cardinal direction, starting with one point and ending with another (inclusive).
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="drawnRays"></param>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
-        /// <param name="dir"></param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="drawnRays">The list to add the drawn ray segment to.</param>
+        /// <param name="point1">The starting point of the hall.</param>
+        /// <param name="point2">The ending point of the hall.</param>
+        /// <param name="dir">The direction of the hall.</param>
         private void DrawHall(ITiledGenContext map, List<(LocRay4, int)> drawnRays, Loc point1, Loc point2, Dir4 dir)
         {
             LocRay4 ray = new LocRay4(point1, dir);
@@ -420,12 +468,12 @@ namespace RogueElements
         /// <summary>
         /// In a 4- or 3-way hall situation, this method is called to add the remaining ways after the first two have been added.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="cross"></param>
-        /// <param name="possibleStarts"></param>
-        /// <param name="vertical"></param>
-        /// <param name="turn"></param>
-        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawSecondaryHall</param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="drawnRays">The list of previously drawn ray segments.</param>
+        /// <param name="cross">The set of crossing positions for straight halls.</param>
+        /// <param name="possibleStarts">The dictionary of possible starting positions by direction.</param>
+        /// <param name="vertical">Whether this is a vertical hall.</param>
+        /// <param name="turn">Whether the hall should turn.</param>
         private void DrawSecondaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
@@ -502,12 +550,12 @@ namespace RogueElements
         /// <summary>
         /// Draws the hall connecting the first opposite pair of sides.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="cross"></param>
-        /// <param name="possibleStarts"></param>
-        /// <param name="vertical"></param>
-        /// <param name="turn"></param>
-        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawPrimaryHall</param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="drawnRays">The list to add drawn ray segments to.</param>
+        /// <param name="cross">The set of crossing positions for straight halls.</param>
+        /// <param name="possibleStarts">The dictionary of possible starting positions by direction.</param>
+        /// <param name="vertical">Whether this is a vertical hall.</param>
+        /// <param name="turn">Whether the hall should turn.</param>
         private void DrawPrimaryHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, Dictionary<Dir4, List<HashSet<int>>> possibleStarts, bool vertical, bool turn)
         {
             if (!turn)
@@ -588,10 +636,10 @@ namespace RogueElements
         /// <summary>
         /// Draws a single straight hall in the specified direction, choosing ONE of the scalars provided in cross.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="cross"></param>
-        /// <param name="vertical"></param>
-        /// <param name="drawnRays">todo: describe drawnRays parameter on DrawStraightHall</param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="drawnRays">The list to add drawn ray segments to.</param>
+        /// <param name="cross">The set of possible crossing positions to choose from.</param>
+        /// <param name="vertical">Whether this is a vertical hall.</param>
         private void DrawStraightHall(T map, List<(LocRay4, int)> drawnRays, HashSet<int> cross, bool vertical)
         {
             int startSideDist = MathUtils.ChooseFromHash(cross, map.Rand);

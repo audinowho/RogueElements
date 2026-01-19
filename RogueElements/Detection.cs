@@ -10,10 +10,23 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides methods for detecting patterns, regions, and connectivity in grids.
+    /// </summary>
     public static class Detection
     {
+        /// <summary>
+        /// Delegate for performing an action on a rectangle.
+        /// </summary>
+        /// <param name="rect">The rectangle.</param>
         public delegate void RectFunc(Rect rect);
 
+        /// <summary>
+        /// Detects and identifies connected regions (blobs) in a rectangular area.
+        /// </summary>
+        /// <param name="rect">The rectangular area to scan.</param>
+        /// <param name="isValid">Delegate determining if a tile is part of a blob.</param>
+        /// <returns>A <see cref="BlobMap"/> containing identified blobs.</returns>
         public static BlobMap DetectBlobs(Rect rect, Grid.LocTest isValid)
         {
             if (isValid == null)
@@ -236,6 +249,13 @@ namespace RogueElements
             return walls;
         }
 
+        /// <summary>
+        /// Gets the direction a wall faces, if it has exactly one adjacent ground tile.
+        /// </summary>
+        /// <param name="loc">The wall location.</param>
+        /// <param name="checkBlock">Delegate determining if a tile is blocked.</param>
+        /// <param name="checkGround">Delegate determining if a tile is ground.</param>
+        /// <returns>A ray with the wall location and facing direction, or Dir4.None if invalid.</returns>
         public static LocRay4 GetWallDir(Loc loc, Grid.LocTest checkBlock, Grid.LocTest checkGround)
         {
             if (checkBlock == null)

@@ -9,38 +9,52 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// A filter for determining the eligible tiles for an operation.
-    /// Locations that, if all made unwalkable, do not cause a chokepoint to be removed, are eligible.
+    /// Provides a blob stencil that prevents blob placement from creating chokepoints.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
+    /// <remarks>
+    /// This stencil tests whether placing the blob would disconnect walkable areas or create
+    /// impassable barriers.
+    /// </remarks>
     [Serializable]
     public class NoChokepointStencil<T> : IBlobStencil<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoChokepointStencil{T}"/> class.
+        /// </summary>
         public NoChokepointStencil()
         {
             this.TileStencil = new DefaultTerrainStencil<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoChokepointStencil{T}"/> class with the specified terrain stencil.
+        /// </summary>
+        /// <param name="tileStencil">The terrain stencil that defines walkable tiles.</param>
         public NoChokepointStencil(ITerrainStencil<T> tileStencil)
         {
             this.TileStencil = tileStencil;
         }
 
         /// <summary>
-        /// The stencil should return true if the tile is considered walkable. (Tile-being-choked)
+        /// Gets or sets the terrain stencil that determines which tiles are considered walkable.
         /// </summary>
         public ITerrainStencil<T> TileStencil { get; set; }
 
         /// <summary>
-        /// Determines if the entire map should be checked for connectivity, or just the immediate surrounding tiles.
-        /// If turned off, the gen will refuse to break ANY chokepoint period.
-        /// If turned on, it will break any chokepoint that has another way around somewhere, while still preventing true unsolvability.
+        /// Gets or sets a value indicating whether to check the entire map for connectivity.
+        /// When <c>false</c>, refuses to break any chokepoint.
+        /// When <c>true</c>, allows breaking chokepoints that have alternate paths, preventing only true disconnections.
         /// </summary>
         public bool Global { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to invert the chokepoint detection result.
+        /// </summary>
         public bool Negate { get; set; }
 
+        /// <inheritdoc/>
         public bool Test(T map, Rect rect, Grid.LocTest blobTest)
         {
             bool IsMapValid(Loc loc) => this.TileStencil.Test(map, loc);

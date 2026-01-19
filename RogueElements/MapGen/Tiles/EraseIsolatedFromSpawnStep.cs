@@ -9,26 +9,41 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Erases blobs of terrain that do not touch walkable ground.
+    /// Erases terrain blobs that are not reachable from the spawn point by replacing them with wall terrain.
     /// </summary>
-    /// <typeparam name="TGenContext"></typeparam>
-    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TGenContext">The type of map context that implements tile and placement contexts.</typeparam>
+    /// <typeparam name="TEntrance">The type of entrance used to determine the spawn point.</typeparam>
+    /// <remarks>
+    /// Unlike <see cref="EraseIsolatedStep{T}"/>, this step uses the entrance location as the starting
+    /// point for connectivity checks rather than any walkable tile.
+    /// </remarks>
     [Serializable]
     public class EraseIsolatedFromSpawnStep<TGenContext, TEntrance> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>
         where TEntrance : IEntrance
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EraseIsolatedFromSpawnStep{TGenContext, TEntrance}"/> class.
+        /// </summary>
         public EraseIsolatedFromSpawnStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EraseIsolatedFromSpawnStep{TGenContext, TEntrance}"/> class with the specified terrain.
+        /// </summary>
+        /// <param name="terrain">The terrain type to check for isolation from spawn.</param>
         public EraseIsolatedFromSpawnStep(ITile terrain)
         {
             this.Terrain = terrain;
         }
 
+        /// <summary>
+        /// Gets or sets the terrain type to check for isolation and erase if not reachable from spawn.
+        /// </summary>
         public ITile Terrain { get; set; }
 
+        /// <inheritdoc/>
         public override void Apply(TGenContext map)
         {
             bool[][] connectionGrid = new bool[map.Width][];

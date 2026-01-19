@@ -10,6 +10,9 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides extension methods for the <see cref="Rect"/> struct.
+    /// </summary>
     public static class RectExt
     {
         /// <summary>
@@ -65,6 +68,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the length of the border in the specified direction.
+        /// </summary>
+        /// <param name="rect">The rectangle.</param>
+        /// <param name="dir">The direction of the border.</param>
+        /// <returns>The length of the border perpendicular to the direction.</returns>
         public static int GetBorderLength(this Rect rect, Dir4 dir)
         {
             return rect.GetSide(dir.ToAxis()).Length;

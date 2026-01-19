@@ -10,25 +10,49 @@ using System.Text;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
-    /// Each addition attempt has it choose randomly from existing rooms to extend from.
-    /// It will try a finite number of times before it gives up.
+    /// Adds new rooms connected to existing rooms using random sampling with limited retries.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step extends the floor layout by adding rooms adjacent to existing rooms or halls.
+    /// Unlike <see cref="AddConnectedRoomsStep{T}"/>, this version randomly samples expansion
+    /// points with a limited number of retries, providing better performance at the cost of
+    /// potentially missing valid placements.
+    /// </para>
+    /// <para>
+    /// Rooms can optionally be connected via an intermediate hallway, controlled by <see cref="AddConnectedRoomsBaseStep{T}.HallPercent"/>.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="AddConnectedRoomsStep{T}"/>
     [Serializable]
     public class AddConnectedRoomsRandStep<T> : AddConnectedRoomsBaseStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddConnectedRoomsRandStep{T}"/> class.
+        /// </summary>
         public AddConnectedRoomsRandStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddConnectedRoomsRandStep{T}"/> class with specified room and hall generators.
+        /// </summary>
+        /// <param name="genericRooms">The picker for room generators.</param>
+        /// <param name="genericHalls">The picker for hall generators.</param>
         public AddConnectedRoomsRandStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base(genericRooms, genericHalls)
         {
         }
 
+        /// <summary>
+        /// Chooses a room expansion by randomly sampling possible placements.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to expand.</param>
+        /// <returns>The chosen expansion details, or null if no valid expansion is found within retry limit.</returns>
         public override FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan)
         {
             // TODO: don't go through all rooms, just pick randomly

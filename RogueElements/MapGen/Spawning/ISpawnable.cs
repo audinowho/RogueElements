@@ -7,12 +7,16 @@ using System;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Represents an entity that can be spawned and placed on a generated map.
+    /// Implementations include items, enemies, stairs, and other placeable objects.
+    /// </summary>
     public interface ISpawnable
     {
         /// <summary>
-        /// Creates a copy of the object, to be placed in the generated layout.
+        /// Creates a copy of the object to be placed in the generated layout.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A new instance that is a copy of this spawnable object.</returns>
         ISpawnable Copy();
     }
 }

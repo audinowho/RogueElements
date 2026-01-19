@@ -10,38 +10,54 @@ namespace RogueElements
 {
     /// <summary>
     /// A rectangular brush for painting hallways.
+    /// Paints a rectangular area of tiles using the map's room terrain.
     /// </summary>
     [Serializable]
     public class SquareHallBrush : BaseHallBrush
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareHallBrush"/> class.
+        /// </summary>
         public SquareHallBrush()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareHallBrush"/> class with specified dimensions.
+        /// </summary>
+        /// <param name="size">The dimensions of the brush in tiles.</param>
         public SquareHallBrush(Loc size)
         {
             this.Dims = size;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareHallBrush"/> class as a copy of another.
+        /// </summary>
+        /// <param name="other">The instance to copy from.</param>
         public SquareHallBrush(SquareHallBrush other)
         {
             this.Dims = other.Dims;
         }
 
         /// <summary>
-        /// Dimensions of the brush, in Tiles
+        /// Gets or sets the dimensions of the brush in tiles.
         /// </summary>
         public Loc Dims { get; set; }
 
+        /// <inheritdoc/>
         public override Loc Size { get => this.Dims; }
 
+        /// <inheritdoc/>
         public override Loc Center { get => Loc.Zero; }
 
+        /// <inheritdoc/>
         public override BaseHallBrush Clone()
         {
             return new SquareHallBrush(this);
         }
 
+        /// <inheritdoc/>
         public override void DrawHallBrush(ITiledGenContext map, Rect bounds, LocRay4 ray, int length)
         {
             for (int ii = 0; ii < length; ii++)

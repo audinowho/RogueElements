@@ -1,53 +1,148 @@
-# RogueElements #
-[![Build Status](https://travis-ci.org/audinowho/RogueElements.svg?branch=master)](https://travis-ci.org/audinowho/RogueElements)
+# RogueElements
 
-RogueElements is a C# library that allows the user to randomly generate maps for use in roguelikes.  Generation is implemented in a series of interchangeable steps, similar to shader passes.  These steps all share a base class, which the user can inherit to make their own steps.  Additionally, RogueElements contains a collection of functions designed to make working with 4-directional and 8-directional tile maps more convenient.
+[![NuGet](https://img.shields.io/nuget/v/RogueElements.svg)](https://www.nuget.org/packages/RogueElements/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-blue.svg)](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 
-There exist a large base of unit tests that serve to cover the basic functions of the library.
+**Procedural roguelike map generation library for C#.** Generate dungeons with rooms, corridors, items, enemies, and terrain using a flexible pipeline architecture.
 
-RogueElements does NOT provide a base engine for the gameplay of an actual roguelike; that's for the game developers themselves to decide on.  A map generation context specified by the developer is all that is needed to integrate the library with their game.  It will inherit all interfaces that the developer is interested in to allow the correct steps to apply to it.
+<p align="center"><img src="https://i.imgur.com/0Ir5F6I.gif" alt="RogueElements Debug View"></p>
 
+## Features
 
-The presence of diagnostic methods also makes it easy to set breakpoints and view the entire map state at a given time:
+- **Pipeline Architecture** - Chain generation steps like shader passes
+- **Game-Agnostic** - Integrate with any game engine (Unity, MonoGame, Godot, etc.)
+- **Two Layout Modes** - Freeform rooms or grid-based dungeons
+- **Extensible** - Create custom room shapes, paths, and spawning logic
+- **Deterministic** - Seed-based generation for reproducible maps
+- **Well-Tested** - Comprehensive unit test coverage
 
-<p align="center"><img src="https://i.imgur.com/0Ir5F6I.gif"></p>
+## Quick Start
 
-# Overview #
+```bash
+dotnet add package RogueElements
+```
 
+```csharp
+// 1. Create your map context implementing IGenContext interfaces
+public class MyMapContext : ITiledGenContext, IFloorPlanGenContext
+{
+    // ... implement required members
+}
 
-The library revolves around 3 major classes:
-`MapGen`, `GenStep`, and `IGenContext`.
+// 2. Build a generation pipeline
+var mapGen = new MapGen<MyMapContext>();
 
-`IGenContext` is an interface that represents the map you wish to generate.  Implement it with your own user-defined `MapGenContext` class so that it can be passed into RogueElements's other classes.  Other interfaces in RogueElements inherit from `IGenContext`, and specify more features that RogueElements will be allowed to interact with.  For example, implementing `ITiledGenContext` indicates that your `MapGenContext` class has tiles that can be get and set.
+// Initialize tiles
+mapGen.GenSteps.Add(-1, new InitTilesStep<MyMapContext>(50, 50));
 
-`GenStep` is a class with a single Apply function, which will perform an operation on any IGenContext passed in (specified by its class parameter).  Many `GenStep`s have constraints on what kind of `IGenContext` they will accept.  For example, `PerlinWaterStep` will randomly generate user-specified water terrain on the map using Perlin Noise, but it only allows classes implementing `ITiledGenContext` as its parameter.
+// Create room layout
+mapGen.GenSteps.Add(0, new InitFloorPlanStep<MyMapContext>());
+mapGen.GenSteps.Add(1, new FloorPathBranch<MyMapContext>());
+mapGen.GenSteps.Add(2, new ConnectRoomStep<MyMapContext>());
 
-`MapGen` is the class that generates the map.  Add `GenStep`s to the GenSteps list, then call the method `GenMap()` to output a `MapGenContext`.
+// Render to tiles
+mapGen.GenSteps.Add(3, new DrawFloorToTileStep<MyMapContext>());
 
+// 3. Generate!
+MyMapContext map = mapGen.GenMap(seed: 12345);
+```
 
-The flow of map generation resembles a shader pipeline:
+## How It Works
 
-<p align="center"><img src="https://i.imgur.com/CgNN8mS.png"></p>
+RogueElements uses a **pipeline pattern** where `GenStep` operations progressively build up map state:
 
-An example map generation pipeline.  The `GenStep`s can be swapped in and out.
+<p align="center"><img src="https://i.imgur.com/CgNN8mS.png" alt="Pipeline Diagram"></p>
 
-* `InitFloorPlanStep<MapGenContext>`: Initializes a list of rooms (A `FloorPlan`).
-* `FloorPathBranch<MapGenContext>`: Creates the shape of the path of rooms in the grid as a minimum spanning tree.
-* `ConnectRoomStep<MapGenContext>`: Randomly connects adjacent rooms in the `FloorPlan`.
-* `DrawFloorToTileStep<MapGenContext>`: Draws the list of freehand rooms onto the actual map tiles.
-* `FloorStairsStep<MapGenContext, StairsUp, StairsDown>`: For adding an up and down stairs to your map.  You must provide the StairsUp and StairsDown classes.
-* `PerlinWaterStep<MapGenContext>`: For generating water patterns on your map using Perlin Noise.
-* `RandomSpawnStep<MapGenContext, Item>`: For distributing items across the floor in a random pattern.  You must provide the Item class.
-* `RandomSpawnStep<MapGenContext, Mob>`: For distributing items across the floor in a random pattern.  You must provide the Mob class.
+### Core Classes
 
+| Class | Purpose |
+|-------|---------|
+| `MapGen<T>` | Orchestrates the generation pipeline |
+| `GenStep<T>` | Base class for generation operations |
+| `IGenContext` | Interface for map state containers |
 
-RogueElements.Examples contains examples of how to set up a `MapGen`.  Each example builds on the previous one.
+### Generation Steps
 
+| Step | Description |
+|------|-------------|
+| `InitFloorPlanStep` | Initialize room list |
+| `FloorPathBranch` | Create branching room paths |
+| `ConnectRoomStep` | Add extra room connections |
+| `DrawFloorToTileStep` | Render rooms to tiles |
+| `FloorStairsStep` | Place entrance/exit stairs |
+| `PerlinWaterStep` | Generate water terrain |
+| `RandomSpawnStep` | Distribute items and enemies |
 
+## Layout Modes
 
-# Credits #
+### Freeform (FloorPlan)
+Rooms placed freely with flexible positioning. Best for organic, cave-like dungeons.
 
-- [Brogue](https://sites.google.com/site/broguegame/): A major inspiration in itemizing steps to generate dungeon maps.
-- [Spike Chunsoft Mystery Dungeon Series](http://www.spike-chunsoft.co.jp/) - Several floor layouts used as a reference for grid-based floor steps.
-- [RogueSharp](https://bitbucket.org/FaronBracy/roguesharp) - A C# library dedicated to creating a full roguelike, used as an example for integrating RogueElements.
+### Grid-Based (GridPlan)
+Rooms aligned to a grid with cardinal connections. Best for structured, traditional dungeons.
 
+```
+Grid Layout Example:
+┌───┐   ┌───┐   ┌───┐
+│ A │───│ B │───│ C │
+└───┘   └─┬─┘   └───┘
+          │
+        ┌─┴─┐
+        │ D │
+        └───┘
+```
+
+## Examples
+
+The `RogueElements.Examples` project contains 8 progressive tutorials:
+
+```bash
+dotnet run --project RogueElements.Examples
+```
+
+| Example | Concept |
+|---------|---------|
+| Ex1 | Basic tiles |
+| Ex2 | Freeform rooms |
+| Ex3 | Grid layouts |
+| Ex4 | Stairs placement |
+| Ex5 | Water/terrain |
+| Ex6 | Item spawning |
+| Ex7 | Special rooms |
+| Ex8 | Full integration |
+
+See [RogueElements.Examples/README.md](RogueElements.Examples/README.md) for detailed walkthroughs.
+
+## Documentation
+
+Each folder contains its own README with detailed documentation:
+
+- [**RogueElements/**](RogueElements/README.md) - Core library architecture
+- [**MapGen/**](RogueElements/MapGen/README.md) - Pipeline and GenStep system
+- [**FloorPlan/**](RogueElements/MapGen/FloorPlan/README.md) - Freeform room generation
+- [**Grid/**](RogueElements/MapGen/Grid/README.md) - Grid-based layouts
+- [**Spawning/**](RogueElements/MapGen/Spawning/README.md) - Entity placement
+- [**Rand/**](RogueElements/Rand/README.md) - RNG and weighted selection
+
+## Integration Examples
+
+RogueElements integrates with popular game libraries:
+
+- **[RogueSharp](https://bitbucket.org/FaronBracy/roguesharp)** - See Ex8_Integration for IMapCreationStrategy pattern
+- **Unity** - Implement context interfaces in MonoBehaviour
+- **MonoGame** - Direct integration with tile-based rendering
+
+## Credits
+
+- [**Brogue**](https://sites.google.com/site/broguegame/) - Inspiration for step-based dungeon generation
+- [**Spike Chunsoft Mystery Dungeon**](http://www.spike-chunsoft.co.jp/) - Reference for grid-based floor layouts
+- [**RogueSharp**](https://bitbucket.org/FaronBracy/roguesharp) - C# roguelike library integration example
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+![Repobeats](https://repobeats.axiom.co/api/embed/your-hash-here.svg "Repobeats analytics image")

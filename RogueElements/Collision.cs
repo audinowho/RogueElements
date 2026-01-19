@@ -10,6 +10,9 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides methods for collision detection between rectangles and bounds checking.
+    /// </summary>
     public static class Collision
     {
         /// <summary>
@@ -44,11 +47,25 @@ namespace RogueElements
             return dir.GetLoc() * foundRange == testLoc;
         }
 
+        /// <summary>
+        /// Determines if two rectangles overlap.
+        /// </summary>
+        /// <param name="bound1">The first rectangle.</param>
+        /// <param name="bound2">The second rectangle.</param>
+        /// <returns><c>true</c> if the rectangles overlap; otherwise <c>false</c>.</returns>
         public static bool Collides(Rect bound1, Rect bound2)
         {
             return Collides(bound1.Start, bound1.Size, bound2.Start, bound2.Size);
         }
 
+        /// <summary>
+        /// Determines if two rectangular regions overlap.
+        /// </summary>
+        /// <param name="start1">Start of the first region.</param>
+        /// <param name="size1">Size of the first region.</param>
+        /// <param name="start2">Start of the second region.</param>
+        /// <param name="size2">Size of the second region.</param>
+        /// <returns><c>true</c> if the regions overlap; otherwise <c>false</c>.</returns>
         public static bool Collides(Loc start1, Loc size1, Loc start2, Loc size2)
         {
             return Collides(start1.X, size1.X, start2.X, size2.X) &&
@@ -88,41 +105,94 @@ namespace RogueElements
                 return -Math.Max(distLeft, distRight);
         }
 
+        /// <summary>
+        /// Determines if a point is within a rectangle.
+        /// </summary>
+        /// <param name="rect">The rectangle.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns><c>true</c> if the point is within the rectangle; otherwise <c>false</c>.</returns>
         public static bool InBounds(Rect rect, Loc point)
         {
             return InBounds(rect.Size.X, rect.Size.Y, point - rect.Start);
         }
 
+        /// <summary>
+        /// Determines if a point is within a rectangular region.
+        /// </summary>
+        /// <param name="start">Start of the region.</param>
+        /// <param name="size">Size of the region.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns><c>true</c> if the point is within the region; otherwise <c>false</c>.</returns>
         public static bool InBounds(Loc start, Loc size, Loc point)
         {
             return InBounds(size.X, size.Y, point - start);
         }
 
+        /// <summary>
+        /// Determines if a point is within a rectangular region starting at origin.
+        /// </summary>
+        /// <param name="sizeX">Width of the region.</param>
+        /// <param name="sizeY">Height of the region.</param>
+        /// <param name="pt">The point to check.</param>
+        /// <returns><c>true</c> if the point is within the region; otherwise <c>false</c>.</returns>
         public static bool InBounds(int sizeX, int sizeY, Loc pt)
         {
             return InBounds(sizeX, pt.X) && InBounds(sizeY, pt.Y);
         }
 
+        /// <summary>
+        /// Determines if a value is within a 1D range.
+        /// </summary>
+        /// <param name="start">Start of the range.</param>
+        /// <param name="size">Size of the range.</param>
+        /// <param name="pt">The value to check.</param>
+        /// <returns><c>true</c> if the value is within the range; otherwise <c>false</c>.</returns>
         public static bool InBounds(int start, int size, int pt)
         {
             return InBounds(size, pt - start);
         }
 
+        /// <summary>
+        /// Determines if a value is within a 1D range starting at zero.
+        /// </summary>
+        /// <param name="size">Size of the range.</param>
+        /// <param name="pt">The value to check.</param>
+        /// <returns><c>true</c> if the value is within [0, size); otherwise <c>false</c>.</returns>
         public static bool InBounds(int size, int pt)
         {
             return pt >= 0 && pt < size;
         }
 
+        /// <summary>
+        /// Clamps a point to be within a rectangle.
+        /// </summary>
+        /// <param name="rect">The rectangle.</param>
+        /// <param name="point">The point to clamp.</param>
+        /// <returns>The clamped point.</returns>
         public static Loc ClampToBounds(Rect rect, Loc point)
         {
             return ClampToBounds(rect.Start, rect.Size, point);
         }
 
+        /// <summary>
+        /// Clamps a point to be within a rectangular region.
+        /// </summary>
+        /// <param name="start">Start of the region.</param>
+        /// <param name="size">Size of the region.</param>
+        /// <param name="point">The point to clamp.</param>
+        /// <returns>The clamped point.</returns>
         public static Loc ClampToBounds(Loc start, Loc size, Loc point)
         {
             return ClampToBounds(size.X, size.Y, point - start) + start;
         }
 
+        /// <summary>
+        /// Clamps a point to be within a rectangular region starting at origin.
+        /// </summary>
+        /// <param name="sizeX">Width of the region.</param>
+        /// <param name="sizeY">Height of the region.</param>
+        /// <param name="pt">The point to clamp.</param>
+        /// <returns>The clamped point.</returns>
         public static Loc ClampToBounds(int sizeX, int sizeY, Loc pt)
         {
             return new Loc(Math.Min(Math.Max(0, pt.X), sizeX - 1), Math.Min(Math.Max(0, pt.Y), sizeY - 1));

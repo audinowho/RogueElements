@@ -10,17 +10,26 @@ namespace RogueElements
 {
     /// <summary>
     /// Generates a room with specific tiles and borders.
-    /// EDITOR UNFRIENDLY
+    /// Allows defining a precise tile layout for the room.
+    /// Note: This class is not editor-friendly due to direct tile array manipulation.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that supports tiled generation.</typeparam>
     [Serializable]
     public class RoomGenSpecific<T> : RoomGen<T>
         where T : ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenSpecific{T}"/> class.
+        /// </summary>
         public RoomGenSpecific()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenSpecific{T}"/> class with specified dimensions.
+        /// </summary>
+        /// <param name="width">The width of the room in tiles.</param>
+        /// <param name="height">The height of the room in tiles.</param>
         public RoomGenSpecific(int width, int height)
         {
             this.Tiles = new ITile[width][];
@@ -28,12 +37,22 @@ namespace RogueElements
                 this.Tiles[xx] = new ITile[height];
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenSpecific{T}"/> class with specified dimensions and terrain.
+        /// </summary>
+        /// <param name="width">The width of the room in tiles.</param>
+        /// <param name="height">The height of the room in tiles.</param>
+        /// <param name="roomTerrain">The terrain type that represents walkable floor tiles.</param>
         public RoomGenSpecific(int width, int height, ITile roomTerrain)
             : this(width, height)
         {
             this.RoomTerrain = roomTerrain;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenSpecific{T}"/> class as a copy of another.
+        /// </summary>
+        /// <param name="other">The instance to copy from.</param>
         protected RoomGenSpecific(RoomGenSpecific<T> other)
         {
             this.RoomTerrain = other.RoomTerrain;
@@ -46,17 +65,27 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets or sets the terrain type that represents walkable floor tiles.
+        /// Used to determine which tiles are open for border connections.
+        /// </summary>
         public ITile RoomTerrain { get; set; }
 
+        /// <summary>
+        /// Gets or sets the 2D array of tiles that define the room layout.
+        /// </summary>
         public ITile[][] Tiles { get; set; }
 
+        /// <inheritdoc/>
         public override RoomGen<T> Copy() => new RoomGenSpecific<T>(this);
 
+        /// <inheritdoc/>
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Tiles.Length, this.Tiles[0].Length);
         }
 
+        /// <inheritdoc/>
         public override void DrawOnMap(T map)
         {
             if (this.Draw.Width != this.Tiles.Length || this.Draw.Height != this.Tiles[0].Length)
@@ -74,11 +103,13 @@ namespace RogueElements
             this.SetRoomBorders(map);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: {1}x{2}", this.GetType().GetFormattedTypeName(), this.Tiles.Length, this.Tiles[0].Length);
         }
 
+        /// <inheritdoc/>
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             // NOTE: Because the context is not passed in when preparing borders,

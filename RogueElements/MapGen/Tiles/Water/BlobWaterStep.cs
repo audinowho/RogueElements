@@ -9,9 +9,9 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Creates blobs of water using cellular automata, and places them around the map.
+    /// Generates water blobs using cellular automata and places them at random locations on the map.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
     [Serializable]
     public class BlobWaterStep<T> : WaterStep<T>, IBlobWaterStep
         where T : class, ITiledGenContext
@@ -19,12 +19,24 @@ namespace RogueElements
         private const int AUTOMATA_CHANCE = 55;
         private const int AUTOMATA_ROUNDS = 5;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlobWaterStep{T}"/> class.
+        /// </summary>
         public BlobWaterStep()
             : base()
         {
             this.BlobStencil = new DefaultBlobStencil<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlobWaterStep{T}"/> class with the specified parameters.
+        /// </summary>
+        /// <param name="blobs">The range for the number of blobs to generate.</param>
+        /// <param name="terrain">The water terrain tile to place.</param>
+        /// <param name="stencil">The per-tile stencil for eligible placement locations.</param>
+        /// <param name="blobStencil">The blob-wide stencil for valid blob placement.</param>
+        /// <param name="areaScale">The acceptable area range for each blob.</param>
+        /// <param name="generateScale">The generation area range for creating blobs.</param>
         public BlobWaterStep(RandRange blobs, ITile terrain, ITerrainStencil<T> stencil, IBlobStencil<T> blobStencil, IntRange areaScale, IntRange generateScale)
             : base(terrain, stencil)
         {
@@ -35,25 +47,29 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The number of blobs to place.
+        /// Gets or sets the range for the number of blobs to place.
         /// </summary>
         public RandRange Blobs { get; set; }
 
         /// <summary>
-        /// The NxN size range of the area creating the blob.  It is measured in tiles.  It is recommended to pick a range with at least 4 between min and max.
+        /// Gets or sets the NxN size range of the generation area for creating blobs.
+        /// It is recommended to pick a range with at least 4 between min and max.
         /// </summary>
         public IntRange GenerateScale { get; set; }
 
         /// <summary>
-        /// The NxN size range of the acceptable area the blob takes.  It is measured in tiles.  It is recommended to pick a range with at least 4 between min and max.  Must be equal to or smaller than Generate Scale.
+        /// Gets or sets the NxN size range of the acceptable blob area.
+        /// Must be equal to or smaller than <see cref="GenerateScale"/>.
         /// </summary>
         public IntRange AreaScale { get; set; }
 
         /// <summary>
-        /// Blob-wide stencil.  All-or-nothing: If the blob position passes this stencil, it is drawn.  Otherwise it is not.
+        /// Gets or sets the blob-wide stencil for placement validation.
+        /// If the blob position fails this stencil, the entire blob is rejected.
         /// </summary>
         public IBlobStencil<T> BlobStencil { get; set; }
 
+        /// <inheritdoc/>
         public override void Apply(T map)
         {
             int blobs = this.Blobs.Pick(map.Rand);
@@ -121,13 +137,13 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Attempts to place a blob from the blob map.
+        /// Attempts to place a blob from the blob map at the specified offset.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="blobMap"></param>
-        /// <param name="blobIdx"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <param name="map">The map context to place the blob on.</param>
+        /// <param name="blobMap">The blob map containing the blob shapes.</param>
+        /// <param name="blobIdx">The index of the blob to place.</param>
+        /// <param name="offset">The position offset for blob placement.</param>
+        /// <returns><c>true</c> if the blob was successfully placed; otherwise, <c>false</c>.</returns>
         protected virtual bool AttemptBlob(T map, BlobMap blobMap, int blobIdx, Loc offset)
         {
             BlobMap.Blob mapBlob = blobMap.Blobs[blobIdx];

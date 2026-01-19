@@ -25,11 +25,18 @@ namespace RogueElements
     {
         private readonly ulong[] s;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReRandom"/> class with the current time as seed.
+        /// </summary>
         public ReRandom()
             : this(unchecked((ulong)System.DateTime.Now.Ticks))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReRandom"/> class with a specified seed.
+        /// </summary>
+        /// <param name="seed">The seed value for the random number generator.</param>
         public ReRandom(ulong seed)
         {
             this.FirstSeed = seed;
@@ -45,8 +52,10 @@ namespace RogueElements
         /// <summary>
         /// The seed value that the class was initialized with.
         /// </summary>
+        /// <inheritdoc/>
         public ulong FirstSeed { get; private set; }
 
+        /// <inheritdoc/>
         public virtual ulong NextUInt64()
         {
             ulong result = Rotl(this.s[1] * 5, 7) * 9;
@@ -64,11 +73,13 @@ namespace RogueElements
             return result;
         }
 
+        /// <inheritdoc/>
         public virtual int Next()
         {
             return (int)(this.NextUInt64() % int.MaxValue);
         }
 
+        /// <inheritdoc/>
         public virtual int Next(int minValue, int maxValue)
         {
             if (minValue > maxValue)
@@ -82,6 +93,7 @@ namespace RogueElements
             return (int)((long)(this.NextUInt64() % (ulong)range) + minValue);
         }
 
+        /// <inheritdoc/>
         public virtual int Next(int maxValue)
         {
             if (maxValue < 0)
@@ -93,6 +105,7 @@ namespace RogueElements
             return (int)(this.NextUInt64() % (ulong)maxValue);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("ReRandom: {0} {1} {2} {3}", this.s[0], this.s[1], this.s[2], this.s[3]);

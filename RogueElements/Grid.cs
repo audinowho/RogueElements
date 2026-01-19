@@ -10,10 +10,22 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides utility methods for grid-based operations including pathfinding, flood fill, and connectivity analysis.
+    /// </summary>
     public static class Grid
     {
+        /// <summary>
+        /// Delegate for testing a location condition.
+        /// </summary>
+        /// <param name="loc">The location to test.</param>
+        /// <returns><c>true</c> if the condition is met; otherwise <c>false</c>.</returns>
         public delegate bool LocTest(Loc loc);
 
+        /// <summary>
+        /// Delegate for performing an action at a location.
+        /// </summary>
+        /// <param name="loc">The location for the action.</param>
         public delegate void LocAction(Loc loc);
 
         private delegate bool EvalPaths(Loc[] ends, List<Loc>[] resultPaths, PathTile[] farthestTiles, PathTile currentTile);
@@ -61,6 +73,16 @@ namespace RogueElements
             throw new InvalidOperationException("Could not find a path!");
         }
 
+        /// <summary>
+        /// Searches for paths to all endpoints.
+        /// </summary>
+        /// <param name="rectStart">Top-left corner of the search area.</param>
+        /// <param name="rectSize">Size of the search area.</param>
+        /// <param name="start">Starting location.</param>
+        /// <param name="ends">Array of destination locations.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <returns>An array of paths, one for each endpoint.</returns>
         public static List<Loc>[] FindAllPaths(Loc rectStart, Loc rectSize, Loc start, Loc[] ends, LocTest checkBlock, LocTest checkDiagBlock)
         {
             return FindMultiPaths(rectStart, rectSize, start, ends, checkBlock, checkDiagBlock, EvalPathAll, EvalFallbackAll);
@@ -292,6 +314,16 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Finds all tiles connected to a starting location that pass a specified check.
+        /// </summary>
+        /// <param name="rectStart">Top-left corner of the search area.</param>
+        /// <param name="rectSize">Size of the search area.</param>
+        /// <param name="checkOp">Delegate to determine if a tile should be included in results.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <param name="loc">Starting location for the search.</param>
+        /// <returns>List of connected tiles that pass the check.</returns>
         public static List<Loc> FindConnectedTiles(Loc rectStart, Loc rectSize, LocTest checkOp, LocTest checkBlock, LocTest checkDiagBlock, Loc loc)
         {
             if (checkOp == null)
@@ -311,6 +343,15 @@ namespace RogueElements
             return locList;
         }
 
+        /// <summary>
+        /// Performs an action on all tiles connected to a starting location.
+        /// </summary>
+        /// <param name="rectStart">Top-left corner of the search area.</param>
+        /// <param name="rectSize">Size of the search area.</param>
+        /// <param name="action">Action to perform on each connected tile.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <param name="loc">Starting location for the search.</param>
         public static void AffectConnectedTiles(Loc rectStart, Loc rectSize, LocAction action, LocTest checkBlock, LocTest checkDiagBlock, Loc loc)
         {
             if (action == null)
@@ -406,6 +447,13 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Finds all tiles within a rectangular area that pass a specified check.
+        /// </summary>
+        /// <param name="rectStart">Top-left corner of the search area.</param>
+        /// <param name="rectSize">Size of the search area.</param>
+        /// <param name="checkOp">Delegate to determine if a tile should be included.</param>
+        /// <returns>List of tiles that pass the check.</returns>
         public static List<Loc> FindTilesInBox(Loc rectStart, Loc rectSize, LocTest checkOp)
         {
             if (checkOp == null)
@@ -488,6 +536,13 @@ namespace RogueElements
             return forkList.Count > 0;
         }
 
+        /// <summary>
+        /// Gets all unblocked directions from a point where adjacent directions are blocked.
+        /// </summary>
+        /// <param name="point">The location to check.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <returns>List of directions representing forks in connectivity.</returns>
         public static List<Dir8> GetForkDirs(Loc point, LocTest checkBlock, LocTest checkDiagBlock)
         {
             List<Dir8> forks = new List<Dir8>();
@@ -510,11 +565,28 @@ namespace RogueElements
             return forks;
         }
 
+        /// <summary>
+        /// Determines if movement in a direction is blocked.
+        /// </summary>
+        /// <param name="loc">The starting location.</param>
+        /// <param name="dir">The direction to check.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <returns><c>true</c> if blocked; otherwise <c>false</c>.</returns>
         public static bool IsDirBlocked(Loc loc, Dir8 dir, LocTest checkBlock, LocTest checkDiagBlock)
         {
             return IsDirBlocked(loc, dir, checkBlock, checkDiagBlock, 1);
         }
 
+        /// <summary>
+        /// Determines if movement in a direction is blocked over a specified distance.
+        /// </summary>
+        /// <param name="loc">The starting location.</param>
+        /// <param name="dir">The direction to check.</param>
+        /// <param name="checkBlock">Delegate to determine if a tile is blocked.</param>
+        /// <param name="checkDiagBlock">Delegate to determine if diagonal movement is blocked.</param>
+        /// <param name="distance">The distance to check.</param>
+        /// <returns><c>true</c> if blocked; otherwise <c>false</c>.</returns>
         public static bool IsDirBlocked(Loc loc, Dir8 dir, LocTest checkBlock, LocTest checkDiagBlock, int distance)
         {
             if (checkBlock == null)

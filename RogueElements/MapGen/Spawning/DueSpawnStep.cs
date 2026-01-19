@@ -21,11 +21,20 @@ namespace RogueElements
         where TSpawnable : ISpawnable
         where TEntrance : IEntrance
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DueSpawnStep{TGenContext, TSpawnable, TEntrance}"/> class.
+        /// </summary>
         public DueSpawnStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DueSpawnStep{TGenContext, TSpawnable, TEntrance}"/> class with the specified parameters.
+        /// </summary>
+        /// <param name="spawn">The spawner that generates the list of items to place.</param>
+        /// <param name="successPercent">The percentage to reduce a room's spawn chance after successfully spawning.</param>
+        /// <param name="includeHalls">Whether to include halls as eligible spawn locations.</param>
         public DueSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent, bool includeHalls = false)
             : base(spawn)
         {
@@ -34,15 +43,21 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The percentage chance to multiply a room's spawning chance when it successfully spawns an item.
+        /// Gets or sets the percentage to multiply a room's spawning chance when it successfully spawns an item.
         /// </summary>
         public int SuccessPercent { get; set; }
 
         /// <summary>
-        /// Makes halls eligible for spawn.
+        /// Gets or sets a value indicating whether halls are eligible for spawn.
         /// </summary>
         public bool IncludeHalls { get; set; }
 
+        /// <summary>
+        /// Distributes spawns by weighting rooms based on their distance from the entrance.
+        /// Rooms farther from the entrance have higher spawn probability.
+        /// </summary>
+        /// <param name="map">The generation context to place spawns in.</param>
+        /// <param name="spawns">The list of spawnable entities to distribute.</param>
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
             // gather up all rooms and put in a spawn list

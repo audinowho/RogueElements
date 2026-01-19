@@ -8,24 +8,39 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// Merges blobs of terrain that touch diagonally.
+    /// Connects terrain blobs that touch only diagonally by filling in adjacent tiles.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
+    /// <remarks>
+    /// When two regions of the specified terrain touch only at diagonal corners, this step
+    /// randomly fills in one or both adjacent tiles to create a cardinal connection.
+    /// </remarks>
     [Serializable]
     public class DropDiagonalBlockStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DropDiagonalBlockStep{T}"/> class.
+        /// </summary>
         public DropDiagonalBlockStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DropDiagonalBlockStep{T}"/> class with the specified terrain.
+        /// </summary>
+        /// <param name="terrain">The terrain type to check for diagonal-only connections.</param>
         public DropDiagonalBlockStep(ITile terrain)
         {
             this.Terrain = terrain;
         }
 
+        /// <summary>
+        /// Gets or sets the terrain type used to detect and merge diagonal connections.
+        /// </summary>
         public ITile Terrain { get; set; }
 
+        /// <inheritdoc/>
         public override void Apply(T map)
         {
             for (int xx = 0; xx < map.Width - 1; xx++)

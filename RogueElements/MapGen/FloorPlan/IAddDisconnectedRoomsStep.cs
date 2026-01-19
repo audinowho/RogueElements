@@ -9,25 +9,45 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the interface for steps that add disconnected rooms to a floor plan.
+    /// </summary>
     public interface IAddDisconnectedRoomsStep
     {
+        /// <summary>
+        /// Gets or sets the number of rooms to add.
+        /// </summary>
         RandRange Amount { get; set; }
     }
 
     /// <summary>
-    /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
+    /// Base class for steps that add rooms not connected to existing rooms in a floor plan.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// This abstract class provides common functionality for adding isolated rooms that do not
+    /// connect to any existing rooms. These rooms can later be connected using connect steps.
+    /// Subclasses determine the specific algorithm for choosing placement locations.
+    /// </remarks>
+    /// <seealso cref="AddDisconnectedRoomsStep{T}"/>
+    /// <seealso cref="AddDisconnectedRoomsRandStep{T}"/>
     [Serializable]
     public abstract class AddDisconnectedRoomsBaseStep<T> : FloorPlanStep<T>, IAddDisconnectedRoomsStep
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddDisconnectedRoomsBaseStep{T}"/> class.
+        /// </summary>
         protected AddDisconnectedRoomsBaseStep()
             : base()
         {
             this.Components = new ComponentCollection();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddDisconnectedRoomsBaseStep{T}"/> class with specified room generators.
+        /// </summary>
+        /// <param name="genericRooms">The picker for room generators.</param>
         protected AddDisconnectedRoomsBaseStep(IRandPicker<RoomGen<T>> genericRooms)
             : base()
         {
@@ -50,6 +70,11 @@ namespace RogueElements
         /// </summary>
         public ComponentCollection Components { get; set; }
 
+        /// <summary>
+        /// Applies this step to add disconnected rooms to the floor plan.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to modify.</param>
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
             int amount = this.Amount.Pick(rand);
@@ -78,11 +103,22 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns a string representation of this step.
+        /// </summary>
+        /// <returns>A string describing this step's configuration.</returns>
         public override string ToString()
         {
             return string.Format("{0}: Add:{1}", this.GetType().GetFormattedTypeName(), this.Amount);
         }
 
+        /// <summary>
+        /// Finds a viable location for placing a new disconnected room.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to search within.</param>
+        /// <param name="roomSize">The size of the room to place.</param>
+        /// <returns>A valid location if found; otherwise, null.</returns>
         protected abstract Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize);
     }
 }

@@ -8,56 +8,98 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the interface for floor path generation with branching layouts.
+    /// </summary>
     public interface IFloorPathBranch
     {
+        /// <summary>
+        /// Gets or sets the target fill percentage for room coverage.
+        /// </summary>
         RandRange FillPercent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the percentage chance of adding halls between rooms.
+        /// </summary>
         int HallPercent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the branching ratio for the layout.
+        /// </summary>
         RandRange BranchRatio { get; set; }
     }
 
     /// <summary>
-    /// Populates the empty floor plan of a map by creating a minimum spanning tree of connected rooms and halls.
+    /// Creates a branching tree layout of rooms connected by halls.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step generates a floor layout by starting with a single room and repeatedly adding
+    /// new rooms adjacent to existing ones. The <see cref="BranchRatio"/> controls how often
+    /// the algorithm branches from non-terminal rooms versus extending existing branches.
+    /// </para>
+    /// <para>
+    /// The resulting layout resembles a tree or organic growth pattern, with dead ends that
+    /// can optionally be connected using <see cref="ConnectBranchStep{T}"/>.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class FloorPathBranch<T> : FloorPathStartStepGeneric<T>, IFloorPathBranch
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FloorPathBranch{T}"/> class.
+        /// </summary>
         public FloorPathBranch()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FloorPathBranch{T}"/> class with specified generators.
+        /// </summary>
+        /// <param name="genericRooms">The picker for room generators.</param>
+        /// <param name="genericHalls">The picker for hall generators.</param>
         public FloorPathBranch(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base(genericRooms, genericHalls)
         {
         }
 
+        /// <summary>
+        /// Delegate for preparing room generators.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan being built.</param>
+        /// <param name="isHall">True if generating a hall; false for a room.</param>
+        /// <returns>A room generator configured for the floor plan.</returns>
         public delegate RoomGen<T> RoomPrep(IRandom rand, FloorPlan floorPlan, bool isHall);
 
         /// <summary>
-        /// The percentage of total space in the floor plan that the step aims to fill with rooms.
+        /// Gets or sets the target percentage of floor space to fill with rooms.
         /// </summary>
         public RandRange FillPercent { get; set; }
 
         /// <summary>
-        /// The chance that rooms are attached to each other using an intermediate hallway.
+        /// Gets or sets the percentage chance of adding an intermediate hall between rooms.
         /// </summary>
         public int HallPercent { get; set; }
 
         /// <summary>
-        /// The percent amount of branching paths the layout will have in relation to its straight paths.
-        /// 0 = A layout without branches. (Worm)
-        /// 50 = A layout that branches once for every two extensions. (Tree)
-        /// 100 = A layout that branches once for every extension. (Branchier Tree)
-        /// 200 = A layout that branches twice for every extension. (Fuzzy Worm)
+        /// Gets or sets the branching ratio controlling layout shape.
         /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item><description>0 = Linear layout without branches (worm-like)</description></item>
+        /// <item><description>50 = Branches once per two extensions (tree-like)</description></item>
+        /// <item><description>100 = Branches once per extension (dense tree)</description></item>
+        /// <item><description>200 = Branches twice per extension (fuzzy/organic)</description></item>
+        /// </list>
+        /// </remarks>
         public RandRange BranchRatio { get; set; }
 
         /// <summary>
-        /// Prevents the step from making branches in the path, even if it would fail the space-fill quota.
+        /// Gets or sets a value indicating whether to prevent forced branching when fill quota cannot be met.
         /// </summary>
         public bool NoForcedBranches { get; set; }
 
@@ -420,12 +462,33 @@ namespace RogueElements
             return (tilesCovered, roomsAdded);
         }
 
+        /// <summary>
+        /// Represents an expansion operation for a branching floor path, containing the source room/hall,
+        /// the new room to add, and an optional connecting hall.
+        /// </summary>
         public struct ListPathBranchExpansion
         {
+            /// <summary>
+            /// The index of the room or hall to expand from.
+            /// </summary>
             public RoomHallIndex From;
+
+            /// <summary>
+            /// The optional intermediate hall connecting the source to the new room. May be null.
+            /// </summary>
             public IPermissiveRoomGen Hall;
+
+            /// <summary>
+            /// The new room to add to the floor plan.
+            /// </summary>
             public IRoomGen Room;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ListPathBranchExpansion"/> struct.
+            /// </summary>
+            /// <param name="from">The index of the room or hall to expand from.</param>
+            /// <param name="room">The new room to add.</param>
+            /// <param name="hall">The optional intermediate hall, or null for direct connection.</param>
             public ListPathBranchExpansion(RoomHallIndex from, IRoomGen room, IPermissiveRoomGen hall)
             {
                 this.From = from;

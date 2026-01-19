@@ -10,13 +10,32 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides collision detection methods for wrapped (toroidal) coordinate systems.
+    /// </summary>
     public static class WrappedCollision
     {
+        /// <summary>
+        /// Determines if two rectangles overlap in a wrapped coordinate system.
+        /// </summary>
+        /// <param name="wrapSize">The size of the wrapped area.</param>
+        /// <param name="bound1">The first rectangle.</param>
+        /// <param name="bound2">The second rectangle.</param>
+        /// <returns><c>true</c> if the rectangles overlap; otherwise <c>false</c>.</returns>
         public static bool Collides(Loc wrapSize, Rect bound1, Rect bound2)
         {
             return Collides(wrapSize, bound1.Start, bound1.Size, bound2.Start, bound2.Size);
         }
 
+        /// <summary>
+        /// Determines if two rectangular regions overlap in a wrapped coordinate system.
+        /// </summary>
+        /// <param name="wrapSize">The size of the wrapped area.</param>
+        /// <param name="start1">Start of the first region.</param>
+        /// <param name="size1">Size of the first region.</param>
+        /// <param name="start2">Start of the second region.</param>
+        /// <param name="size2">Size of the second region.</param>
+        /// <returns><c>true</c> if the regions overlap; otherwise <c>false</c>.</returns>
         public static bool Collides(Loc wrapSize, Loc start1, Loc size1, Loc start2, Loc size2)
         {
             return Collides(wrapSize.X, start1.X, size1.X, start2.X, size2.X) &&
@@ -45,11 +64,26 @@ namespace RogueElements
                 return Collision.Collides(start1, size1, start2 + wrapSize, size2);
         }
 
+        /// <summary>
+        /// Determines if a point is within a rectangle in a wrapped coordinate system.
+        /// </summary>
+        /// <param name="wrapSize">The size of the wrapped area.</param>
+        /// <param name="rect">The rectangle.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns><c>true</c> if the point is within the rectangle; otherwise <c>false</c>.</returns>
         public static bool InBounds(Loc wrapSize, Rect rect, Loc point)
         {
             return InBounds(wrapSize.X, rect.Start.X, rect.Size.X, point.X) && InBounds(wrapSize.Y, rect.Start.Y, rect.Size.Y, point.Y);
         }
 
+        /// <summary>
+        /// Determines if a point is within a rectangular region in a wrapped coordinate system.
+        /// </summary>
+        /// <param name="wrapSize">The size of the wrapped area.</param>
+        /// <param name="start">Start of the region.</param>
+        /// <param name="size">Size of the region.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns><c>true</c> if the point is within the region; otherwise <c>false</c>.</returns>
         public static bool InBounds(Loc wrapSize, Loc start, Loc size, Loc point)
         {
             return InBounds(wrapSize.X, start.X, size.X, point.X) && InBounds(wrapSize.Y, start.Y, size.Y, point.Y);
@@ -188,6 +222,13 @@ namespace RogueElements
                 return pt1 + wrappedDiff + (dirSign * wrapSize);
         }
 
+        /// <summary>
+        /// Returns all unwrapped versions of a 2D point that exist within a rectangular region.
+        /// </summary>
+        /// <param name="wrapSize">Size of the wrapped area.</param>
+        /// <param name="rect">The region to check.</param>
+        /// <param name="pt">The point to find unwrapped versions of.</param>
+        /// <returns>All unwrapped point locations within the region.</returns>
         public static IEnumerable<Loc> IteratePointsInBounds(Loc wrapSize, Rect rect, Loc pt)
         {
             foreach (int xx in IteratePointsInBounds(wrapSize.X, rect.X, rect.Size.X, pt.X))

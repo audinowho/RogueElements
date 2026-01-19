@@ -1,4 +1,4 @@
-﻿// <copyright file="Example7.cs" company="Audino">
+// <copyright file="Example7.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,23 @@ using System.Text;
 
 namespace RogueElements.Examples.Ex7_Special
 {
+    /// <summary>
+    /// Demonstrates special room placement using RoomComponents for tagging and filtering.
+    /// Special rooms allow you to designate specific rooms for unique purposes (treasure, boss, etc.)
+    /// and control which entities spawn in them using RoomFilterComponent.
+    /// </summary>
+    /// <remarks>
+    /// Key concepts introduced:
+    /// - RoomComponent: Tags rooms with metadata (MainRoomComponent, TreasureRoomComponent, etc.)
+    /// - SetSpecialRoomStep: Designates a room with custom layout and components
+    /// - RoomFilterComponent: Filters spawn steps to only affect rooms with specific components
+    /// - RoomGenSpecific: Creates rooms from predefined ASCII art layouts
+    /// </remarks>
     public static class Example7
     {
+        /// <summary>
+        /// Runs the special room example demonstrating tagged room placement and filtered spawning.
+        /// </summary>
         public static void Run()
         {
             Console.Clear();
@@ -42,11 +57,16 @@ namespace RogueElements.Examples.Ex7_Special
                 BranchRatio = new RandRange(0, 25),
             };
 
+            // Tag main path rooms/halls with components for identification
+            // These components allow spawn steps to distinguish room types
             path.RoomComponents.Set(new MainRoomComponent());
             path.HallComponents.Set(new MainHallComponent());
 
             layout.GenSteps.Add(-1, path);
 
+            // Define a custom room layout using ASCII art
+            // '.' = floor, '#' = wall, '~' = water
+            // This creates a moat-surrounded treasure room
             string[] custom = new string[]
             {
                                              "~~~..~~~",
@@ -59,11 +79,18 @@ namespace RogueElements.Examples.Ex7_Special
                                              "~~~..~~~",
             };
 
+            // SetSpecialRoomStep places a single special room that replaces an existing room
+            // This is useful for boss rooms, treasure vaults, shops, etc.
             SetSpecialRoomStep<MapGenContext> listSpecialStep = new SetSpecialRoomStep<MapGenContext>
             {
+                // PresetPicker ensures this exact room layout is used
                 Rooms = new PresetPicker<RoomGen<MapGenContext>>(CreateRoomGenSpecific<MapGenContext>(custom)),
             };
+
+            // Tag this room as a treasure room - used for spawn filtering below
             listSpecialStep.RoomComponents.Set(new TreasureRoomComponent());
+
+            // Define hall type connecting the special room to the main layout
             PresetPicker<PermissiveRoomGen<MapGenContext>> picker = new PresetPicker<PermissiveRoomGen<MapGenContext>>
             {
                 ToSpawn = new RoomGenAngledHall<MapGenContext>(0),
@@ -77,7 +104,7 @@ namespace RogueElements.Examples.Ex7_Special
             // Add the stairs up and down
             layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
-            // Apply Items
+            // Apply Items - these spawn in ALL rooms (no filter)
             var itemSpawns = new SpawnList<Item>
             {
                 { new Item((int)'!'), 10 },
@@ -91,13 +118,16 @@ namespace RogueElements.Examples.Ex7_Special
             RandomRoomSpawnStep<MapGenContext, Item> itemPlacement = new RandomRoomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(6, itemPlacement);
 
-            // Apply Treasure Items
+            // Apply Treasure Items - ONLY spawn in rooms with TreasureRoomComponent
             var treasureSpawns = new SpawnList<Item>
             {
                 { new Item((int)'!'), 10 },
                 { new Item((int)'*'), 50 },
             };
             RandomRoomSpawnStep<MapGenContext, Item> treasurePlacement = new RandomRoomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(treasureSpawns, new RandRange(7, 10))));
+
+            // RoomFilterComponent restricts this spawn step to rooms with TreasureRoomComponent
+            // The 'false' parameter means "require this component" (true would mean "exclude")
             treasurePlacement.Filters.Add(new RoomFilterComponent(false, new TreasureRoomComponent()));
             layout.GenSteps.Add(6, treasurePlacement);
 
@@ -106,6 +136,18 @@ namespace RogueElements.Examples.Ex7_Special
             Print(context.Map, title);
         }
 
+        /// <summary>
+        /// Creates a RoomGenSpecific from an ASCII art string array.
+        /// </summary>
+        /// <typeparam name="T">The context type implementing ITiledGenContext.</typeparam>
+        /// <param name="level">ASCII art where '.' = floor, '#' = wall, '~' = water.</param>
+        /// <returns>A room generator that produces the exact specified layout.</returns>
+        /// <remarks>
+        /// RoomGenSpecific allows precise control over room layout, useful for:
+        /// - Boss arenas with specific geometry
+        /// - Puzzle rooms with predetermined tile patterns
+        /// - Shops or special encounter areas
+        /// </remarks>
         public static RoomGenSpecific<T> CreateRoomGenSpecific<T>(string[] level)
             where T : class, ITiledGenContext
         {
@@ -130,6 +172,11 @@ namespace RogueElements.Examples.Ex7_Special
             return roomGen;
         }
 
+        /// <summary>
+        /// Prints the generated map to the console with all entities rendered.
+        /// </summary>
+        /// <param name="map">The map to print.</param>
+        /// <param name="title">Title to display above the map.</param>
         public static void Print(Map map, string title)
         {
             var topString = new StringBuilder(string.Empty);

@@ -10,22 +10,52 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides extension methods and utilities for direction and axis enumerations.
+    /// </summary>
     public static class DirExt
     {
+        /// <summary>Number of horizontal directions.</summary>
         public const int DIRH_COUNT = 2;
+
+        /// <summary>Number of vertical directions.</summary>
         public const int DIRV_COUNT = 2;
+
+        /// <summary>Number of 4-way directions.</summary>
         public const int DIR4_COUNT = 4;
+
+        /// <summary>Number of 8-way directions.</summary>
         public const int DIR8_COUNT = 8;
+
+        /// <summary>Number of 4-way axes.</summary>
         public const int AXIS4_COUNT = 2;
+
+        /// <summary>Number of 8-way axes.</summary>
         public const int AXIS8_COUNT = 4;
 
+        /// <summary>All valid horizontal directions.</summary>
         public static readonly IEnumerable<DirH> VALID_DIRH = new DirH[] { DirH.Left, DirH.Right };
+
+        /// <summary>All valid vertical directions.</summary>
         public static readonly IEnumerable<DirV> VALID_DIRV = new DirV[] { DirV.Up, DirV.Down };
+
+        /// <summary>All valid 4-way directions.</summary>
         public static readonly IEnumerable<Dir4> VALID_DIR4 = new Dir4[] { Dir4.Down, Dir4.Left, Dir4.Up, Dir4.Right };
+
+        /// <summary>All valid 8-way directions.</summary>
         public static readonly IEnumerable<Dir8> VALID_DIR8 = new Dir8[] { Dir8.Down, Dir8.DownLeft, Dir8.Left, Dir8.UpLeft, Dir8.Up, Dir8.UpRight, Dir8.Right, Dir8.DownRight };
+
+        /// <summary>All valid 4-way axes.</summary>
         public static readonly IEnumerable<Axis4> VALID_AXIS4 = new Axis4[] { Axis4.Vert, Axis4.Horiz };
+
+        /// <summary>All valid 8-way axes.</summary>
         public static readonly IEnumerable<Axis8> VALID_AXIS8 = new Axis8[] { Axis8.Vert, Axis8.DiagForth, Axis8.Horiz, Axis8.DiagBack };
 
+        /// <summary>
+        /// Validates that the direction is a valid <see cref="DirV"/> value.
+        /// </summary>
+        /// <param name="dir">The direction to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this DirV dir)
         {
             switch (dir)
@@ -39,6 +69,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Validates that the direction is a valid <see cref="DirH"/> value.
+        /// </summary>
+        /// <param name="dir">The direction to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this DirH dir)
         {
             switch (dir)
@@ -52,6 +87,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Validates that the direction is a valid <see cref="Dir4"/> value.
+        /// </summary>
+        /// <param name="dir">The direction to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this Dir4 dir)
         {
             switch (dir)
@@ -67,6 +107,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Validates that the direction is a valid <see cref="Dir8"/> value.
+        /// </summary>
+        /// <param name="dir">The direction to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this Dir8 dir)
         {
             switch (dir)
@@ -86,6 +131,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Validates that the axis is a valid <see cref="Axis4"/> value.
+        /// </summary>
+        /// <param name="axis">The axis to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this Axis4 axis)
         {
             switch (axis)
@@ -99,6 +149,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Validates that the axis is a valid <see cref="Axis8"/> value.
+        /// </summary>
+        /// <param name="axis">The axis to validate.</param>
+        /// <returns><c>true</c> if valid; otherwise <c>false</c>.</returns>
         public static bool Validate(this Axis8 axis)
         {
             switch (axis)
@@ -114,6 +169,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a horizontal direction to a 4-way direction.
+        /// </summary>
+        /// <param name="dir">The horizontal direction.</param>
+        /// <returns>The corresponding 4-way direction.</returns>
         public static Dir4 ToDir4(this DirH dir)
         {
             switch (dir)
@@ -126,6 +186,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a vertical direction to a 4-way direction.
+        /// </summary>
+        /// <param name="dir">The vertical direction.</param>
+        /// <returns>The corresponding 4-way direction.</returns>
         public static Dir4 ToDir4(this DirV dir)
         {
             switch (dir)
@@ -138,6 +203,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a horizontal direction to an 8-way direction.
+        /// </summary>
+        /// <param name="dir">The horizontal direction.</param>
+        /// <returns>The corresponding 8-way direction.</returns>
         public static Dir8 ToDir8(this DirH dir)
         {
             switch (dir)
@@ -150,6 +220,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a vertical direction to an 8-way direction.
+        /// </summary>
+        /// <param name="dir">The vertical direction.</param>
+        /// <returns>The corresponding 8-way direction.</returns>
         public static Dir8 ToDir8(this DirV dir)
         {
             switch (dir)
@@ -162,6 +237,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a 4-way direction to an 8-way direction.
+        /// </summary>
+        /// <param name="dir">The 4-way direction.</param>
+        /// <returns>The corresponding 8-way direction.</returns>
         public static Dir8 ToDir8(this Dir4 dir)
         {
             switch (dir)
@@ -176,6 +256,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts an 8-way direction to a 4-way direction. Only cardinal directions are valid.
+        /// </summary>
+        /// <param name="dir">The 8-way direction.</param>
+        /// <returns>The corresponding 4-way direction.</returns>
         public static Dir4 ToDir4(this Dir8 dir)
         {
             switch (dir)
@@ -190,6 +275,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts a 4-way axis to an 8-way axis.
+        /// </summary>
+        /// <param name="axis">The 4-way axis.</param>
+        /// <returns>The corresponding 8-way axis.</returns>
         public static Axis8 ToAxis8(this Axis4 axis)
         {
             switch (axis)
@@ -205,6 +295,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Converts an 8-way axis to a 4-way axis. Only horizontal and vertical axes are valid.
+        /// </summary>
+        /// <param name="axis">The 8-way axis.</param>
+        /// <returns>The corresponding 4-way axis.</returns>
         public static Axis4 ToAxis4(this Axis8 axis)
         {
             switch (axis)
@@ -220,6 +315,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the axis of a 4-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The axis of the direction.</returns>
         public static Axis4 ToAxis(this Dir4 dir)
         {
             switch (dir)
@@ -257,6 +357,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the axis of an 8-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The axis of the direction.</returns>
         public static Axis8 ToAxis(this Dir8 dir)
         {
             switch (dir)
@@ -280,6 +385,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Determines whether the direction is diagonal.
+        /// </summary>
+        /// <param name="dir">The direction to check.</param>
+        /// <returns><c>true</c> if diagonal; otherwise <c>false</c>.</returns>
         public static bool IsDiagonal(this Dir8 dir)
         {
             switch (dir)
@@ -299,6 +409,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the unit vector for a horizontal direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The unit vector.</returns>
         public static Loc GetLoc(this DirH dir)
         {
             switch (dir)
@@ -314,6 +429,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the unit vector for a vertical direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The unit vector.</returns>
         public static Loc GetLoc(this DirV dir)
         {
             switch (dir)
@@ -329,6 +449,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the unit vector for a 4-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The unit vector.</returns>
         public static Loc GetLoc(this Dir4 dir)
         {
             switch (dir)
@@ -348,6 +473,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the unit vector for an 8-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The unit vector.</returns>
         public static Loc GetLoc(this Dir8 dir)
         {
             switch (dir)
@@ -375,6 +505,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns the opposite horizontal direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The opposite direction.</returns>
         public static DirH Reverse(this DirH dir)
         {
             switch (dir)
@@ -390,6 +525,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns the opposite vertical direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The opposite direction.</returns>
         public static DirV Reverse(this DirV dir)
         {
             switch (dir)
@@ -405,6 +545,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns the opposite 4-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The opposite direction.</returns>
         public static Dir4 Reverse(this Dir4 dir)
         {
             switch (dir)
@@ -424,6 +569,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns the opposite 8-way direction.
+        /// </summary>
+        /// <param name="dir">The direction.</param>
+        /// <returns>The opposite direction.</returns>
         public static Dir8 Reverse(this Dir8 dir)
         {
             switch (dir)
@@ -451,6 +601,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Combines horizontal and vertical directions into an 8-way direction.
+        /// </summary>
+        /// <param name="horiz">The horizontal component.</param>
+        /// <param name="vert">The vertical component.</param>
+        /// <returns>The combined 8-way direction.</returns>
         public static Dir8 Combine(DirH horiz, DirV vert)
         {
             switch (vert)
@@ -499,6 +655,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Separates an 8-way direction into its horizontal and vertical components.
+        /// </summary>
+        /// <param name="dir">The 8-way direction.</param>
+        /// <param name="horiz">The horizontal component.</param>
+        /// <param name="vert">The vertical component.</param>
         public static void Separate(this Dir8 dir, out DirH horiz, out DirV vert)
         {
             if (!dir.Validate())
@@ -538,11 +700,22 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the direction from one location to another.
+        /// </summary>
+        /// <param name="loc1">The starting location.</param>
+        /// <param name="loc2">The ending location.</param>
+        /// <returns>The direction from loc1 to loc2.</returns>
         public static Dir8 GetDir(Loc loc1, Loc loc2)
         {
             return GetDir(loc2 - loc1);
         }
 
+        /// <summary>
+        /// Gets the direction indicated by a location vector.
+        /// </summary>
+        /// <param name="loc">The location vector.</param>
+        /// <returns>The direction of the vector.</returns>
         public static Dir8 GetDir(this Loc loc)
         {
             if (loc.Y > 0)
@@ -574,11 +747,24 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the direction a point is relative to a rectangular region.
+        /// </summary>
+        /// <param name="start">The start of the region.</param>
+        /// <param name="size">The size of the region.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns>The direction from the region to the point.</returns>
         public static Dir8 GetBoundsDir(Loc start, Loc size, Loc point)
         {
             return GetBoundsDir(size, point - start);
         }
 
+        /// <summary>
+        /// Gets the direction a point is relative to a region starting at origin.
+        /// </summary>
+        /// <param name="size">The size of the region.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns>The direction from the region to the point.</returns>
         public static Dir8 GetBoundsDir(Loc size, Loc point)
         {
             if (size.X <= 0 || size.Y <= 0)
@@ -751,6 +937,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Rotates a 4-way direction by the specified number of 90-degree steps.
+        /// </summary>
+        /// <param name="dir">The direction to rotate.</param>
+        /// <param name="n">The number of 90-degree clockwise steps.</param>
+        /// <returns>The rotated direction.</returns>
         public static Dir4 Rotate(this Dir4 dir, int n)
         {
             if (!dir.Validate())
@@ -760,6 +952,12 @@ namespace RogueElements
             return (Dir4)(((int)dir + n) & (DIR4_COUNT - 1));
         }
 
+        /// <summary>
+        /// Rotates an 8-way direction by the specified number of 45-degree steps.
+        /// </summary>
+        /// <param name="dir">The direction to rotate.</param>
+        /// <param name="n">The number of 45-degree clockwise steps.</param>
+        /// <returns>The rotated direction.</returns>
         public static Dir8 Rotate(this Dir8 dir, int n)
         {
             if (!dir.Validate())
@@ -769,6 +967,12 @@ namespace RogueElements
             return (Dir8)(((int)dir + n) & (DIR8_COUNT - 1));
         }
 
+        /// <summary>
+        /// Adds two 4-way direction angles together.
+        /// </summary>
+        /// <param name="dir1">The first direction.</param>
+        /// <param name="dir2">The second direction (treated as rotation).</param>
+        /// <returns>The combined direction.</returns>
         public static Dir4 AddAngles(Dir4 dir1, Dir4 dir2)
         {
             // dir1 is validated by Dir4.Rotate
@@ -779,6 +983,12 @@ namespace RogueElements
             return dir1.Rotate((int)dir2);
         }
 
+        /// <summary>
+        /// Adds two 8-way direction angles together.
+        /// </summary>
+        /// <param name="dir1">The first direction.</param>
+        /// <param name="dir2">The second direction (treated as rotation).</param>
+        /// <returns>The combined direction.</returns>
         public static Dir8 AddAngles(Dir8 dir1, Dir8 dir2)
         {
             // dir1 is validated by Dir8.Rotate
@@ -789,6 +999,13 @@ namespace RogueElements
             return dir1.Rotate((int)dir2);
         }
 
+        /// <summary>
+        /// Creates a location from axis-aligned scalar components.
+        /// </summary>
+        /// <param name="axis">The axis for the scalar value.</param>
+        /// <param name="scalar">The value along the axis.</param>
+        /// <param name="orth">The value perpendicular to the axis.</param>
+        /// <returns>A location with the components assigned according to the axis.</returns>
         public static Loc CreateLoc(this Axis4 axis, int scalar, int orth)
         {
             switch (axis)
@@ -804,6 +1021,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the direction along a 4-way axis based on a scalar sign.
+        /// </summary>
+        /// <param name="axis">The axis.</param>
+        /// <param name="scalar">The scalar value determining positive or negative direction.</param>
+        /// <returns>The direction along the axis.</returns>
         public static Dir4 GetDir(this Axis4 axis, int scalar)
         {
             if (scalar == 0 & axis.Validate())
@@ -826,6 +1049,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the direction along an 8-way axis based on a scalar sign.
+        /// </summary>
+        /// <param name="axis">The axis.</param>
+        /// <param name="scalar">The scalar value determining positive or negative direction.</param>
+        /// <returns>The direction along the axis.</returns>
         public static Dir8 GetDir(this Axis8 axis, int scalar)
         {
             if (scalar == 0 & axis.Validate())
@@ -852,6 +1081,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the scalar component of a location along a 4-way axis.
+        /// </summary>
+        /// <param name="loc">The location.</param>
+        /// <param name="axis">The axis.</param>
+        /// <returns>The component value along the axis.</returns>
         public static int GetScalar(this Loc loc, Axis4 axis)
         {
             switch (axis)
@@ -867,6 +1102,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Sets the scalar component of a location along a 4-way axis.
+        /// </summary>
+        /// <param name="loc">The location to modify.</param>
+        /// <param name="axis">The axis.</param>
+        /// <param name="value">The value to set.</param>
         public static void SetScalar(this ref Loc loc, Axis4 axis, int value)
         {
             switch (axis)

@@ -9,13 +9,28 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes an existing grid plan and changes one of the rooms into the specified room type.
+    /// Replaces one room in the grid plan with a special room type.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step is used to place unique or important rooms like boss rooms, treasure rooms,
+    /// or other special areas. It selects one eligible room from the grid and replaces its
+    /// generator with the specified special room type.
+    /// </para>
+    /// <para>
+    /// The room must be large enough to accommodate the special room's proposed size.
+    /// Rooms marked as <see cref="GridRoomPlan.PreferHall"/> are excluded from consideration.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPlanStep{T}"/>
     [Serializable]
     public class SetGridSpecialRoomStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetGridSpecialRoomStep{T}"/> class.
+        /// </summary>
         public SetGridSpecialRoomStep()
             : base()
         {
@@ -24,20 +39,28 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The type of room to place.  It can be chosen out of several possibilities, but only one room will be placed.
+        /// Gets or sets the room generators to choose from for the special room.
         /// </summary>
+        /// <remarks>
+        /// One room type is randomly selected from this picker, but only one room is placed.
+        /// </remarks>
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
 
         /// <summary>
-        /// Determines which rooms are eligible to be turned into the new room type.
+        /// Gets or sets the filters that determine which rooms are eligible for replacement.
         /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         /// <summary>
-        /// Components that the newly added room will be labeled with.
+        /// Gets or sets the components to attach to the special room.
         /// </summary>
         public ComponentCollection RoomComponents { get; set; }
 
+        /// <summary>
+        /// Selects an eligible room and replaces it with a special room type.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to modify.</param>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             IRoomGen newGen = this.Rooms.Pick(rand).Copy();

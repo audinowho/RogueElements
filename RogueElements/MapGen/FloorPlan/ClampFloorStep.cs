@@ -8,29 +8,56 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// Clamps the floor plan to at least a minimum size, at most a maximum size.
-    /// If the bounds of the current roomplan maximum, the size will increase to include them.
-    /// Always shrinks in the BottomRight direction, which results in the TopLeft corner remaining constant.
+    /// Constrains the floor plan dimensions to specified minimum and maximum bounds.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step adjusts the floor plan size to fit within the specified bounds while ensuring
+    /// all existing rooms remain contained. If rooms extend beyond the maximum size, the floor
+    /// plan expands to include them.
+    /// </para>
+    /// <para>
+    /// The clamping operation anchors at the top-left corner, meaning shrinkage occurs from
+    /// the bottom-right direction. This step has no effect on wrapped floor plans.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class ClampFloorStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClampFloorStep{T}"/> class with default bounds.
+        /// </summary>
         public ClampFloorStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClampFloorStep{T}"/> class with specified bounds.
+        /// </summary>
+        /// <param name="minSize">The minimum allowed size for the floor plan.</param>
+        /// <param name="maxSize">The maximum allowed size for the floor plan.</param>
         public ClampFloorStep(Loc minSize, Loc maxSize)
         {
             this.MinSize = minSize;
             this.MaxSize = maxSize;
         }
 
+        /// <summary>
+        /// Gets or sets the minimum allowed size for the floor plan.
+        /// </summary>
         public Loc MinSize { get; set; }
 
+        /// <summary>
+        /// Gets or sets the maximum allowed size for the floor plan.
+        /// </summary>
         public Loc MaxSize { get; set; }
 
+        /// <summary>
+        /// Applies this step by clamping the floor plan to the specified bounds.
+        /// </summary>
+        /// <param name="map">The generation context containing the floor plan.</param>
         public override void Apply(T map)
         {
             if (map.RoomPlan.Wrap)

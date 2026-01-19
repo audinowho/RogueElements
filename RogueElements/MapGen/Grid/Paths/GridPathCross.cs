@@ -8,19 +8,38 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// Creates a grid plan made up of a center room and halls and rooms extending off in the four cardinal directions.
-    /// For best results, it is recommended to make grid height and width odd numbers.
+    /// Creates a cross-shaped layout with rooms extending in four cardinal directions from the center.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This path generator creates a layout shaped like a plus sign (+), with a central room
+    /// and connected rooms extending horizontally and vertically. All rooms are connected
+    /// via hallways.
+    /// </para>
+    /// <para>
+    /// For symmetrical results, it is recommended to use odd numbers for grid width and height,
+    /// which places the central room exactly in the middle.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStepGeneric{T}"/>
     [Serializable]
     public class GridPathCross<T> : GridPathStartStepGeneric<T>
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathCross{T}"/> class.
+        /// </summary>
         public GridPathCross()
             : base()
         {
         }
 
+        /// <summary>
+        /// Creates a cross-shaped layout of rooms and halls.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to populate.</param>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             // always clear before trying

@@ -10,10 +10,25 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides utility methods for graph traversal algorithms.
+    /// </summary>
     public static class Graph
     {
+        /// <summary>
+        /// Delegate for retrieving adjacent nodes from a given node.
+        /// </summary>
+        /// <typeparam name="T">The type of node identifier.</typeparam>
+        /// <param name="nodeIndex">The node to get adjacents for.</param>
+        /// <returns>List of adjacent node identifiers.</returns>
         public delegate List<T> GetAdjacents<T>(T nodeIndex);
 
+        /// <summary>
+        /// Delegate for performing an action on a node with its distance from the start.
+        /// </summary>
+        /// <typeparam name="T">The type of node identifier.</typeparam>
+        /// <param name="nodeIndex">The node identifier.</param>
+        /// <param name="distance">The distance from the starting node.</param>
         public delegate void DistNodeAction<T>(T nodeIndex, int distance);
 
         /// <summary>

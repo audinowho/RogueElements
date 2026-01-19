@@ -13,7 +13,7 @@ namespace RogueElements
     /// Will generate a square if asked to generate for a size it did not propose.
     /// For square-looking rooms, check to make sure the room was not cut down.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that supports tiled generation.</typeparam>
     [Serializable]
     public class RoomGenCave<T> : RoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
@@ -25,16 +25,28 @@ namespace RogueElements
         [NonSerialized]
         private bool[][] tiles;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenCave{T}"/> class.
+        /// </summary>
         public RoomGenCave()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenCave{T}"/> class with specified dimensions.
+        /// </summary>
+        /// <param name="width">The range of possible widths for the room.</param>
+        /// <param name="height">The range of possible heights for the room.</param>
         public RoomGenCave(RandRange width, RandRange height)
         {
             this.Width = width;
             this.Height = height;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenCave{T}"/> class as a copy of another.
+        /// </summary>
+        /// <param name="other">The instance to copy from.</param>
         protected RoomGenCave(RoomGenCave<T> other)
         {
             this.Width = other.Width;
@@ -42,19 +54,24 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The max width of the room.  The actual cave will tend to be smaller.
+        /// Gets or sets the maximum width range of the room. The actual cave will tend to be smaller.
         /// </summary>
         public RandRange Width { get; set; }
 
         /// <summary>
-        /// The max height of the room.  The actual cave will tend to be smaller.
+        /// Gets or sets the maximum height range of the room. The actual cave will tend to be smaller.
         /// </summary>
         public RandRange Height { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tile map representing the cave shape.
+        /// </summary>
         protected bool[][] Tiles { get => this.tiles; set => this.tiles = value; }
 
+        /// <inheritdoc/>
         public override RoomGen<T> Copy() => new RoomGenCave<T>(this);
 
+        /// <inheritdoc/>
         public override Loc ProposeSize(IRandom rand)
         {
             BlobMap largestMap = null;
@@ -128,6 +145,7 @@ namespace RogueElements
             return new Loc(this.Tiles.Length, this.Tiles[0].Length);
         }
 
+        /// <inheritdoc/>
         public override void DrawOnMap(T map)
         {
             if (this.Draw.Width != this.Tiles.Length || this.Draw.Height != this.Tiles[0].Length)
@@ -149,11 +167,13 @@ namespace RogueElements
             this.SetRoomBorders(map);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: {1}x{2}", this.GetType().GetFormattedTypeName(), this.Width, this.Height);
         }
 
+        /// <inheritdoc/>
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             // accept nothing but the randomly chosen size

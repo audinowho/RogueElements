@@ -9,23 +9,48 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Populates the empty floor plan of a map by creating a path consisting of rooms on the far left and far right, with hallways connecting the two sides.
+    /// Creates a layout with rooms on opposite sides of the grid connected by a corridor.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This path generator places rooms along two opposite edges of the grid (left/right or top/bottom)
+    /// and connects them with hallways spanning the gap. Additional halls may connect rooms
+    /// on the same side.
+    /// </para>
+    /// <para>
+    /// The layout creates a clear division between two "sides" of the dungeon, useful for
+    /// scenarios where players need to cross from one area to another.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStepGeneric{T}"/>
     [Serializable]
     public class GridPathTwoSides<T> : GridPathStartStepGeneric<T>
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathTwoSides{T}"/> class.
+        /// </summary>
         public GridPathTwoSides()
             : base()
         {
         }
 
         /// <summary>
-        /// Choose a horizontal or vertical orientation.
+        /// Gets or sets the axis along which the gap between sides runs.
         /// </summary>
+        /// <remarks>
+        /// <see cref="Axis4.Horiz"/> places rooms on left and right with a horizontal gap.
+        /// <see cref="Axis4.Vert"/> places rooms on top and bottom with a vertical gap.
+        /// </remarks>
         public Axis4 GapAxis { get; set; }
 
+        /// <summary>
+        /// Creates the two-sided layout with connecting hallways.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to populate.</param>
+        /// <exception cref="InvalidOperationException">Thrown when the grid is too small for this layout.</exception>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             // open rooms on both sides
@@ -117,12 +142,22 @@ namespace RogueElements
             GenContextDebug.StepOut();
         }
 
+        /// <summary>
+        /// Places a hall at the specified position in a direction determined by the axis.
+        /// </summary>
+        /// <param name="axis">The axis along which to place the hall.</param>
+        /// <param name="scalar">The position along the gap axis.</param>
+        /// <param name="orth">The position along the orthogonal axis.</param>
+        /// <param name="scalarDiff">The direction (+1 or -1) to extend the hall.</param>
+        /// <param name="floorPlan">The grid plan to modify.</param>
+        /// <param name="hallGen">The hall generator to use.</param>
         public void PlaceOrientedHall(Axis4 axis, int scalar, int orth, int scalarDiff, GridPlan floorPlan, PermissiveRoomGen<T> hallGen)
         {
             Loc loc = this.GapAxis.CreateLoc(scalar, orth);
             floorPlan.SetHall(new LocRay4(loc, axis.GetDir(scalarDiff)), hallGen, this.HallComponents.Clone());
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: Axis:{1}", this.GetType().GetFormattedTypeName(), this.GapAxis);

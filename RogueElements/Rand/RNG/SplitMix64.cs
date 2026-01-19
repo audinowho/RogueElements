@@ -8,15 +8,26 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// A splitmix64 random number generator used for initializing other RNG states.
+    /// </summary>
     public class SplitMix64
     {
         private ulong x;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SplitMix64"/> class with a specified seed.
+        /// </summary>
+        /// <param name="seed">The seed value for the generator.</param>
         public SplitMix64(ulong seed)
         {
             this.x = seed;
         }
 
+        /// <summary>
+        /// Gets the next random 64-bit unsigned integer.
+        /// </summary>
+        /// <returns>A random 64-bit unsigned integer.</returns>
         public ulong Next()
         {
             ulong z = this.x += 0x9E3779B97F4A7C15;

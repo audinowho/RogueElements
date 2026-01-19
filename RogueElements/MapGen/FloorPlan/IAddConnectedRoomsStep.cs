@@ -9,21 +9,40 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the interface for steps that add connected rooms to a floor plan.
+    /// </summary>
     public interface IAddConnectedRoomsStep
     {
+        /// <summary>
+        /// Gets or sets the percentage chance that a hall is added between rooms.
+        /// </summary>
         int HallPercent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of rooms to add.
+        /// </summary>
         RandRange Amount { get; set; }
     }
 
     /// <summary>
-    /// Takes the current floor plan and adds new rooms that are connected to existing rooms.
+    /// Base class for steps that add rooms connected to existing rooms in a floor plan.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// This abstract class provides common functionality for adding rooms that connect to existing
+    /// rooms, including support for optional hallways and room filtering. Subclasses determine
+    /// the specific algorithm for choosing expansion points.
+    /// </remarks>
+    /// <seealso cref="AddConnectedRoomsStep{T}"/>
+    /// <seealso cref="AddConnectedRoomsRandStep{T}"/>
     [Serializable]
     public abstract class AddConnectedRoomsBaseStep<T> : FloorPlanStep<T>, IAddConnectedRoomsStep
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddConnectedRoomsBaseStep{T}"/> class.
+        /// </summary>
         protected AddConnectedRoomsBaseStep()
             : base()
         {
@@ -32,6 +51,11 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddConnectedRoomsBaseStep{T}"/> class with specified generators.
+        /// </summary>
+        /// <param name="genericRooms">The picker for room generators.</param>
+        /// <param name="genericHalls">The picker for hall generators.</param>
         protected AddConnectedRoomsBaseStep(IRandPicker<RoomGen<T>> genericRooms, IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base()
         {
@@ -77,6 +101,11 @@ namespace RogueElements
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
+        /// <summary>
+        /// Applies this step to add connected rooms to the floor plan.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to modify.</param>
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
             int amount = this.Amount.Pick(rand);
@@ -103,6 +132,12 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Chooses the expansion point and room configuration for adding a new room.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to evaluate.</param>
+        /// <returns>The expansion details if a valid placement is found; otherwise, null.</returns>
         public abstract FloorPathBranch<T>.ListPathBranchExpansion? ChooseRoomExpansion(IRandom rand, FloorPlan floorPlan);
 
         /// <summary>
@@ -130,6 +165,10 @@ namespace RogueElements
             return room;
         }
 
+        /// <summary>
+        /// Returns a string representation of this step.
+        /// </summary>
+        /// <returns>A string describing this step's configuration.</returns>
         public override string ToString()
         {
             return string.Format("{0}: Add:{1} Hall:{2}%", this.GetType().GetFormattedTypeName(), this.Amount, this.HallPercent);

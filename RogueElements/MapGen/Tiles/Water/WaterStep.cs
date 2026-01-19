@@ -8,15 +8,27 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Provides the base class for water generation steps that place terrain on the map.
+    /// </summary>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
     [Serializable]
     public abstract class WaterStep<T> : GenStep<T>, IWaterStep
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WaterStep{T}"/> class.
+        /// </summary>
         protected WaterStep()
         {
             this.TerrainStencil = new DefaultTerrainStencil<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WaterStep{T}"/> class with the specified terrain and stencil.
+        /// </summary>
+        /// <param name="terrain">The water terrain tile to place.</param>
+        /// <param name="check">The stencil that determines which tiles are eligible for placement.</param>
         protected WaterStep(ITile terrain, ITerrainStencil<T> check)
         {
             this.Terrain = terrain;
@@ -24,21 +36,21 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Tile representing the water terrain to paint with.
+        /// Gets or sets the tile representing the water terrain to paint.
         /// </summary>
         public ITile Terrain { get; set; }
 
         /// <summary>
-        /// Determines which tiles are eligible to be painted on.
+        /// Gets or sets the stencil that determines which tiles are eligible for water placement.
         /// </summary>
         public ITerrainStencil<T> TerrainStencil { get; set; }
 
         /// <summary>
-        /// Draws a blob with the specified bounds and test method
+        /// Draws a blob of water terrain within the specified bounds.
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="rect"></param>
-        /// <param name="blobTest">The method to test for terrain presence.  Passes in global location on the map.</param>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="rect">The bounding rectangle for the blob.</param>
+        /// <param name="blobTest">The test function that determines which tiles within the bounds belong to the blob.</param>
         protected void DrawBlob(T map, Rect rect, Grid.LocTest blobTest)
         {
             for (int xx = Math.Max(0, rect.X); xx < Math.Min(map.Width, rect.End.X); xx++)
@@ -57,6 +69,11 @@ namespace RogueElements
             GenContextDebug.DebugProgress("Draw Blob");
         }
 
+        /// <summary>
+        /// Draws water terrain at the specified array of locations.
+        /// </summary>
+        /// <param name="map">The map context to draw on.</param>
+        /// <param name="locs">The array of locations to place water terrain.</param>
         protected void DrawLocs(T map, Loc[] locs)
         {
             foreach (Loc loc in locs)

@@ -9,30 +9,52 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes the current floor plan and connects the ends of its branches to other rooms.
-    /// A room is considered the end of a branch when it is connected to only one other room.
-    /// ie, a dead end.
+    /// Connects dead-end rooms (rooms with only one connection) to other rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step identifies rooms that are at the end of branches (dead ends) and attempts
+    /// to connect them to other rooms, creating shortcuts and loops in the layout.
+    /// </para>
+    /// <para>
+    /// A room is considered a branch end when it has exactly one adjacent room or hall.
+    /// The <see cref="ConnectPercent"/> property controls what fraction of eligible branches
+    /// are connected.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="ConnectRoomStep{T}"/>
     [Serializable]
     public class ConnectBranchStep<T> : ConnectStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectBranchStep{T}"/> class.
+        /// </summary>
         public ConnectBranchStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectBranchStep{T}"/> class with specified hall generators.
+        /// </summary>
+        /// <param name="genericHalls">The picker for hall generators.</param>
         public ConnectBranchStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
             : base(genericHalls)
         {
         }
 
         /// <summary>
-        /// The percentage of eligible branches to connect.
+        /// Gets or sets the percentage of eligible branches to connect (0-100).
         /// </summary>
         public int ConnectPercent { get; set; }
 
+        /// <summary>
+        /// Applies this step to connect branch ends in the floor plan.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to modify.</param>
         public override void ApplyToPath(IRandom rand, FloorPlan floorPlan)
         {
             List<List<RoomHallIndex>> candBranchPoints = GetBranchArms(floorPlan);
@@ -93,11 +115,20 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Returns a string representation of this step.
+        /// </summary>
+        /// <returns>A string describing this step's configuration.</returns>
         public override string ToString()
         {
             return string.Format("{0}: {1}%", this.GetType().GetFormattedTypeName(), this.ConnectPercent);
         }
 
+        /// <summary>
+        /// Gets all branch arms in the floor plan, where each arm is a sequence of rooms forming a branch.
+        /// </summary>
+        /// <param name="floorPlan">The floor plan to analyze.</param>
+        /// <returns>A list of branch arms, where each arm is a list of connected room indices.</returns>
         private protected static List<List<RoomHallIndex>> GetBranchArms(FloorPlan floorPlan)
         {
             List<ListPathTraversalNode> endBranches = new List<ListPathTraversalNode>();

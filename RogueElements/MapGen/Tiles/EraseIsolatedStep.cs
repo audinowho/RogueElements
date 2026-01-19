@@ -9,24 +9,35 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Erases blobs of terrain that do not touch walkable ground.
+    /// Erases terrain blobs that are not connected to any walkable ground by replacing them with wall terrain.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
     [Serializable]
     public class EraseIsolatedStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EraseIsolatedStep{T}"/> class.
+        /// </summary>
         public EraseIsolatedStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EraseIsolatedStep{T}"/> class with the specified terrain.
+        /// </summary>
+        /// <param name="terrain">The terrain type to check for isolation.</param>
         public EraseIsolatedStep(ITile terrain)
         {
             this.Terrain = terrain;
         }
 
+        /// <summary>
+        /// Gets or sets the terrain type to check for isolation and erase if disconnected.
+        /// </summary>
         public ITile Terrain { get; set; }
 
+        /// <inheritdoc/>
         public override void Apply(T map)
         {
             bool[][] connectionGrid = new bool[map.Width][];

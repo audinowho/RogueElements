@@ -23,11 +23,18 @@ namespace RogueElements
         private const ulong C1 = 0x87c37b91114253d5;
         private const ulong C2 = 0x4cf5ad432745937f;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReNoise"/> class with the current time as seed.
+        /// </summary>
         public ReNoise()
             : this(unchecked((ulong)System.DateTime.Now.Ticks))
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReNoise"/> class with a specified seed.
+        /// </summary>
+        /// <param name="seed">The seed value for the noise function.</param>
         public ReNoise(ulong seed)
         {
             this.FirstSeed = seed;
@@ -36,8 +43,10 @@ namespace RogueElements
         /// <summary>
         /// The seed value that the class was initialized with.
         /// </summary>
+        /// <inheritdoc/>
         public ulong FirstSeed { get; private set; }
 
+        /// <inheritdoc/>
         public ulong GetUInt64(ulong position)
         {
             byte[] data = BitConverter.GetBytes(position);
@@ -46,6 +55,11 @@ namespace RogueElements
             return this.Hash(data)[0];
         }
 
+        /// <summary>
+        /// Gets two random 64-bit unsigned integers at the specified position.
+        /// </summary>
+        /// <param name="position">The position in the noise function.</param>
+        /// <returns>An array of two random 64-bit unsigned integers.</returns>
         public ulong[] GetTwoUInt64(ulong position)
         {
             byte[] data = BitConverter.GetBytes(position);
@@ -54,6 +68,7 @@ namespace RogueElements
             return this.Hash(data);
         }
 
+        /// <inheritdoc/>
         public ulong Get2DUInt64(ulong x, ulong y)
         {
             byte[] data1 = BitConverter.GetBytes(x);
@@ -70,11 +85,13 @@ namespace RogueElements
             return this.Hash(data)[0];
         }
 
+        /// <inheritdoc/>
         public int GetInt(ulong position)
         {
             return (int)(this.GetUInt64(position) % int.MaxValue);
         }
 
+        /// <inheritdoc/>
         public int GetInt(ulong position, int maxValue)
         {
             if (maxValue < 0)
@@ -86,6 +103,7 @@ namespace RogueElements
             return (int)(this.GetUInt64(position) % (ulong)maxValue);
         }
 
+        /// <inheritdoc/>
         public int GetInt(ulong position, int minValue, int maxValue)
         {
             if (minValue > maxValue)
@@ -100,6 +118,7 @@ namespace RogueElements
             return (int)((long)(this.GetUInt64(position) % (ulong)range) + minValue);
         }
 
+        /// <inheritdoc/>
         public double GetDouble(ulong position)
         {
             return (double)this.GetUInt64(position) / ((double)ulong.MaxValue + 1);

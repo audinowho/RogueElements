@@ -9,36 +9,65 @@ using System.Linq;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the configuration interface for circular path generators.
+    /// </summary>
     public interface IGridPathCircle
     {
+        /// <summary>
+        /// Gets or sets the percentage of perimeter rooms that are full rooms rather than halls.
+        /// </summary>
         RandRange CircleRoomRatio { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of paths extending into the inner grid area.
+        /// </summary>
         RandRange Paths { get; set; }
     }
 
     /// <summary>
-    /// Populates the empty grid plan of a map by creating a ring of rooms and halls at the outer cells of the grid.
+    /// Creates a ring-shaped layout with rooms on the grid perimeter and optional inner paths.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This path generator creates a ring of connected rooms around the outer edge of the grid.
+    /// Additional paths can extend from the ring into the interior of the grid.
+    /// </para>
+    /// <para>
+    /// The grid must be at least 3x3 to accommodate the ring structure with an interior area.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStepGeneric{T}"/>
+    /// <seealso cref="IGridPathCircle"/>
     [Serializable]
     public class GridPathCircle<T> : GridPathStartStepGeneric<T>, IGridPathCircle
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathCircle{T}"/> class.
+        /// </summary>
         public GridPathCircle()
             : base()
         {
         }
 
         /// <summary>
-        /// The percentage of rooms in the outer circle that are NOT treated as 1-tile halls.
+        /// Gets or sets the percentage of perimeter rooms that are full rooms rather than halls.
         /// </summary>
         public RandRange CircleRoomRatio { get; set; }
 
         /// <summary>
-        /// The number of paths going to the inner circle.
+        /// Gets or sets the number of paths extending into the inner grid area.
         /// </summary>
         public RandRange Paths { get; set; }
 
+        /// <summary>
+        /// Creates the circular path layout with optional inner paths.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to populate.</param>
+        /// <exception cref="InvalidOperationException">Thrown when the grid is smaller than 3x3.</exception>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             if (floorPlan.GridWidth < 3 || floorPlan.GridHeight < 3)

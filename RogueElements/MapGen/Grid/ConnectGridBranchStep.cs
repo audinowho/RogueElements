@@ -9,15 +9,28 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes the current grid plan and connects the ends of its branches to other rooms.
-    /// A room is considered the end of a branch when it is connected to only one other room.
-    /// ie, a dead end.
+    /// Connects dead-end rooms in the grid plan to create additional paths.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step identifies rooms that are branch ends (connected to only one other room)
+    /// and creates additional hall connections to nearby rooms. This reduces dead ends
+    /// and creates more interconnected layouts.
+    /// </para>
+    /// <para>
+    /// The algorithm traces back from each dead end until it finds a room with multiple
+    /// possible connections, then randomly selects one to connect.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPlanStep{T}"/>
     [Serializable]
     public class ConnectGridBranchStep<T> : GridPlanStep<T>
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectGridBranchStep{T}"/> class.
+        /// </summary>
         public ConnectGridBranchStep()
         {
             this.GenericHalls = new SpawnList<PermissiveRoomGen<T>>();
@@ -25,6 +38,11 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectGridBranchStep{T}"/> class
+        /// with the specified connection percentage.
+        /// </summary>
+        /// <param name="connectPercent">The percentage of eligible branches to connect.</param>
         public ConnectGridBranchStep(int connectPercent)
             : this()
         {
@@ -32,25 +50,30 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The percentage of eligible branches to connect.
+        /// Gets or sets the percentage of eligible branches to connect.
         /// </summary>
         public int ConnectPercent { get; set; }
 
         /// <summary>
-        /// Determines which rooms are eligible to be connected.
+        /// Gets or sets the filters that determine which rooms are eligible to be connected.
         /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         /// <summary>
-        /// The room types that can be used as the hall connecting the two base rooms.
+        /// Gets or sets the hall generators that can be used for connecting halls.
         /// </summary>
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
         /// <summary>
-        /// Components that the newly added halls will be labeled with.
+        /// Gets or sets the components to attach to newly created halls.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
+        /// <summary>
+        /// Finds branch ends and connects them to adjacent rooms.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to modify.</param>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             List<LocRay4> endBranches = new List<LocRay4>();

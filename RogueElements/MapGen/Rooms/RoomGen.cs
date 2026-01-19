@@ -90,23 +90,23 @@ namespace RogueElements
         /// These are the tiles that are allowed to be opened (turned on in openedBorder).
         /// Unlike openedBorder, fulfillableBorder has not been opened, but has signalled it is able to open if asked.
         /// </summary>
-        /// <param name="dir"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="dir">The direction of the border.</param>
+        /// <param name="index">The index of the tile along the border.</param>
+        /// <returns>True if the border tile at the specified index can be opened; otherwise, false.</returns>
         public bool GetFulfillableBorder(Dir4 dir, int index) => this.FulfillableBorder[dir][index];
 
         /// <summary>
-        /// Gets rhe tiles that this room has opened, which can be used to inform other rooms where to connect.
+        /// Gets the tiles that this room has opened, which can be used to inform other rooms where to connect.
         /// </summary>
-        /// <param name="dir"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="dir">The direction of the border.</param>
+        /// <param name="index">The index of the tile along the border.</param>
+        /// <returns>True if the border tile at the specified index is opened; otherwise, false.</returns>
         public bool GetOpenedBorder(Dir4 dir, int index) => this.OpenedBorder[dir][index];
 
         /// <summary>
         /// Creates a copy of the object, to be placed in the generated layout.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A new instance that is a copy of this room generator.</returns>
         public abstract RoomGen<T> Copy();
 
         IRoomGen IRoomGen.Copy() => this.Copy();
@@ -116,15 +116,15 @@ namespace RogueElements
         /// <summary>
         /// Returns a Loc that represents the dimensions that this RoomGen prefers to be.
         /// </summary>
-        /// <param name="rand"></param>
-        /// <returns></returns>
+        /// <param name="rand">The random number generator to use.</param>
+        /// <returns>The proposed size as a <see cref="Loc"/>.</returns>
         public abstract Loc ProposeSize(IRandom rand);
 
         /// <summary>
         /// Initializes the room to the specified size. If its proposed size is not used, it may draw a default empty square.
         /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="size"></param>
+        /// <param name="rand">The random number generator to use.</param>
+        /// <param name="size">The size to initialize the room with.</param>
         public virtual void PrepareSize(IRandom rand, Loc size)
         {
             if (size.X <= 0 || size.Y <= 0)
@@ -162,6 +162,10 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Sets the location where the room will be drawn on the map.
+        /// </summary>
+        /// <param name="loc">The top-left corner location of the room.</param>
         public void SetLoc(Loc loc)
         {
             Rect currDraw = this.Draw;
@@ -180,7 +184,7 @@ namespace RogueElements
         /// <param name="origSideReqs">The required X/Y positions that must be touched.</param>
         /// <param name="reqWidth">The width that each chosen tile would cover. Starts from the center.</param>
         /// <param name="reqCenter">center of width.</param>
-        /// <returns></returns>
+        /// <returns>A list of hash sets, each containing potential starting positions.</returns>
         public virtual List<HashSet<int>> ChoosePossibleStartRanges(IRandom rand, int scalarStart, bool[] permittedRange, List<IntRange> origSideReqs, int reqWidth, int reqCenter)
         {
             // Gets the starting X if the direction is vertical, starting Y if the direction is horizontal
@@ -240,10 +244,18 @@ namespace RogueElements
             return resultStarts;
         }
 
+        /// <summary>
+        /// Draws the room onto the specified map context.
+        /// </summary>
+        /// <param name="map">The map context to draw on.</param>
         public abstract void DrawOnMap(T map);
 
         void IRoomGen.DrawOnMap(ITiledGenContext map) => this.DrawOnMap((T)map);
 
+        /// <summary>
+        /// Updates the opened border arrays based on which border tiles are walkable.
+        /// </summary>
+        /// <param name="map">The map context to check for tile blockage.</param>
         public virtual void SetRoomBorders(T map)
         {
             for (int ii = 0; ii < this.Draw.Width; ii++)
@@ -339,9 +351,9 @@ namespace RogueElements
         /// <summary>
         /// Digs inwards from a border until it reaches a traversible tile.
         /// </summary>
-        /// <param name="map"></param>
+        /// <param name="map">The map context to modify.</param>
         /// <param name="dir">The direction of the border, facing outwards.</param>
-        /// <param name="scalar"></param>
+        /// <param name="scalar">The position along the border to dig from.</param>
         public virtual void DigAtBorder(ITiledGenContext map, Dir4 dir, int scalar)
         {
             Loc curLoc = this.Draw.GetEdgeLoc(dir, scalar);
@@ -437,8 +449,16 @@ namespace RogueElements
                 throw new ArgumentException("Permitted borders needs at least one open tile for each sideReq!");
         }
 
+        /// <summary>
+        /// Prepares the fulfillable border arrays to indicate which border tiles can accept connections.
+        /// </summary>
+        /// <param name="rand">The random number generator to use.</param>
         protected abstract void PrepareFulfillableBorders(IRandom rand);
 
+        /// <summary>
+        /// Draws a simple rectangular room filling the entire bounding box.
+        /// </summary>
+        /// <param name="map">The map context to draw on.</param>
         protected void DrawMapDefault(T map)
         {
             // draw on all

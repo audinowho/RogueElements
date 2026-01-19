@@ -12,6 +12,10 @@ using RogueElements;
 
 namespace RogueElements.Examples
 {
+    /// <summary>
+    /// Debug visualization utility for step-by-step map generation inspection.
+    /// Hook into <see cref="GenContextDebug"/> events to enable interactive debugging.
+    /// </summary>
     [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:ElementsMustBeOrderedByAccess", Justification = "Methods grouped for documentation purposes")]
     public static class ExampleDebug
     {
@@ -24,10 +28,20 @@ namespace RogueElements.Examples
         private static int currentDepth;
         private static IGenContext curMap;
 
+        /// <summary>
+        /// Gets or sets the depth level for printing. Set to -1 to disable, 0+ to print at that depth.
+        /// </summary>
         public static int Printing { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to step into the next generation step.
+        /// </summary>
         public static bool SteppingIn { get; set; }
 
+        /// <summary>
+        /// Initializes debug state for a new map generation. Hook to <see cref="GenContextDebug.OnInit"/>.
+        /// </summary>
+        /// <param name="newMap">The map context being initialized.</param>
         public static void Init(IGenContext newMap)
         {
             curMap = newMap;
@@ -43,6 +57,10 @@ namespace RogueElements.Examples
             tileDebugString.Add(new DebugState());
         }
 
+        /// <summary>
+        /// Called when entering a generation step. Hook to <see cref="GenContextDebug.OnStepIn"/>.
+        /// </summary>
+        /// <param name="msg">The step description message.</param>
         public static void StepIn(string msg)
         {
             currentDepth++;
@@ -55,6 +73,9 @@ namespace RogueElements.Examples
                 Printing = Math.Max(Printing, currentDepth + 1);
         }
 
+        /// <summary>
+        /// Called when exiting a generation step. Hook to <see cref="GenContextDebug.OnStepOut"/>.
+        /// </summary>
         [SuppressMessage("Microsoft.Diagnostics.CodeAnalysis", "IDE0059:ValueAssignedIsUnused", Justification="Variable present for example")]
         public static void StepOut()
         {
@@ -74,6 +95,10 @@ namespace RogueElements.Examples
             PrintStep(CreateStackString() + "<" + stepOutName + "<");
         }
 
+        /// <summary>
+        /// Called for each generation step. Hook to <see cref="GenContextDebug.OnStep"/>.
+        /// </summary>
+        /// <param name="msg">The step description message.</param>
         public static void OnStep(string msg)
         {
             PrintStep(CreateStackString() + ">" + msg);
@@ -107,6 +132,10 @@ namespace RogueElements.Examples
 
         /* Code below is specific to the map gen context; it can be tweaked to vary by game implementation */
 
+        /// <summary>
+        /// Prints the current step state to console with interactive navigation.
+        /// </summary>
+        /// <param name="msg">The step message to display.</param>
         public static void PrintStep(string msg)
         {
             bool printDebug = false;
@@ -158,6 +187,14 @@ namespace RogueElements.Examples
             }
         }
 
+        /// <summary>
+        /// Prints tile-based map visualization for contexts implementing <see cref="ITiledGenContext"/>.
+        /// </summary>
+        /// <param name="map">The map context.</param>
+        /// <param name="msg">The message to display.</param>
+        /// <param name="printDebug">Whether to write to debug output.</param>
+        /// <param name="printViewer">Whether to display interactive console viewer.</param>
+        /// <returns>The key pressed to exit the viewer, or Enter if no viewer shown.</returns>
         public static ConsoleKey PrintTiles(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
             if (!(map is ITiledGenContext context))
@@ -250,6 +287,14 @@ namespace RogueElements.Examples
             }
         }
 
+        /// <summary>
+        /// Prints floor plan visualization for contexts implementing <see cref="IFloorPlanGenContext"/>.
+        /// </summary>
+        /// <param name="map">The map context.</param>
+        /// <param name="msg">The message to display.</param>
+        /// <param name="printDebug">Whether to write to debug output.</param>
+        /// <param name="printViewer">Whether to display interactive console viewer.</param>
+        /// <returns>The key pressed to exit the viewer, or Enter if no viewer shown.</returns>
         public static ConsoleKey PrintListRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
             if (!(map is IFloorPlanGenContext context))
@@ -416,6 +461,14 @@ namespace RogueElements.Examples
             }
         }
 
+        /// <summary>
+        /// Prints grid plan visualization for contexts implementing <see cref="IRoomGridGenContext"/>.
+        /// </summary>
+        /// <param name="map">The map context.</param>
+        /// <param name="msg">The message to display.</param>
+        /// <param name="printDebug">Whether to write to debug output.</param>
+        /// <param name="printViewer">Whether to display interactive console viewer.</param>
+        /// <returns>The key pressed to exit the viewer, or Enter if no viewer shown.</returns>
         public static ConsoleKey PrintGridRoomHalls(IGenContext map, string msg, bool printDebug, bool printViewer)
         {
             if (!(map is IRoomGridGenContext context))

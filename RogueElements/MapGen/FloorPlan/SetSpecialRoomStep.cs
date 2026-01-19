@@ -9,14 +9,27 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes an existing floor plan and changes one of the rooms into the specified room type.
-    /// The size of the room may change because of this, and thus may also require the addition of a supporting hallway.
+    /// Replaces an existing room in the floor plan with a special room type.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step is used to designate certain rooms as special areas like boss rooms, treasure
+    /// rooms, or shops. It finds an eligible room and replaces it with a different room generator,
+    /// potentially requiring support hallways if the new room is smaller than the original.
+    /// </para>
+    /// <para>
+    /// The replacement preserves connectivity by maintaining adjacencies through the new room
+    /// or through automatically generated support halls.
+    /// </para>
+    /// </remarks>
     [Serializable]
     public class SetSpecialRoomStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetSpecialRoomStep{T}"/> class.
+        /// </summary>
         public SetSpecialRoomStep()
         {
             this.Rooms = null;
@@ -26,6 +39,11 @@ namespace RogueElements
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetSpecialRoomStep{T}"/> class with specified generators.
+        /// </summary>
+        /// <param name="rooms">The picker for room generators.</param>
+        /// <param name="halls">The picker for support hall generators.</param>
         public SetSpecialRoomStep(IRandPicker<RoomGen<T>> rooms, IRandPicker<PermissiveRoomGen<T>> halls)
         {
             this.Rooms = rooms;
@@ -36,31 +54,43 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The room to place.  It can be chosen out of several possibilities, but only one room will be placed.
+        /// Gets or sets the picker for room generators. One room will be chosen and placed.
         /// </summary>
         public IRandPicker<RoomGen<T>> Rooms { get; set; }
 
         /// <summary>
-        /// Determines which rooms are eligible to be turned into the new room type.
+        /// Gets or sets filters that determine which existing rooms are eligible for replacement.
         /// </summary>
         public List<BaseRoomFilter> Filters { get; set; }
 
         /// <summary>
-        /// Components that the newly added room will be labeled with.
+        /// Gets or sets components to add to the newly placed room.
         /// </summary>
         public ComponentCollection RoomComponents { get; set; }
 
         /// <summary>
-        /// When changing a room to a new type, the new type may be smaller and require a supporting hallway.
-        /// This variable determines the room types that can be used as the intermediate hall.
+        /// Gets or sets the picker for support hallway generators.
         /// </summary>
+        /// <remarks>
+        /// When the new room is smaller than the original, support halls are added to maintain
+        /// connectivity with rooms that were adjacent to the original.
+        /// </remarks>
         public IRandPicker<PermissiveRoomGen<T>> Halls { get; set; }
 
         /// <summary>
-        /// Components that the newly added halls will be labeled with.
+        /// Gets or sets components to add to any support halls created.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
+        /// <summary>
+        /// Calculates the support rectangle needed to connect a new room to adjacent rooms in a given direction.
+        /// </summary>
+        /// <param name="floorPlan">The floor plan.</param>
+        /// <param name="oldGen">The original room generator being replaced.</param>
+        /// <param name="newGen">The new room generator.</param>
+        /// <param name="dir">The direction to check for adjacents.</param>
+        /// <param name="adjacentsInDir">The adjacent rooms in the specified direction.</param>
+        /// <returns>The rectangle defining the support hall's bounds.</returns>
         public static Rect GetSupportRect(FloorPlan floorPlan, IRoomGen oldGen, IRoomGen newGen, Dir4 dir, List<RoomHallIndex> adjacentsInDir)
         {
             bool vertical = dir.ToAxis() == Axis4.Vert;

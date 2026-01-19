@@ -9,19 +9,29 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// A filter for determining the eligible tiles for an operation.
-    /// Eligible if bordering a certain tile type.
+    /// Provides a terrain stencil that tests tiles based on their adjacent neighbors.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
+    /// <remarks>
+    /// A tile is eligible if it borders at least one tile matching the specified types.
+    /// </remarks>
     [Serializable]
     public class BorderTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BorderTerrainStencil{T}"/> class.
+        /// </summary>
         public BorderTerrainStencil()
         {
             this.MatchTiles = new List<ITile>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BorderTerrainStencil{T}"/> class with the specified tiles.
+        /// </summary>
+        /// <param name="negate">Whether to invert the match result.</param>
+        /// <param name="tiles">The tile types to match against in neighboring tiles.</param>
         public BorderTerrainStencil(bool negate, params ITile[] tiles)
             : this()
         {
@@ -30,12 +40,16 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The allowed tile types.
+        /// Gets the list of tile types to match against in neighboring tiles.
         /// </summary>
         public List<ITile> MatchTiles { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to invert the match result.
+        /// </summary>
         public bool Negate { get; set; }
 
+        /// <inheritdoc/>
         public bool Test(T map, Loc loc)
         {
             foreach (Dir8 dir in DirExt.VALID_DIR8)

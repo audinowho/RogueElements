@@ -10,8 +10,14 @@ using RogueElements;
 
 namespace RogueElements.Examples
 {
+    /// <summary>
+    /// Entry point and interactive menu for RogueElements examples.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Runs the interactive example menu. Press 1-8 to run examples, F4 for debug mode.
+        /// </summary>
         public static void Main()
         {
 #if DEBUG
@@ -115,6 +121,11 @@ namespace RogueElements.Examples
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Reads an integer from console input.
+        /// </summary>
+        /// <param name="includeAmt">When true, F2 returns -2 for bulk generation mode.</param>
+        /// <returns>The entered integer, -1 for escape, or -2 for F2 if enabled.</returns>
         public static int GetInt(bool includeAmt)
         {
             int result = 0;
@@ -145,6 +156,12 @@ namespace RogueElements.Examples
             return result;
         }
 
+        /// <summary>
+        /// Runs map generation multiple times for performance benchmarking.
+        /// </summary>
+        /// <typeparam name="T">The map context type.</typeparam>
+        /// <param name="layout">The map generator to test.</param>
+        /// <param name="amount">Number of maps to generate.</param>
         public static void StressTest<T>(MapGen<T> layout, int amount)
             where T : class, IGenContext
         {
@@ -190,6 +207,10 @@ namespace RogueElements.Examples
             }
         }
 
+        /// <summary>
+        /// Prints an exception and all inner exceptions to console.
+        /// </summary>
+        /// <param name="ex">The exception to print.</param>
         public static void PrintError(Exception ex)
         {
             Exception innerException = ex;

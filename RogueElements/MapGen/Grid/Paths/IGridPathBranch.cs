@@ -8,45 +8,85 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the configuration interface for branching path generators.
+    /// </summary>
     public interface IGridPathBranch
     {
+        /// <summary>
+        /// Gets or sets the percentage of grid cells to fill with rooms.
+        /// </summary>
         RandRange RoomRatio { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ratio of branches to straight path extensions.
+        /// </summary>
         RandRange BranchRatio { get; set; }
     }
 
     /// <summary>
-    /// Populates the empty grid plan of a map by creating a minimum spanning tree of connected rooms and halls.
+    /// Creates a layout using a tree-like algorithm that grows paths and branches.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This path generator creates layouts by starting from a random room and expanding
+    /// outward. The main path wanders randomly, and branches are added based on the
+    /// <see cref="BranchRatio"/> setting.
+    /// </para>
+    /// <para>
+    /// The algorithm produces tree-like structures where all rooms are connected but
+    /// there are no loops. The shape can range from a simple worm (0% branches) to
+    /// a heavily branched tree (high branch ratio).
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStepGeneric{T}"/>
+    /// <seealso cref="IGridPathBranch"/>
     [Serializable]
     public class GridPathBranch<T> : GridPathStartStepGeneric<T>, IGridPathBranch
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathBranch{T}"/> class.
+        /// </summary>
         public GridPathBranch()
             : base()
         {
         }
 
         /// <summary>
-        /// The percentage of total rooms in the grid plan that the step aims to fill.
+        /// Gets or sets the percentage of grid cells to fill with rooms.
         /// </summary>
         public RandRange RoomRatio { get; set; }
 
         /// <summary>
-        /// The percent amount of branching paths the layout will have in relation to its straight paths.
-        /// 0 = A layout without branches. (Worm)
-        /// 50 = A layout that branches once for every two extensions. (Tree)
-        /// 100 = A layout that branches once for every extension. (Branchier Tree)
-        /// 200 = A layout that branches twice for every extension. (Fuzzy Worm)
+        /// Gets or sets the ratio of branches to straight path extensions.
         /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item><description>0 = No branches, creates a worm-like path</description></item>
+        /// <item><description>50 = One branch per two extensions, tree-like</description></item>
+        /// <item><description>100 = One branch per extension, heavily branched</description></item>
+        /// <item><description>200 = Two branches per extension, very dense</description></item>
+        /// </list>
+        /// </remarks>
         public RandRange BranchRatio { get; set; }
 
         /// <summary>
-        /// Prevents the step from making branches in the path, even if it would fail the space-fill quota.
+        /// Gets or sets a value indicating whether to stop early rather than force branches.
         /// </summary>
+        /// <remarks>
+        /// When true, the algorithm stops if it cannot extend without branching.
+        /// When false, branches are forced to meet the room quota.
+        /// </remarks>
         public bool NoForcedBranches { get; set; }
 
+        /// <summary>
+        /// Gets all possible expansion directions from existing rooms.
+        /// </summary>
+        /// <param name="floorPlan">The grid plan to analyze.</param>
+        /// <param name="branch">If true, only returns rooms suitable for branching; if false, returns terminal rooms.</param>
+        /// <returns>A list of location-direction pairs for possible expansions.</returns>
         public static List<LocRay4> GetPossibleExpansions(GridPlan floorPlan, bool branch)
         {
             List<LocRay4> availableRays = new List<LocRay4>();
@@ -63,6 +103,11 @@ namespace RogueElements
             return availableRays;
         }
 
+        /// <summary>
+        /// Creates the branching path layout.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to populate.</param>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             for (int ii = 0; ii < 10; ii++)
@@ -167,9 +212,9 @@ namespace RogueElements
         /// <summary>
         /// Gets the directions a room can expand in.
         /// </summary>
-        /// <param name="floorPlan"></param>
-        /// <param name="loc"></param>
-        /// <returns></returns>
+        /// <param name="floorPlan">The grid plan to check.</param>
+        /// <param name="loc">The location to check expansion from.</param>
+        /// <returns>An enumerable of valid expansion directions.</returns>
         protected static IEnumerable<Dir4> GetRoomExpandDirs(GridPlan floorPlan, Loc loc)
         {
             foreach (Dir4 dir in DirExt.VALID_DIR4)
@@ -182,11 +227,11 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Gets a possible terminal room to expand.  Equal distribution.
+        /// Removes and returns a random location from the list with equal distribution.
         /// </summary>
-        /// <param name="rand"></param>
-        /// <param name="locs"></param>
-        /// <returns></returns>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="locs">The list of locations to choose from.</param>
+        /// <returns>The randomly selected location.</returns>
         protected static Loc PopRandomLocEqual(IRandom rand, List<Loc> locs)
         {
             int branchIdx = rand.Next(locs.Count);
@@ -195,6 +240,13 @@ namespace RogueElements
             return newBranch;
         }
 
+        /// <summary>
+        /// Expands the path by adding a hall and room in the specified direction.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to modify.</param>
+        /// <param name="chosenRay">The location and direction to expand.</param>
+        /// <returns>True if the expansion was successful.</returns>
         protected bool ExpandPath(IRandom rand, GridPlan floorPlan, LocRay4 chosenRay)
         {
             floorPlan.SetHall(chosenRay, this.GenericHalls.Pick(rand), this.HallComponents.Clone());
@@ -204,11 +256,24 @@ namespace RogueElements
             return true;
         }
 
+        /// <summary>
+        /// Removes and returns a random location from the list.
+        /// </summary>
+        /// <param name="floorPlan">The grid plan for context.</param>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="locs">The list of locations to choose from.</param>
+        /// <returns>The randomly selected location.</returns>
         protected virtual Loc PopRandomLoc(GridPlan floorPlan, IRandom rand, List<Loc> locs)
         {
             return PopRandomLocEqual(rand, locs);
         }
 
+        /// <summary>
+        /// Gets the possible expansion directions from a location with their relative weights.
+        /// </summary>
+        /// <param name="floorPlan">The grid plan to check.</param>
+        /// <param name="newTerminal">The location to expand from.</param>
+        /// <returns>A weighted list of possible expansion directions.</returns>
         protected virtual SpawnList<LocRay4> GetExpandDirChances(GridPlan floorPlan, Loc newTerminal)
         {
             SpawnList<LocRay4> availableRays = new SpawnList<LocRay4>();

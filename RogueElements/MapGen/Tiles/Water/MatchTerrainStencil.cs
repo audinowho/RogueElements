@@ -9,19 +9,26 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// A filter for determining the eligible tiles for an operation.
-    /// Tiles in a list of allowed tile types are eligible.
+    /// Provides a terrain stencil that tests tiles against a list of allowed tile types.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
     [Serializable]
     public class MatchTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MatchTerrainStencil{T}"/> class.
+        /// </summary>
         public MatchTerrainStencil()
         {
             this.MatchTiles = new List<ITile>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MatchTerrainStencil{T}"/> class with the specified tiles.
+        /// </summary>
+        /// <param name="negate">Whether to invert the match result.</param>
+        /// <param name="tiles">The tile types to match against.</param>
         public MatchTerrainStencil(bool negate, params ITile[] tiles)
             : this()
         {
@@ -30,12 +37,16 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The allowed tile types.
+        /// Gets the list of tile types to match against.
         /// </summary>
         public List<ITile> MatchTiles { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to invert the match result.
+        /// </summary>
         public bool Negate { get; set; }
 
+        /// <inheritdoc/>
         public bool Test(T map, Loc loc)
         {
             ITile checkTile = map.GetTile(loc);

@@ -9,19 +9,39 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Finds rooms in the floor plan that can be connected and connects them.
+    /// Base class for steps that connect rooms in a floor plan with hallways.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// Connect steps find pairs of rooms that can be connected by straight hallways and create
+    /// those connections. This is useful for creating more interconnected floor layouts after
+    /// the initial path generation.
+    /// </para>
+    /// <para>
+    /// The connection algorithm extends a rectangle from each eligible room toward other rooms,
+    /// finding the closest room that can be reached in each direction.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="ConnectBranchStep{T}"/>
+    /// <seealso cref="ConnectRoomStep{T}"/>
     [Serializable]
     public abstract class ConnectStep<T> : FloorPlanStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectStep{T}"/> class.
+        /// </summary>
         protected ConnectStep()
         {
             this.Components = new ComponentCollection();
             this.Filters = new List<BaseRoomFilter>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectStep{T}"/> class with specified hall generators.
+        /// </summary>
+        /// <param name="genericHalls">The picker for hall generators.</param>
         protected ConnectStep(IRandPicker<PermissiveRoomGen<T>> genericHalls)
         {
             this.GenericHalls = genericHalls;
@@ -44,6 +64,13 @@ namespace RogueElements
         /// </summary>
         public ComponentCollection Components { get; set; }
 
+        /// <summary>
+        /// Checks if a room has any border opening toward another rectangle.
+        /// </summary>
+        /// <param name="roomFrom">The room to check for openings.</param>
+        /// <param name="rectTo">The target rectangle.</param>
+        /// <param name="expandTo">The direction to check.</param>
+        /// <returns>True if any border tile can create an opening in the specified direction.</returns>
         protected static bool HasBorderOpening(IRoomGen roomFrom, Rect rectTo, Dir4 expandTo)
         {
             Loc diff = roomFrom.Draw.Start - rectTo.Start; // how far ahead the start of source is to dest
@@ -62,6 +89,13 @@ namespace RogueElements
             return false;
         }
 
+        /// <summary>
+        /// Finds a room that can be connected from the specified room in the given direction.
+        /// </summary>
+        /// <param name="floorPlan">The floor plan to search.</param>
+        /// <param name="chosenFrom">The room to connect from.</param>
+        /// <param name="dir">The direction to search for connections.</param>
+        /// <returns>The connection details if a valid target is found; otherwise, null.</returns>
         protected static ListPathTraversalNode? GetRoomToConnect(FloorPlan floorPlan, RoomHallIndex chosenFrom, Dir4 dir)
         {
             // extend a rectangle to the border of the floor in the chosen direction
@@ -227,6 +261,13 @@ namespace RogueElements
             return expansions;
         }
 
+        /// <summary>
+        /// Chooses a connection from a list of candidate rooms.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to search.</param>
+        /// <param name="candList">The list of candidate rooms to connect from.</param>
+        /// <returns>The chosen connection details if one is found; otherwise, null.</returns>
         protected static ListPathTraversalNode? ChooseConnection(IRandom rand, FloorPlan floorPlan, List<RoomHallIndex> candList)
         {
             SpawnList<ListPathTraversalNode> expansions = GetPossibleExpansions(floorPlan, candList);
@@ -237,12 +278,31 @@ namespace RogueElements
                 return null;
         }
 
+        /// <summary>
+        /// Represents the details of a potential connection between two rooms.
+        /// </summary>
         public struct ListPathTraversalNode
         {
+            /// <summary>
+            /// The room or hall to connect from.
+            /// </summary>
             public RoomHallIndex From;
+
+            /// <summary>
+            /// The room or hall to connect to.
+            /// </summary>
             public RoomHallIndex To;
+
+            /// <summary>
+            /// The bounding rectangle for the connecting hall.
+            /// </summary>
             public Rect Connector;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ListPathTraversalNode"/> struct without a connector.
+            /// </summary>
+            /// <param name="from">The room to connect from.</param>
+            /// <param name="to">The room to connect to.</param>
             public ListPathTraversalNode(RoomHallIndex from, RoomHallIndex to)
             {
                 this.From = from;
@@ -250,6 +310,12 @@ namespace RogueElements
                 this.Connector = Rect.Empty;
             }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ListPathTraversalNode"/> struct with a connector.
+            /// </summary>
+            /// <param name="from">The room to connect from.</param>
+            /// <param name="to">The room to connect to.</param>
+            /// <param name="connector">The bounding rectangle for the hall.</param>
             public ListPathTraversalNode(RoomHallIndex from, RoomHallIndex to, Rect connector)
             {
                 this.From = from;

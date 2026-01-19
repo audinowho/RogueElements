@@ -9,33 +9,51 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Adds the entrance and exit to the floor.  Is not room-conscious and only picks random tiles.
+    /// Places entrance and exit stairs on the floor at random walkable tile locations.
     /// </summary>
-    /// <typeparam name="TGenContext"></typeparam>
-    /// <typeparam name="TEntrance"></typeparam>
-    /// <typeparam name="TExit"></typeparam>
+    /// <typeparam name="TGenContext">The type of map context that implements placement for entrances and exits.</typeparam>
+    /// <typeparam name="TEntrance">The type of entrance to place.</typeparam>
+    /// <typeparam name="TExit">The type of exit to place.</typeparam>
+    /// <remarks>
+    /// This step is not room-conscious and selects random free tiles for stair placement.
+    /// </remarks>
     [Serializable]
     public class StairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, IPlaceableGenContext<TEntrance>, IPlaceableGenContext<TExit>
         where TEntrance : IEntrance
         where TExit : IExit
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StairsStep{TGenContext, TEntrance, TExit}"/> class.
+        /// </summary>
         public StairsStep()
         {
             this.Entrance = new List<TEntrance>();
             this.Exit = new List<TExit>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StairsStep{TGenContext, TEntrance, TExit}"/> class with the specified entrance and exit.
+        /// </summary>
+        /// <param name="entrance">The entrance to place on the map.</param>
+        /// <param name="exit">The exit to place on the map.</param>
         public StairsStep(TEntrance entrance, TExit exit)
         {
             this.Entrance = new List<TEntrance> { entrance };
             this.Exit = new List<TExit> { exit };
         }
 
+        /// <summary>
+        /// Gets the list of entrances to place on the map.
+        /// </summary>
         public List<TEntrance> Entrance { get; }
 
+        /// <summary>
+        /// Gets the list of exits to place on the map.
+        /// </summary>
         public List<TExit> Exit { get; }
 
+        /// <inheritdoc/>
         public override void Apply(TGenContext map)
         {
             Loc defaultLoc = Loc.Zero;

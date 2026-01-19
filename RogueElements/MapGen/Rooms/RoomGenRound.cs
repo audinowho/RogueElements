@@ -8,23 +8,35 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// Generates a rounded room.  Square dimensions result in a circle, while rectangular dimensions result in capsules.
+    /// Generates a rounded room. Square dimensions result in a circle, while rectangular dimensions result in capsules.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that supports tiled generation.</typeparam>
     [Serializable]
     public class RoomGenRound<T> : RoomGen<T>, ISizedRoomGen
         where T : ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenRound{T}"/> class.
+        /// </summary>
         public RoomGenRound()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenRound{T}"/> class with specified dimensions.
+        /// </summary>
+        /// <param name="width">The range of possible widths for the room.</param>
+        /// <param name="height">The range of possible heights for the room.</param>
         public RoomGenRound(RandRange width, RandRange height)
         {
             this.Width = width;
             this.Height = height;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoomGenRound{T}"/> class as a copy of another.
+        /// </summary>
+        /// <param name="other">The instance to copy from.</param>
         protected RoomGenRound(RoomGenRound<T> other)
         {
             this.Width = other.Width;
@@ -32,22 +44,25 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// Width of the room.
+        /// Gets or sets the range of possible widths for the room.
         /// </summary>
         public RandRange Width { get; set; }
 
         /// <summary>
-        /// Height of the room.
+        /// Gets or sets the range of possible heights for the room.
         /// </summary>
         public RandRange Height { get; set; }
 
+        /// <inheritdoc/>
         public override RoomGen<T> Copy() => new RoomGenRound<T>(this);
 
+        /// <inheritdoc/>
         public override Loc ProposeSize(IRandom rand)
         {
             return new Loc(this.Width.Pick(rand), this.Height.Pick(rand));
         }
 
+        /// <inheritdoc/>
         public override void DrawOnMap(T map)
         {
             int diameter = Math.Min(this.Draw.Width, this.Draw.Height);
@@ -65,11 +80,13 @@ namespace RogueElements
             this.SetRoomBorders(map);
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format("{0}: {1}x{2}", this.GetType().GetFormattedTypeName(), this.Width.ToString(), this.Height.ToString());
         }
 
+        /// <inheritdoc/>
         protected override void PrepareFulfillableBorders(IRandom rand)
         {
             int diameter = Math.Min(this.Draw.Width, this.Draw.Height);
@@ -92,6 +109,14 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Determines whether a tile at the specified coordinates falls within the rounded room shape.
+        /// </summary>
+        /// <param name="baseX">The X coordinate of the tile relative to the room.</param>
+        /// <param name="baseY">The Y coordinate of the tile relative to the room.</param>
+        /// <param name="diameter">The diameter used for corner rounding.</param>
+        /// <param name="size">The size of the room.</param>
+        /// <returns>True if the tile is within the room; otherwise, false.</returns>
         private static bool IsTileWithinRoom(int baseX, int baseY, int diameter, Loc size)
         {
             Loc sizeX2 = size * 2;

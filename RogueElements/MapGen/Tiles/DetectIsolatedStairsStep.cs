@@ -8,21 +8,29 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// A debug step that can be used to generate an error if the map generator created an unreachable stairs.
+    /// Detects unreachable stairs on the map and raises an error if entrances cannot reach all exits.
     /// </summary>
-    /// <typeparam name="TGenContext"></typeparam>
-    /// <typeparam name="TEntrance"></typeparam>
-    /// <typeparam name="TExit"></typeparam>
+    /// <typeparam name="TGenContext">The type of map context that implements tile and placement contexts.</typeparam>
+    /// <typeparam name="TEntrance">The type of entrance to check connectivity from.</typeparam>
+    /// <typeparam name="TExit">The type of exit to check connectivity to.</typeparam>
+    /// <remarks>
+    /// This is a debug step useful for validating that every entrance can reach at least one exit.
+    /// Supports wrapped maps by extending the search rectangle.
+    /// </remarks>
     [Serializable]
     public class DetectIsolatedStairsStep<TGenContext, TEntrance, TExit> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>, IViewPlaceableGenContext<TExit>
         where TEntrance : IEntrance
         where TExit : IExit
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DetectIsolatedStairsStep{TGenContext, TEntrance, TExit}"/> class.
+        /// </summary>
         public DetectIsolatedStairsStep()
         {
         }
 
+        /// <inheritdoc/>
         public override void Apply(TGenContext map)
         {
             int lX = map.Width;

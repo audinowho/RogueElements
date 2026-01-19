@@ -17,9 +17,18 @@ namespace RogueElements
         where TGenContext : IGenContext
         where TSpawnable : ISpawnable
     {
+        /// <summary>
+        /// Generates a list of spawnable entities for placement on the map.
+        /// </summary>
+        /// <param name="map">The generation context used to inform spawn generation.</param>
+        /// <returns>A list of spawnable entities to be placed.</returns>
         List<TSpawnable> GetSpawns(TGenContext map);
     }
 
+    /// <summary>
+    /// Provides a non-generic marker interface for step spawners.
+    /// </summary>
+    /// <seealso cref="IStepSpawner{TGenContext, TSpawnable}"/>
     public interface IStepSpawner
     {
     }

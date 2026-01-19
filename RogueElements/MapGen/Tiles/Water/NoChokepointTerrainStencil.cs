@@ -9,36 +9,52 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// A filter for determining the eligible tiles for an operation.
-    /// Locations that, if all made unwalkable, do not cause a chokepoint to be removed, are eligible.
+    /// Provides a terrain stencil that prevents tile placement from creating chokepoints.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of map context that implements <see cref="ITiledGenContext"/>.</typeparam>
+    /// <remarks>
+    /// This stencil tests whether placing a tile at a location would disconnect walkable areas
+    /// or create impassable barriers.
+    /// </remarks>
     [Serializable]
     public class NoChokepointTerrainStencil<T> : ITerrainStencil<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoChokepointTerrainStencil{T}"/> class.
+        /// </summary>
         public NoChokepointTerrainStencil()
         {
             this.TileStencil = new DefaultTerrainStencil<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NoChokepointTerrainStencil{T}"/> class with the specified terrain stencil.
+        /// </summary>
+        /// <param name="tileStencil">The terrain stencil that defines walkable tiles.</param>
         public NoChokepointTerrainStencil(ITerrainStencil<T> tileStencil)
         {
             this.TileStencil = tileStencil;
         }
 
         /// <summary>
-        /// Filters for valid path tiles
+        /// Gets or sets the terrain stencil that determines which tiles are considered valid path tiles.
         /// </summary>
         public ITerrainStencil<T> TileStencil { get; set; }
 
         /// <summary>
-        /// Determines if the entire map should be checked for connectivity, or just the immediate surrounding tiles.
+        /// Gets or sets a value indicating whether to check the entire map for connectivity.
+        /// When <c>false</c>, only checks immediate surrounding tiles.
+        /// When <c>true</c>, checks the entire map for disconnections.
         /// </summary>
         public bool Global { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to invert the chokepoint detection result.
+        /// </summary>
         public bool Negate { get; set; }
 
+        /// <inheritdoc/>
         public bool Test(T map, Loc testLoc)
         {
             bool IsMapValid(Loc loc) => this.TileStencil.Test(map, loc);

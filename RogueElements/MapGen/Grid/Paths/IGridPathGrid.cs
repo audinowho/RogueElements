@@ -9,36 +9,66 @@ using System.Linq;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Defines the configuration interface for grid path generators.
+    /// </summary>
     public interface IGridPathGrid
     {
+        /// <summary>
+        /// Gets or sets the percentage of perimeter rooms that are full rooms.
+        /// </summary>
         int RoomRatio { get; set; }
 
+        /// <summary>
+        /// Gets or sets the percentage of additional halls connecting perimeter rooms.
+        /// </summary>
         int HallRatio { get; set; }
     }
 
     /// <summary>
-    /// Populates the empty floor plan of a map by creating a path consisting of rooms on the perimeter, with hallways creating a grid inwards.
+    /// Creates a grid-like layout with an inner corridor network and perimeter rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This path generator fills the interior of the grid with a network of connected
+    /// single-tile halls, then adds rooms around the perimeter. Additional halls can
+    /// connect adjacent perimeter rooms.
+    /// </para>
+    /// <para>
+    /// The grid must be at least 3x3 to have both an interior network and a perimeter.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStepGeneric{T}"/>
+    /// <seealso cref="IGridPathGrid"/>
     [Serializable]
     public class GridPathGrid<T> : GridPathStartStepGeneric<T>, IGridPathGrid
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathGrid{T}"/> class.
+        /// </summary>
         public GridPathGrid()
             : base()
         {
         }
 
         /// <summary>
-        /// The percentage of rooms at the perimeter that are NOT default 1-tile halls.
+        /// Gets or sets the percentage of perimeter rooms that are full rooms rather than halls.
         /// </summary>
         public int RoomRatio { get; set; }
 
         /// <summary>
-        /// The amount of additional halls added to connect adjacent rooms at the perimeter.
+        /// Gets or sets the percentage of additional halls connecting adjacent perimeter rooms.
         /// </summary>
         public int HallRatio { get; set; }
 
+        /// <summary>
+        /// Creates the grid layout with inner corridors and perimeter rooms.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The grid plan to populate.</param>
+        /// <exception cref="InvalidOperationException">Thrown when the grid is smaller than 3x3.</exception>
         public override void ApplyToPath(IRandom rand, GridPlan floorPlan)
         {
             if (floorPlan.GridWidth < 3 || floorPlan.GridHeight < 3)

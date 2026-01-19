@@ -11,9 +11,13 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Flags representing cellular automata neighbor count rules.
+    /// </summary>
     [Flags]
     public enum CellRule
     {
+        /// <summary>No neighbors.</summary>
         None = 0,
         Eq0 = 1,
         Eq1 = 2,
@@ -45,6 +49,9 @@ namespace RogueElements
         All = 511,
     }
 
+    /// <summary>
+    /// Provides methods for procedural noise generation and cellular automata.
+    /// </summary>
     public static class NoiseGen
     {
         /// <summary>
@@ -106,6 +113,15 @@ namespace RogueElements
             return noise;
         }
 
+        /// <summary>
+        /// Runs cellular automata iterations on a grid.
+        /// </summary>
+        /// <param name="startGrid">The initial grid state.</param>
+        /// <param name="birth">Rules for cell birth based on neighbor count.</param>
+        /// <param name="survive">Rules for cell survival based on neighbor count.</param>
+        /// <param name="iterations">Number of iterations to run.</param>
+        /// <param name="wrap">Whether to wrap edges toroidally.</param>
+        /// <returns>The final grid state.</returns>
         public static bool[][] IterateAutomata(bool[][] startGrid, CellRule birth, CellRule survive, int iterations, bool wrap = false)
         {
             int width = startGrid.Length;

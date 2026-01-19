@@ -1,4 +1,4 @@
-﻿// <copyright file="Example6.cs" company="Audino">
+// <copyright file="Example6.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,25 @@ using System.Text;
 
 namespace RogueElements.Examples.Ex6_Items
 {
+    /// <summary>
+    /// Example 6: Demonstrates entity spawning with weighted random selection.
+    /// This example shows how to place items and mobs using SpawnList for
+    /// weighted randomization and RandomSpawnStep for automatic placement.
+    /// </summary>
+    /// <remarks>
+    /// Key concepts introduced:
+    /// - ISpawnable: Interface for entities that can be spawned (requires Copy() method)
+    /// - SpawnList&lt;T&gt;: Collection with weighted random selection
+    /// - RandomSpawnStep: Places spawnable entities at valid map locations
+    /// - PickerSpawner: Determines WHAT to spawn using a SpawnList
+    /// - LoopedRand: Determines HOW MANY times to spawn from the list
+    /// - Multiple IPlaceableGenContext&lt;T&gt;: Same context can spawn different entity types
+    /// </remarks>
     public static class Example6
     {
+        /// <summary>
+        /// Runs the item/mob spawning example, creating a map populated with entities.
+        /// </summary>
         public static void Run()
         {
             Console.Clear();
@@ -57,7 +74,7 @@ namespace RogueElements.Examples.Ex6_Items
             // Add the stairs up and down
             layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
-            // Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
+            // Generate water (covered in Ex5)
             const int terrain = 2;
             var waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, new Tile(terrain), new MapTerrainStencil<MapGenContext>(false, true, false, false), 1);
             layout.GenSteps.Add(3, waterPostProc);
@@ -68,27 +85,54 @@ namespace RogueElements.Examples.Ex6_Items
             // Remove water stuck in the walls
             layout.GenSteps.Add(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain)));
 
-            // Apply Items
+            // ===================================================================================
+            // ITEM SPAWNING - NEW CONCEPT
+            // ===================================================================================
+
+            // SpawnList<T> provides weighted random selection.
+            // Each item has a "spawn rate" (weight) that affects its selection probability.
+            // Higher weight = more likely to be selected when picking randomly.
+            //
+            // The weight is relative: if item A has weight 10 and item B has weight 50,
+            // B is 5x more likely to be selected than A.
             var itemSpawns = new SpawnList<Item>
             {
-                { new Item((int)'!'), 10 },
-                { new Item((int)']'), 10 },
-                { new Item((int)'='), 10 },
-                { new Item((int)'?'), 10 },
-                { new Item((int)'$'), 10 },
-                { new Item((int)'/'), 10 },
-                { new Item((int)'*'), 50 },
+                // Common roguelike item symbols with their spawn weights:
+                { new Item((int)'!'), 10 },  // Potion - weight 10 (uncommon)
+                { new Item((int)']'), 10 },  // Armor - weight 10 (uncommon)
+                { new Item((int)'='), 10 },  // Ring - weight 10 (uncommon)
+                { new Item((int)'?'), 10 },  // Scroll - weight 10 (uncommon)
+                { new Item((int)'$'), 10 },  // Gold - weight 10 (uncommon)
+                { new Item((int)'/'), 10 },  // Wand - weight 10 (uncommon)
+                { new Item((int)'*'), 50 },  // Rock/gem - weight 50 (5x more common!)
             };
+
+            // RandomSpawnStep places entities at random valid locations on the map.
+            // It requires:
+            // 1. A "spawner" that decides WHAT to spawn (PickerSpawner)
+            // 2. The spawner uses a "picker" that decides HOW MANY (LoopedRand)
+            //
+            // PickerSpawner: Wraps a randomizer to provide spawnable instances
+            // LoopedRand: Picks from itemSpawns a random number of times (10-18 items)
             RandomSpawnStep<MapGenContext, Item> itemPlacement = new RandomSpawnStep<MapGenContext, Item>(new PickerSpawner<MapGenContext, Item>(new LoopedRand<Item>(itemSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(6, itemPlacement);
 
-            // Apply Mobs
+            // ===================================================================================
+            // MOB SPAWNING - SAME PATTERN, DIFFERENT TYPE
+            // ===================================================================================
+
+            // Mobs use the exact same spawning system as items.
+            // The context implements IPlaceableGenContext<Mob> to support this.
             var mobSpawns = new SpawnList<Mob>
             {
-                { new Mob((int)'r'), 20 },
-                { new Mob((int)'T'), 10 },
-                { new Mob((int)'D'), 5 },
+                // Classic roguelike monster symbols with spawn weights:
+                { new Mob((int)'r'), 20 },   // Rat - weight 20 (common)
+                { new Mob((int)'T'), 10 },   // Troll - weight 10 (uncommon)
+                { new Mob((int)'D'), 5 },    // Dragon - weight 5 (rare, half as likely as Troll)
             };
+
+            // Same pattern: RandomSpawnStep + PickerSpawner + LoopedRand
+            // Spawns 10-18 mobs at random valid locations
             RandomSpawnStep<MapGenContext, Mob> mobPlacement = new RandomSpawnStep<MapGenContext, Mob>(new PickerSpawner<MapGenContext, Mob>(new LoopedRand<Mob>(mobSpawns, new RandRange(10, 19))));
             layout.GenSteps.Add(6, mobPlacement);
 
@@ -97,6 +141,15 @@ namespace RogueElements.Examples.Ex6_Items
             Print(context.Map, title);
         }
 
+        /// <summary>
+        /// Prints the generated map to the console with items and mobs.
+        /// </summary>
+        /// <param name="map">The generated map containing tiles, stairs, items, and mobs.</param>
+        /// <param name="title">Title to display above the map.</param>
+        /// <remarks>
+        /// Rendering priority (highest to lowest): Mobs, Items, Stairs, Terrain.
+        /// Each entity type can override the display of lower-priority elements.
+        /// </remarks>
         public static void Print(Map map, string title)
         {
             var topString = new StringBuilder(string.Empty);
@@ -148,6 +201,7 @@ namespace RogueElements.Examples.Ex6_Items
                         }
                     }
 
+                    // Items render on top of terrain but below mobs
                     foreach (Item item in map.Items)
                     {
                         if (item.Loc == loc)
@@ -157,6 +211,7 @@ namespace RogueElements.Examples.Ex6_Items
                         }
                     }
 
+                    // Mobs render on top of everything
                     foreach (Mob item in map.Mobs)
                     {
                         if (item.Loc == loc)

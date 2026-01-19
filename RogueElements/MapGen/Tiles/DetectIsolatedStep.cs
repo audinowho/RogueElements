@@ -8,19 +8,26 @@ using System;
 namespace RogueElements
 {
     /// <summary>
-    /// A debug step that can be used to generate an error if the map generator created a map with unreachable walkable tiles.
+    /// Detects unreachable walkable tiles on the map and raises an error if any are found.
     /// </summary>
-    /// <typeparam name="TGenContext"></typeparam>
-    /// <typeparam name="TEntrance"></typeparam>
+    /// <typeparam name="TGenContext">The type of map context that implements <see cref="ITiledGenContext"/> and <see cref="IViewPlaceableGenContext{T}"/>.</typeparam>
+    /// <typeparam name="TEntrance">The type of entrance used to determine the starting point for connectivity checks.</typeparam>
+    /// <remarks>
+    /// This is a debug step useful for validating that map generation produces fully connected walkable areas.
+    /// </remarks>
     [Serializable]
     public class DetectIsolatedStep<TGenContext, TEntrance> : GenStep<TGenContext>
         where TGenContext : class, ITiledGenContext, IViewPlaceableGenContext<TEntrance>
         where TEntrance : IEntrance
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DetectIsolatedStep{TGenContext, TEntrance}"/> class.
+        /// </summary>
         public DetectIsolatedStep()
         {
         }
 
+        /// <inheritdoc/>
         public override void Apply(TGenContext map)
         {
             const int offX = 0;

@@ -9,22 +9,49 @@ using System.Collections.Generic;
 namespace RogueElements
 {
     /// <summary>
-    /// Contains data about which cells a room occupies in a GridFloorPlan.
+    /// Represents a single hall segment in a <see cref="GridPlan"/>.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A hall connects two adjacent cells in the grid. When rooms are offset from each other,
+    /// a single logical hall may be split into multiple <see cref="GridHallPlan"/> segments
+    /// during the <see cref="GridPlan.ChooseHallBounds"/> process.
+    /// </para>
+    /// <para>
+    /// Hall plans use <see cref="IPermissiveRoomGen"/> generators because halls must be able
+    /// to connect rooms at various positions and sizes.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridHallGroup"/>
+    /// <seealso cref="GridPlan"/>
     public class GridHallPlan : IRoomPlan
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridHallPlan"/> class.
+        /// </summary>
+        /// <param name="roomGen">The permissive room generator for this hall.</param>
+        /// <param name="components">The components to attach to this hall.</param>
         public GridHallPlan(IPermissiveRoomGen roomGen, ComponentCollection components)
         {
             this.RoomGen = roomGen;
             this.Components = components;
         }
 
+        /// <summary>
+        /// Gets the permissive room generator for this hall.
+        /// </summary>
         public IPermissiveRoomGen RoomGen { get; }
 
+        /// <inheritdoc/>
         IRoomGen IRoomPlan.RoomGen => this.RoomGen;
 
-        // This member will be assigned by reference to the Components of FloorHallPlan,
-        // as well as to the components of any halls it is split into during bounds calculation
+        /// <summary>
+        /// Gets the components attached to this hall.
+        /// </summary>
+        /// <remarks>
+        /// This collection is shared by reference with the corresponding <see cref="FloorHallPlan"/>
+        /// and any hall segments created when the hall is split during bounds calculation.
+        /// </remarks>
         public ComponentCollection Components { get; }
     }
 }

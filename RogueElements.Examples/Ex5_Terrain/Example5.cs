@@ -1,4 +1,4 @@
-﻿// <copyright file="Example5.cs" company="Audino">
+// <copyright file="Example5.cs" company="Audino">
 // Copyright (c) Audino
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -8,8 +8,23 @@ using System.Text;
 
 namespace RogueElements.Examples.Ex5_Terrain
 {
+    /// <summary>
+    /// Example 5: Demonstrates terrain generation using Perlin noise and post-processing.
+    /// This example introduces water terrain that overlays the basic floor tiles,
+    /// showing how terrain steps modify existing tile data rather than replacing it.
+    /// </summary>
+    /// <remarks>
+    /// Key concepts introduced:
+    /// - PerlinWaterStep: Uses Perlin noise for natural-looking terrain distribution
+    /// - MapTerrainStencil: Controls which tiles can be modified by terrain steps
+    /// - Post-processing steps: DropDiagonalBlockStep and EraseIsolatedStep clean up artifacts
+    /// - Terrain layering: Water terrain (ID=2) coexists with walls (ID=0) and floors (ID=1)
+    /// </remarks>
     public static class Example5
     {
+        /// <summary>
+        /// Runs the terrain generation example, creating a map with Perlin noise-based water.
+        /// </summary>
         public static void Run()
         {
             Console.Clear();
@@ -57,15 +72,45 @@ namespace RogueElements.Examples.Ex5_Terrain
             // Add the stairs up and down
             layout.GenSteps.Add(2, new FloorStairsStep<MapGenContext, StairsUp, StairsDown>(0, new StairsUp(), new StairsDown()));
 
-            // Generate water (specified by user as Terrain 2) with a frequency of 35%, using Perlin Noise in an order of 3, softness 1.
+            // ===================================================================================
+            // TERRAIN GENERATION - NEW CONCEPT
+            // ===================================================================================
+            // Terrain steps add secondary tile types (like water) to an already-generated map.
+            // They work by modifying existing tiles, not by creating the initial room structure.
+
+            // Define the terrain ID for water (using a constant makes the code more readable)
+            // This matches WATER_TERRAIN_ID in BaseMap (ID=2)
             const int terrain = 2;
+
+            // PerlinWaterStep uses Perlin noise to create natural-looking terrain distribution.
+            // Parameters explained:
+            // - RandRange(35): Target 35% of eligible tiles to become water
+            // - 3: Perlin noise "order" (octaves) - higher = more detail/complexity
+            // - new Tile(terrain): The tile type to place (water with ID=2)
+            // - MapTerrainStencil: Controls WHERE water can be placed (see below)
+            // - 1: "Softness" - smooths transitions at water edges
+            //
+            // The stencil (false, true, false, false) means:
+            // - false: Don't place water on impassable terrain (walls)
+            // - true: Allow placing water on floor tiles
+            // - false: Don't place water on existing water
+            // - false: Don't place water on blocked tiles
             var waterPostProc = new PerlinWaterStep<MapGenContext>(new RandRange(35), 3, new Tile(terrain), new MapTerrainStencil<MapGenContext>(false, true, false, false), 1);
             layout.GenSteps.Add(3, waterPostProc);
 
-            // Remove walls where diagonals of water exist and replace with water
+            // ===================================================================================
+            // POST-PROCESSING CLEANUP STEPS
+            // ===================================================================================
+            // After placing terrain, some cleanup is often needed to fix visual artifacts.
+
+            // DropDiagonalBlockStep fixes "diagonal wall" issues.
+            // When water exists diagonally across a wall corner, it can look unnatural.
+            // This step removes such wall tiles and replaces them with water for better flow.
             layout.GenSteps.Add(4, new DropDiagonalBlockStep<MapGenContext>(new Tile(terrain)));
 
-            // Remove water stuck in the walls
+            // EraseIsolatedStep removes terrain that got "stuck" inside walls.
+            // Perlin noise doesn't understand room boundaries, so some water tiles
+            // may end up completely surrounded by walls. This step erases them.
             layout.GenSteps.Add(4, new EraseIsolatedStep<MapGenContext>(new Tile(terrain)));
 
             // Run the generator and print
@@ -73,6 +118,14 @@ namespace RogueElements.Examples.Ex5_Terrain
             Print(context.Map, title);
         }
 
+        /// <summary>
+        /// Prints the generated map to the console with terrain visualization.
+        /// </summary>
+        /// <param name="map">The generated map containing tiles, stairs, and terrain.</param>
+        /// <param name="title">Title to display above the map.</param>
+        /// <remarks>
+        /// Terrain rendering: Walls='#', Floor='.', Water='~', Stairs='&lt;' and '&gt;'.
+        /// </remarks>
         public static void Print(Map map, string title)
         {
             var topString = new StringBuilder(string.Empty);
@@ -90,6 +143,9 @@ namespace RogueElements.Examples.Ex5_Terrain
                     Loc loc = new Loc(x, y);
                     char tileChar;
                     Tile tile = map.Tiles[x][y];
+
+                    // Map tile IDs to display characters
+                    // Note the new WATER_TERRAIN_ID case for terrain display
                     switch (tile.ID)
                     {
                         case BaseMap.WALL_TERRAIN_ID:

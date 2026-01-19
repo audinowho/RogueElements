@@ -8,10 +8,29 @@ using System.Collections.Generic;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Base class for grid path generators that use configurable room and hall generators.
+    /// </summary>
+    /// <typeparam name="T">The map context type, which must implement <see cref="IRoomGridGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This class extends <see cref="GridPathStartStep{T}"/> by adding properties for
+    /// room and hall generators with their associated components. Most path generation
+    /// algorithms inherit from this class rather than directly from GridPathStartStep.
+    /// </para>
+    /// <para>
+    /// Subclasses must ensure that both <see cref="GenericRooms"/> and <see cref="GenericHalls"/>
+    /// are configured with at least one option before generation, or an exception will be thrown.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="GridPathStartStep{T}"/>
     [Serializable]
     public abstract class GridPathStartStepGeneric<T> : GridPathStartStep<T>
         where T : class, IRoomGridGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridPathStartStepGeneric{T}"/> class.
+        /// </summary>
         protected GridPathStartStepGeneric()
         {
             this.RoomComponents = new ComponentCollection();
@@ -19,25 +38,30 @@ namespace RogueElements
         }
 
         /// <summary>
-        /// The room types that can be used for the rooms of the layout.
+        /// Gets or sets the room generators to use for layout rooms.
         /// </summary>
         public IRandPicker<RoomGen<T>> GenericRooms { get; set; }
 
         /// <summary>
-        /// Components that the newly added rooms will be labeled with.
+        /// Gets or sets the components to attach to newly created rooms.
         /// </summary>
         public ComponentCollection RoomComponents { get; set; }
 
         /// <summary>
-        /// The room types that can be used for the halls of the layout.
+        /// Gets or sets the hall generators to use for connecting halls.
         /// </summary>
         public IRandPicker<PermissiveRoomGen<T>> GenericHalls { get; set; }
 
         /// <summary>
-        /// Components that the newly added halls will be labeled with.
+        /// Gets or sets the components to attach to newly created halls.
         /// </summary>
         public ComponentCollection HallComponents { get; set; }
 
+        /// <summary>
+        /// Validates that room and hall generators are configured before applying.
+        /// </summary>
+        /// <param name="map">The map context to modify.</param>
+        /// <exception cref="InvalidOperationException">Thrown when no room or hall generators are configured.</exception>
         public override void Apply(T map)
         {
             if (!this.GenericRooms.CanPick || !this.GenericHalls.CanPick)

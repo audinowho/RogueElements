@@ -10,15 +10,30 @@ using System.Text;
 
 namespace RogueElements
 {
+    /// <summary>
+    /// Represents an axis-aligned rectangle with integer coordinates.
+    /// </summary>
     [Serializable]
     public struct Rect : IEquatable<Rect>
     {
+        /// <summary>
+        /// The X coordinate of the top-left corner.
+        /// </summary>
         public int X;
 
+        /// <summary>
+        /// The Y coordinate of the top-left corner.
+        /// </summary>
         public int Y;
 
+        /// <summary>
+        /// The width of the rectangle.
+        /// </summary>
         public int Width;
 
+        /// <summary>
+        /// The height of the rectangle.
+        /// </summary>
         public int Height;
 
         /// <summary>
@@ -69,23 +84,50 @@ namespace RogueElements
             this.Height = size.Y;
         }
 
+        /// <summary>
+        /// Gets an empty rectangle at the origin.
+        /// </summary>
         public static Rect Empty => new Rect(0, 0, 0, 0);
 
+        /// <summary>
+        /// Gets the left edge X coordinate.
+        /// </summary>
         public int Left => this.X;
 
+        /// <summary>
+        /// Gets the right edge X coordinate (exclusive).
+        /// </summary>
         public int Right => this.X + this.Width;
 
+        /// <summary>
+        /// Gets the top edge Y coordinate.
+        /// </summary>
         public int Top => this.Y;
 
+        /// <summary>
+        /// Gets the bottom edge Y coordinate (exclusive).
+        /// </summary>
         // TODO: sniff out off-by-ones with this...
         public int Bottom => this.Y + this.Height;
 
+        /// <summary>
+        /// Gets the area of the rectangle.
+        /// </summary>
         public int Area => this.Width * this.Height;
 
+        /// <summary>
+        /// Gets the perimeter of the rectangle.
+        /// </summary>
         public int Perimeter => (this.Width * 2) + (this.Height * 2);
 
+        /// <summary>
+        /// Gets a value indicating whether this rectangle is empty.
+        /// </summary>
         public bool IsEmpty => this == Empty;
 
+        /// <summary>
+        /// Gets or sets the top-left corner location.
+        /// </summary>
         public Loc Start
         {
             get => new Loc(this.X, this.Y);
@@ -96,6 +138,9 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the rectangle.
+        /// </summary>
         public Loc Size
         {
             get => new Loc(this.Width, this.Height);
@@ -106,8 +151,14 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the bottom-right corner location (exclusive).
+        /// </summary>
         public Loc End => this.Start + this.Size;
 
+        /// <summary>
+        /// Gets the center point of the rectangle.
+        /// </summary>
         public Loc Center => new Loc(this.X + (this.Width / 2), this.Y + (this.Height / 2));
 
         internal string DebugDisplayString => $"{this.X}  {this.Y}  {this.Width}  {this.Height}";
@@ -236,6 +287,12 @@ namespace RogueElements
             return new Rect(point - new Loc(radius), new Loc((radius * 2) + 1));
         }
 
+        /// <summary>
+        /// Creates a new <see cref="Rect"/> that includes both the original bounds and the specified point.
+        /// </summary>
+        /// <param name="bounds">The original rectangle.</param>
+        /// <param name="point">The point to include.</param>
+        /// <returns>A rectangle that contains both the original bounds and the point.</returns>
         // TODO: test this; one point from every quadrant
         public static Rect IncludeLoc(Rect bounds, Loc point)
         {
@@ -246,6 +303,10 @@ namespace RogueElements
             return FromPoints(new Loc(minX, minY), new Loc(maxX, maxY));
         }
 
+        /// <summary>
+        /// Returns this rectangle as its own bounding rectangle.
+        /// </summary>
+        /// <returns>This rectangle.</returns>
         public Rect GetBoundingRectangle()
         {
             return this;
@@ -366,6 +427,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the range along the specified axis perpendicular to the given direction.
+        /// </summary>
+        /// <param name="axis">The axis to get the range for.</param>
+        /// <returns>The range along the perpendicular axis.</returns>
         public IntRange GetSide(Axis4 axis)
         {
             switch (axis)
@@ -379,6 +445,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Gets the edge coordinate in the specified direction.
+        /// </summary>
+        /// <param name="direction">The direction to get the edge for.</param>
+        /// <returns>The coordinate of the edge in that direction.</returns>
         public int GetScalar(Dir4 direction)
         {
             switch (direction)
@@ -396,6 +467,11 @@ namespace RogueElements
             }
         }
 
+        /// <summary>
+        /// Sets the edge coordinate in the specified direction, adjusting size accordingly.
+        /// </summary>
+        /// <param name="direction">The direction of the edge to set.</param>
+        /// <param name="value">The new coordinate value.</param>
         public void SetScalar(Dir4 direction, int value)
         {
             switch (direction)

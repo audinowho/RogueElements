@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{B8E5F7A1-4C3D-4E6F-9A2B-1D8C7E5F3A0B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RogueElements.Benchmarks</RootNamespace>
+    <AssemblyName>RogueElements.Benchmarks</AssemblyName>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RogueElements\RogueElements.csproj">
+      <Project>{a777bc3d-2635-401d-96d7-162178d8dfc4}</Project>
+      <Name>RogueElements</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+  </ItemGroup>
+</Project>

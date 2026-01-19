@@ -10,25 +10,49 @@ using System.Text;
 namespace RogueElements
 {
     /// <summary>
-    /// Takes the current floor plan and adds new rooms that are disconnected from existing rooms.
-    /// Sweeps through the entire floor to fit in the new rooms.
-    /// Guaranteed to spawn the room, but can cause performance problems for larger floors.
+    /// Adds new rooms to the floor plan without connecting them to existing rooms.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The generation context type, which must implement <see cref="IFloorPlanGenContext"/>.</typeparam>
+    /// <remarks>
+    /// <para>
+    /// This step places rooms that are isolated from the existing layout, useful for creating
+    /// secret rooms, bonus areas, or areas that will be connected later by other steps.
+    /// </para>
+    /// <para>
+    /// Unlike <see cref="AddDisconnectedRoomsRandStep{T}"/>, this version exhaustively searches
+    /// all possible positions, guaranteeing placement if any valid location exists but potentially
+    /// causing performance issues on larger floors.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="AddDisconnectedRoomsRandStep{T}"/>
     [Serializable]
     public class AddDisconnectedRoomsStep<T> : AddDisconnectedRoomsBaseStep<T>
         where T : class, IFloorPlanGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddDisconnectedRoomsStep{T}"/> class.
+        /// </summary>
         public AddDisconnectedRoomsStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddDisconnectedRoomsStep{T}"/> class with specified room generators.
+        /// </summary>
+        /// <param name="genericRooms">The picker for room generators.</param>
         public AddDisconnectedRoomsStep(IRandPicker<RoomGen<T>> genericRooms)
             : base(genericRooms)
         {
         }
 
+        /// <summary>
+        /// Finds a viable location by exhaustively searching all possible positions.
+        /// </summary>
+        /// <param name="rand">The random number generator.</param>
+        /// <param name="floorPlan">The floor plan to search within.</param>
+        /// <param name="roomSize">The size of the room to place.</param>
+        /// <returns>A valid location if found; otherwise, null.</returns>
         protected override Loc? ChooseViableLoc(IRandom rand, FloorPlan floorPlan, Loc roomSize)
         {
             Rect allowedRange = Rect.FromPoints(floorPlan.DrawRect.Start, floorPlan.DrawRect.End - roomSize + new Loc(1));
